@@ -1,0 +1,89 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft
+premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license
+agreement, you are not authorized to use this source code.
+For the terms of the license, please see the license agreement
+signed by you and Microsoft.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xrpack="http://schemas.microsoft.com/windowsembedded/silverlight/packaging"
+    mc:Ignorable="d xrpack"
+    x:Class="ScreenTransition.Page1"
+    xmlns:local="clr-namespace:ScreenTransition"
+    xrpack:ClassResourceId="Class:1206(IDR_SLIDE_WIZ_PAGE1_PAGE)"
+    Width="800" Height="600">
+
+
+    <Grid x:Name="LayoutRoot" RenderTransformOrigin="0.5,1">
+        <Grid.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </Grid.RenderTransform>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="00:00:00.5000000"/>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="Minimized">
+                    <Storyboard>
+                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000" Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0.1"/>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000" Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0.1"/>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000" Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="(UIElement.Opacity)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Normal">
+                    <Storyboard>
+                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000" Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="(UIElement.Opacity)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000" Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+                        </DoubleAnimationUsingKeyFrames>
+                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000" Storyboard.TargetName="LayoutRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)">
+                            <EasingDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Canvas Background="Azure">
+            <Image Height="246" Width="217" Canvas.Left="43" Canvas.Top="18" Source="ScreenTransition/HomeScreen6.png" Stretch="Fill"/>
+            <TextBlock Height="324" Width="278" Canvas.Left="324" Canvas.Top="18" FontSize="96" Text="PAGE 1" TextWrapping="Wrap"/>
+            <Button Height="43" Width="187" Canvas.Left="17" Canvas.Top="407" Content="&lt;&lt; Back"/>
+            <Button Height="43" Width="155" Canvas.Left="234" Canvas.Top="407" Content="Exit"/>
+            <Button Height="43" Width="158" Canvas.Left="427" Canvas.Top="407" Content="Next &gt;&gt;"/>
+            <ProgressBar Height="25" Width="615" Canvas.Left="8" Canvas.Top="355" Value="50"/>
+            <ListBox Height="184" Width="158" Canvas.Left="427" Canvas.Top="146">
+                <ListBoxItem Height="26" Width="142" Content="Item 1"/>
+                <ListBoxItem Height="18" Width="142" Content="Item 2"/>
+                <Rectangle Fill="#FFFF0064" Stroke="Black" Height="39" Width="142"/>
+                <Rectangle Fill="#FF001AFF" Stroke="Black" Height="36" Width="131"/>
+                <Ellipse Fill="#FFD2FF00" Stroke="Black" Height="27" Width="127"/>
+            </ListBox>
+            <RadioButton Height="23" Width="198" Canvas.Left="17" Canvas.Top="281" Content="Choice 1"/>
+            <RadioButton Height="22" Width="162" Canvas.Left="17" Canvas.Top="308" Content="Choice 2"/>
+            <RadioButton Height="17" Width="109" Canvas.Left="17" Canvas.Top="334" Content="Choice 3"/>
+        </Canvas>
+    </Grid>
+    
+</UserControl>

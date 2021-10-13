@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<SupportedFourCCCodes>
+    <Code>
+        <code1>Y</code1>
+        <code2>U</code2>
+        <code3>Y</code3>
+        <code4>V</code4>
+    </Code>
+    <Code>
+        <code1>Y</code1>
+        <code2>U</code2>
+        <code3>Y</code3>
+        <code4>2</code4>
+    </Code>
+    <Code>
+        <code1>U</code1>
+        <code2>Y</code2>
+        <code3>V</code3>
+        <code4>Y</code4>
+        </Code>
+    <Code>
+        <code1>Y</code1>
+        <code2>V</code2>
+        <code3>1</code3>
+        <code4>2</code4>
+    </Code>
+    <Code>
+        <code1>Y</code1>
+        <code2>V</code2>
+        <code3>Y</code3>
+        <code4>U</code4>
+    </Code>
+    <Code>
+        <code1>V</code1>
+        <code2>Y</code2>
+        <code3>U</code3>
+        <code4>Y</code4>
+    </Code>
+    <Code>
+        <code1>I</code1>
+        <code2>4</code2>
+        <code3>2</code3>
+        <code4>0</code4>
+    </Code>
+</SupportedFourCCCodes>
+
+     

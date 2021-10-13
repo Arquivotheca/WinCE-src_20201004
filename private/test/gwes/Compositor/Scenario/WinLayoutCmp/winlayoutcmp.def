@@ -1,0 +1,17 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of your Microsoft Windows CE
+; Source Alliance Program license form.  If you did not accept the terms of
+; such a license, you are not authorized to use this source code.
+;
+LIBRARY GDICOMPOSITOR
+
+EXPORTS
+    Compositor_Initialize       @1
+    Compositor_Deinitialize     @2
+    Compositor_HandleNotify     @3
+    Compositor_ComposeScene     @4
+    Compositor_InitRender       @5
+    Compositor_DeinitRender     @6

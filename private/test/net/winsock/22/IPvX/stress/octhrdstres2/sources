@@ -1,0 +1,48 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=octhrdstres2_vx
+TARGETTYPE=PROGRAM
+
+SOURCES=\
+    octhrdstres2_vx.cpp
+
+INCLUDES=\
+    $(_PRIVATEROOT)\test\net\common\inc; \
+    $(INCLUDES) \
+    $(_PRIVATEROOT)\test\net\ndis\NDP\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(TEST_ROOT)\net\common\inc
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETLIBS=\
+    $(_NTSDK_LIB)\ws2_32.lib \
+    $(TEST_OAK_LIB_PATH)\ndp_lib.lib \
+    $(TEST_OAK_LIB_PATH)\netall.lib \
+    $(TEST_OAK_LIB_PATH)\netmain.lib \
+!ELSE
+TARGETLIBS=\
+    $(_COREDLL) \
+    $(TEST_OAK_LIB_PATH)\ndp_lib.lib \
+    $(TEST_OAK_LIB_PATH)\netall.lib \
+    $(TEST_OAK_LIB_PATH)\netmain.lib \
+    $(_WS2) \
+!ENDIF
+
+
+!IF ("$(_TGTOS)" == "NT")
+EXEENTRY=wmainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF
+
+!IF ("$(_TGTOS)" == "NTANSI")
+EXEENTRY=mainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF

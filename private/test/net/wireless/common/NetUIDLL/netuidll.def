@@ -1,0 +1,17 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of your Windows Mobile
+; Software Shared Source Premium Derivatives License Form or other
+; applicable Microsoft license agreement for the software. If you did not
+; accept the terms of such a license, you are not authorized to use this
+; source code.
+;
+EXPORTS 
+    RasEapGetIdentity        
+    RasEapFreeMemory
+    RasEapInvokeInteractiveUI
+
+
+

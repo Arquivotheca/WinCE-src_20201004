@@ -1,0 +1,55 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+DIRS= \
+    res         \
+    timezones   \
+    fiber       \
+    asyncio     \
+    lmem        \
+    showerr     \
+    thunks      \
+    accelerometer \
+    battery     \
+    messagedialogboxthunk \
+    dialogboxthunk \
+    locale      \
+    locusa      \
+    fmtmsg      \
+    imm         \
+    immstub     \
+    sip         \
+    fpemul      \
+    corelibc    \
+    lpc         \
+    mui         \
+    fmtres      \
+    corestub    \
+    gwestub     \
+    snotify     \
+    tnotify     \
+    regext      \
+    dll         \
+    buildlib    \
+    buildflb    \
+    dllheap     \
+    policystub  \
+    versionstd  \
+    buildinfo  \
+    ccpselect   \
+    buildexp    \
+    buildexp1   \
+    UnitTests{ce,BUILD_ALL_UNITTESTS,IFEXISTS}
+
+DIRS_ARM=fpcrt
+

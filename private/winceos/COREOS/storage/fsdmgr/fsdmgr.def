@@ -1,0 +1,112 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+LIBRARY     FSDMGR
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; NOTE: Please update the following comment as you add ordinals
+;
+; Last ordinal used: FSDMGR_ParseSecurityDescriptor @79
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+EXPORTS
+
+    ; FSD support functions. Imported by FSDs.
+    FSDMGR_AdvertiseInterface @2
+    FSDMGR_CacheIoControl @3
+    FSDMGR_CachedRead @4
+    FSDMGR_CachedWrite @5
+    FSDMGR_CreateCache @6
+    FSDMGR_CreateFileHandle @7
+    FSDMGR_CreateSearchHandle @8
+    FSDMGR_DeleteCache @9
+    FSDMGR_DeregisterVolume @10
+    FSDMGR_DeviceHandleToHDSK @11
+    FSDMGR_DiskIoControl @12
+    FSDMGR_EmptyLockContainer @13
+    FSDMGR_FlushCache @14
+    FSDMGR_FormatVolume @15
+    FSDMGR_GetDiskInfo @16
+    FSDMGR_GetDiskName @17
+    FSDMGR_GetRegistryFlag @18
+    FSDMGR_GetRegistryString @19
+    FSDMGR_GetRegistryValue @20
+    FSDMGR_GetVolumeHandle @21
+    FSDMGR_GetVolumeName @22
+    FSDMGR_InstallFileLock @23
+    FSDMGR_InvalidateCache @24
+    FSDMGR_ReadDisk @25
+    FSDMGR_ReadDiskEx @26
+    FSDMGR_RegisterVolume @27
+    FSDMGR_RemoveFileLock @28
+    FSDMGR_RemoveFileLockEx @29
+    FSDMGR_ResizeCache @30
+    FSDMGR_ScanVolume @31
+    FSDMGR_SyncCache @32
+    FSDMGR_TestFileLock @33
+    FSDMGR_TestFileLockEx @34
+    FSDMGR_WriteDisk @35
+    FSDMGR_WriteDiskEx @36
+    FSDMGR_GetMountFlags @37
+    FSDMGR_AsyncEnterVolume @80
+    FSDMGR_AsyncExitVolume @81
+    FSDMGR_ParseSecurityDescriptor @82
+    FSDMGR_GetPartInfo @83
+    FSDMGR_GetStoreInfo @84
+
+    ; Storage Manager functions. Imported by filesys.
+    STOREMGR_Initialize @38
+    STOREMGR_StartBootPhase @39
+    STOREMGR_NotifyFileSystems @40
+    STOREMGR_ProcNotify @41
+    STOREMGR_GetOidInfoEx @42
+    STOREMGR_RegisterFileSystemFunction @43
+    STOREMGR_FsIoControlW @44
+
+    ; AFS support functions. Imported by filesys.
+    FSINT_RegisterAFSEx @45
+    FSEXT_RegisterAFSEx @46
+    FSINT_DeregisterAFS @47
+    FSEXT_DeregisterAFS @48
+    FSINT_DeregisterAFSName @49
+    FSEXT_DeregisterAFSName @50
+    FSINT_RegisterAFSName @51
+    FSEXT_RegisterAFSName @52
+    FS_ProcessCleanupVolumes @53
+
+    ; Path-Based File APIs. Imported by filesys.
+    FSEXT_CreateDirectoryW @54
+    FSINT_CreateDirectoryW @55
+    FS_RemoveDirectoryW @56
+    FS_GetFileAttributesW @57
+    FS_SetFileAttributesW @58
+    FS_DeleteFileW @59
+    FS_MoveFileW @60
+    FS_DeleteAndRenameFileW @61
+    FS_GetDiskFreeSpaceExW @62
+    FSEXT_FindFirstFileW @63
+    FSINT_FindFirstFileW @64
+    FSEXT_CreateFileW @65
+    FSINT_CreateFileW @66
+    FS_IsSystemFileW @67
+    FSINT_FindFirstChangeNotificationW @68
+    FSEXT_FindFirstChangeNotificationW @69
+    FSINT_FindNextChangeNotification @70
+    FSEXT_FindNextChangeNotification @71
+    FSINT_FindCloseChangeNotification @72
+    FSEXT_FindCloseChangeNotification @73
+    FSINT_GetFileNotificationInfoW @74
+    FSEXT_GetFileNotificationInfoW @75
+    FS_GetFileSecurityW @76
+    FS_SetFileSecurityW @77
+

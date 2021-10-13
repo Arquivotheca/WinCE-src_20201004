@@ -1,0 +1,174 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtstrg
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources.inc"
+
+INCLUDES=..\h;..\..\..\inc;..\..\..\..\nk\inc
+# x86
+INCLUDES=$(INCLUDES);..\..\fpw32\cpu_x86
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+CDEFINES=$(CDEFINES) -Dmem_S -DI386
+ADEFINES=$(ADEFINES) -Dmem_S -DI386
+!ENDIF
+
+ASM_SAFESEH=1
+
+SOURCES= \
+    memcpy_s.c \
+    memmove_s.c \
+    strcat_s.c \
+    strcpy_s.c \
+    strlen_s.c \
+    strlwr.c \
+    strncat_s.c \
+    strncpy_s.c \
+    strnset_s.c \
+    strset_s.c \
+    strtok.c \
+    strtok_s.c \
+    strupr.c \
+    wcscat_s.c \
+    wcscpy_s.c \
+    wcslen_s.c \
+    wcslwr.c \
+    wcsncat_s.c \
+    wcsncpy_s.c \
+    wcsnset_s.c \
+    wcsset_s.c \
+    wcstok_s.c \
+    wcsupr.c \
+    _wcsset.c \
+    _wcsnset.c \
+    _wcsdup.c \
+    _strset.c \
+    _strnset.c \
+    _strnicmp.c \
+    _strdup.c \
+    wcstok.c \
+    wcsstr.c \
+    wcsspn.c \
+    wcsrev.c \
+    wcsrchr.c \
+    wcspbrk.c \
+    wcsnicmp.c \
+    wcsncpy.c \
+    wcsncmp.c \
+    wcsncat.c \
+    wcslen.c \
+    wcsicmp.c \
+    wcscspn.c \
+    wcscpy.c \
+    wcscmp.c \
+    wcschr.c \
+    wcscat.c \
+
+SH_SOURCES= \
+    _stricmp.c \
+    _strrev.c \
+    memicmp.c \
+    memccpy.c \
+    memchr.c \
+    strncat.c \
+    strncmp.c \
+    strncpy.c \
+    strchr.c \
+    strcspn.c \
+    strpbrk.c \
+    strrchr.c \
+    strspn.c \
+    strstr.c \
+    SH\sh4memcpy.c\
+    SH\sh4memset.c\
+    SH\memcmp.src \
+    SH\memmove.src \
+    SH\memset.src \
+    SH\mdsstrcat.src \
+    SH\mdsstrcmp.src \
+    SH\mdsstrlen.src \
+
+MIPS_SOURCES= \
+    _stricmp.c \
+    _strrev.c \
+    memicmp.c \
+    memccpy.c \
+    memchr.c \
+    strncat.c \
+    strncmp.c \
+    strncpy.c \
+    strcspn.c \
+    strpbrk.c \
+    strrchr.c \
+    strspn.c \
+    strstr.c \
+    mips\memorym.s \
+    mips\strcatm.s \
+    mips\strchrm.s \
+    mips\strcmpm.s \
+    mips\strcpym.s \
+    mips\strlenm.s \
+
+ARM_SOURCES= \
+    _stricmp.c \
+    _strrev.c \
+    strcspn.c \
+    strpbrk.c \
+    strrchr.c \
+    strspn.c \
+    strstr.c \
+    arm\amemccpy.s \
+    arm\mbmemset.c \
+    arm\memchr_arm.s \
+    arm\memcmp.s \
+    arm\memcpy.s \
+    arm\memmove.s \
+    arm\amemicmp.s \
+    arm\memset.s \
+    arm\mdsstrcat.s \
+    arm\astrchr.s \
+    arm\mdsstrcmp.s \
+    arm\strcpy.s \
+    arm\mdsstrlen.s \
+    arm\astrncat.s \
+    arm\astrncmp.s \
+    arm\astrncpy.s
+
+x86_SOURCES= \
+    x86\memccpy.asm \
+    x86\memchr.asm \
+    x86\memcmp.asm \
+    x86\memcpy.asm \
+    x86\memmove.asm \
+    x86\memset.asm \
+    x86\strcat.asm \
+    x86\strchr.asm \
+    x86\strcmp.asm \
+    x86\strcspn.asm \
+    x86\strdup.asm \
+    x86\strlen.asm \
+    x86\strncat.asm \
+    x86\strncmp.asm \
+    x86\strncpy.asm \
+    x86\strnset.asm \
+    x86\strpbrk.asm \
+    x86\strrchr.asm \
+    x86\strrev.asm \
+    x86\strset.asm \
+    x86\strspn.asm \
+    x86\strstr.asm \
+    x86\_memicmp.asm \
+    x86\_stricmp.asm \
+    x86\_strnicm.asm \
+

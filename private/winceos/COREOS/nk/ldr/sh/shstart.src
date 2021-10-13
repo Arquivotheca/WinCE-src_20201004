@@ -1,0 +1,154 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+;
+;------------------------------------------------------------------------------
+;      TITLE("Kernel Initialization")
+;------------------------------------------------------------------------------
+;
+;
+; Module Name:
+;
+;    shstart.src
+;
+; Abstract:
+;
+;    This module implements the code necessary to initialize the Kernel to
+; run on an SH4 series processor.
+;
+; The KernelStart entry point in this file is called by the OAL code on boot.
+;
+; The sequence of OS boot is as follows:
+; Download --> JumpToOs --> jumps to _Startup entry in nkloader.exe.
+;
+; nkloader.exe:
+;	_Startup() (platform\...)
+;	KernelStart() (private\...\nk\ldr\<arch>)
+;	Load kernel.dll and jump to entry point of kernel.dll
+;
+; kernel.dll:
+;	NKStartup() (platform\...\nk\kernel\<arch>\)
+;	{x86, md, sh3, arm}Init() (platform\...\nk\kernel\<arch>\)
+;	KernelInit
+;	Start the first thread (doesn't return)
+;
+; At this point kernel is up and running
+;
+;
+;
+; Environment:
+;
+;    Kernel mode only.
+;
+;------------------------------------------------------------------------------
+
+        .list OFF
+        .include "ksshx.h"
+        .list ON
+
+        .import _KernelRelocate
+        .import _FindKernelEntry
+        .import _pTOC
+        .import _OEMInitGlobals
+        .import _SetOsAxsDataBlockPointer
+
+        .export _KernelStart
+        
+        .PAGE
+
+        .section .KDATA,stack			; should add upto page multiples
+_KDBase: .res.b h'1000  			; reserve an extra page for the debugger
+         .res.b h'7e0
+_KStack: .res.l 8
+_KData: .res.b  h'800
+        
+        .section .text,code,align=16
+        
+PR_B1_BK: .equ h'70008000       		; privileged mode, bank 1, exceptions blocked
+
+
+;------------------------------------------------------------------------------
+; KernelStart - Kernel entry point for nkloader
+;------------------------------------------------------------------------------
+
+
+        LEAF_ENTRY KernelStart
+_KernelStart:                                   ; Export with C linkage
+;	SR & R8: inititalize Status register and uncached address base
+        mov     #PR_B1_BK, r0
+        ldc     r0, SR                  	; (SR) = kernel mode, exceptions blocked, register bank1
+        mov     #h'A0000000, r8             ; (r8) = uncached address base
+
+        mov     #SH3CTL_BASE, r1
+        mov     #h'808, r0			
+        mov.l   r0, @(CCR,r1)               ; disable and invalidate both instruction and data cache
+
+;	SH4 cpu architecture requires when modifying CCR from P2 area,
+;	at least 8 instructions must be in between before issuing a branch    // to U0/P0/P1/P3 area.
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
+	
+;	R9: read in the pTOC
+        mov     #_pTOC, r9                  ; (r9) = &pTOC
+        mov     @r9, r9                     ; (r9) = pTOC
+
+;	R10: get the uncached address of kdata
+        mov	    #_KData, r10                ; (r10) = &_KData
+        or      r8, r10                     ; (r10) = &_KData (uncached)
+
+;	R15: setup kernel stack
+        mov     #_KStack, r15
+        or      r8, r15                     ; (r15) = kernel stack (uncached)
+
+;	call kernel relocate to initialize kernel globals
+        mov     #_KernelRelocate, r1
+        or      r8, r1                      ; (r1) = un-cached function address
+        jsr     @r1                         ; Call to KernelRelocate
+        mov     r9, r4                      ; delay slot: (r4) = pTOC argument
+
+;   call SetOsAxsDataBlockPointer to init debug data
+        mov     #_SetOsAxsDataBlockPointer, r1
+        or      r8, r1                      ; (r1) = un-cached address of SetOsAxsDataBlockPointer
+        jsr     @r1                         ; Call to SetOsAxsDataBlockPointer
+        mov     r10, r4                     ; delay slot: (r4) = arg 1, pKData
+
+;   copy the pTOC into KData struct
+        mov     #_KData+dwTOCAddr, r1       ; (r1) = offset of pTOC in KData structure
+        or      r8, r1                      ; (r1) = uncached &_KData.dwTOCAddr
+        mov     r9, @r1                     ; Store pTOC into KData.dwTOCAddr
+
+;	find the entry point of kernel.dll
+        mov     #_FindKernelEntry, r1
+        or      r8, r1                      ; (r1) = un-cached function address
+        jsr     @r1                         ; Call to FindKernelEntry
+        mov     r9, r4                      ; delay slot: (r4) = pTOC argument
+
+;	jump to entry point of kernel.dll
+        mov     #_OEMInitGlobals, r5        ; (r5) = address of OEMInitGlobals function
+        or      r8, r5                      ; (r5) = un-cached address to OEMInitGlobals
+        jsr	    @r0                         ; (r0) = entry point of kernel.dll
+        mov     r10, r4                     ; delay slot: (r4) = pKData argument (this is used to initialize real KData struct in kernel.dll)
+
+;   never return
+loopforever:
+        bra     loopforever
+        nop
+
+        .endf
+
+        .end

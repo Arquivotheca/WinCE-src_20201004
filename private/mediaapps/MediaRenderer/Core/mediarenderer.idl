@@ -1,0 +1,41 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this sample source code is subject to the terms of the Microsoft
+// license agreement under which you licensed this sample source code. If
+// you did not accept the terms of the license agreement, you are not
+// authorized to use this sample source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the LICENSE.RTF on your install media or the root of your tools installation.
+// THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+
+// MediaRenderer.idl : IDL source for MediaRenderer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (MediaRenderer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "av_dcp.idl";
+
+[
+	uuid(5136F23F-F9FE-4d16-81D4-716E8EFFC4D2),
+	version(1.0),
+	helpstring("MediaRenderer 1.0 Type Library")
+]
+library UPNPMediaRendererLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(A9A69D51-0EC1-4f84-99FE-05980C10BD28),
+		helpstring("Device Class")
+	]
+	coclass Device
+	{
+		[default] interface IUnknown;
+	};
+};

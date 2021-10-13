@@ -1,0 +1,68 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft
+// premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license
+// agreement, you are not authorized to use this source code.
+// For the terms of the license, please see the license agreement
+// signed by you and Microsoft.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// 
+// This file defines the RPC (not COM) interface for communicating between
+// the COM object in the client acting as the proxy and the actual COM object
+// running in the server.  This is never exposed to end user, but only used
+// when writing the manual proxy/stub objects.
+//
+
+// import "wtypes.idl" allows RPC to bring in more complex data structures beyond
+// just the base types.  Similiar to #include <windows.h> (which won't work in IDL.)
+import "wtypes.idl";
+
+// This type MUST be defined
+typedef [context_handle] void * PCONTEXT_HANDLE_TYPE; 
+
+// TODO: Create your own UUID, version info, and replace 'sumRemote' 
+// with your interface name.
+[uuid(7F5BEBD0-184A-4796-BE37-A613FC5EC13F), version(1.0)]
+interface MediaPlayerControlRemote
+{
+    //
+    // RpcProxy_CreateObject and RpcProxy_Release are required in 
+    // IDL to do the RPC Proxy Server (rpccomproxy.h assumes these
+    // are present).  Your RPC server must implement them.
+    //
+    HRESULT RpcProxy_CreateObject([in] CLSID rclsid, [in] IID riid, [out] PCONTEXT_HANDLE_TYPE *ppCtxHandle);
+    ULONG   RpcProxy_Release([in, out] PCONTEXT_HANDLE_TYPE *ppCtxHandle);
+
+    //
+    // TODO: Remove the functions below and replace with your functions.  The first
+    // argument to each function should be PCONTEXT_HANDLE_TYPE pCtxHandle, except
+    // in very special cases.
+    // 
+    // The general naming convention should be:
+    // <COMInterfaceName>_<MethodName>
+    //
+    HRESULT IMediaPlayerControl_Play(PCONTEXT_HANDLE_TYPE pCtxHandle, [in] LPWSTR pszName);
+    HRESULT IMediaPlayerControl_Stop(PCONTEXT_HANDLE_TYPE pCtxHandle);
+    HRESULT IMediaPlayerControl_Pause(PCONTEXT_HANDLE_TYPE pCtxHandle);
+    HRESULT IMediaPlayerControl_SetMetadata(PCONTEXT_HANDLE_TYPE pCtxHandle, [in]int type, [in] LPCWSTR pszTitle);
+    HRESULT IMediaPlayerControl_SetVolume(PCONTEXT_HANDLE_TYPE pCtxHandle, [in] unsigned short Volume);
+    HRESULT IMediaPlayerControl_GetVolume(PCONTEXT_HANDLE_TYPE pCtxHandle, [out] unsigned short* pVolume);
+    HRESULT IMediaPlayerControl_GetCurrentPosition(PCONTEXT_HANDLE_TYPE pCtxHandle, [out] __int64 *pllPosition);
+    HRESULT IMediaPlayerControl_SetPositions(PCONTEXT_HANDLE_TYPE pCtxHandle, [in] __int64 *pllStart, [in] unsigned long dwStartFlags, [in] __int64 *pllStop, [in] unsigned long dwStopFlags);
+
+
+#if defined(DEBUG) && defined(ALLOW_REMOTE_RPC_SHUTDOWN)
+    //
+    // SECURITY NOTE: Shutdown is included only as a convenience for debugging.
+    // RPC servers should never allow themselves to be shutdown remotely on retail
+    // builds due to potential DOS attacks.
+    //
+    void RpcProxy_ShutDown(void);
+#endif // DEBUG && ALLOW_REMOTE_SHUTDOWN
+};
+
+

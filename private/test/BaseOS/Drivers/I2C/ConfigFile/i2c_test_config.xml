@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<I2CTestData>
+
+  <Transaction ID="1">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>write</Operation>
+    <Data>01</Data>
+    <RegisterAddress>0xFF</RegisterAddress>
+    <RegisterAdressSize>1</RegisterAdressSize>
+    <NumberOfBytes>1</NumberOfBytes>
+  </Transaction>
+
+  <Transaction ID="2">
+    <BusName>I2C1:</BusName>
+    <Operation>read</Operation>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <RegisterAddress>0x0A</RegisterAddress>
+    <RegisterAdressSize>1</RegisterAdressSize>
+    <NumberOfBytes>1</NumberOfBytes>
+  </Transaction>
+
+   <Transaction ID="3">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>write</Operation>
+    <Data>A7</Data>
+    <RegisterAddress>0xdd</RegisterAddress>
+    <RegisterAdressSize>1</RegisterAdressSize>
+    <Speed>200000</Speed>
+    <TimeOut>5</TimeOut>
+    <NumberOfBytes>1</NumberOfBytes> 
+  </Transaction>
+
+  <Transaction ID="4">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>read</Operation>
+    <RegisterAddress>0x0B</RegisterAddress>
+    <RegisterAdressSize>1</RegisterAdressSize>
+    <NumberOfBytes>1</NumberOfBytes>
+  </Transaction>
+  
+  <Transaction ID="5">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>loopback</Operation>
+    <Data>01</Data>
+    <LoopbackAddress>0xFF</LoopbackAddress>
+    <Speed>300</Speed>
+    <TimeOut>5</TimeOut>
+    <RegisterAddress>0xFF</RegisterAddress>
+    <NumberOfBytes>1</NumberOfBytes> 
+  </Transaction>
+
+  <Transaction ID="6">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>loopback</Operation>
+    <Data>0B</Data>
+    <LoopbackAddress>0x09</LoopbackAddress>
+    <Speed>300000</Speed>
+    <TimeOut>5</TimeOut>
+    <RegisterAddress>0x09</RegisterAddress>
+    <NumberOfBytes>1</NumberOfBytes> 
+  </Transaction>
+
+  <Transaction ID="7">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>loopback</Operation>
+    <Data>43</Data>
+    <LoopbackAddress>0x12</LoopbackAddress>
+    <Speed>300</Speed>
+    <TimeOut>5</TimeOut>
+    <RegisterAddress>0x12</RegisterAddress>
+    <NumberOfBytes>1</NumberOfBytes> 
+  </Transaction>
+
+  <Transaction ID="8">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>loopback</Operation>
+    <Data>51</Data>
+    <LoopbackAddress>0x14</LoopbackAddress>
+    <Speed>300000</Speed>
+    <TimeOut>5</TimeOut>
+    <RegisterAddress>0x14</RegisterAddress>
+    <NumberOfBytes>1</NumberOfBytes> 
+  </Transaction>
+
+  <Transaction ID="9">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>loopback</Operation>
+    <Data>75</Data>
+    <LoopbackAddress>0x24</LoopbackAddress>
+    <Speed>300000</Speed>
+    <TimeOut>5</TimeOut>
+    <RegisterAddress>0x24</RegisterAddress>
+    <NumberOfBytes>1</NumberOfBytes>
+  </Transaction>
+
+  <Transaction ID="10">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>loopback</Operation>
+    <Data>0A</Data>
+    <LoopbackAddress>0x03</LoopbackAddress>
+    <Speed>300000</Speed>
+    <TimeOut>5</TimeOut>
+    <RegisterAddress>0x03</RegisterAddress>
+    <NumberOfBytes>1</NumberOfBytes> 
+  </Transaction>
+
+  <Transaction ID="11">
+    <BusName>I2C1:</BusName>
+    <SubordinateAddress>0x30</SubordinateAddress>
+    <Operation>loopback</Operation>
+    <Data>24</Data>
+    <LoopbackAddress>0x4B</LoopbackAddress>
+    <Speed>300</Speed>
+    <TimeOut>5</TimeOut>
+    <RegisterAddress>0x4B</RegisterAddress>
+    <NumberOfBytes>1</NumberOfBytes>
+  </Transaction>
+
+</I2CTestData>

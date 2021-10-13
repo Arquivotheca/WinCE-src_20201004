@@ -1,0 +1,55 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+//
+//
+// Use of this sample source code is subject to the terms of the Microsoft
+// license agreement under which you licensed this sample source code. If
+// you did not accept the terms of the license agreement, you are not
+// authorized to use this sample source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the LICENSE.RTF on your install media or the root of your tools installation.
+// THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+
+#include "resource.h"
+
+
+// pictures
+//
+ID_LARGE_BG                             PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\Large_BG.png"
+ID_STREAKS_01                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\Streaks01.png"
+ID_STREAKS_03                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\Streaks03.png"
+ID_STREAKS_04                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\Streaks04.png"
+ID_STREAKS_05                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\Streaks05.png"
+ID_BTTNS_BCKGRND                        PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\wmpPBMediaTitleBG.png"
+ID_BTTNS_NEXT                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\wmpPBNextFFPressed.png"
+ID_BTTNS_PAUSE                          PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\wmpPBPausePressed.png"
+ID_BTTNS_PLAY                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\wmpPBPlayPressed.png"
+ID_BTTNS_PREV                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\wmpPBPrevFRPressed.png"
+ID_BTTNS_REPEAT                         PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\wmpPBRepeatAllSelected.png"
+ID_BTTNS_SUFFLE                         PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\wmpPBShuffleVFramePressed.png"
+
+ID_KBRD_BACKSPACE                       PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\BackSpace.png"
+ID_KBRD_ENGLISH                         PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\EnglishKeyboard.png"
+ID_KBRD_ENTER                           PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\Enter.png"
+ID_KBRD_SHIFT_NRML                      PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\ShiftNormal.png"
+ID_KBRD_SHIFT_PRSSD                     PNG              DISCARDABLE  "..\\..\\data\\images\\BackgroundAnimation\\ShiftPressed.png"
+
+// xamls
+//
+ID_XAML_BTTNS_PANEL_ANIM                SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\BackgroundAnimation\\BttnsPanelAnim.xaml"
+ID_XAML_SLIDING_BTTNS_PANEL_ANIM        SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\BackgroundAnimation\\SlidingBttnsPanelAnim.xaml"
+ID_XAML_SLIDING_KBRD_PANEL_ANIM         SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\BackgroundAnimation\\SlidingKbrdPanelAnim.xaml"
+ID_XAML_BTTNS_PANEL                     SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\BackgroundAnimation\\BttnsPanel.xaml"
+ID_XAML_SLIDING_BTTNS_PANEL             SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\BackgroundAnimation\\SlidingBttnsPanel.xaml"
+ID_XAML_SLIDING_KBRD_PANEL              SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\BackgroundAnimation\\SlidingKbrdPanel.xaml"

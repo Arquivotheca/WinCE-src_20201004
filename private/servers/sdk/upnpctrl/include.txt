@@ -1,0 +1,2 @@
+public\CEBase\cesysgen\sdk\inc\upnp.h
+public\CEBase\cesysgen\sdk\inc\upnp.idl

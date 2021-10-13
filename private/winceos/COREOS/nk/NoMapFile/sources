@@ -1,0 +1,67 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=nknomapfile
+WINCECPU=1
+TARGETTYPE=LIBRARY
+CDEFINES=$(CDEFINES) -DIN_KERNEL -DWINCEMACRO
+NOMIPS16CODE=1
+CONDITIONAL_INCLUDES=stdio.h
+
+WARNLEVEL=4
+
+# Machine independent defines
+CDEFINES=$(CDEFINES) -DDBGSUPPORT
+INCLUDES=..\inc;..\..\inc
+
+!IF "$(_TGTCPUFAMILY)"=="MIPS"
+WARNISERROR=0
+!ENDIF
+
+!IF "$(_TGTCPU)" == "SH4"
+ADEFINES=$(ADEFINES) -DSH_CPU=64
+!ENDIF
+!IF "$(_TGTCPU)" == "SH3"
+ADEFINES=$(ADEFINES) -DSH_CPU=48
+!ENDIF
+!IF "$(_TGTCPU)" == "SH3e"
+ADEFINES=$(ADEFINES) -DSH_CPU=62
+!ENDIF
+
+#--------------------------------------------------
+# Disable CELOG in the assembly file
+!IF "$(_TGTCPUFAMILY)"=="SH"
+ADEFINES=$(ADEFINES) -DCELOG=0
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)" == "ARM"
+ADEFINES=$(ADEFINES) -pd "CELOG SETL {FALSE}"
+!ENDIF
+#--------------------------------------------------
+
+
+!IF "$(_TGTCPUFAMILY)" == "ARM"
+ADEFINES=-pd "_TGTCPU SETS \"$(_TGTCPU)\"" $(ADEFINES)
+
+!ELSEIF "$(_TGTCPUFAMILY)" == "x86"
+
+CDEFINES=$(CDEFINES) -Gs100000
+
+!ENDIF
+
+SOURCES= \
+    nomapfile.c
+
+
+#xref ModuleMembership nk.exe
+#xref VIGUID {b4309cf2-04b4-4354-99a2-25b430900746}
+#xref VSGUID {8c68c3ca-902f-4234-8223-f70f038508d6}

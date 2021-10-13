@@ -1,0 +1,34 @@
+!IF 0
+--------------------------------------------------------------------------------
+
+    Windows CE DirectDraw Build Verification Test
+    Copyright (c) 1996-9, Microsoft Corporation
+
+--------------------------------------------------------------------------------
+!ENDIF
+
+DDRAW_TST_ROOT=..\..
+!include $(DDRAW_TST_ROOT)\ddraw.mk
+
+TARGETNAME=DDAutoBlt
+TARGETTYPE=DYNLINK
+
+TARGETLIBS= $(TARGETLIBS) \
+    $(TEST_OAK_LIB_PATH)\qalib.lib             \
+    $(TEST_OAK_LIB_PATH)\syslib.lib            \
+    $(TEST_OAK_LIB_PATH)\hqahelp.lib           \
+    $(TEST_OAK_LIB_PATH)\QATestUty.lib         \
+    $(TEST_OAK_LIB_PATH)\DebugStreamUty.lib    \
+    $(TEST_OAK_LIB_PATH)\WinAppUty.lib         \
+    $(TEST_OAK_LIB_PATH)\TuxDLLUty.lib         \
+    $(TEST_OAK_LIB_PATH)\DDrawUty.lib          \
+
+PRECOMPILED_INCLUDE=main.h
+PRECOMPILED_CXX=1
+
+SOURCES =                   \
+    DDAutoBlt.cpp           \
+    DDAutoBlt_Tests.cpp     \
+    IUnknownTests.cpp       \
+    IDDrawTests.cpp         \
+    IDDSurfaceTests.cpp     \

@@ -1,0 +1,884 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; This file defines the CRT entrypoints for COREDLL.
+;
+; NOTE: this file is used by different components:
+;   - (k.)coredll.dll
+;   - corelibc.lib
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#include <crt_ordinals.h>
+#include <fpcrt_ordinals.h>
+
+
+; building (k.)coredll.dll ?
+;
+#if defined(COREDLL_DEF) || defined(KCOREDLL_DEF)
+#define CRT2(api_name, coredll_ordinal) api_name @coredll_ordinal PRIVATE
+#define FP_CRT2(api_name, coredll_ordinal, fpcrt_ordinal, p) api_name=FPCRT.p##fpcrt_ordinal @coredll_ordinal PRIVATE
+;
+; building corelibc.lib
+;
+#else
+#define CRT2(api_name, coredll_ordinal) api_name @coredll_ordinal
+#define FP_CRT2(api_name, coredll_ordinal, fpcrt_ordinal, p) api_name @coredll_ordinal
+LIBRARY COREDLL
+EXPORTS
+#endif
+
+
+#define CRT(api_name) CRT2(api_name, _ORDINAL_##api_name)
+
+#ifdef _ARM_
+#define FP_CRT(p, api_name) FP_CRT2(api_name, _ORDINAL_##api_name, _FPCRT_ORDINAL_##api_name, p)
+#else
+#define FP_CRT(p, api_name) CRT(api_name)
+#endif
+
+
+    CRT(memchr)
+    CRT(wcscat)
+    CRT(wcscat_s)
+    CRT(wcschr)
+    CRT(wcscmp)
+    CRT(wcscpy)
+    CRT(wcscpy_s)
+    CRT(wcscspn)
+    CRT(wcslen)
+    CRT(wcsnlen)
+    CRT(wcsncat)
+    CRT(wcsncat_s)
+    CRT(wcsncmp)
+    CRT(wcsncpy)
+    CRT(wcsncpy_s)
+    CRT(_wcsnset)
+    CRT(_wcsnset_s)
+    CRT(wcspbrk)
+    CRT(wcsrchr)
+    CRT(_wcsrev)
+    CRT(_wcsset)
+    CRT(_wcsset_s)
+    CRT(wcsspn)
+    CRT(wcsstr)
+    CRT(_wcsdup)
+    CRT(wcstombs)
+    CRT(wcstombs_s)
+    CRT(mbstowcs)
+    CRT(mbstowcs_s)
+    CRT(wcstok)
+    CRT(wcstok_s)
+    CRT(_wtoi)
+    CRT(_wtol)
+    CRT(_atoi64)
+    CRT(_wtoi64)
+    CRT(strtod)
+    CRT(strtol)
+    CRT(strtoul)
+    CRT(_strtoi64)
+    CRT(_strtoui64)
+
+    CRT(strpbrk)
+    CRT(strrchr)
+    CRT(strspn)
+    CRT(_strdup)
+    CRT(_strnset)
+    CRT(_strnset_s)
+    CRT(_strrev)
+    CRT(_strset)
+    CRT(_strset_s)
+    CRT(_strlwr)
+    CRT(_strlwr_s)
+    CRT(_strupr)
+    CRT(_strupr_s)
+
+    CRT(_stricmp)
+    CRT(_strnicmp)
+
+#if defined(_X86_)
+    CRT(_except_handler3)
+    CRT(_except_handler4_common)
+    CRT(_local_unwind2)
+    CRT(_local_unwind4)
+    CRT(__abnormal_termination)
+#else
+    CRT(__C_specific_handler)
+#endif // defined(_X86_)
+
+; @CESYSGEN IF COREDLL_CORELOC || COREDLL_LOCUSA || COREDLL_LOCMINI
+    CRT(_isctype)
+    CRT(iswctype)
+    CRT(towlower)
+    CRT(towupper)
+    CRT(_wcsnicmp)
+    CRT(_wcsicmp)
+    CRT(_wcslwr)
+    CRT(_wcslwr_s)
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CORELOC || COREDLL_LOCUSA
+    CRT(_wcsupr)
+    CRT(_wcsupr_s)
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CORECRT
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(abs)
+    FP_CRT(#, acos)
+    FP_CRT(#, asin)
+    FP_CRT(#, atan)
+    FP_CRT(#, atan2)
+; @CESYSGEN ENDIF
+
+    CRT(atoi)
+    CRT(atol)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(atof)
+    CRT(_wtof)
+    CRT(_atodbl)
+    CRT(_atoflt)
+    CRT(bsearch)
+    CRT(bsearch_s)
+    FP_CRT(#, _cabs)
+    FP_CRT(#, ceil)
+    FP_CRT(#, _chgsign)
+    FP_CRT(#, _clearfp)
+    FP_CRT(#, _controlfp)
+    FP_CRT(#, _controlfp_s)
+    FP_CRT(#, _copysign)
+    FP_CRT(#, cos)
+    FP_CRT(#, cosh)
+    CRT(difftime)
+    CRT(div)
+    CRT(_ecvt)
+    CRT(_ecvt_s)
+    FP_CRT(#, exp)
+    FP_CRT(#, fabs)
+    CRT(_fcvt)
+    CRT(_fcvt_s)
+    FP_CRT(#, _finite)
+    FP_CRT(#, floor)
+    FP_CRT(#, fmod)
+    FP_CRT(#, _fpclass)
+    FP_CRT(#, _fpieee_flt)
+    FP_CRT(#, _fpreset)
+; @CESYSGEN ENDIF
+
+    CRT(free)
+    CRT(_itow)
+    CRT(_itow_s)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    FP_CRT(#, frexp)
+    FP_CRT(#, _frnd)
+    FP_CRT(#, _fsqrt)
+    CRT(_gcvt)
+    CRT(_gcvt_s)
+    FP_CRT(#, _hypot)
+    FP_CRT(#, _isnan)
+    CRT(_itoa)
+    CRT(_itoa_s)
+    FP_CRT(#, _j0)
+    FP_CRT(#, _j1)
+    FP_CRT(#, _jn)
+    CRT(labs)
+    FP_CRT(#, ldexp)
+    CRT(ldiv)
+    FP_CRT(#, log)
+    FP_CRT(#, log10)
+    FP_CRT(#, _logb)
+    CRT(longjmp)
+    CRT(_lrotl)
+    CRT(_lrotr)
+    CRT(_ltoa)
+    CRT(_ltoa_s)
+    CRT(_ltow)
+    CRT(_ltow_s)
+; @CESYSGEN ENDIF
+
+    CRT(malloc)
+    CRT(calloc)
+    CRT(_msize)
+    CRT(_memccpy)
+    CRT(memcmp)
+    CRT(memcpy)
+    CRT(memcpy_s)
+    CRT(_memicmp)
+    CRT(memmove)
+    CRT(memmove_s)
+    CRT(memset)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    FP_CRT(#, modf)
+    FP_CRT(#, _nextafter)
+    FP_CRT(#, pow)
+    CRT(qsort)
+    CRT(qsort_s)
+; @CESYSGEN ENDIF
+
+    CRT(rand)
+; @CESYSGEN IF CE_MODULES_FILESYS
+    CRT(rand_s)
+; @CESYSGEN ENDIF
+    CRT(realloc)
+    CRT(_recalloc)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_rotl)
+    CRT(_rotr)
+    FP_CRT(#, _scalb)
+    FP_CRT(#, sin)
+    FP_CRT(#, sinh)
+    FP_CRT(#, sqrt)
+; @CESYSGEN ENDIF
+
+    CRT(srand)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    FP_CRT(#, _statusfp)
+; @CESYSGEN ENDIF
+
+    CRT(strcat)
+    CRT(strcat_s)
+    CRT(strchr)
+    CRT(strcmp)
+    CRT(strcpy)
+    CRT(strcpy_s)
+    CRT(strcspn)
+    CRT(strlen)
+    CRT(strnlen)
+    CRT(strncat)
+    CRT(strncat_s)
+    CRT(strncmp)
+    CRT(strncpy)
+    CRT(strncpy_s)
+    CRT(strstr)
+    CRT(strtok)
+    CRT(strtok_s)
+    CRT(_swab)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    FP_CRT(#, tan)
+    FP_CRT(#, tanh)
+    CRT(_ultoa)
+    CRT(_ultoa_s)
+    CRT(_ultow)
+    CRT(_ultow_s)
+; @CESYSGEN ENDIF
+
+    CRT(wcstod)
+    CRT(wcstol)
+    CRT(_HUGE)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(wcstoul)
+    CRT(_wcstoi64)
+    CRT(_wcstoui64)
+    FP_CRT(#, _y0)
+    FP_CRT(#, _y1)
+    FP_CRT(#, _yn)
+    CRT(_ld12tod)
+    CRT(_ld12tof)
+    CRT(__strgtold12)
+; @CESYSGEN ENDIF
+
+    CRT(tolower)
+    CRT(toupper)
+
+    CRT(_purecall)
+
+    CRT(_fltused)
+    CRT2(??2@YAPAXI@Z,                                      _ORDINAL_operator_new)
+    CRT2(??3@YAXPAX@Z,                                      _ORDINAL_operator_delete)
+    CRT2(??_U@YAPAXI@Z,                                     _ORDINAL_operator_new_vector)
+    CRT2(??_V@YAXPAX@Z,                                     _ORDINAL_operator_delete_vector)
+    CRT2(??2@YAPAXIABUnothrow_t@std@@@Z,                    _ORDINAL_operator_new_nothrow)
+    CRT2(??3@YAXPAXABUnothrow_t@std@@@Z,                    _ORDINAL_operator_delete_nothrow)
+    CRT2(??_U@YAPAXIABUnothrow_t@std@@@Z,                   _ORDINAL_operator_new_vector_nothrow)
+    CRT2(??_V@YAXPAXABUnothrow_t@std@@@Z,                   _ORDINAL_operator_delete_vector_nothrow)
+
+#if defined(_SHX_)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_setjmp)
+; @CESYSGEN ENDIF
+
+    CRT(_divls)
+    CRT(_divlu)
+
+    CRT(_divd)
+    CRT(_divs)
+
+    CRT(_modls)
+    CRT(_modlu)
+    CRT(_addd)
+    CRT(_adds)
+    CRT(_subd)
+    CRT(_subs)
+    CRT(_eqd)
+    CRT(_eqs)
+    CRT(_ned)
+    CRT(_nes)
+    CRT(_ged)
+    CRT(_ges)
+    CRT(_gtd)
+    CRT(_gts)
+    CRT(_led)
+    CRT(_les)
+    CRT(_ltd)
+    CRT(_lts)
+    CRT(_muld)
+    CRT(_muls)
+    CRT(_negd)
+    CRT(_negs)
+    CRT(_itod)
+    CRT(_itos)
+    CRT(_utod)
+    CRT(_utos)
+    CRT(_stod)
+    CRT(_stou)
+    CRT(_stoi)
+    CRT(_dtos)
+    CRT(_dtou)
+    CRT(_dtoi)
+    CRT(_lshi32)
+    CRT(_rshi32)
+    CRT(_rshui32)
+    CRT(_lshi32eq)
+    CRT(_rshi32eq)
+    CRT(_rshui32eq)
+    CRT(_lshi16eq)
+    CRT(_rshi16eq)
+    CRT(_rshui16eq)
+    CRT(_lshi8eq)
+    CRT(_rshi8eq)
+    CRT(_rshui8eq)
+    CRT(_divi64)
+    CRT(_divui64)
+    CRT(_modi64)
+    CRT(_modui64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_addi64)
+; @CESYSGEN ENDIF
+
+    CRT(_addui64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_subi64)
+; @CESYSGEN ENDIF
+
+    CRT(_subui64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_eqi64)
+    CRT(_nei64)
+    CRT(_gei64)
+; @CESYSGEN ENDIF
+
+    CRT(_geui64)
+    CRT(_gti64)
+    CRT(_gtui64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_lei64)
+    CRT(_leui64)
+; @CESYSGEN ENDIF
+
+    CRT(_lti64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_ltui64)
+; @CESYSGEN ENDIF
+
+    CRT(_muli64)
+    CRT(_mului64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_negi64)
+    CRT(_poai64)
+    CRT(_poaui64)
+    CRT(_posi64)
+    CRT(_posui64)
+; @CESYSGEN ENDIF
+
+    CRT(_lshi64)
+    CRT(_rshi64)
+    CRT(_rshui64)
+    CRT(_bandi64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_bori64)
+    CRT(_bxori64)
+    CRT(_bcompi64)
+    CRT(_noti64)
+    CRT(_i64tod)
+    CRT(_i64tos)
+    CRT(_ui64tod)
+    CRT(_ui64tos)
+; @CESYSGEN ENDIF
+
+    CRT(_i64toi)
+    CRT(_ui64toi)
+    CRT(_i64toui)
+    CRT(_ui64toui)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_stoui64)
+    CRT(_stoi64)
+    CRT(_dtoui64)
+    CRT(_dtoi64)
+; @CESYSGEN ENDIF
+
+    CRT(_uitoui64)
+    CRT(_uitoi64)
+    CRT(_itoui64)
+    CRT(_itoi64)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_i64fetch)
+    CRT(_ui64fetch)
+    CRT(_i64store)
+; @CESYSGEN ENDIF
+
+#elif defined(_ARM_)
+
+    CRT(__rt_sdiv64by64)
+    CRT(__rt_srem64by64)
+    CRT(__rt_udiv64by64)
+    CRT(__rt_urem64by64)
+    CRT(__rt_sdiv)
+    CRT(__rt_sdiv10)
+    CRT(__rt_udiv)
+    CRT(__rt_udiv10)
+    CRT(__rt_srsh)
+    CRT(__rt_ursh)
+    FP_CRT(#, __utod)
+    FP_CRT(#, __u64tos)
+    FP_CRT(#, __u64tod)
+    FP_CRT(#, __subs)
+    FP_CRT(#, __subd)
+    FP_CRT(#, __stou64)
+    FP_CRT(#, __stou)
+    FP_CRT(#, __stoi64)
+    FP_CRT(#, __stoi)
+    FP_CRT(#, __stod)
+    FP_CRT(#, __nes)
+    FP_CRT(#, __negs)
+    FP_CRT(#, __negd)
+    FP_CRT(#, __ned)
+    FP_CRT(#, __muls)
+    FP_CRT(#, __muld)
+    FP_CRT(#, __lts)
+    FP_CRT(#, __ltd)
+    FP_CRT(#, __les)
+    FP_CRT(#, __led)
+    FP_CRT(#, __itos)
+    FP_CRT(#, __itod)
+    FP_CRT(#, __i64tos)
+    FP_CRT(#, __i64tod)
+    FP_CRT(#, __gts)
+    FP_CRT(#, __gtd)
+    FP_CRT(#, __ges)
+    FP_CRT(#, __ged)
+    FP_CRT(#, __eqs)
+    FP_CRT(#, __eqd)
+    FP_CRT(#, __dtou64)
+    FP_CRT(#, __dtou)
+    FP_CRT(#, __dtos)
+    FP_CRT(#, __dtoi64)
+    FP_CRT(#, __dtoi)
+    FP_CRT(#, __divs)
+    FP_CRT(#, __divd)
+    FP_CRT(#, __adds)
+    FP_CRT(#, __utos)
+    FP_CRT(#, __addd)
+    CRT(setjmp)
+    CRT(_mbmemset)
+
+#elif defined(_MIPS_)
+
+    CRT(_setjmp)
+    CRT(_RtlCheckStack)
+    CRT(__ll_rshift)
+    CRT(__ll_lshift)
+    CRT(__ll_mul)
+    CRT(__ll_div)
+    CRT(__ll_rem)
+    CRT(__ll_bit_extract)
+    CRT(__ll_bit_insert)
+    CRT(__ll_to_f)
+    CRT(__ll_to_d)
+    CRT(__ull_rshift)
+    CRT(__ull_div)
+    CRT(__ull_rem)
+    CRT(__ull_bit_extract)
+    CRT(__ull_bit_insert)
+    CRT(__ull_to_f)
+    CRT(__ull_to_d)
+    CRT(__f_to_ll)
+    CRT(__d_to_ll)
+    CRT(__f_to_ull)
+    CRT(__d_to_ull)
+
+#if !defined(MIPS_HAS_FPU)
+
+    CRT(__fpadd)
+    CRT(__dpadd)
+    CRT(__fpsub)
+    CRT(__dpsub)
+    CRT(__fpmul)
+    CRT(__dpmul)
+    CRT(__fpdiv)
+    CRT(__dpdiv)
+    CRT(__fptoli)
+    CRT(__fptoul)
+    CRT(__litofp)
+    CRT(__ultofp)
+    CRT(__dptoli)
+    CRT(__dptoul)
+    CRT(__litodp)
+    CRT(__ultodp)
+    CRT(__fptodp)
+    CRT(__dptofp)
+    CRT(__fpcmp)
+    CRT(__dpcmp)
+    CRT(__lts)
+    CRT(__les)
+    CRT(__eqs)
+    CRT(__ges)
+    CRT(__gts)
+    CRT(__nes)
+    CRT(__ltd)
+    CRT(__led)
+    CRT(__eqd)
+    CRT(__ged)
+    CRT(__gtd)
+    CRT(__ned)
+
+#endif // !defined(MIPS_HAS_FPU)
+
+#elif defined(_X86_)
+
+    CRT(_alldiv)
+    CRT(_allmul)
+    CRT(_aullshr)
+    CRT(_chkstk)
+    CRT(_ftol)
+    CRT(_ftol2)
+    CRT(_SEH_prolog)
+    CRT(_SEH_epilog)
+    CRT(_EH_prolog2)
+    CRT(_alloca_probe)
+    CRT(_alloca_probe_8)
+    CRT(_alloca_probe_16)
+    CRT(_ftol2_sse)
+    CRT(_ftol2_sse_excpt)
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+    CRT(_setjmp3)
+    CRT(_allrem)
+    CRT(_allshr)
+    CRT(_allshl)
+    CRT(_alldvrm)
+    CRT(_aulldiv)
+    CRT(_aullrem)
+    CRT(_aulldvrm)
+    CRT(_CIsqrt)
+    CRT(_CIpow)
+    CRT(_CIlog)
+    CRT(_CIlog10)
+    CRT(_CIexp)
+    CRT(_CIsin)
+    CRT(_CIcos)
+    CRT(_CItan)
+    CRT(_CIasin)
+    CRT(_CIacos)
+    CRT(_CIatan)
+    CRT(_CIatan2)
+    CRT(_CIsinh)
+    CRT(_CIcosh)
+    CRT(_CItanh)
+    CRT(_CIfmod)
+    CRT(_fload)
+    CRT(_inp)
+    CRT(_inpw)
+    CRT(_inpd)
+    CRT(_outp)
+    CRT(_outpw)
+    CRT(_outpd)
+; @CESYSGEN ENDIF COREDLL_FULL_CRT
+
+#endif // defined(_X86_)
+
+; @CESYSGEN ENDIF COREDLL_CORECRT
+
+    ; since wsprintfW and wvsprintfW (which are always present)
+    ; redirect to swprintf/vswprintf. _snwprintf/_vsnwprintf come for free with these two
+    CRT(swprintf)
+    CRT(swprintf_s)
+    CRT(vswprintf)
+    CRT(vswprintf_s)
+    CRT(_scwprintf) 
+    CRT(_snwprintf)
+    CRT(_snwprintf_s)
+    CRT(_vscwprintf)
+    CRT(_vsnwprintf)
+    CRT(_vsnwprintf_s)
+
+    CRT(_set_printf_count_output)
+    CRT(_get_printf_count_output)
+
+; @CESYSGEN IF COREDLL_CORESTRA
+    ; ANSI String formatting functions
+    CRT(sscanf)
+    CRT(sscanf_s)
+    CRT(sprintf)
+    CRT(sprintf_s)
+    CRT(vsprintf)
+    CRT(vsprintf_s)
+    CRT(_scprintf)
+    CRT(_snprintf)
+    CRT(_snprintf_s)
+    CRT(_vscprintf)
+    CRT(_vsnprintf)
+    CRT(_vsnprintf_s)
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CORESIOA
+    ; ANSI Stdin/Out functions
+    CRT(scanf)
+    CRT(scanf_s)
+    CRT(printf)
+    CRT(printf_s)
+    CRT(vprintf)
+    CRT(vprintf_s)
+    CRT(getchar)
+    CRT(putchar)
+    CRT(gets)
+    CRT(gets_s)
+    CRT(puts)
+
+    ; ANSI functions reqd by BOTH Stdin/out and general buffered file handling
+    CRT(fgetc)
+    CRT(fgets)
+    CRT(fputc)
+    CRT(fputs)
+    CRT(ungetc)
+
+    ; ANSI functions for general buffered file handling (NOT reqd for just stdin/out)
+    CRT(fopen)
+    CRT(fopen_s)
+    CRT(fscanf)
+    CRT(fscanf_s)
+    CRT(fprintf)
+    CRT(fprintf_s)
+    CRT(vfprintf)
+    CRT(vfprintf_s)
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CORESIOA || COREDLL_CORESIOW
+    ; functions for general buffered file handling reqd by BOTH ANSI and Wide
+    CRT(_InitStdioLib)
+    CRT(_getstdfilex)
+    CRT(_wfdopen)
+    CRT(_wfreopen)
+    CRT(_wfreopen_s)
+    CRT(fclose)
+    CRT(_fcloseall)
+    CRT(fread)
+    CRT(fread_s)
+    CRT(fwrite)
+    CRT(fflush)
+    CRT(_flushall)
+    CRT(_fileno)
+    CRT(feof)
+    CRT(ferror)
+    CRT(clearerr)
+    CRT(clearerr_s)
+    CRT(fgetpos)
+    CRT(fsetpos)
+    CRT(fseek)
+    CRT(ftell)
+    CRT(_setmode)
+    CRT(setvbuf)
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CORESIOW
+    ; WIDE Stdin/Out functions
+    CRT(swscanf)
+    CRT(swscanf_s)
+    CRT(wscanf)
+    CRT(wscanf_s)
+    CRT(wprintf)
+    CRT(wprintf_s)
+    CRT(vwprintf)
+    CRT(vwprintf_s)
+    CRT(getwchar)
+    CRT(putwchar)
+    CRT(_getws)
+    CRT(_getws_s)
+    CRT(_putws)
+
+    ; WIDE functions reqd for BOTH Stdin/out and general buffered file handling
+    CRT(fgetwc)
+    CRT(fputwc)
+    CRT(ungetwc)
+    CRT(fgetws)
+    CRT(fputws)
+
+    ; WIDE functions for general buffered file handling
+    CRT(_wfopen)
+    CRT(_wfopen_s)
+    CRT(fwscanf)
+    CRT(fwscanf_s)
+    CRT(fwprintf)
+    CRT(fwprintf_s)
+    CRT(vfwprintf)
+    CRT(vfwprintf_s)
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CRT_CPP_EH_AND_RTTI
+    ; C++ Exception Handling functions
+    CRT(__CxxFrameHandler)
+    CRT(__CxxFrameHandler3)
+#if defined(_X86_)
+    CRT(_CxxThrowException)
+#else
+    CRT(__CxxThrowException)
+#endif
+    CRT2(?set_terminate@std@@YAP6AXXZP6AXXZ@Z,              _ORDINAL_set_terminate)
+    CRT2(?set_unexpected@std@@YAP6AXXZP6AXXZ@Z,             _ORDINAL_set_unexpected)
+    CRT2(?__set_inconsistency@@YAP6AXXZP6AXXZ@Z,            _ORDINAL___set_inconsistency)
+    CRT2(?terminate@std@@YAXXZ,                             _ORDINAL_terminate)
+    CRT2(?unexpected@std@@YAXXZ,                            _ORDINAL_unexpected)
+    CRT2(?_inconsistency@@YAXXZ,                            _ORDINAL__inconsistency)
+    CRT2(?_Xlen@std@@YAXXZ,                                 _ORDINAL__Xlen)
+    CRT2(?_Xran@std@@YAXXZ,                                 _ORDINAL__Xran)
+    CRT2(?_Nomemory@std@@YAXXZ,                             _ORDINAL__Nomemory)
+    CRT2(?uncaught_exception@std@@YA_NXZ,                   _ORDINAL_uncaught_exception)
+
+    ; RTTI functions - x86 compiler uses __thiscall, RISC uses __cdecl
+    CRT(__RTCastToVoid)
+    CRT(__RTtypeid)
+    CRT(__RTDynamicCast)
+#if defined(_X86_)
+    CRT2(??1type_info@@UAE@XZ,                              _ORDINAL_type_info_destructor)
+    CRT2(??8type_info@@QBEHABV0@@Z,                         _ORDINAL_type_info_operator_eq)
+    CRT2(??9type_info@@QBEHABV0@@Z,                         _ORDINAL_type_info_operator_ne)
+    CRT2(?before@type_info@@QBEHABV1@@Z,                    _ORDINAL_type_info_before)
+    CRT2(?name@type_info@@QBEPBDXZ,                         _ORDINAL_type_info_name)
+    CRT2(?raw_name@type_info@@QBEPBDXZ,                     _ORDINAL_type_info_raw_name)
+    CRT2(??0type_info@@AAE@ABV0@@Z,                         _ORDINAL_type_info_constructor_copy)
+    CRT2(??4type_info@@AAEAAV0@ABV0@@Z,                     _ORDINAL_type_info_operator_assign)
+    CRT2(??0exception@std@@QAE@XZ,                          _ORDINAL_exception_constructor_default)
+    CRT2(??0exception@std@@QAE@PBD@Z,                       _ORDINAL_exception_constructor_char_ptr)
+    CRT2(??0exception@std@@QAE@ABV01@@Z,                    _ORDINAL_exception_constructor_copy)
+    CRT2(??4exception@std@@QAEAAV01@ABV01@@Z,               _ORDINAL_exception_operator_assign)
+    CRT2(??1exception@std@@UAE@XZ,                          _ORDINAL_exception_destructor)
+    CRT2(?what@exception@std@@UBEPBDXZ,                     _ORDINAL_exception_what)
+    CRT2(??_L@YGXPAXIHP6EX0@Z1@Z,                           _ORDINAL_eh_vector_constructor_iterator)
+    CRT2(??_N@YGXPAXIHP6EX0@Z1@Z,                           _ORDINAL_eh_vector_vbase_constructor_iterator)
+    CRT2(??_M@YGXPAXIHP6EX0@Z@Z,                            _ORDINAL_eh_vector_destructor_iterator)
+    CRT2(??__C@YGXPAX0IHP6EX00@ZP6EX0@Z@Z,                  _ORDINAL_eh_vector_copy_constructor_iterator)
+    CRT2(??__D@YGXPAX0IHP6EX00@ZP6EX0@Z@Z,                  _ORDINAL_eh_vector_vbase_copy_constructor_iterator)
+    CRT2(??_7exception@std@@6B@,                            _ORDINAL_exception_vftable)
+    CRT2(??_7type_info@@6B@,                                _ORDINAL_typeinfo_vftable)
+#else
+    CRT2(??1type_info@@UAA@XZ,                              _ORDINAL_type_info_destructor)
+    CRT2(??8type_info@@QBAHABV0@@Z,                         _ORDINAL_type_info_operator_eq)
+    CRT2(??9type_info@@QBAHABV0@@Z,                         _ORDINAL_type_info_operator_ne)
+    CRT2(?before@type_info@@QBAHABV1@@Z,                    _ORDINAL_type_info_before)
+    CRT2(?name@type_info@@QBAPBDXZ,                         _ORDINAL_type_info_name)
+    CRT2(?raw_name@type_info@@QBAPBDXZ,                     _ORDINAL_type_info_raw_name)
+    CRT2(??0type_info@@AAA@ABV0@@Z,                         _ORDINAL_type_info_constructor_copy)
+    CRT2(??4type_info@@AAAAAV0@ABV0@@Z,                     _ORDINAL_type_info_operator_assign)
+    CRT2(??0exception@std@@QAA@XZ,                          _ORDINAL_exception_constructor_default)
+    CRT2(??0exception@std@@QAA@PBD@Z,                       _ORDINAL_exception_constructor_char_ptr)
+    CRT2(??0exception@std@@QAA@ABV01@@Z,                    _ORDINAL_exception_constructor_copy)
+    CRT2(??4exception@std@@QAAAAV01@ABV01@@Z,               _ORDINAL_exception_operator_assign)
+    CRT2(??1exception@std@@UAA@XZ,                          _ORDINAL_exception_destructor)
+    CRT2(?what@exception@std@@UBAPBDXZ,                     _ORDINAL_exception_what)
+    CRT2(??_L@YAXPAXIHP6AX0@Z1@Z,                           _ORDINAL_eh_vector_constructor_iterator)
+    CRT2(??_N@YAXPAXIHP6AX0@Z1@Z,                           _ORDINAL_eh_vector_vbase_constructor_iterator)
+    CRT2(??_M@YAXPAXIHP6AX0@Z@Z,                            _ORDINAL_eh_vector_destructor_iterator)
+    CRT2(??__C@YAXPAX0IHP6AX00@ZP6AX0@Z@Z,                  _ORDINAL_eh_vector_copy_constructor_iterator)
+    CRT2(??__D@YAXPAX0IHP6AX00@ZP6AX0@Z@Z,                  _ORDINAL_eh_vector_vbase_copy_constructor_iterator)
+    CRT2(??_7exception@std@@6B@,                            _ORDINAL_exception_vftable)
+    CRT2(??_7type_info@@6B@,                                _ORDINAL_typeinfo_vftable)
+#endif
+
+; @CESYSGEN ENDIF COREDLL_CRT_CPP_EH_AND_RTTI
+
+    CRT2(?_set_new_mode@@YAHH@Z,                            _ORDINAL__set_new_mode)
+    CRT2(?_query_new_mode@@YAHXZ,                           _ORDINAL__query_new_mode)
+    CRT2(?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z,             _ORDINAL__set_new_handler)
+    CRT2(?_query_new_handler@@YAP6AHI@ZXZ,                  _ORDINAL__query_new_handler)
+    CRT2(?set_new_handler@@YAP6AXXZP6AXXZ@Z,                _ORDINAL_set_new_handler)
+    CRT(_abs64)
+    CRT(_byteswap_uint64)
+    CRT(_byteswap_ulong)
+    CRT(_byteswap_ushort)
+    CRT(_rotl64)
+    CRT(_rotr64)
+
+#if defined(_X86_)
+    CRT(_EH_prolog)
+#else
+    CRT(_CountLeadingOnes)
+    CRT(_CountLeadingOnes64)
+    CRT(_CountLeadingSigns)
+    CRT(_CountLeadingSigns64)
+    CRT(_CountLeadingZeros)
+    CRT(_CountLeadingZeros64)
+    CRT(_CountOneBits)
+    CRT(_CountOneBits64)
+    CRT(_MulHigh)
+    CRT(_MulUnsignedHigh)
+#endif // defined(_X86_)
+
+    FP_CRT(#, _isnanf)
+    FP_CRT(#, _isunordered)
+    FP_CRT(#, _isunorderedf)
+    FP_CRT(#, ceilf)
+    FP_CRT(#, fabsf)
+    FP_CRT(#, floorf)
+    FP_CRT(#, fmodf)
+
+#if !defined(MIPS_HAS_FPU)
+    FP_CRT(#, sqrtf)
+#endif
+
+    CRT(_XcptFilter)
+    CRT2(?nothrow@std@@3Unothrow_t@1@B,                     _ORDINAL_nothrow)
+
+    CRT(__report_gsfailure)
+    CRT(__security_gen_cookie)
+
+; @CESYSGEN IF CE_MODULES_FILESYS
+#ifndef BUILDING_EXPLIB
+    CRT2(__security_gen_cookie2=__security_gen_cookie_cgr,  _ORDINAL___security_gen_cookie2)
+#endif
+; @CESYSGEN ELSE
+    CRT(__security_gen_cookie2)
+; @CESYSGEN ENDIF
+
+    CRT(_set_invalid_parameter_handler)
+    CRT(_get_invalid_parameter_handler)
+    CRT(_invalid_parameter)
+

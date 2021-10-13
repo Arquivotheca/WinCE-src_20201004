@@ -1,0 +1,24 @@
+; --------------------------------------------------------------------
+;
+; THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
+; ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+; THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+; PARTICULAR PURPOSE.
+; Copyright (c) 1996-2000 Microsoft Corporation.  All rights reserved.
+;
+; --------------------------------------------------------------------
+EXPORTS
+    tst_StartScenario01
+    tst_StartScenario02
+    tst_QueueScenario01
+    tst_QueueScenario02
+    tst_QueueScenario03
+    tst_EndScenario01
+    tst_EndScenario02
+    tst_EndScenario03
+    tst_EndScenario04
+    tst_CallbackScenario01
+    tst_CallbackScenario02
+    tst_CallbackScenario03
+    tst_CallbackScenario04
+    tst_PowerScenario01

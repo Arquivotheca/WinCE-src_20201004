@@ -1,0 +1,2495 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+
+// These macros are used to define the few APIs that differ between COREDLL and KCOREDLL
+#ifdef KCOREDLL_DEF
+#define COREDLL_ONLY(api_definition)
+#define KCOREDLL_ONLY(api_definition)   api_definition
+#else // KCOREDLL_DEF
+#define COREDLL_ONLY(api_definition)    api_definition
+#define KCOREDLL_ONLY(api_definition)
+#endif // KCOREDLL_DEF
+
+EXPORTS
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; NOTE: Please update the following comment as you add ordinals
+;
+; Last ordinal used:   SHSipGetAutoDeploy @2981
+;
+; Available ordinals:
+; // Available @2723
+; // Available @2919
+; // Available @2920
+; // Available @2921
+;
+;
+; NOTE: If you are adding an API here and in a previous OS, the ordinals must
+; be the same in both or apps linked with an older OS will have compatiblity problems
+;
+; NOTE: Ordinals 2000 through 2399 are reserved for compiler-specific runtime support.
+;
+;       Ordinals 2400 through 2499 are reserved for backward compatibility,
+;       in case QFE needs to expose extra functions.
+;       Last ordinal used in this range: UnmapViewOfFileInProcess @2402
+;
+;       Do not use these for normal exports.
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#include "crt\corelib1.def"
+
+; @CESYSGEN IF COREDLL_COREMAIN
+   SystemMemoryLow=xxx_SystemMemoryLow @720
+   STDAPI(InitializeCriticalSection,4) @2
+   STDAPI(DeleteCriticalSection,4) @3
+   STDAPI(EnterCriticalSection,4) @4
+   STDAPI(LeaveCriticalSection,4) @5
+   STDAPI(ExitThread,4) @6
+   STDAPI(ThreadExceptionExit,8) @1474
+   PSLNotify=xxx_PSLNotify @7
+   InitLocale @8
+   ReinitLocale @1799
+   IsProcessDying @ 1213
+   DirectHandleCall @2552
+#ifdef x86
+   InterlockedIncrement=xxx_InterlockedIncrement @10
+   InterlockedDecrement=xxx_InterlockedDecrement @11
+   InterlockedExchange=xxx_InterlockedExchange @12
+   InterlockedExchangeAdd=xxx_InterlockedExchangeAdd @1491
+   InterlockedCompareExchange=xxx_InterlockedCompareExchange @1492
+#elif !defined(PPC)
+   STDAPI(InterlockedTestExchange,12) @9
+   STDAPI(InterlockedIncrement,4) @10
+   STDAPI(InterlockedDecrement,4) @11
+   STDAPI(InterlockedExchange,8) @12
+   STDAPI(InterlockedExchangeAdd,8) @1491
+   STDAPI(InterlockedCompareExchange,12) @1492
+#endif
+   ThreadBaseFunc @13
+   MainThreadBaseFunc @14
+   ComThreadBaseFunc=MainThreadBaseFunc @1240
+   CreateLocaleView=xxx_CreateLocaleView @1466
+   STDAPI(TlsGetValue,4) @15
+   STDAPI(TlsSetValue,8) @16
+   GetVersionEx=GetVersionExW @17
+   GetVersionExW @717
+   GetOSBuildInfo @984 NONAME
+   GetOSBuildString @956 NONAME
+   STDAPI(CompareFileTime,8) @18
+   STDAPI(SystemTimeToFileTime,8) @19
+   STDAPI(FileTimeToSystemTime,8) @20
+   STDAPI(FileTimeToLocalFileTime,8) @21
+   STDAPI(LocalFileTimeToFileTime,8) @22
+   STDAPI(GetLocalTime,4) @23
+   STDAPI(SetLocalTime,4) @24
+   STDAPI(GetSystemTime,4) @25
+   STDAPI(SetSystemTime,4) @26
+   STDAPI(GetSystemTimeAsFileTime,4) @2536
+   STDAPI(GetTimeZoneInformation,4) @27
+   STDAPI(SetTimeZoneInformation,4) @28
+   STDAPI(SetTimeZoneInformationByID,4) @2902
+   STDAPI(GetTimeZoneInformationID,4) @2903
+   STDAPI(GetTimeZoneList,4) @2904
+   GetCurrentFT @29
+   IsAPIReady @30
+   WaitForAPIReady=xxx_WaitForAPIReady @2562
+   GetAPIAddress @32
+   CeEventHasOccurred @479
+   GetCRTFlags @1228
+   CeZeroPointer @1781
+   ForcePixelDoubling @1829
+   IsForcePixelDoubling @1830
+   InitializeUsrCoredllCallbacks @2561
+   GetHandleServerId=xxx_GetHandleServerId @2575
+   CeSetDirectCall=xxx_CeSetDirectCall @2542
+   CeGetRawTime @2537
+   __GetUserKData @2528
+   CeGetRawTimeOffset @2529
+   CeCreateRwLock @2792
+   CeDeleteRwLock @2793
+   CeAcquireRwLock @2794
+   CeReleaseRwLock @2795
+   CeIsRwLockAcquired @2796
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_FIBER
+   STDAPI(ConvertThreadToFiber,4) @1480
+   STDAPI(GetCurrentFiber,0) @1481
+   STDAPI(GetFiberData,0) @1482
+   STDAPI(CreateFiber,12) @1483
+   STDAPI(DeleteFiber,4) @1484
+   STDAPI(SwitchToFiber,4) @1485
+; @CESYSGEN ENDIF
+
+//
+// these functions are not supported, and are stubbed in kernel/filesys
+//
+   CeRevertToSelf=xxx_CeRevertToSelf @1926
+   CeAccessCheck=xxx_CeAccessCheck @1927
+   CePrivilegeCheck=xxx_CePrivilegeCheck @1928
+   CeCreateTokenFromAccount=xxx_CeCreateTokenFromAccount @1929
+   CeConvertStrToSD=xxx_CeCvtStrToSD @1930
+   CeConvertSDToStr=xxx_CeCvtSDToStr @1931
+   CeCreateToken=xxx_CeCreateToken @1932
+   CeImpersonateToken=xxx_CeImpersonateToken @1933
+   CeDuplicateToken=xxx_CeDuplicateToken @2831
+   CeGetAccessMask=xxx_CeGetAccessMask @2841
+   CeImpersonateCurrentProcess=xxx_CeImpersonateCurrentProcess @1935
+;  CeGetOwnerAccountID=xxx_CeGetOwnerAccountID @2567
+;  CeGetGroupID=xxx_CeGetGroupID @2568
+   CeGetProcessAccount=xxx_CeGetProcessAccount @2843
+   CeGetThreadAccount=xxx_CeGetThreadAccount @2844
+   CeGetOwnerAccount=xxx_CeGetOwnerAccount @2845
+   CeGetGroupAccount=xxx_CeGetGroupAccount @2846
+   CeSerializeTokenData=xxx_CeSerializeTokenData @2874
+   CeDeserializeTokenData=xxx_CeDeserializeTokenData @2875
+
+//
+// these functions are not supported, and are stubbed in kernel/filesys
+//
+   ADBCreateAccount=xxx_ADBCreateAccount @1940
+   ADBDeleteAccount=xxx_ADBDeleteAccount @1941
+   ADBGetAccountProperty=xxx_ADBGetAccountProperty @1942
+   ADBSetAccountProperties=xxx_ADBSetAccountProperties @1943
+   ADBGetAccountSecurityInfo=xxx_ADBGetAccountSecurityInfo @1944
+   ADBAddAccountToGroup=xxx_ADBAddAccountToGroup @1945
+   ADBRemoveAccountFromGroup=xxx_ADBRemoveAccountFromGroup @1946
+   ADBEnumAccounts=xxx_ADBEnumAccounts @1947
+   ; @1949
+   ADBAccountIDFromName=xxx_ADBAccountIDFromName @2833
+   ADBNameFromAccountID=xxx_ADBNameFromAccountID @2834
+   ADBEnumAccountsInGroup = xxx_ADBEnumAccountsInGroup @2835
+
+        CeModuleJit=xxx_CeModuleJit @53
+
+   STDAPI(LocalAlloc,8) @33
+   STDAPI(LocalAllocTrace,16) @2602
+   STDAPI(LocalReAlloc,12) @34
+   STDAPI(LocalSize,4) @35
+   STDAPI(LocalFree,4) @36
+   STDAPI(RemoteHeapAlloc,16) @1604
+   STDAPI(RemoteHeapReAlloc,20) @1605
+   STDAPI(RemoteHeapFree,16) @1606
+   STDAPI(RemoteHeapSize,16) @1607
+
+   RemoteLocalAlloc=xxx_RemoteLocalAlloc @37
+   RemoteLocalReAlloc=xxx_RemoteLocalReAlloc @38
+   RemoteLocalSize=xxx_RemoteLocalSize @39
+   RemoteLocalFree=xxx_RemoteLocalFree @40
+
+   STDAPI(LocalAllocInProcess,12) @41
+   STDAPI(LocalFreeInProcess,8) @42
+   STDAPI(LocalSizeInProcess,8) @43
+   STDAPI(HeapCreate,12) @44
+   STDAPI(HeapDestroy,4) @45
+   STDAPI(HeapAlloc,12) @46
+   STDAPI(HeapAllocTrace,20) @1999
+   STDAPI(HeapReAlloc,16) @47
+   STDAPI(HeapSize,12) @48
+   STDAPI(HeapFree,12) @49
+   STDAPI(GetProcessHeap,0) @50
+   STDAPI(CeHeapCreate,20) @1836
+   HeapValidate @51
+   GetHeapSnapshot @52
+   CompactAllHeaps @54
+   HeapCompact @1884
+
+   g_hProcessHeap @2543
+   CeRemoteHeapCreate @2544
+   CeRemoteHeapTranslatePointer @2545
+   CeGetModuleHeapInfo @2713
+
+#ifdef DEBUG
+   _HeapDump=RHeapDump @55
+#endif
+
+   wsprintfW @56
+   wvsprintfW @57
+
+   RtlDispatchException @2548 NONAME
+   KCOREDLL_ONLY(RtlUnwindOneFrame @2549 NONAME)
+
+   COREDLL_ONLY(AddVectoredExceptionHandler @2546)
+   COREDLL_ONLY(RemoveVectoredExceptionHandler @2547)
+
+; @CESYSGEN IF !COREDLL_NOSTRSAFE
+   // strsafe functions
+   StringCchCopyW @1689
+   StringCbCopyW @1690
+   StringCchCopyExW @1691
+   StringCbCopyExW @1692
+   StringCchCopyNW @1742
+   StringCbCopyNW @1743
+   StringCchCatW @1693
+   StringCbCatW @1694
+   StringCchCatExW @1695
+   StringCbCatExW @1696
+   StringCchCatNW @1744
+   StringCbCatNW @1745
+   StringCchCatNExW @1746
+   StringCbCatNExW @1747
+   StringCchVPrintfW @1697
+   StringCbVPrintfW @1698
+   StringCchPrintfW @1699
+   StringCbPrintfW @1700
+   StringCchPrintfExW @1701
+   StringCbPrintfExW @1702
+   StringCchVPrintfExW @1703
+   StringCbVPrintfExW @1704
+   StringCchLengthW @1748
+   StringCbLengthW @1749
+   StringCchCopyNExW @1868
+   StringCbCopyNExW @1869
+; @CESYSGEN ENDIF !COREDLL_NOSTRSAFE
+
+   STDAPI(Random,0) @80
+#if SHx
+   DebugBreak @81
+#endif
+   ProfileStart @82
+   ProfileStop @83
+   ProfileCaptureStatus @1800
+   ProfileStartEx @1801
+   CeLogData=xxx_CeLogData @1451
+   CeLogSetZones=xxx_CeLogSetZones @1452
+   CeLogGetZones=xxx_CeLogGetZones @1681
+   CeLogReSync=xxx_CeLogReSync @1467
+   CePerfDLLSetup @2925
+   CePerfDLLCleanup @2926
+#if x86
+; @CESYSGEN IF COREDLL_FPEMUL
+   NPXNPHandler @81
+; @CESYSGEN ENDIF
+#endif
+   STDAPI(GlobalMemoryStatus,4) @88
+   SystemParametersInfoW @89
+   CeGetRandomSeed=xxx_CeGetRandomSeed @1443
+
+; @CESYSGEN IF COREDLL_GDI_C || COREDLL_MGDI_C
+   CreateDIBSection @90
+   EqualRgn=xxx_EqualRgn @91
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_ACCEL_C
+   STDAPI(CreateAcceleratorTableW,8) @92
+   STDAPI(DestroyAcceleratorTable,4) @93
+   STDAPI(LoadAcceleratorsW,8) @94
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_RECTAPI
+   STDAPI(CopyRect,8) @96
+   STDAPI(EqualRect,8) @97
+   STDAPI(InflateRect,12) @98
+   STDAPI(IntersectRect,12) @99
+   STDAPI(IsRectEmpty,4) @100
+   STDAPI(OffsetRect,12) @101
+   STDAPI(PtInRect,12) @102
+   STDAPI(SetRect,20) @103
+   STDAPI(SetRectEmpty,4) @104
+   STDAPI(SubtractRect,12) @105
+   STDAPI(UnionRect,12) @106
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_SERDEV
+   STDAPI(ClearCommBreak,4) @107
+   STDAPI(ClearCommError,12) @108
+   STDAPI(EscapeCommFunction,8) @109
+   STDAPI(GetCommMask,8) @110
+   STDAPI(GetCommModemStatus,8) @111
+   STDAPI(GetCommProperties,8) @112
+   STDAPI(GetCommState,8) @113
+   STDAPI(GetCommTimeouts,8) @114
+   STDAPI(PurgeComm,8) @115
+   STDAPI(SetCommBreak,4) @116
+   STDAPI(SetCommMask,8) @117
+   STDAPI(SetCommState,8) @118
+   STDAPI(SetCommTimeouts,8) @119
+   STDAPI(SetupComm,12) @120
+   STDAPI(TransmitCommChar,8) @121
+   STDAPI(WaitCommEvent,12) @122
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_DEVENUM
+   EnumPnpIds @123
+   EnumDevices @124
+   GetDeviceKeys @125
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_DEVLOAD
+   OpenDeviceKey @1396
+   DDKReg_GetWindowInfo @1668
+   DDKReg_GetIsrInfo @1669
+   DDKReg_GetPciInfo @1670
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CRYPTAPI
+    CryptAcquireContextW @126
+    CryptReleaseContext @127
+    CryptGenKey @128
+    CryptDeriveKey @129
+    CryptDestroyKey @130
+    CryptSetKeyParam @131
+    CryptGetKeyParam @132
+    CryptExportKey @133
+    CryptImportKey @134
+    CryptEncrypt @135
+    CryptDecrypt @136
+    CryptCreateHash @137
+    CryptHashSessionKey @138
+    CryptHashData @139
+    CryptDestroyHash @140
+    CryptSignHashW @141
+    CryptVerifySignatureW @142
+    CryptGenRandom @143
+    CryptGetUserKey @144
+    CryptSetProviderW @145
+    CryptGetHashParam @146
+    CryptSetHashParam @147
+    CryptGetProvParam @148
+    CryptSetProvParam @149
+    CryptSetProviderExW @150
+    CryptGetDefaultProviderW @151
+    CryptEnumProviderTypesW @152
+    CryptEnumProvidersW @153
+    CryptContextAddRef @154
+    CryptDuplicateKey @155
+    CryptDuplicateHash @156
+    IsEncryptionPermitted @613
+; @CESYSGEN ENDIF
+
+   AttachDebugger @157
+   AttachHdstub @1955
+   AttachOsAxsT0 @1956
+   AttachOsAxsT1 @1982
+   CaptureDumpFileOnDevice @1960
+   ReportFault @1964
+   CeReportFault @2522
+   SetInterruptEvent @158
+   CeSetPowerOnEvent @1688
+   COREDLL_ONLY(IsExiting @159)
+   CaptureDumpFileOnDevice2 @2757
+
+   // Start of Thunks
+
+; @CESYSGEN IF CE_MODULES_FILESYS
+   // SDK filesys functions (winbase.h)
+   CreateDirectoryW=xxx_CreateDirectoryW @160
+   RemoveDirectoryW=xxx_RemoveDirectoryW @161
+   GetTempPathW=xxx_GetTempPathW @162
+   MoveFileW=xxx_MoveFileW @163
+   CopyFileW @164
+   CopyFileExW @1958
+   DeleteFileW=xxx_DeleteFileW @165
+   GetFileAttributesW=xxx_GetFileAttributesW @166
+   FindFirstFileW=xxx_FindFirstFileW @167
+   FindFirstFileExW=xxx_FindFirstFileExW @1235
+   CreateFileW=xxx_CreateFileW @168
+   SetFileAttributesW=xxx_SetFileAttributesW @169
+   ReadFile=xxx_ReadFile @170
+   WriteFile=xxx_WriteFile @171
+   GetFileSize=xxx_GetFileSize @172
+   SetFilePointer=xxx_SetFilePointer @173
+   GetFileInformationByHandle=xxx_GetFileInformationByHandle @174
+   FlushFileBuffers=xxx_FlushFileBuffers @175
+   GetFileTime=xxx_GetFileTime @176
+   SetFileTime=xxx_SetFileTime @177
+   SetEndOfFile=xxx_SetEndOfFile @178
+   FindClose=xxx_FindClose @180
+   FindNextFileW=xxx_FindNextFileW @181
+   DeleteAndRenameFile=xxx_DeleteAndRenameFile @183
+   GetDiskFreeSpaceExW=xxx_GetDiskFreeSpaceExW @184
+   GetFileAttributesExW @1237
+   GetStoreInformation=xxx_GetStoreInformation @323
+   PegOidGetInfo=xxx_CeOidGetInfo @301
+   CeOidGetInfo=xxx_CeOidGetInfo @312
+   CeOidGetInfoEx=xxx_CeOidGetInfoEx @1195
+   CeOidGetInfoEx2=xxx_CeOidGetInfoEx2 @1472
+   FindFirstChangeNotificationW=xxx_FindFirstChangeNotificationW @1682
+   FindNextChangeNotification=xxx_FindNextChangeNotification @1683
+   FindCloseChangeNotification=xxx_FindCloseChangeNotification @1684
+   CeGetFileNotificationInfo=xxx_CeGetFileNotificationInfo @1798
+   ReadFileScatter=xxx_ReadFileScatter @1831
+   WriteFileGather = xxx_WriteFileGather @1832
+   CeFsIoControlW=xxx_CeFsIoControlW @1965
+   LockFileEx=xxx_LockFileEx @1968
+   UnlockFileEx=xxx_UnlockFileEx @1969
+   CeGetVolumeInfoW=xxx_CeGetVolumeInfoW @1978
+   CeOpenModuleByPolicy=xxx_CeOpenModuleByPolicy @2699
+   LoaderVerifierInitialize=xxx_LoaderVerifierInitialize @2804
+   LoaderVerifierUninitialize=xxx_LoaderVerifierUninitialize @2805
+   LoaderVerifierAuthenticateFile=xxx_LoaderVerifierAuthenticateFile @2806
+   LoaderVerifierAddToBlockList=xxx_LoaderVerifierAddToBlockList @2908
+   LoaderVerifierRemoveFromBlockList=xxx_LoaderVerifierRemoveFromBlockList @2807
+   LoaderVerifierAuthorize=xxx_LoaderVerifierAuthorize @2832
+   LoaderVerifierGetHash=xxx_LoaderVerifierGetHash @2838
+   LoaderVerifierIsInBlockList=xxx_LoaderVerifierIsInBlockList @2839
+   LoaderVerifierEnumBlockList=xxx_LoaderVerifierEnumBlockList @1948
+   SetFileSecurityW=xxx_SetFileSecurityW @2711
+   GetFileSecurityW=xxx_GetFileSecurityW @2712
+   CancelIo=xxx_CancelIo @2717
+   CancelIoEx=xxx_CancelIoEx @2718
+   EventRegister=xxx_EventRegister @2740
+   EventUnregister=xxx_EventUnregister @2741
+   EventWrite=xxx_EventWrite @2742
+   EventEnabled=xxx_EventEnabled @2743
+   EventProviderEnabled=xxx_EventProviderEnabled @2744
+   CeEventSubscribe=xxx_CeEventSubscribe @2745
+   EnumerateTraceGuidsEx=xxx_EnumerateTraceGuidsEx @2746
+   StartTraceW=xxx_StartTraceW @2747
+   EnableTraceEx=xxx_EnableTraceEx @2748
+   ControlTraceW=xxx_ControlTraceW @2749
+   RegisterTraceGuidsW=xxx_RegisterTraceGuidsW @2750
+   UnregisterTraceGuids=xxx_UnregisterTraceGuids @2751
+   GetTraceLoggerHandle=xxx_GetTraceLoggerHandle @2752
+   GetTraceEnableLevel=xxx_GetTraceEnableLevel @2753
+   GetTraceEnableFlags=xxx_GetTraceEnableFlags @2754
+   CeEventNext=xxx_CeEventNext @2758
+   CeEventRead=xxx_CeEventRead @2759
+   CeEventClose=xxx_CeEventClose @2760
+   TraceMessage=xxx_TraceMessage @2755
+   TraceMessageVa=xxx_TraceMessageVa @2756
+   CePolicyCheckWithContext=xxx_CePolicyCheck @2808
+   CePolicyCheckWithContextByCanonicalName=xxx_CePolicyCheckByCanonicalName @2809
+   CePolicyOpen=xxx_CePolicyOpen @2810
+   CePolicyOpenByCanonicalName=xxx_CePolicyOpenByCanonicalName @2811
+   CePolicyCheckWithContextByHandle=xxx_CePolicyCheckByHandle @2812
+   CePolicyGetAccessGranted=xxx_CePolicyGetAccessGranted @2813
+   CePolicyGetCustomData=xxx_CePolicyGetCustomData @2814
+   CePolicyIoControl=xxx_CePolicyIoControl @2842
+   CePolicyRegisterCanonicalizer=xxx_CePolicyRegisterCanonicalizer @2815
+   CePolicyGetCanonicalName=xxx_CePolicyGetCanonicalName @2816
+   CePolicyRuleBeginTransaction=xxx_CePolicyRuleBeginTransaction @2817
+   CePolicyRuleAbortTransaction=xxx_CePolicyRuleAbortTransaction @2818
+   CePolicyRuleCommitTransaction=xxx_CePolicyRuleCommitTransaction @2819
+   CePolicyRuleFindFirst=xxx_CePolicyRuleFindFirst @2820
+   CePolicyRuleFindNext=xxx_CePolicyRuleFindNext @2821
+   CePolicyRuleCreate=xxx_CePolicyRuleCreate @2822
+   CePolicyRuleOpen=xxx_CePolicyRuleOpen @2823
+   CePolicyRuleDelete=xxx_CePolicyRuleDelete @2824
+   CePolicyRuleGetInfo=xxx_CePolicyRuleGetInfo @2825
+   CePolicyRuleReadRawData=xxx_CePolicyRuleReadRawData @2826
+   CePolicyRuleAddRawData=xxx_CePolicyRuleAddRawData @2827
+   CePolicyRuleCommit=xxx_CePolicyRuleCommit @2828
+   CePolicyRuleBuildRawData=xxx_CePolicyRuleBuildRawData @2829
+   CePolicyRuleParseRawData=xxx_CePolicyRuleParseRawData @2830
+   CePolicyIsEnabled=xxx_CePolicyIsEnabled @2840
+   CeContextCreate=xxx_CeContextCreate @2849
+   CeContextAdd=xxx_CeContextAdd @2850
+   CeContextRemove=xxx_CeContextRemove @2851
+   CeContextGetData=xxx_CeContextGetData @2852
+;  reserved apis 1772-1774. see the mixed_compression branch.
+; @CESYSGEN ENDIF CE_MODULES_FILESYS
+
+; @CESYSGEN IF CE_MODULES_FSDMGR
+;  SDK Storage Functions (storemgr.h)
+   OpenStore=xxx_OpenStore @ 2577
+   DismountStore=xxx_DismountStore @ 2578
+   FormatStore=xxx_FormatStore @ 2579
+   FindFirstStore=xxx_FindFirstStore @ 2580
+   FindNextStore=xxx_FindNextStore @ 2581
+   FindCloseStore=xxx_FindCloseStore @ 2582
+   GetStoreInfo=xxx_GetStoreInfo @ 2583
+   CreatePartition=xxx_CreatePartition @ 2584
+   CreatePartitionEx=xxx_CreatePartitionEx @ 2585
+   DeletePartition=xxx_DeletePartition @ 2586
+   OpenPartition=xxx_OpenPartition @ 2587
+   MountPartition=xxx_MountPartition @ 2588
+   DismountPartition=xxx_DismountPartition @ 2589
+   RenamePartition=xxx_RenamePartition @ 2590
+   SetPartitionAttributes=xxx_SetPartitionAttributes @ 2591
+   GetPartitionInfo=xxx_GetPartitionInfo @ 2592
+   FormatPartition=xxx_FormatPartition @ 2593
+   FormatPartitionEx=xxx_FormatPartitionEx @ 2594
+   FindFirstPartition=xxx_FindFirstPartition @ 2595
+   FindNextPartition=xxx_FindNextPartition @ 2596
+   FindClosePartition=xxx_FindClosePartition @ 2597
+; @CESYSGEN ENDIF CE_MODULES_FSDMGR
+
+; @CESYSGEN IF FILESYS_FSPASS
+   // SDK password functions (winbase.h)
+   CheckPassword=xxx_CheckPassword @182
+
+   // OAK password exports (pwinbase.h)
+   SetPassword=xxx_SetPassword @238
+   GetPasswordActive=xxx_GetPasswordActive @239
+   SetPasswordActive=xxx_SetPasswordActive @240
+   SetPasswordStatus=xxx_SetPasswordStatus @1537
+   GetPasswordStatus=xxx_GetPasswordStatus @1538
+; @CESYSGEN ENDIF FILESYS_FSPASS
+
+; @CESYSGEN IF NK_NKMSGQ
+   // SDK message queue functions (msgqueue.h)
+   CreateMsgQueue=xxx_CreateMsgQueue @1529
+   ReadMsgQueue=xxx_ReadMsgQueue @1530
+   ReadMsgQueueEx=xxx_ReadMsgQueueEx @2538
+   WriteMsgQueue=xxx_WriteMsgQueue @1531
+   GetMsgQueueInfo=xxx_GetMsgQueueInfo @1532
+   CloseMsgQueue=xxx_CloseMsgQueue @1533
+   OpenMsgQueue=xxx_OpenMsgQueue @1536
+; @CESYSGEN ENDIF NK_NKMSGQ
+
+; @CESYSGEN IF COREDLL_CORELOC
+   // locale SDK exports (winnls.h)
+   IsValidCodePage @185
+   GetACP @186
+   GetOEMCP @187
+   GetCPInfo @188
+   SetACP @189
+   SetOEMCP @190
+   IsDBCSLeadByte @191
+   IsDBCSLeadByteEx @192
+   MultiByteToWideChar @196
+   WideCharToMultiByte @197
+   CompareStringW @198
+   LCMapStringW @199
+   GetLocaleInfoW @200
+   SetLocaleInfoW @201
+   GetTimeFormatW @202
+   GetDateFormatW @203
+   GetNumberFormatW @204
+   GetCurrencyFormatW @205
+   EnumCalendarInfoW @206
+   EnumTimeFormatsW @207
+   EnumDateFormatsW @208
+   IsValidLocale @209
+   ConvertDefaultLocale @210
+   GetSystemDefaultLangID @211
+   GetUserDefaultLangID @212
+   GetSystemDefaultLCID @213
+   SetSystemDefaultLCID @214
+   GetUserDefaultLCID @215
+   SetUserDefaultLCID @1795
+   GetStringTypeW @216
+   GetStringTypeExW @217
+   FoldStringW @218
+   EnumSystemLocalesW @219
+   EnumSystemCodePagesW @220
+   CharLowerW @221
+   CharLowerBuffW @222
+   CharUpperBuffW @223
+   CharUpperW @224
+   CharPrevW @225
+   CharNextW @226
+   lstrcmpW @227
+   lstrcmpiW @228
+   DBCanonicalize @233
+   GetNlsTables @1886
+
+   LocaleNameToLCID @2927
+   CompareStringEx @2928
+   GetLocaleInfoEx @2929
+   LCIDToLocaleName @2930
+   EnumSystemLocalesEx @2931
+   EnumCalendarInfoExEx @2932
+   EnumCalendarInfoExW @2933
+   EnumDateFormatsExW @2934
+   EnumDateFormatsExEx @2935
+   EnumTimeFormatsEx @2936
+   GetCalendarInfoW @2937
+   GetCalendarInfoEx @2938
+   ResolveLocaleName @2939
+   GetCurrencyFormatEx @2940
+   GetDateFormatEx @2941
+   GetDurationFormat @2942
+   GetDurationFormatEx @2943
+   GetNumberFormatEx @2944
+   GetSystemDefaultLocaleName @2945
+   GetUserDefaultLocaleName @2946
+   GetTimeFormatEx @2947
+   IsValidLocaleName @2948
+   LCMapStringEx @2949
+   NormalizeString @2950
+   IsNormalizedString @2951
+   IdnToAscii @2952
+   IdnToNameprepUnicode @2953
+   IdnToUnicode @2954
+   IsNLSDefinedString @2955
+   SetCalendarInfoW @2956
+   VerifyScripts @2957
+   GetStringScripts @2958
+   CompareStringOrdinal @2959
+   FindStringOrdinal @2960
+   GetCalendarDateFormatEx @2968
+   ConvertCalDateTimeToSystemTime @2969
+   ConvertSystemTimeToCalDateTime @2970
+   UpdateCalendarDayOfWeek @2971
+   GetCalendarWeekNumber  @2972
+   GetCalendarMonthsInYear @2973
+   GetCalendarDaysInMonth  @2974
+   GetFirstDayWeekOfYear  @2975
+   GetCalendarDaysInYear @2976
+   GetCalendarDayOfYear  @2977
+   GetCalendarSupportedDateRange @2978
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_LOCMINI
+   IsDBCSLeadByte @191
+   MultiByteToWideChar @196
+   WideCharToMultiByte @197
+   CompareStringW @198
+   GetSystemDefaultLCID @213
+   GetStringTypeExW @217
+   CharLowerW @221
+   CharUpperW @224
+; @CESYSGEN ENDIF
+
+// MUI exports (winnls.h)
+GetSystemDefaultUILanguage      @1317
+GetUserDefaultUILanguage        @1318
+SetUserDefaultUILanguage        @1319
+EnumUILanguagesW                        @1320
+
+; @CESYSGEN IF COREDLL_FMTMSG
+   FormatMessageW @234
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF CE_MODULES_DEVICE
+   // device SDK exports (winbase.h)
+   RegisterDevice=xxx_RegisterDevice @235
+   DeregisterDevice=xxx_DeregisterDevice @236
+   LoadFSD=xxx_LoadFSD @237
+   LoadFSDEx=xxx_LoadFSDEx @1421
+   ActivateDevice=xxx_ActivateDevice @1179
+   ActivateDeviceEx=xxx_ActivateDeviceEx @1494
+   DeactivateDevice=xxx_DeactivateDevice @1180
+   GetDeviceHandleFromContext @1961
+   RegOpenProcessKey=xxx_RegOpenProcessKey @1542
+   CeResyncFilesys=xxx_CeResyncFilesys @1425
+   GetDeviceInformationByDeviceHandle=xxx_GetDeviceInformationByDeviceHandle @1870
+   GetDeviceInformationByFileHandle=xxx_GetDeviceInformationByFileHandle @1871
+   FindFirstDevice=FindFirstDevice @1872
+   FindNextDevice=FindNextDevice @1873
+   EnumDeviceInterfaces=xxx_EnumDeviceInterfaces @1874
+   REL_UDriverProcIoControl=xxx_REL_UDriverProcIoControl @2576
+   CreateAsyncIoHandle=xxx_CreateAsyncIoHandle @2714
+   SetIoProgress=xxx_SetIoProgress @2715
+   CompleteAsyncIo=xxx_CompleteAsyncIo @2716
+   EnableDeviceDriver=xxx_EnableDeviceDriver @2735
+   DisableDeviceDriver=xxx_DisableDeviceDriver @2736
+   GetDeviceDriverStatus=xxx_GetDeviceDriverStatus @2737
+
+; @CESYSGEN IF DEVICE_IORM
+   ResourceCreateList=xxx_ResourceCreateList @1612
+   ResourceRequest=xxx_ResourceRequest @1613
+   ResourceRelease=xxx_ResourceRelease @1614
+   ResourceRequestEx=xxx_ResourceRequestEx @1833
+   ResourceMarkAsShareable=xxx_ResourceMarkAsShareable @1834
+   ResourceDestroyList=xxx_ResourceDestroyList @1835
+; @CESYSGEN ENDIF DEVICE_IORM
+
+; @CESYSGEN IF DEVICE_PMIF
+   // Power Manager exports
+   GetSystemPowerState=xxx_GetSystemPowerState @1581
+   SetSystemPowerState=xxx_SetSystemPowerState @1582
+   SetPowerRequirement=xxx_SetPowerRequirement @1583
+   ReleasePowerRequirement=xxx_ReleasePowerRequirement @1584
+   RequestPowerNotifications=xxx_RequestPowerNotifications @1585
+   StopPowerNotifications=xxx_StopPowerNotifications @1586
+   DevicePowerNotify=xxx_DevicePowerNotify @1588
+   RegisterPowerRelationship=xxx_RegisterPowerRelationship @1609
+   ReleasePowerRelationship=xxx_ReleasePowerRelationship @ 1610
+   SetDevicePower=xxx_SetDevicePower @ 1678
+   GetDevicePower=xxx_GetDevicePower @ 1679
+   PowerPolicyNotify=PowerPolicyNotify @ 1764
+; @CESYSGEN ENDIF DEVICE_PMIF
+; @CESYSGEN ENDIF CE_MODULES_DEVICE
+
+; @CESYSGEN IF CE_MODULES_SERVICES
+   // services SDK exports (services.h).
+   ActivateService=xxx_ActivateService  @1508
+   RegisterService=xxx_RegisterService  @1509
+   DeregisterService=xxx_DeregisterService @1510
+   CloseAllServiceHandles=xxx_CloseAllServiceHandles @1511
+   CreateServiceHandle=xxx_CreateServiceHandle @1512
+   GetServiceByIndex=xxx_GetServiceByIndex @1513
+   ServiceIoControl=xxx_ServiceIoControl @1514
+   ServiceAddPort=xxx_ServiceAddPort @1515
+   ServiceUnbindPorts=xxx_ServiceUnbindPorts @1516
+   EnumServices=xxx_EnumServices @1517
+   GetServiceHandle=xxx_GetServiceHandle @1518
+   ServiceClosePort=xxx_ServiceClosePort @1759
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF CE_MODULES_FILESYS
+   // filesys OAK exports (pwinbase.h)
+   SignalStarted=xxx_SignalStarted @639
+   CeRegisterFileSystemNotification=xxx_CeRegisterFileSystemNotification @331
+   RegisterAFSEx=xxx_RegisterAFSEx @1490
+   DeregisterAFS=xxx_DeregisterAFS @335
+   RegisterAFSName=xxx_RegisterAFSName @338
+   DeregisterAFSName=xxx_DeregisterAFSName @339
+   GetSystemMemoryDivision=xxx_GetSystemMemoryDivision @336
+   SetSystemMemoryDivision=xxx_SetSystemMemoryDivision @337
+   DumpFileSystemHeap=xxx_DumpFileSystemHeap @341
+   FileSystemPowerFunction=xxx_FileSystemPowerFunction @241
+   CloseAllFileHandles=xxx_CloseAllFileHandles @242
+   ReadFileWithSeek=xxx_ReadFileWithSeek @243
+   WriteFileWithSeek=xxx_WriteFileWithSeek @718
+   IsSystemFile=xxx_IsSystemFile @1680
+   RequestDeviceNotifications=xxx_RequestDeviceNotifications @1504
+   StopDeviceNotifications=xxx_StopDeviceNotifications @1505
+   AdvertiseInterface=xxx_AdvertiseInterface @1687
+   AdvertiseInterfaceEx=xxx_AdvertiseInterfaceEx @2923
+; @CESYSGEN ENDIF CE_MODULES_FILESYS
+
+; @CESYSGEN IF CE_MODULES_DEVICE
+   // Device OAK exports (pwinbase.h)
+   GetDeviceByIndex=xxx_GetDeviceByIndex @1236
+; @CESYSGEN ENDIF CE_MODULES_DEVICE
+
+; @CESYSGEN IF CE_MODULES_GWES
+   // Gwe user exports (winuser.h)
+   UserCallWindowProc @2880 NONAME  // hardcoded in usrcoredllcallbacks.c.  make sure they match
+   CreateWindowExW @246
+   SetWindowPos @247
+   GetWindowRect @248
+   GetClientRect @249
+   InvalidateRect @250
+   GetWindow @251
+   WindowFromPoint @252
+   ChildWindowFromPoint @253
+   ClientToScreen @254
+   ScreenToClient @255
+   SetWindowTextW @256
+   GetWindowTextW @257
+   SetWindowLongW @258
+   GetWindowLongW @259
+   BeginPaint @260
+   EndPaint @261
+   GetDCEx @1185
+   DefWindowProcW @264
+   DestroyWindow @265
+   ShowWindow @266
+   UpdateWindow @267
+   SetParent @268
+   GetParent @269
+   IsWindow @271
+   MoveWindow @272
+   GetUpdateRgn @273
+   GetUpdateRect @274
+   BringWindowToTop @275
+   GetWindowTextLengthW @276
+   IsChild @277
+   ValidateRect @278
+   GetClassNameW @283
+   MapWindowPoints @284
+   CallWindowProcW @285
+   FindWindowW @286
+   EnableWindow @287
+   IsWindowEnabled @288
+   ScrollWindowEx @289
+   PostThreadMessageW @290
+   EnumWindows @291
+   GetWindowThreadProcessId @292
+   BeginDeferWindowPos @1157
+   DeferWindowPos @1158
+   EndDeferWindowPos @1159
+   GetDesktopWindow @1397
+   SetWindowRgn @1398
+   GetWindowRgn @1399
+   //GetPrivateCallbacks @1400
+   GetWindowTextWDirect @1454
+   AccessibilitySoundSentryEvent @1540
+   ChangeDisplaySettingsEx @1611
+   InvalidateRgn @1615
+   ValidateRgn @1616
+   RedrawWindow @1672
+   RegisterSIPanel @293
+   RectangleAnimation @294
+   GwesPowerOffSystem @296
+   SetAssociatedMenu @299
+   GetAssociatedMenu @300
+   GwesPowerDown @1722
+   GwesPowerUp @1723
+   ShowStartupWindow=ShowStartupWindow @1810
+   ShowStartupWindowBypassWantStartupScreen @2725
+   GetGweApiSetTables @1867
+//   KCOREDLL_ONLY(Imm_DllEntry @2598) In theory we only need this exposed for KCOREDLL
+   Imm_DllEntry @2598
+   AnimateRects @2707
+   MinimizeFullScreenExclusive @2738
+   GetWindowOpacity              @2797
+   SetWindowOpacity              @2798
+   GetWindowCompositionFlags     @2721
+   SetWindowCompositionFlags     @2722
+   UserSHCheckForContextMenu @2892 NONAME // hardcoded in usrcoredllcallbacks.c.  make sure they match
+   UserDoEditContextMenu @2893 NONAME     // hardcoded in usrcoredllcallbacks.c.  make sure they match
+   SetWindowCursorPreference @ 2865 NONAME
+   GetWindowCursorPreference @ 2866 NONAME
+   UserSHSipPreference @ 2911 NONAME
+   UpdateWindowSurface @2965
+; @CESYSGEN ENDIF CE_MODULES_GWES
+
+; @CESYSGEN IF CE_MODULES_UIPROXY
+   CeCallUserProc=xxx_CeCallUserProc @2606
+; @CESYSGEN ENDIF CE_MODULES_UIPROXY
+
+; @CESYSGEN IF FILESYS_FSDBASE
+   // Obj store SDK (windbase.h)
+
+   // backward compatible versions
+   PegFindFirstDatabase=xxx_CeFindFirstDatabase @302
+   PegFindNextDatabase=xxx_CeFindNextDatabase @303
+   PegCreateDatabase=xxx_CeCreateDatabase @304
+   PegSetDatabaseInfo=xxx_CeSetDatabaseInfo @305
+   PegOpenDatabase=xxx_CeOpenDatabase @306
+   PegDeleteDatabase=xxx_CeDeleteDatabase @307
+   PegSeekDatabase=xxx_CeSeekDatabase @308
+   PegDeleteRecord=xxx_CeDeleteRecord @309
+   PegReadRecordProps=xxx_CeReadRecordProps @310
+   PegWriteRecordProps=xxx_CeWriteRecordProps @311
+   CeFindFirstDatabase=xxx_CeFindFirstDatabase @313
+   CeFindNextDatabase=xxx_CeFindNextDatabase @314
+   CeCreateDatabase=xxx_CeCreateDatabase @315
+   CeCreateDatabaseEx=xxx_CeCreateDatabaseEx @1190
+   CeSetDatabaseInfo=xxx_CeSetDatabaseInfo @316
+   CeSetDatabaseInfoEx=xxx_CeSetDatabaseInfoEx @1191
+   CeOpenDatabase=xxx_CeOpenDatabase @317
+   CeOpenDatabaseEx=xxx_CeOpenDatabaseEx @1192
+   CeDeleteDatabase=xxx_CeDeleteDatabase @318
+   CeReadRecordProps=xxx_CeReadRecordProps @321
+   CeSeekDatabase=xxx_CeSeekDatabase @319
+
+   CeFindFirstDatabaseEx=xxx_CeFindFirstDatabaseEx @1196
+   CeFindNextDatabaseEx=xxx_CeFindNextDatabaseEx @1189
+   CeCreateDatabaseEx2=xxx_CeCreateDatabaseEx2 @1468
+   CeSetDatabaseInfoEx2=xxx_CeSetDatabaseInfoEx2 @1471
+   CeOpenDatabaseEx2=xxx_CeOpenDatabaseEx2 @1469
+   CeDeleteDatabaseEx=xxx_CeDeleteDatabaseEx @1193
+   CeSeekDatabaseEx=xxx_CeSeekDatabaseEx @1470
+   CeDeleteRecord=xxx_CeDeleteRecord @320
+   CeReadRecordPropsEx=xxx_CeReadRecordPropsEx @1194
+   CeMountDBVol=xxx_CeMountDBVol @1164
+   CeEnumDBVolumes=xxx_CeEnumDBVolumes @1165
+   CeWriteRecordProps=xxx_CeWriteRecordProps @322
+   CeUnmountDBVol=xxx_CeUnmountDBVol @1197
+   CeFlushDBVol=xxx_CeFlushDBVol @1217
+   CeGetDBInformationByHandle=xxx_CeGetDBInformationByHandle @1473
+   CeFreeNotification=xxx_CeFreeNotification @1226
+
+   // Obj store OAK (pwindbas.h)
+   CeChangeDatabaseLCID=xxx_CeChangeDatabaseLCID @340
+; @CESYSGEN ENDIF FILESYS_FSDBASE
+
+; @CESYSGEN IF SQLCOMPACT_MODULES_EDB
+        CeAddDatabaseProps=xxx_CeAddDatabaseProps @1892
+        CeAddSyncPartner=xxx_CeAddSyncPartner @1893
+        CeAttachCustomTrackingData=xxx_CeAttachCustomTrackingData @1894
+        CeBeginSyncSession=xxx_CeBeginSyncSession @1895
+        CeBeginTransaction=xxx_CeBeginTransaction @1896
+        CeCreateDatabaseWithProps=xxx_CeCreateDatabaseWithProps @1897
+        CeCreateSession=xxx_CeCreateSession @1898
+        CeEndSyncSession=xxx_CeEndSyncSession @1899
+        CeEndTransaction=xxx_CeEndTransaction @1900
+        CeFindNextChangedRecord=xxx_CeFindNextChangedRecord @1901
+        CeGetChangedRecordCnt=xxx_CeGetChangedRecordCnt @1902
+        CeGetChangedRecords=xxx_CeGetChangedRecords @1903
+        CeGetCustomTrackingData=xxx_CeGetCustomTrackingData @1904
+        CeGetDatabaseProps=xxx_CeGetDatabaseProps @1905
+        CeGetDatabaseSession=xxx_CeGetDatabaseSession @1906
+        CeGetPropChangeInfo=xxx_CeGetPropChangeInfo @1907
+        CeGetRecordChangeInfo=xxx_CeGetRecordChangeInfo @1908
+        CeMarkRecord=xxx_CeMarkRecord @1909
+        CeMountDBVolEx=xxx_CeMountDBVolEx @1910
+        CeOpenDatabaseInSession=xxx_CeOpenDatabaseInSession @1911
+        CeOpenStream=xxx_CeOpenStream @1912
+        CePurgeTrackingData=xxx_CePurgeTrackingData @1913
+        CePurgeTrackingGenerations=xxx_CePurgeTrackingGenerations @1914
+        CeRemoveDatabaseProps=xxx_CeRemoveDatabaseProps @1915
+        CeRemoveDatabaseTracking=xxx_CeRemoveDatabaseTracking @1916
+        CeRemoveSyncPartner=xxx_CeRemoveSyncPartner @1917
+        CeSetSessionOption=xxx_CeSetSessionOption @1918
+        CeStreamRead=xxx_CeStreamRead @1919
+        CeStreamSaveChanges=xxx_CeStreamSaveChanges @1920
+        CeStreamSeek=xxx_CeStreamSeek @1921
+        CeStreamSetSize=xxx_CeStreamSetSize @1922
+        CeStreamWrite=xxx_CeStreamWrite @1923
+        CeTrackDatabase=xxx_CeTrackDatabase @1924
+        CeTrackProperty=xxx_CeTrackProperty @1925
+; @CESYSGEN ENDIF SQLCOMPACT_MODULES_EDB
+
+; @CESYSGEN IF FILESYS_FSREPLBIT
+   // Obj store OAK (pwindbas.h)
+   CeGetReplChangeMask=xxx_CeGetReplChangeMask @324
+   CeSetReplChangeMask=xxx_CeSetReplChangeMask @325
+   CeGetReplChangeBitsEx=xxx_CeGetReplChangeBitsEx @326
+   CeSetReplChangeBitsEx=xxx_CeSetReplChangeBitsEx @327
+   CeClearReplChangeBitsEx=xxx_CeClearReplChangeBitsEx @328
+   CeGetReplOtherBitsEx=xxx_CeGetReplOtherBitsEx @329
+   CeSetReplOtherBitsEx=xxx_CeSetReplOtherBitsEx @330
+   CeRegisterReplNotification=xxx_CeRegisterReplNotification @332
+; @CESYSGEN ENDIF FILESYS_FSREPLBIT
+
+; @CESYSGEN IF CE_MODULES_PPP
+   // Afd SDK (afdfunc.h)
+   RasDial=xxx_RasDial @342
+   RasHangup=xxx_RasHangup @343
+   RasHangUp=xxx_RasHangup @344
+   RasEnumEntries=xxx_RasEnumEntries @345
+   RasGetEntryDialParams=xxx_RasGetEntryDialParams @346
+   RasSetEntryDialParams=xxx_RasSetEntryDialParams @347
+   RasGetEntryProperties=xxx_RasGetEntryProperties @348
+   RasSetEntryProperties=xxx_RasSetEntryProperties @349
+   RasValidateEntryName=xxx_RasValidateEntryName @350
+   RasDeleteEntry=xxx_RasDeleteEntry @351
+   RasRenameEntry=xxx_RasRenameEntry @352
+   RasEnumConnections=xxx_RasEnumConnections @353
+   RasGetConnectStatus=xxx_RasGetConnectStatus @354
+   RasGetEntryDevConfig=xxx_RasGetEntryDevConfig @355
+   RasSetEntryDevConfig=xxx_RasSetEntryDevConfig @356
+   RasIOControl=xxx_RasIOControl @357
+   RasEnumDevicesW @1424
+   RasGetProjectionInfoW @1458
+   RasGetLinkStatistics @1463
+   RasGetDispPhoneNumW @1464
+   RasDevConfigDialogEditW @1465
+   RasGetEapUserData @1673
+   RasSetEapUserData @1674
+   RasGetEapConnectionData @1675
+   RasSetEapConnectionData @1676
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF CE_MODULES_AFD
+   // Afd SDK (afdfunc.h)
+   AFDSocket=xxx_AFDSocket @2612
+   PMSelect=xxx_PMSelect @2613
+   PMSocket=xxx_PMSocket @2761
+   PMInstallProvider=xxx_PMInstallProvider @2762
+   PMEnumProtocols=xxx_PMEnumProtocols @2763
+   PMFindProvider=xxx_PMFindProvider @2764
+   PMInstallNameSpace=xxx_PMInstallNameSpace @2765
+   PMEnumNameSpaceProviders=xxx_PMEnumNameSpaceProviders @2766
+   PMFindNameSpaces=xxx_PMFindNameSpaces @2767
+   PMAccept=xxx_PMAccept @2768
+   PMBind=xxx_PMBind @2769
+   PMConnect=xxx_PMConnect @2770
+   PMIoctl=xxx_PMIoctl @2771
+   PMListen=xxx_PMListen @2772
+   PMRecv=xxx_PMRecv @2773
+   PMRecvFrom=xxx_PMRecvFrom @2774
+   PMRecvEx=xxx_PMRecvEx @2775
+   PMSend=xxx_PMSend @2776
+   PMSendTo=xxx_PMSendTo @2777
+   PMSendEx=xxx_PMSendEx @2778
+   PMSendMsg=xxx_PMSendMsg @2894
+   PMShutdown=xxx_PMShutdown @2779
+   PMGetsockname=xxx_PMGetsockname @2780
+   PMGetpeername=xxx_PMGetpeername @2781
+   PMGetSockOpt=xxx_PMGetSockOpt @2782
+   PMSetSockOpt=xxx_PMSetSockOpt @2783
+   PMWakeup=xxx_PMWakeup @2784
+   PMGetOverlappedResult=xxx_PMGetOverlappedResult @2785
+   PMEventSelect=xxx_PMEventSelect @2786
+   PMEnumNetworkEvents=xxx_PMEnumNetworkEvents @2787
+   PMCloseSocket=xxx_PMCloseSocket @2788
+   PMAddrConvert=xxx_PMAddrConvert @2789
+   AFDDnsQuery_W=xxx_AFDDnsQuery_W @2861
+   AfdDNSRecordListFree=xxx_AfdDNSRecordListFree @2862
+   AFD_UpdateOrModifyRecords=xxx_AFD_UpdateOrModifyRecords @2863
+
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF CE_MODULES_TAPI
+   // Tap sdk functions (tapi.h)
+   lineClose=xxx_lineClose @358
+   lineDeallocateCall=xxx_lineDeallocateCall @359
+   lineDrop=xxx_lineDrop @360
+   lineGetDevCaps=xxx_lineGetDevCaps @361
+   lineGetDevConfig=xxx_lineGetDevConfig @362
+   lineGetTranslateCaps=xxx_lineGetTranslateCaps @363
+   lineInitialize @364
+   lineMakeCall=xxx_lineMakeCall @365
+   lineNegotiateAPIVersion=xxx_lineNegotiateAPIVersion @366
+   lineOpen=xxx_lineOpen @367
+   lineSetDevConfig=xxx_lineSetDevConfig @368
+   lineSetStatusMessages=xxx_lineSetStatusMessages @369
+   lineShutdown @370
+   lineTranslateAddress=xxx_lineTranslateAddress @371
+   lineGetID=xxx_lineGetID @372
+   lineTranslateDialog=xxx_lineTranslateDialog @373
+   lineConfigDialogEdit=xxx_lineConfigDialogEdit @374
+   lineAddProvider=xxx_lineAddProvider @375
+   lineSetCurrentLocation=xxx_lineSetCurrentLocation @1168
+
+   lineAccept=xxx_lineAccept @1246
+   lineAddToConference=xxx_lineAddToConference @1247
+   lineAnswer=xxx_lineAnswer @1248
+   lineBlindTransfer=xxx_lineBlindTransfer @1249
+   lineCompleteTransfer=xxx_lineCompleteTransfer @1250
+   lineDevSpecific=xxx_lineDevSpecific @1251
+   lineDial=xxx_lineDial @1252
+   lineForward=xxx_lineForward @1253
+   lineGenerateDigits=xxx_lineGenerateDigits @1254
+   lineGenerateTone=xxx_lineGenerateTone @1255
+   lineGetAddressCaps=xxx_lineGetAddressCaps @1256
+   lineGetAddressID=xxx_lineGetAddressID @1257
+   lineGetAddressStatus=xxx_lineGetAddressStatus @1258
+   lineGetAppPriority=xxx_lineGetAppPriority @1259
+   lineGetCallInfo=xxx_lineGetCallInfo @1260
+   lineGetCallStatus=xxx_lineGetCallStatus @1261
+   lineGetConfRelatedCalls=xxx_lineGetConfRelatedCalls @1262
+   lineGetIcon=xxx_lineGetIcon @1263
+   lineGetLineDevStatus=xxx_lineGetLineDevStatus @1264
+   lineGetMessage=xxx_lineGetMessage @1265
+   lineGetNewCalls=xxx_lineGetNewCalls @1266
+   lineGetNumRings=xxx_lineGetNumRings @1267
+   lineGetProviderList=xxx_lineGetProviderList @1268
+   lineGetStatusMessages=xxx_lineGetStatusMessages @1269
+   lineHandoff=xxx_lineHandoff @1270
+   lineHold=xxx_lineHold @1271
+   lineInitializeEx @1272
+   lineMonitorDigits=xxx_lineMonitorDigits @1273
+   lineMonitorMedia=xxx_lineMonitorMedia @1274
+   lineNegotiateExtVersion=xxx_lineNegotiateExtVersion @1275
+   linePickup=xxx_linePickup @1276
+   linePrepareAddToConference=xxx_linePrepareAddToConference @1277
+   lineRedirect=xxx_lineRedirect @1278
+   lineReleaseUserUserInfo=xxx_lineReleaseUserUserInfo @1279
+   lineRemoveFromConference=xxx_lineRemoveFromConference @1280
+   lineSendUserUserInfo=xxx_lineSendUserUserInfo @1281
+   lineSetAppPriority=xxx_lineSetAppPriority @1282
+   lineSetCallParams=xxx_lineSetCallParams @1283
+   lineSetCallPrivilege=xxx_lineSetCallPrivilege @1284
+   lineSetMediaMode=xxx_lineSetMediaMode @1285
+   lineSetNumRings=xxx_lineSetNumRings @1286
+   lineSetTerminal=xxx_lineSetTerminal @1287
+   lineSetTollList=xxx_lineSetTollList @1288
+   lineSetupConference=xxx_lineSetupConference @1289
+   lineSetupTransfer=xxx_lineSetupTransfer @1290
+   lineSwapHold=xxx_lineSwapHold @1291
+   lineUnhold=xxx_lineUnhold @1292
+
+   phoneClose=xxx_phoneClose @1293
+   phoneConfigDialog=xxx_phoneConfigDialog @1294
+   phoneDevSpecific=xxx_phoneDevSpecific @1295
+   phoneGetDevCaps=xxx_phoneGetDevCaps @1296
+   phoneGetGain=xxx_phoneGetGain @1297
+   phoneGetHookSwitch=xxx_phoneGetHookSwitch @1298
+   phoneGetIcon=xxx_phoneGetIcon @1299
+   phoneGetID=xxx_phoneGetID @1300
+   phoneGetMessage=xxx_phoneGetMessage @1301
+   phoneGetRing=xxx_phoneGetRing @1302
+   phoneGetStatus=xxx_phoneGetStatus @1303
+   phoneGetStatusMessages=xxx_phoneGetStatusMessages @1304
+   phoneGetVolume=xxx_phoneGetVolume @1305
+   phoneInitializeEx @1306
+   phoneNegotiateAPIVersion=xxx_phoneNegotiateAPIVersion @1307
+   phoneNegotiateExtVersion=xxx_phoneNegotiateExtVersion @1308
+   phoneOpen=xxx_phoneOpen @1309
+   phoneSetGain=xxx_phoneSetGain @1310
+   phoneSetHookSwitch=xxx_phoneSetHookSwitch @1311
+   phoneSetRing=xxx_phoneSetRing @1312
+   phoneSetStatusMessages=xxx_phoneSetStatusMessages @1313
+   phoneSetVolume=xxx_phoneSetVolume @1314
+   phoneShutdown @1315
+   lineStartDTMF=xxx_lineStartDTMF @2608
+   lineStopDTMF=xxx_lineStopDTMF @2609
+; @CESYSGEN ENDIF
+
+// Multimedia Functions (mmsystem.h)
+; @CESYSGEN IF COREDLL_MMSND
+   AudioUpdateFromRegistry=waveapic.#1 @376
+   sndPlaySoundW=waveapic.#2 @377
+   PlaySoundW=waveapic.#3 @378
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_MMWAVE
+   waveOutGetNumDevs=waveapic.#4 @379
+   waveOutGetDevCaps=waveapic.#5 @380
+   waveOutGetVolume=waveapic.#6 @381
+   waveOutSetVolume=waveapic.#7 @382
+   waveOutGetErrorText=waveapic.#8 @383
+   waveOutClose=waveapic.#9 @384
+   waveOutPrepareHeader=waveapic.#10 @385
+   waveOutUnprepareHeader=waveapic.#11 @386
+   waveOutWrite=waveapic.#12 @387
+   waveOutPause=waveapic.#13 @388
+   waveOutRestart=waveapic.#14 @389
+   waveOutReset=waveapic.#15 @390
+   waveOutBreakLoop=waveapic.#16 @391
+   waveOutGetPosition=waveapic.#17 @392
+   waveOutGetPitch=waveapic.#18 @393
+   waveOutSetPitch=waveapic.#19 @394
+   waveOutGetPlaybackRate=waveapic.#20 @395
+   waveOutSetPlaybackRate=waveapic.#21 @396
+   waveOutGetProperty=waveapic.#22 @1813
+   waveOutSetProperty=waveapic.#23 @1814
+   waveOutGetID=waveapic.#24 @397
+   waveOutMessage=waveapic.#25 @398
+   waveOutOpen=waveapic.#26 @399
+   waveInGetNumDevs=waveapic.#27 @400
+   waveInGetDevCaps=waveapic.#28 @401
+   waveInGetErrorText=waveapic.#29 @402
+   waveInClose=waveapic.#30 @403
+   waveInPrepareHeader=waveapic.#31 @404
+   waveInUnprepareHeader=waveapic.#32 @405
+   waveInAddBuffer=waveapic.#33 @406
+   waveInStart=waveapic.#34 @407
+   waveInStop=waveapic.#35 @408
+   waveInReset=waveapic.#36 @409
+   waveInGetPosition=waveapic.#37 @410
+   waveInGetID=waveapic.#38 @411
+   waveInMessage=waveapic.#39 @412
+   waveInOpen=waveapic.#40 @413
+   waveInGetProperty=waveapic.#41 @1815
+   waveInSetProperty=waveapic.#42 @1816
+
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_MMACM
+   acmDriverAdd=waveapic.#43 @414
+   acmDriverClose=waveapic.#44 @415
+   acmDriverDetails=waveapic.#45 @416
+   acmDriverEnum=waveapic.#46 @417
+   acmDriverID=waveapic.#47 @418
+   acmDriverMessage=waveapic.#48 @419
+   acmDriverOpen=waveapic.#49 @420
+   acmDriverPriority=waveapic.#50 @421
+   acmDriverRemove=waveapic.#51 @422
+   acmFilterDetails=waveapic.#52 @424
+   acmFilterEnum=waveapic.#53 @425
+   acmFilterTagDetails=waveapic.#54 @426
+   acmFilterTagEnum=waveapic.#55 @427
+   acmFormatDetails=waveapic.#56 @429
+   acmFormatEnum=waveapic.#57 @430
+   acmFormatSuggest=waveapic.#58 @431
+   acmFormatTagDetails=waveapic.#59 @432
+   acmFormatTagEnum=waveapic.#60 @433
+   acmStreamClose=waveapic.#61 @434
+   acmStreamConvert=waveapic.#62 @435
+   acmStreamMessage=waveapic.#63 @436
+   acmStreamOpen=waveapic.#64 @437
+   acmStreamPrepareHeader=waveapic.#65 @438
+   acmStreamReset=waveapic.#66 @439
+   acmStreamSize=waveapic.#67 @440
+   acmStreamUnprepareHeader=waveapic.#68 @441
+   acmGetVersion=waveapic.#69 @442
+   acmMetrics=waveapic.#70 @443
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_MMACMUI
+   acmFormatChoose=waveapic.#71 @428
+   acmFilterChoose=waveapic.#72 @423
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_MMMIX
+   mixerGetControlDetails=waveapic.#73 @1589
+   mixerGetDevCaps=waveapic.#74 @1591
+   mixerGetID=waveapic.#75 @1590
+   mixerGetLineControls=waveapic.#76 @1592
+   mixerGetLineInfo=waveapic.#77 @1593
+   mixerGetNumDevs=waveapic.#78 @1594
+   mixerMessage=waveapic.#79 @1596
+   mixerOpen=waveapic.#80 @1595
+   mixerSetControlDetails=waveapic.#81 @1597
+   mixerClose=waveapic.#82 @1598
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF CE_MODULES_REDIR
+   // WNet SDK functions (winnetwk.h)
+   WNetAddConnection3W=xxx_WNetAddConnection3W @444
+   WNetCancelConnection2W=xxx_WNetCancelConnection2W @445
+   WNetConnectionDialog1W=xxx_WNetConnectionDialog1W @446
+   WNetDisconnectDialog=xxx_WNetDisconnectDialog @447
+   WNetDisconnectDialog1W=xxx_WNetDisconnectDialog1W @448
+   WNetGetConnectionW=xxx_WNetGetConnectionW @449
+   WNetGetUniversalNameW=xxx_WNetGetUniversalNameW @450
+   WNetGetUserW=xxx_WNetGetUserW @451
+   WNetOpenEnumW=xxx_WNetOpenEnumW @452
+   WNetCloseEnum=xxx_WNetCloseEnum @453
+   WNetEnumResourceW=xxx_WNetEnumResourceW @454
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF CE_MODULES_FILESYS || CE_MODULES_SECUR32
+   GetUserNameExW=xxx_GetUserNameEx @1503
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF CE_MODULES_FILESYS
+   // Registry SDK exports (winreg.h)
+   RegCloseKey=xxx_RegCloseKey @455
+   RegCreateKeyExW=xxx_RegCreateKeyExW @456
+   RegDeleteKeyW=xxx_RegDeleteKeyW @457
+   RegDeleteValueW=xxx_RegDeleteValueW @458
+   RegEnumValueW=xxx_RegEnumValueW @459
+   RegEnumKeyExW=xxx_RegEnumKeyExW @460
+   RegOpenKeyExW=xxx_RegOpenKeyExW @461
+   RegQueryInfoKeyW=xxx_RegQueryInfoKeyW @462
+   RegQueryValueExW=xxx_RegQueryValueExW @463
+   RegSetValueExW=xxx_RegSetValueExW @464
+   RegFlushKey=xxx_RegFlushKey @1152
+   CeRegTestSetValueW=xxx_CeRegTestSetValueW @ 2504
+   CeRegGetInfo=xxx_CeRegGetInfo @ 2505
+   CeRegGetNotificationInfo=xxx_CeRegGetNotificationInfo @2506
+   RegSetKeySecurity=xxx_RegSetKeySecurity @2719
+   RegGetKeySecurity=xxx_RegGetKeySecurity @2720
+
+
+   CeFindFirstRegChange=xxx_CeFindFirstRegChange @1950
+   CeFindNextRegChange=xxx_CeFindNextRegChange @1951
+   CeFindCloseRegChange=xxx_CeFindCloseRegChange @1952
+
+
+   // registry OAK exports (pwinreg.h)
+   RegCopyFile=xxx_RegCopyFile @465
+   RegRestoreFile=xxx_RegRestoreFile @466
+   RegSaveKey=xxx_RegSaveKey @1478
+   RegReplaceKey=xxx_RegReplaceKey @1479
+   SetCurrentUser=xxx_SetCurrentUser @1501
+   SetUserData=xxx_SetUserData @1502
+   GetUserDirectory=xxx_GetUserDirectory @1686
+   CryptProtectData=xxx_CryptProtectData @1599
+   CryptUnprotectData=xxx_CryptUnprotectData @1600
+   CeGenRandom=xxx_GenRandom @1601
+   GetDeviceUniqueID=xxx_GetDeviceUniqueID @1993
+   SampleCounterForEntropyPool=xxx_SampleCounterForEntropyPool @2909
+; @CESYSGEN ENDIF CE_MODULES_FILESYS
+
+   // Notify SDK functions (notify.h)
+; @CESYSGEN IF CE_MODULES_NOTIFY
+   PegSetUserNotification=CeSetUserNotification @467
+   PegClearUserNotification=CeClearUserNotification @468
+   PegRunAppAtTime=CeRunAppAtTime @469
+   PegRunAppAtEvent=CeRunAppAtEvent @470
+   PegHandleAppNotifications=CeHandleAppNotifications @471
+   PegGetUserNotificationPreferences=CeGetUserNotificationPreferences @472
+   CeSetUserNotification @473
+   CeClearUserNotification @474
+   CeRunAppAtTime @475
+   CeRunAppAtEvent @476
+   CeHandleAppNotifications @477
+   CeGetUserNotificationPreferences @478
+   CeSetUserNotificationEx @1352
+   CeGetUserNotificationHandles @1353
+   CeGetUserNotification @1354
+   CeGetNotificationThreadId @1823
+; @CESYSGEN ENDIF
+
+; We don't want to export these thunks if no shell present
+; @CESYSGEN IF COREDLL_SHELLAPIS
+   // Shell SDK exports (shellapi.h, commdlg.h)
+   Shell_NotifyIcon=xxx_Shell_NotifyIcon @481
+   SHAddToRecentDocs=xxx_SHAddToRecentDocs @483
+   SHCreateExplorerInstance=xxx_SHCreateExplorerInstance @1163
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF SHELLSDK_MODULES_AYGSHELL
+   ; AYGSHELL thunks
+   SHDoneButtonI=xxx_SHDoneButton @1782
+   SHGetAppKeyAssocI=xxx_SHGetAppKeyAssoc @1783
+   SHSetAppKeyWndAssocI=xxx_SHSetAppKeyWndAssoc @1784
+   SHSetNavBarTextI=xxx_SHSetNavBarText @1785
+   NotSystemParametersInfoI=xxx_NotSystemParametersInfo @1787
+   SHCloseAppsI=xxx_SHCloseApps @1788
+   SHNotificationAddI=xxx_SHNotificationAdd @1806
+   SHNotificationUpdateI=xxx_SHNotificationUpdate @1807
+   SHNotificationRemoveI=xxx_SHNotificationRemove @1808
+   SHNotificationGetDataI=xxx_SHNotificationGetData @1809
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_SHEXEC
+   ShellExecuteEx @480
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_SHORTCUT
+   SHCreateShortcut @484
+   SHGetShortcutTarget @485
+   SHCreateShortcutEx @1488
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_SHMISC
+   SHShowOutOfMemory @486
+   SHLoadDIBitmap @487
+   SHLoadIndirectString @1977
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_FILEINFO
+   SHGetFileInfo @482
+   SHGetSpecialFolderPath @295
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_FILEOPEN
+   GetOpenFileNameW @488
+   GetSaveFileNameW @489
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_DSA
+   DPA_Create @1837
+   DPA_CreateEx @1838 NONAME
+   DPA_Clone @1839 NONAME
+   DPA_DeleteAllPtrs @1840 NONAME
+   DPA_DeletePtr @1841 NONAME
+   DPA_Destroy @1842
+   DPA_DestroyCallback @1843
+   DPA_EnumCallback @1844
+   DPA_GetPtr @1845
+   DPA_GetPtrIndex @1846 NONAME
+   DPA_Grow @1847
+   DPA_InsertPtr @1848
+   DPA_Search @1849 NONAME
+   DPA_SetPtr @1850
+   DPA_Sort @1851
+
+   DSA_Create @1852
+   DSA_Clone @1853
+   DSA_DeleteAllItems @1854
+   DSA_DeleteItem @1855
+   DSA_Destroy @1856
+   DSA_DestroyCallback @1857
+   DSA_EnumCallback @1858
+   DSA_GetItem @1859
+   DSA_GetItemPtr @1860
+   DSA_Grow @1861 NONAME
+   DSA_InsertItem @1862
+   DSA_Search @1863
+   DSA_SetItem @1864
+   DSA_SetRange @1865 NONAME
+   DSA_Sort @1866 NONAME
+; @CESYSGEN ENDIF
+
+
+   // SDK kernel functions (winbase.h / kfuncs.h)
+   PerformCallBack4=xxx_PerformCallBack4 @ 1448
+   QueryAPISetID=xxx_QueryAPISetID @490
+   TerminateThread=xxx_TerminateThread @491
+   CreateThread=xxx_CreateThread @492
+   CreateProcessW=xxx_CreateProcessW @493
+   CeCreateProcessEx=xxx_CeCreateProcessEx @2881
+   EventModify=xxx_EventModify @494
+   CreateEventW=xxx_CreateEventW @495
+   OpenEventW=xxx_OpenEventW @1496
+   GetEventData=xxx_GetEventData @1527
+   SetEventData=xxx_SetEventData @1528
+   IsNamedEventSignaled=xxx_IsNamedEventSignaled @1981
+   Sleep=xxx_Sleep @496
+   WaitForSingleObject=xxx_WaitForSingleObject @497
+   WaitForMultipleObjects=xxx_WaitForMultipleObjects @498
+   SuspendThread=xxx_SuspendThread @499
+   ResumeThread=xxx_ResumeThread @500
+   GetThreadContext=xxx_GetThreadContext @1148
+   SetThreadContext=xxx_SetThreadContext @502
+   WaitForDebugEvent=xxx_WaitForDebugEvent @503
+   ContinueDebugEvent=xxx_ContinueDebugEvent @504
+   DebugActiveProcess=xxx_DebugActiveProcess @505
+
+   DebugActiveProcessStop=xxx_DebugActiveProcessStop @1991
+   DebugSetProcessKillOnExit=xxx_DebugSetProcessKillOnExit @1992
+   CeGetModuleInfo=xxx_CeGetModuleInfo @1994
+   CheckRemoteDebuggerPresent=xxx_CheckRemoteDebuggerPresent @2507
+   CeOpenFileHandle=xxx_CeOpenFileHandle @2511
+
+   STDAPI(CeResetStack, 0) @2457
+
+   ReadProcessMemory=xxx_ReadProcessMemory @506
+   WriteProcessMemory=xxx_WriteProcessMemory @507
+   FlushInstructionCache=xxx_FlushInstructionCache @508
+   CeSetProcessVersion=xxx_CeSetProcessVersion @1775
+   OpenProcess=xxx_OpenProcess @509
+   OpenThread=xxx_OpenThread @2551
+   GetModuleInformation=xxx_GetModuleInformation @1721
+   DumpKCallProfile=xxx_DumpKCallProfile @510
+   THCreateSnapshot=xxx_THCreateSnapshot @511
+   NotifyForceCleanboot=xxx_NotifyForceCleanboot @513
+   SetThreadPriority=xxx_SetThreadPriority @514
+   GetThreadPriority=xxx_GetThreadPriority @515
+   CeSetThreadPriority=xxx_CeSetThreadPriority @621
+   CeGetThreadPriority=xxx_CeGetThreadPriority @622
+   CeSetThreadQuantum=xxx_CeSetThreadQuantum @1244
+   CeGetThreadQuantum=xxx_CeGetThreadQuantum @1245
+
+   CePowerOffProcessor @2520
+   CePowerOnProcessor  @2521
+   STDAPI(CeGetIdleTimeEx,4) @2500
+   STDAPI(CeGetProcessorState,4) @2501
+   STDAPI(CeGetThreadAffinity,4) @2524
+   STDAPI(CeSetThreadAffinity,8) @2525
+   STDAPI(CeGetProcessAffinity,4) @2526
+   STDAPI(CeSetProcessAffinity,8) @2527
+
+   GetThreadId=xxx_GetThreadId @2558
+   GetProcessIdOfThread=xxx_GetProcessIdOfThread @2559
+
+   GetLastError=xxx_GetLastError @516
+   SetLastError=xxx_SetLastError @517
+   GetExitCodeThread=xxx_GetExitCodeThread @518
+   GetExitCodeProcess=xxx_GetExitCodeProcess @519
+   TlsCall=xxx_TlsCall @520
+   IsBadCodePtr=xxx_IsBadCodePtr @521
+   IsBadReadPtr=xxx_IsBadReadPtr @522
+   IsBadWritePtr=xxx_IsBadWritePtr @523
+   VirtualAlloc=xxx_VirtualAlloc @524
+   VirtualFree=xxx_VirtualFree @525
+   VirtualAllocEx=xxx_VirtualAllocEx @2563
+   VirtualFreeEx=xxx_VirtualFreeEx @2564
+   VirtualProtect=xxx_VirtualProtect @526
+   VirtualQuery=xxx_VirtualQuery @527
+   VirtualQueryEx=xxx_VirtualQueryEx @2540
+   VirtualProtectEx=xxx_VirtualProtectEx @2541
+   CeMapUserAddressesToVoid=xxx_CeMapUserAddressesToVoid @ 2917
+   LoadLibraryW @528
+   LoadLibraryExW @1241
+   FreeLibrary @529
+   GetProcAddressW @530
+   CeLoadLibraryInProcess=xxx_CeLoadLibraryInProcess @2869
+   // FindResource is here for v1 compatibility.  V2 uses FindResourceW for Win32 compatibility
+   FindResource=FindResourceW @531
+   FindResourceW @532
+   FindResourceForDisplayConfiguration @2901
+   LoadResource @533
+   LoadStringW @874
+   SizeofResource @534
+   VerQueryValueW @1459
+   GetFileVersionInfoW @1460
+   GetFileVersionInfoSizeW @1461
+   GetTickCount=xxx_GetTickCount @535
+   GetProcessVersion=xxx_GetProcessVersion @536
+   GetModuleFileNameW=xxx_GetModuleFileNameW @537
+   GetModuleHandleW=xxx_GetModuleHandleW @1177
+   QueryPerformanceCounter=xxx_QueryPerformanceCounter @538
+   QueryPerformanceFrequency=xxx_QueryPerformanceFrequency @539
+   ForcePageout=xxx_ForcePageout @540
+   GetThreadTimes=xxx_GetThreadTimes @1186
+   OutputDebugStringW=xxx_OutputDebugStringW @541
+   GetSystemInfo=xxx_GetSystemInfo @542
+   QueryInstructionSet=xxx_QueryInstructionSet @1677
+   IsProcessorFeaturePresent=xxx_IsProcessorFeaturePresent @1758
+   RaiseException=xxx_RaiseException @543
+   TerminateProcess=xxx_TerminateProcess @544
+   NKDbgPrintfW @545
+   RegisterDbgZones=xxx_RegisterDbgZones @546
+   SetDaylightTime=xxx_SetDaylightTime @547
+   GetCallStackSnapshot=xxx_GetCallStackSnapshot @1760
+   GetThreadCallStack=xxx_GetThreadCallStack @1811
+   PageOutModule=xxx_PageOutModule @1780
+   GetProcAddressInProcess @2599
+   GetProcessTimes=xxx_GetProcessTimes @2918
+
+; @CESYSGEN IF NK_NKMAPFILE
+   CreateFileMappingW=xxx_CreateFileMappingW @548
+   MapViewOfFile=xxx_MapViewOfFile @549
+   UnmapViewOfFile=xxx_UnmapViewOfFile @550
+   FlushViewOfFile=xxx_FlushViewOfFile @551
+   FlushViewOfFileMaybe=xxx_FlushViewOfFileMaybe @1215
+   CreateFileForMapping=xxx_CreateFileForMappingW @552
+   CreateFileForMappingW=xxx_CreateFileForMappingW @1167
+   MapViewOfFileInProcess=xxx_MapViewOfFileInProcess @2401
+   UnmapViewOfFileInProcess=xxx_UnmapViewOfFileInProcess @2402
+; @CESYSGEN ENDIF NK_NKMAPFILE
+
+   CeOpenCallerBuffer=xxx_CeOpenCallerBuffer @2569
+   CeCloseCallerBuffer=xxx_CeCloseCallerBuffer @2570
+   CeAllocAsynchronousBuffer=xxx_CeAllocAsynchronousBuffer @2571
+   CeFreeAsynchronousBuffer=xxx_CeFreeAsynchronousBuffer @2572
+   CeFlushAsynchronousBuffer=xxx_CeFlushAsynchronousBuffer @2607
+   CeAllocDuplicateBuffer=xxx_CeAllocDuplicateBuffer @2573
+   CeFreeDuplicateBuffer=xxx_CeFreeDuplicateBuffer @2574
+
+   CloseHandle @553
+   CreateMutexW=xxx_CreateMutexW @555
+   ReleaseMutex=xxx_ReleaseMutex @556
+   KernelIoControl=xxx_KernelIoControl @557
+   KernelLibIoControl=xxx_KernelLibIoControl @1489
+   CreateStaticMapping=xxx_CreateStaticMapping @1539
+   DeleteStaticMapping=xxx_DeleteStaticMapping @1826
+   MapCallerPtr=xxx_MapCallerPtr @1602
+   MapPtrToProcWithSize=xxx_MapPtrToProcWithSize @1603
+   FreeLibraryAndExitThread @1216
+   GetProcAddressA @1230
+   GetCommandLineW @1231
+   DisableThreadLibraryCalls @1232
+   TryEnterCriticalSection @1233
+   GetTempFileNameW @1234
+   CeGetCanonicalPathNameW @1957
+   MatchesWildcardMask @1959
+   CreateSemaphoreW=xxx_CreateSemaphoreW @1238
+   ReleaseSemaphore=xxx_ReleaseSemaphore @1239
+   CeMapArgumentArray=xxx_CeMapArgumentArray @1446
+   CeSetExtendedPdata @1455
+
+   GetProcessId=xxx_GetProcessId @2560
+
+
+;  Cut-Copy-Paste
+; @CESYSGEN IF COREDLL_CCPSELECT
+   UpdateSelectionState  @2906
+   EndSelection          @2907
+; @CESYSGEN ENDIF COREDLL_CCPSELECT
+
+;
+; Watchdog APIs
+;
+   CreateWatchDogTimer @2530
+   OpenWatchDogTimer @2531
+   StartWatchDogTimer @2532
+   StopWatchDogTimer @2533
+   RefreshWatchDogTimer @2534
+
+
+   // OAK kernel functions (pkfuncs.h)
+   AddEventAccess=xxx_AddEventAccess @558
+; Intentionally change the ordinal, such that existing binaries using CreateAPISets doesn't load.
+; DO NOT reuse ordinal 559.
+;   CreateAPISet=xxx_CreateAPISet @559
+   CreateAPISet=xxx_CreateAPISet @2539
+   VirtualCopy=xxx_VirtualCopy @560
+   VirtualCopyEx=xxx_VirtualCopyEx @2565
+   VirtualAllocCopyEx=xxx_VirtualAllocCopyEx @2566
+#if defined(SH4)
+   VirtualSetPageFlags=xxx_VirtualSetPageFlags @1183
+   SetRAMMode=xxx_SetRAMMode @1184
+   SetStoreQueueBase=xxx_SetStoreQueueBase @1212
+#endif
+   VirtualSetAttributes=xxx_VirtualSetAttributes @1724
+   VirtualSetAttributesEx=xxx_VirtualSetAttributesEx @2400
+   CeVirtualSharedAlloc=xxx_CeVirtualSharedAlloc @1812
+   AllocPhysMem=xxx_AllocPhysMem @1486
+   FreePhysMem=xxx_FreePhysMem @1487
+   SleepTillTick=xxx_SleepTillTick @1534
+   DuplicateHandle=xxx_DuplicateHandle @1535
+   DeviceIoControl=xxx_DeviceIoControl @179
+   ForwardDeviceIoControl=xxx_ForwardDeviceIoControl @2605
+   LockPages=xxx_LockPages @1161
+   UnlockPages=xxx_UnlockPages @1162
+;   ThreadAttachAllDLLs=xxx_ThreadAttachAllDLLs @561
+;   ThreadDetachAllDLLs=xxx_ThreadDetachAllDLLs @562
+
+   U_ropen=xxx_U_ropen @563
+   U_rread=xxx_U_rread @564
+   U_rwrite=xxx_U_rwrite @565
+   U_rlseek=xxx_U_rlseek @566
+   U_rclose=xxx_U_rclose @567
+
+   UpdateNLSInfo=xxx_UpdateNLSInfo @1447
+   UpdateNLSInfoEx=xxx_UpdateNLSInfoEx @1796
+   NKvDbgPrintfW=xxx_NKvDbgPrintfW @568
+   ProfileSyscall=xxx_ProfileSyscall @569
+   GetRealTime=GetLocalTime @570
+   SetRealTime=SetLocalTime @571
+   ExtractResource @573
+   ExtractResourceWithSize @2912
+   KernExtractIcons @574
+   KernExtractIconsWithSize @2913
+   GetRomFileInfo=xxx_GetRomFileInfo @575
+   GetRomFileBytes=xxx_GetRomFileBytes @576
+   CacheSync=xxx_CacheSync @577
+   CacheRangeFlush=xxx_CacheRangeFlush @1765
+   AddTrackedItem=xxx_AddTrackedItem @578
+   DeleteTrackedItem=xxx_DeleteTrackedItem @579
+   PrintTrackedItem=xxx_PrintTrackedItem @580
+   GetKPhys=xxx_GetKPhys @581
+   GiveKPhys=xxx_GiveKPhys @582
+   SetExceptionHandler @583
+   RegisterTrackedItem=xxx_RegisterTrackedItem @584
+   FilterTrackedItem=xxx_FilterTrackedItem @585
+   SetKernelAlarm=xxx_SetKernelAlarm @586
+   RefreshKernelAlarm=xxx_RefreshKernelAlarm @587
+   SetGwesOOMEvent=xxx_SetOOMEvent @590
+   SetOOMEvent=xxx_SetOOMEvent @1462
+   SetOOMEventEx=xxx_SetOOMEventEx @946
+   StringCompress=xxx_StringCompress @591
+   StringDecompress=xxx_StringDecompress @592
+   BinaryCompress=xxx_BinaryCompress @593
+   BinaryDecompress=xxx_BinaryDecompress @594
+   DecompressBinaryBlock=xxx_DecompressBinaryBlock @1776
+   InputDebugCharW=xxx_InputDebugCharW @595
+   MapPtrToProcess=xxx_MapPtrToProcess @598
+   MapPtrUnsecure=xxx_MapPtrUnsecure @599
+   GetProcFromPtr=xxx_GetProcFromPtr @600
+   IsBadPtr=xxx_IsBadPtr @601
+   GetProcAddrBits=xxx_GetProcAddrBits @602
+   GetFSHeapInfo=xxx_GetFSHeapInfo @603
+   PrepareThreadExit=xxx_PrepareThreadExit @605
+   GetOwnerProcess=xxx_GetOwnerProcess @606
+   GetCallerProcess=xxx_GetCallerProcess @607
+   GetCallerVMProcessId=xxx_GetCallerVMProcessId @2603
+   GetDirectCallerProcessId=xxx_GetDirectCallerProcessId @2604
+   GetIdleTime=xxx_GetIdleTime @608
+   SetLowestScheduledPriority=xxx_SetLowestScheduledPriority @609
+   IsPrimaryThread @610
+   SetProcPermissions=xxx_SetProcPermissions @611
+   CeGetCurrentTrust=xxx_CeGetCurrentTrust @ 1357
+   CeGetCallerTrust=xxx_CeGetCallerTrust @ 1395
+   CeGetProcessTrust=xxx_CeGetProcessTrust @ 2510
+   GetCurrentPermissions=xxx_GetCurrentPermissions @612
+   SetTimeZoneBias=xxx_SetTimeZoneBias @614
+   SetCleanRebootFlag=xxx_SetCleanRebootFlag @615
+   PowerOffSystem=xxx_PowerOffSystem @617
+   SetDbgZone=xxx_SetDbgZone @618
+   TurnOnProfiling=xxx_TurnOnProfiling @619
+   TurnOffProfiling=xxx_TurnOffProfiling @620
+   GetProcName @624
+   SetHandleOwner=xxx_SetHandleOwner @625
+   SetHandleOwnerWorkaround=xxx_SetHandleOwnerWorkaround @2550
+   LoadDriver @626
+   LoadIntChainHandler=xxx_LoadIntChainHandler @1475
+   FreeIntChainHandler=xxx_FreeIntChainHandler @1476
+   IntChainHandlerIoControl=xxx_IntChainHandlerIoControl @2614
+   LoadKernelLibrary=xxx_LoadKernelLibrary @1671
+   InterruptInitialize=xxx_InterruptInitialize @627
+   InterruptMask=xxx_InterruptMask @1797
+   InterruptDone=xxx_InterruptDone @628
+   InterruptDisable=xxx_InterruptDisable @629
+   SetKMode=xxx_SetKMode @630
+   SetPowerOffHandler=xxx_SetPowerOffHandler @631
+   SetGwesPowerHandler=xxx_SetGwesPowerHandler @632
+   ConnectDebugger=xxx_ConnectDebugger @633
+   ConnectHdstub=xxx_ConnectHdstub @1953
+   ConnectOsAxsT0=xxx_ConnectOsAxsT0 @1954
+   ConnectOsAxsT1=xxx_ConnectOsAxsT1 @1983
+   SetHardwareWatch=xxx_SetHardwareWatch @634
+   RegisterAPISet=xxx_RegisterAPISet @635
+   CreateAPIHandle=xxx_CreateAPIHandle @636
+   VerifyAPIHandle=xxx_VerifyAPIHandle @637
+   RegisterDirectMethods=xxx_RegisterDirectMethods @2555
+   LockAPIHandle=xxx_LockAPIHandle @2553
+   UnlockAPIHandle=xxx_UnlockAPIHandle @2554
+   SetAPIErrorHandler=xxx_SetAPIErrorHandler @2611
+   CeRegisterAccessMask=xxx_CeRegisterAccessMask @2836
+   CreateAPIHandleWithAccess=xxx_CreateAPIHandleWithAccess @2837
+   PPSHRestart=xxx_PPSHRestart @638
+   GetProcessIndexFromID=xxx_GetProcessIndexFromID @640
+   GetProcessIDFromIndex=xxx_GetProcessIDFromIndex @1727
+   GetCallerProcessIndex=xxx_GetCallerProcessIndex @641
+   DebugNotify=xxx_DebugNotify @642
+; @CESYSGEN IF CE_MODULES_FILESYS
+   ReadRegistryFromOEM=xxx_ReadRegistryFromOEM @1153
+   WriteRegistryToOEM=xxx_WriteRegistryToOEM @1154
+; @CESYSGEN ENDIF CE_MODULES_FILESYS
+   WriteDebugLED=xxx_WriteDebugLED @ 1155
+
+; @CESYSGEN IF CE_MODULES_FILESYS
+   // mountable filesys oak exports (extfile.h)
+   AFS_Unmount=xxx_AFS_Unmount @643
+   AFS_CreateDirectoryW=xxx_AFS_CreateDirectoryW @644
+   AFS_RemoveDirectoryW=xxx_AFS_RemoveDirectoryW @645
+   AFS_GetFileAttributesW=xxx_AFS_GetFileAttributesW @646
+   AFS_SetFileAttributesW=xxx_AFS_SetFileAttributesW @647
+   AFS_CreateFileW=xxx_AFS_CreateFileW @648
+   AFS_DeleteFileW=xxx_AFS_DeleteFileW @649
+   AFS_MoveFileW=xxx_AFS_MoveFileW @650
+   AFS_FindFirstFileW=xxx_AFS_FindFirstFileW @651
+   AFS_RegisterFileSystemFunction=xxx_AFS_RegisterFileSystemFunction @652
+   AFS_PrestoChangoFileName=xxx_AFS_PrestoChangoFileName @654
+   AFS_CloseAllFileHandles=xxx_AFS_CloseAllFileHandles @655
+   AFS_GetDiskFreeSpace=xxx_AFS_GetDiskFreeSpace @656
+   AFS_NotifyMountedFS=xxx_AFS_NotifyMountedFS @657
+   AFS_FindFirstChangeNotificationW=xxx_AFS_FindFirstChangeNotificationW @1685
+   AFS_FsIoControlW=xxx_AFS_FsIoControlW @1966
+   AFS_SetFileSecurityW=xxx_AFS_SetFileSecurityW @2709
+   AFS_GetFileSecurityW=xxx_AFS_GetFileSecurityW @2710
+   SecureWipeAllVolumes=xxx_SecureWipeAllVolumes @2519
+; @CESYSGEN ENDIF CE_MODULES_FILESYS
+
+   ClearEventLogW=xxx_ClearEventLogW @1818
+   ReportEventW=xxx_ReportEventW  @1819
+   RegisterEventSourceW=xxx_RegisterEventSourceW @1820
+   DeregisterEventSource=xxx_DeregisterEventSource @1821
+   OpenEventLogW=xxx_OpenEventLogW @1970
+   CloseEventLog=xxx_CloseEventLog @1971
+   BackupEventLogW=xxx_BackupEventLogW @1972
+   LockEventLog=xxx_LockEventLog @1973
+   UnLockEventLog=xxx_UnLockEventLog @1974
+   ReadEventLogRaw=xxx_ReadEventLogRaw @1975
+
+;  LASS thunks will not be sysgened.
+
+;XXX CESYSGEN IF CE_MODULES_LASSD
+   VerifyUser @1827
+   LASSReloadConfig @1828
+   CreateEnrollmentConfigDialog @1976
+   LASSGetValue @2515
+   VerifyUserAsync @2516
+   LASSGetResult   @2517
+   LASSClose       @2518
+;XXX CESYSGEN ENDIF CE_MODULES_LASSD
+
+
+; @CESYSGEN IF CE_MODULES_BTD
+   RequestBluetoothNotifications @1995
+   StopBluetoothNotifications @1996
+   RegisterBluetoothCOMPort @2600
+   DeregisterBluetoothCOMPort @2601
+; @CESYSGEN ENDIF CE_MODULES_BTD
+
+; @CESYSGEN IF GWES_CARET
+   CreateCaret @658
+   DestroyCaret @659
+   HideCaret @660
+   ShowCaret @661
+   SetCaretPos @662
+   GetCaretPos @663
+   SetCaretBlinkTime @664
+   GetCaretBlinkTime @665
+   DisableCaretSystemWide @666
+   EnableCaretSystemWide @667
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_CLIPBD
+   OpenClipboard @668
+   CloseClipboard @669
+   GetClipboardOwner @670
+   SetClipboardData @671
+   GetClipboardData @672
+   RegisterClipboardFormatW @673
+   CountClipboardFormats @674
+   EnumClipboardFormats @675
+   GetClipboardFormatNameW @676
+   EmptyClipboard @677
+   IsClipboardFormatAvailable @678
+   GetPriorityClipboardFormat @679
+   GetOpenClipboardWindow @680
+   GetClipboardDataAlloc @681
+; @CESYSGEN ENDIF
+
+   CreateDialogIndirectParamW @688
+   DialogBoxIndirectParamW @690
+
+; @CESYSGEN IF GWES_DLGMGR
+   CheckRadioButton @684
+   SendDlgItemMessageW @685
+   SetDlgItemTextW @686
+   GetDlgItemTextW @687
+   DefDlgProcW @689
+   EndDialog @691
+   GetDlgItem @692
+   GetDlgCtrlID @693
+   GetDialogBaseUnits @694
+   GetDlgItemInt @695
+   GetNextDlgTabItem @696
+   GetNextDlgGroupItem @697
+   IsDialogMessageW @698
+   MapDialogRect @699
+   SetDlgItemInt @700
+   SetDialogAutoScrollBar @2705
+   SetWindowPosOnRotate @2706
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_FOREGND
+   GetForegroundWindow @701
+   SetForegroundWindow @702
+   SetActiveWindow @703
+   SetFocus @704
+   GetFocus @705
+   GetActiveWindow @706
+   GetCapture @707
+   SetCapture @708
+   ReleaseCapture @709
+   SetKeyboardTarget @710
+   GetKeyboardTarget @711
+   ShellModalEnd @712
+   GetForegroundInfo @1224
+   GetForegroundKeyboardTarget @ 1225
+   GetForegroundKeyboardLayoutHandle @ 1802
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_BATTERY
+   BatteryDrvrGetLevels=BatteryDrvrGetLevels @297
+   BatteryDrvrSupportsChangeNotification=BatteryDrvrSupportsChangeNotification @298
+   BatteryGetLifeTimeInfo=BatteryGetLifeTimeInfo @713
+   BatteryNotifyOfTimeChange=BatteryNotifyOfTimeChange @714
+   GetSystemPowerStatusEx=GetSystemPowerStatusEx @715
+   GetSystemPowerStatusEx2=GetSystemPowerStatusEx2 @1358
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_GWESMAIN
+   NotifyWinUserSystem @716
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_ICONCMN
+   ExtractIconExW @727
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_ICON
+   CreateIconIndirect @723
+   DestroyIcon @725
+   DrawIconEx @726
+   LoadIconW @728
+   GetIconInfo @1822
+; @CESYSGEN ENDIF
+
+
+; @CESYSGEN IF GWES_ICONCURS
+   DestroyCursor @724
+   CreateCursor @722
+; @CESYSGEN ENDIF
+
+
+; @CESYSGEN IF GWES_CURSOR OR GWES_MCURSOR
+   SetCursor @682
+   LoadCursorW @683
+   ClipCursor @731
+   GetClipCursor @732
+   GetCursor @733
+   GetCursorPos @734
+   SetCursorPos @736
+   ShowCursor @737
+   LoadAnimatedCursor @1493
+   SetSystemCursorPreference @2867 NONAME
+   GetSystemCursorPreference @2868 NONAME
+; @CESYSGEN ENDIF
+
+
+; @CESYSGEN IF GWES_LOADIMG
+   LoadImageW @730
+; @CESYSGEN ENDIF
+
+
+; @CESYSGEN IF GWES_IMGCTL
+   ImageList_Add @738
+   ImageList_AddMasked @739
+   ImageList_BeginDrag @740
+   ImageList_CopyDitherImage @741
+   ImageList_Create @742
+   ImageList_Destroy @743
+   ImageList_DragEnter @744
+   ImageList_DragLeave @745
+   ImageList_DragMove @746
+   ImageList_DragShowNolock @747
+   ImageList_Draw @748
+   ImageList_DrawEx @749
+   ImageList_DrawIndirect @750
+   ImageList_EndDrag @751
+   ImageList_GetBkColor @752
+   ImageList_GetDragImage @753
+   ImageList_GetIcon @754
+   ImageList_GetIconSize @755
+   ImageList_GetImageCount @756
+   ImageList_GetImageInfo @757
+   ImageList_LoadImage @758
+   ImageList_Merge @759
+   ImageList_Remove @760
+   ImageList_Replace @761
+   ImageList_ReplaceIcon @762
+   ImageList_SetBkColor @763
+   ImageList_SetDragCursorImage @764
+   ImageList_SetIconSize @765
+   ImageList_SetOverlayImage @766
+   ImageList_Copy @767
+   ImageList_Duplicate @768
+   ImageList_SetImageCount @769
+; @CESYSGEN ENDIF
+
+   ImmGetContext @783
+   ImmGetConversionStatus @785
+   ImmNotifyIME @800
+   ImmDisableIME @1206
+   ImmEnableIME @1541
+   ImmReleaseContext @803
+   ImmSetConversionStatus @811
+   ImmGetCompositionStringW @781
+   ImmIsIME @1209
+   ImmGetKeyboardLayout @1769
+   ImmAssociateContext @770
+   ImmGetOpenStatus @792
+   ImmSIPanelState @804
+   ImmEscapeW @775
+   ImmCreateContext @1198
+   ImmDestroyContext @1199
+   ImmConfigureIMEW @771
+   ImmCreateIMCC @772
+   ImmDestroyIMCC @773
+   ImmEnumRegisterWordW @774
+   ImmGenerateMessage @776
+   ImmGetCandidateListW @777
+   ImmGetCandidateListCountW @778
+   ImmGetCandidateWindow @779
+   ImmGetCompositionFontW @780
+   ImmGetCompositionWindow @782
+   ImmGetConversionListW @784
+   ImmGetDefaultIMEWnd @786
+   ImmGetDescriptionW @787
+   ImmGetGuideLineW @788
+   ImmGetIMCCLockCount @789
+   ImmGetIMCCSize @790
+   ImmGetIMCLockCount @791
+   ImmGetProperty @793
+   ImmGetRegisterWordStyleW @794
+   ImmIsUIMessageW @796
+   ImmLockIMC @797
+   ImmLockIMCC @798
+   ImmReSizeIMCC @801
+   ImmRegisterWordW @802
+   ImmSetActiveContext @806
+   ImmSetCandidateWindow @807
+   ImmSetCompositionFontW @808
+   ImmSetCompositionStringW @809
+   ImmSetCompositionWindow @810
+   ImmSetOpenStatus @814
+   ImmSetStatusWindowPos @815
+   ImmGetStatusWindowPos @1200
+   ImmSimulateHotKey @816
+   ImmUnlockIMC @817
+   ImmUnlockIMCC @818
+   ImmUnregisterWordW @819
+   ImmAssociateContextEx @1205
+   ImmGetIMEFileNameW @1207
+   ImmGetVirtualKey @1210
+   ImmGetImeMenuItemsW @1211
+   DefaultImcGet @1218
+   DefaultImeWndGet @1219
+   ImmProcessKey @1220
+   ImmTranslateMessage @1221
+   ImmSetImeWndIMC @1222
+   ImmGetUIClassName @1223
+   ImmRequestMessageW @1242
+   ImmSetHotKey @812
+   ImmGetHotKey @813
+   ImmActivateLayout @1979
+   ImmSendNotification @1980
+   ImmGetImcInfo @2610
+   ImmUpdateHKLList @2979
+
+; @CESYSGEN IF COREDLL_COREIMM
+;   ImmIsIMEDisabled @795
+;   ImmNotifyActiveKbd @799
+;   ImmSendDeterminedString @805
+;   ImmInstallIMEW @1208
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_UIBASE
+   GetMouseMovePoints @820
+   SendInput @823
+   mouse_event @824
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_JOURNAL
+   QASetWindowsJournalHook @821
+   QAUnhookWindowsJournalHook @822
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_KBDUI
+   EnableHardwareKeyboard @825
+   GetAsyncKeyState @826
+   GetKeyboardStatus @827
+   KeybdGetDeviceInfo @828
+   KeybdInitStates @829
+   KeybdVKeyToUnicode @830
+   MapVirtualKeyW @831
+   PostKeybdMessage @832
+   PostKeybdMessageEx @2790
+   keybd_event @833
+   keybd_eventEx @2791
+   GetAsyncShiftFlags @834
+   SetWindowsHookExW @1202
+   UnhookWindowsHookEx @1203
+   CallNextHookEx @1204
+   SetCurrentInputLanguage @2847
+   GetCurrentInputLanguage @2864
+   GetKeybdGuidFromKeybdMessage @2848
+
+; @CESYSGEN IF GWES_HOTKEY
+   RegisterHotKey @835
+   RegisterPostIMEProcessedHotkey @2859 NONAME
+   UnregisterHotKey @836
+   UnregisterFunc1 @1156
+   AllKeys @1453
+; @CESYSGEN ENDIF
+
+   GetKeyboardType @1771
+   GetKeyboardLayoutList @1767
+   LoadKeyboardLayoutW @1768
+   GetKeyboardLayout @1229
+   GetKeyboardLayoutNameW @1160
+   ActivateKeyboardLayout @1766
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_IDLE
+   SystemIdleTimerReset @837
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_ACCEL
+   TranslateAcceleratorW @838
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_NLED
+   NLedGetDeviceInfo @839
+   NLedSetDevice @840
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MENU
+   InsertMenuW @841
+   AppendMenuW @842
+   RemoveMenu @843
+   DestroyMenu @844
+   TrackPopupMenuEx @845
+   LoadMenuW @846
+   EnableMenuItem @847
+   CheckMenuItem @848
+   CheckMenuRadioItem @849
+   DeleteMenu @850
+   CreateMenu @851
+   CreatePopupMenu @852
+   SetMenuItemInfoW @853
+   GetMenuItemInfoW @854
+   GetSubMenu @855
+   GetMenuDefaultItem @2726
+   SetMenuDefaultItem @2727
+   SetMenuItemBitmaps @2739
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_DRAWMBAR
+   DrawMenuBar @856
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MSGBEEP
+   MessageBeep @857
+; @CESYSGEN ENDIF
+
+   MessageBoxW=xxx_MessageBoxW @858
+
+; @CESYSGEN IF GWES_MSGQUE
+   DispatchMessageW @859
+   GetKeyState @860
+   GetMessageW @861
+   GetMessagePos @862
+   GetMessageWNoWait @863
+   PeekMessageW @864
+   PostMessageW @865
+   PostQuitMessage @866
+   SendMessageW @868
+   SendNotifyMessageW @869
+   TranslateMessage @870
+   MsgWaitForMultipleObjectsEx @871
+   GetMessageSource @872
+   InSendMessage @1419
+   GetQueueStatus @1420
+   SendMessageTimeout @1495
+   GetMessageQueueReadyTimeStamp @1477
+   EnableGestures @2899
+   DisableGestures @2900
+   QueryGestures @2910
+   RegisterGesture @2724
+   GetGestureInfo @2962
+   GetGestureExtraArguments @2963
+   Gesture @2964
+   GestureBeginSession @2966
+   GestureEndSession @2967
+   RegisterForwardKeys @2882
+   UnregisterForwardKeys @2883
+   IsForwardKey @2884
+   ForwardKeyMessages @2885
+   StartKeyForwarding @2886
+   StopKeyForwarding @2887
+   GetLastInputType @2888 NONAME
+   SetLastInputType @2889 NONAME
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_WINMOBILEOOM
+   GetMemoryWaitEvents @2905
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_LOADBMP
+   LoadBitmapW @873
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_TIMER
+   SetTimer @875
+   KillTimer @876
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_TCHUI
+   TouchCalibrate @877
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_WMBASE
+   GetClassInfoW @878
+   GetClassLongW @879
+   SetClassLongW @880
+   GetClassLong=GetClassLongW @881
+   SetClassLong=SetClassLongW @882
+   RegisterClassW @95
+
+   UnregisterClassW @884
+   GetSystemMetrics @885
+   IsWindowVisible @886
+   GetDC @262
+   GetWindowDC @270
+   ReleaseDC @263
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_WINMGR
+   AdjustWindowRectEx @887
+   GetDoubleClickTime @888
+   GetSysColor @889
+   SetSysColors @890
+   RegisterWindowMessageW @891
+   RegisterTaskBar @892
+   RegisterTaskBarEx @1506
+   RegisterDesktop @1507
+   SetProp @1497
+   GetProp @1498
+   RemoveProp @1499
+   EnumPropsEx @1500
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_ATOM
+   GlobalAddAtomW @1519
+   GlobalDeleteAtom @1520
+   GlobalFindAtomW @1521
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGTT || GWES_MGRAST || GWES_GDIFONTS || GWES_PGDI
+   AddFontResourceW @893
+   CeRemoveFontResource @894
+   CreateFontIndirectW @895
+   ExtTextOutW @896
+   GetTextExtentExPointW @897
+   GetTextMetricsW @898
+   PegRemoveFontResource=CeRemoveFontResource @899
+   RemoveFontResourceW @900
+   SetTextAlign @1654
+   GetTextAlign @1655
+   SetTextCharacterExtra @1962
+   GetTextCharacterExtra @1963
+   GetCharWidth32 @1664
+   GetCharABCWidths @1779
+   GetCharABCWidthsI @1887
+   GetFontData @1888
+   GetOutlineTextMetricsW @1889
+   AddFontMemResourceEx @2513
+   RemoveFontMemResourceEx @2514
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGBITMAP || GWES_PGDI
+   CreateBitmap @901
+   CreateCompatibleBitmap @902
+   SetBitmapBits @1725
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGBLT || GWES_PGDI
+   BitBlt @903
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGBLT2 || GWES_PGDI
+   MaskBlt @904
+   StretchBlt @905
+   GetStretchBltMode @1824
+   SetStretchBltMode @1825
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGBLT2
+   TransparentImage @906
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_PGDI || GWES_MGDIBSEC
+   StretchDIBits @1667
+   SetDIBitsToDevice @1726
+; @CESYSGEN ENDIF
+
+
+; @CESYSGEN IF GWES_MGDC || GWES_PGDI
+   RestoreDC @907
+   SaveDC @908
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGDC
+   ExtEscape @1182
+   BitmapEscape @2924
+   CreateDCW @909
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGBASE || GWES_PGDI
+   CreateCompatibleDC @910
+   DeleteDC @911
+   DeleteObject @912
+   GetBkColor @913
+   GetBkMode @914
+   GetCurrentObject @915
+   GetDeviceCaps @916
+   GetObjectType @917
+   GetObjectW @918
+   GetStockObject @919
+   GetTextColor @920
+   SelectObject @921
+   SetBkColor @922
+   SetBkMode @923
+   SetTextColor @924
+   GetDIBColorTable @1665
+   SetDIBColorTable @1666
+   EnumDisplaySettings @1777
+   EnumDisplayDevices @1778
+   SetLayout @1890
+   GetLayout @1891
+   OpenDisplayConfiguration @2890
+   CloseDisplayConfiguration @2891
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGDRAW
+   CreatePatternBrush @925
+   CreatePen @926
+   FillRgn @927
+   SetROP2 @928
+   GetROP2 @1990
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGDRAW || GWES_PGDI
+   CreateDIBPatternBrushPt @929
+   CreatePenIndirect @930
+   CreateSolidBrush @931
+   DrawEdge @932
+   DrawFocusRect @933
+   Ellipse @934
+   FillRect @935
+   GetPixel @936
+   GetSysColorBrush @937
+   PatBlt @938
+   InvertRect @1770
+   Polygon @939
+   Polyline @940
+   Rectangle @941
+   RoundRect @942
+   SetBrushOrgEx @943
+   SetPixel @944
+   MoveToEx @1651
+   LineTo @1652
+   GetCurrentPositionEx @1653
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGDRWTXT || GWES_PGDI
+   DrawTextW @945
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGPAL
+   CreatePalette @947
+   GetNearestPaletteIndex @948
+   GetPaletteEntries @949
+   GetSystemPaletteEntries @950
+   SetPaletteEntries @951
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGPAL || GWES_PGDI
+   GetNearestColor @952
+   RealizePalette @953
+   SelectPalette @954
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGGRADFILL
+   GradientFill @1763
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGALPHABLEND || GWES_MGALPHABLENDSTUB
+   AlphaBlend @1883
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGPRINT
+   AbortDoc @955
+   EndDoc @959
+   EndPage @960
+   SetAbortProc @962
+   StartDocW @963
+   StartPage @964
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGRAST2 || GWES_MGTT || GWES_PGDI
+   EnumFontFamiliesExW @1885
+   EnumFontFamiliesW @965
+   EnumFontsW @966
+   GetTextFaceW @967
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGTCI
+   TranslateCharsetInfo @1166
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGRGN || GWES_PGDI
+   CombineRgn @968
+   CreateRectRgnIndirect @969
+   ExcludeClipRect @970
+   GetClipBox @971
+   GetClipRgn @972
+   GetRegionData @973
+   GetRgnBox @974
+   IntersectClipRect @975
+   OffsetRgn @976
+   PtInRegion @977
+   RectInRegion @978
+   SelectClipRgn @979
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGRGN
+   CreateRectRgn @980
+   RectVisible @981
+   SetRectRgn @982
+   ExtCreateRegion @1617
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGBASE
+   SetViewportOrgEx @983
+   SetWindowOrgEx  @1984
+   GetWindowOrgEx  @1985
+   GetWindowExtEx  @1986
+   OffsetViewportOrgEx @1987
+   GetViewportOrgEx  @1988
+   GetViewportExtEx  @1989
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGWINMGR || GWES_PGDI
+   ScrollDC @985
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGTT || GWES_MGRAST
+   EnableEUDC @986
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_NCLIENT
+        DrawFrameControl @987
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_SBCMN
+   SetScrollInfo @279
+   SetScrollPos @280
+   SetScrollRange @281
+   GetScrollInfo @282
+; @CESYSGEN ENDIF
+
+   CeSafeCopyMemory @2508
+
+; @CESYSGEN IF COREDLL_CORESTRA
+; @CESYSGEN IF !COREDLL_NOSTRSAFE
+; ANSI strsafe functions
+   StringCchCopyA @1705
+   StringCbCopyA @1706
+   StringCchCopyExA @1707
+   StringCbCopyExA @1708
+   StringCchCopyNA @1750
+   StringCbCopyNA @1751
+   StringCchCatA @1709
+   StringCbCatA @1710
+   StringCchCatExA @1711
+   StringCbCatExA @1712
+   StringCchCatNA @1752
+   StringCbCatNA @1753
+   StringCchCatNExA @1754
+   StringCbCatNExA @1755
+   StringCchVPrintfA @1713
+   StringCbVPrintfA @1714
+   StringCchPrintfA @1715
+   StringCbPrintfA @1716
+   StringCchPrintfExA @1717
+   StringCbPrintfExA @1718
+   StringCchVPrintfExA @1719
+   StringCbVPrintfExA @1720
+   StringCchLengthA @1756
+   StringCbLengthA @1757
+; @CESYSGEN ENDIF !COREDLL_NOSTRSAFE
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_CORESIP
+   SipStatus @1169
+   SipRegisterNotification @1170
+   SipShowIM @1171
+   SipGetInfo @1172
+   SipSetInfo @1173
+   SipEnumIM @1174
+   SipGetCurrentIM @1175
+   SipSetCurrentIM @1176
+   SipSetDefaultRect @1214
+   SipGetSupportedInputLanguages @2853
+   SipPreference @1786
+   SHSipSetAutoDeploy @2980
+   SHSipGetAutoDeploy @2981
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_ASYNCIO
+   GetOverlappedResult @1188
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF GWES_MGBASE
+   MonitorFromPoint @1522
+   MonitorFromRect @1523
+   MonitorFromWindow @1524
+   GetMonitorInfo @1525
+   EnumDisplayMonitors @1526
+; @CESYSGEN ENDIF
+
+; The four API below for Device Management are removed to dmsdk.dll in McKendric
+; @CESYSGEN IF COREDLL_DEVMGMT
+;    STDAPI(CeSetDevMgmtTask,4) @1738
+;    STDAPI(CeGetDevMgmtPackageList,12) @1739
+;    STDAPI(CeSetDevMgmtPackageList,8)  @1740
+;    STDAPI(CeStartDevMgmtService,4) @1741
+; @CESYSGEN ENDIF COREDLL_DEVMGMT
+
+; @CESYSGEN IF COREDLL_CRYPTHASH
+A_SHAInit @1789
+A_SHAUpdate @1790
+A_SHAFinal @1791
+
+MD5Init @1792
+MD5Update @1793
+MD5Final @1794
+; @CESYSGEN ENDIF
+
+MulDiv @1877
+
+; Credential Manager API
+CredWrite @1878
+CredRead @1879
+CredDelete @1881
+CredFree @1882
+
+SetCriticalProcess @2523
+
+; @CESYSGEN IF COREDLL_FULL_CRT
+   ;; support functions from the kernel
+   GetStdioPathW=xxx_GetStdioPathW @1149
+   SetStdioPathW=xxx_SetStdioPathW @1150
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_REGEXT
+    ;; Registry Extensions
+    RegistryGetDWORD              @2615
+    RegistryGetString             @2616
+    RegistrySetDWORD              @2617
+    RegistrySetString             @2618
+    RegistryTestExchangeDWORD     @2619
+    RegistryNotifyApp             @2620
+    RegistryNotifyWindow          @2621
+    RegistryNotifyMsgQueue        @2622
+    RegistryNotifyCallback        @2623
+    RegistryCloseNotification     @2624
+    RegistryStopNotification      @2625
+    RegistryBatchNotification     @2626
+    RegistryDeleteValue           @2627
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_INPUTSCOPES
+    SetInputScope                 @2728 // Public API
+    SetInputScopes                @2729 // Public API
+    GetInputScopes                @2730 // Public API
+    GetInputScopePhrases          @2731 // Public API
+    GetInputScopeSrgs             @2732 // Public API
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF COREDLL_RENDERCORE
+    InitializeUserRenderCore      @2733 NONAME // hardcoded in usrcoredllcallbacks.c.  make sure they match
+    UninitializeUserRenderCore    @2734 NONAME // hardcoded in usrcoredllcallbacks.c.  make sure they match
+; @CESYSGEN ENDIF
+
+//
+// DelayedBootWork functions always exported via coredll, they're stubbed if __SYSGEN_DELAYEDBOOTWORK is not set
+//
+RegisterDelayedBootWork           @2914
+DrainDelayedBootWork              @2915
+DelayedBootWorkComplete           @2916
+
+; @CESYSGEN IF COREDLL_ACCAPI
+AccelerometerOpen             @2961
+AccelerometerStart            @957
+AccelerometerStop             @958
+AccelerometerCreateCallback   @961
+AccelerometerCreateMsgCallback @2509
+AccelerometerCancelCallback   @2799
+AccelerometerSetMode          @2879
+AccelerometerCalibrate        @2878
+; @CESYSGEN ENDIF

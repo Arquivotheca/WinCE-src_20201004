@@ -1,0 +1,39 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+!INCLUDE $(DRIVERS_TESTROOT)\Sensors\sources.cmn
+
+TARGETNAME=sensor_detector
+TARGETTYPE=DYNLINK
+
+WARNLEVEL=4
+ERRORFORBANNEDAPIS=1
+
+CDEFINES=$(CDEFINES) /EHsc
+
+SOURCES= \
+    main.cpp \
+    sensor_detector.cpp \
+
+INCLUDES= \
+    ..\lib;\
+    ..\..\inc;\
+    $(SNS_INCLUDES)\
+    $(DRIVERS_TESTROOT)\Sensors\ACC\Common;\
+    $(TEST_ROOT)\BaseOS\drivers\common\inc; \
+    $(TEST_ROOT)\Common\Inc;    
+
+TARGETLIBS=$(_COREDLL) \
+    $(SNS_TARGETLIBS)\
+    $(TEST_OAK_LIB_PATH)\acc_test_common.lib\
+    $(TEST_OAK_LIB_PATH)\sensor_detectlib.lib

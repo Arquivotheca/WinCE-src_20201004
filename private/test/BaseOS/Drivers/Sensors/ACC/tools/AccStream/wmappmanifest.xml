@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.0">
+    <App xmlns="" ProductID="{7BBDF39E-22CD-4d71-A0A1-3CAC1F8BFBE6}" Title="Acc Console Stream" RuntimeType="Native" Version="1.0.0.0"  Author="pjozwiak" Description="Streams Data to Console" Publisher="Microsft PackageManager Native Installer Test">
+        <IconPath IsRelative ="true" IsResource="true" xmlns="">file://appicon.png</IconPath>
+        <ImagePath IsRelative ="true" xmlns="">accStream.exe</ImagePath>
+        <ImageParams xmlns=""></ImageParams>
+        <Tasks xmlns="">
+            <DefaultTask Name="DefaultTask"/>
+        </Tasks>
+        <Tokens xmlns="">
+            <PrimaryToken TokenID="Default"
+                     TaskName="DefaultTask"
+                     TaskParameters=""
+                     DisplayPosition="8"
+                     Pinned="true">
+                <TemplateType1>
+                    <Number>9</Number>
+                    <IconImageURI>res://StartMenu!AppIconMail.png</IconImageURI>
+                    <Title>accStream.exe Task</Title>
+                </TemplateType1>
+            </PrimaryToken>
+        </Tokens>
+    </App>
+</Deployment>
+

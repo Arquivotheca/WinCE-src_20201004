@@ -1,0 +1,78 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+# --------------------------------------------------------------------
+#                                                                     
+# THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+# ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+# PARTICULAR PURPOSE.                                                 
+#                                                                     
+# --------------------------------------------------------------------
+
+
+SYNCHRONIZE_DRAIN=1
+
+TARGETNAME=perf_winsockd2
+TARGETTYPE=PROGRAM
+
+!INCLUDE .\sources_nt.inc
+!IF DEFINED(_TGTOS)
+!INCLUDE .\sources_$(_TGTOS).inc
+!ENDIF
+
+SOURCES=$(MY_SOURCES)
+
+# --------------------------------------------------------------------
+# Always support IPv6 / Winsock2 when running the server
+# --------------------------------------------------------------------
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+
+!IF "$(ENABLE_DEBUGGING_OUTPUT)" == "1"
+CDEFINES=$(CDEFINES) -DENABLE_DEBUGGING_OUTPUT
+!ENDIF
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+TARGETTHREADMODEL=MT
+
+INCLUDES=\
+    ..\lib\inc;
+
+TARGETLIBS=\
+    $(_NTSDK_LIB)\ws2_32.lib \
+    $(_NTSDK_LIB)\shell32.lib \
+    $(TEST_OAK_LIB_PATH)\perf_winsock_lib.lib
+
+!IF "$(SUPPORT_KATO)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(_KATO)
+!ENDIF
+
+!ELSE
+
+INCLUDES=\
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    ..\lib\inc;
+
+TARGETLIBS=\
+    $(_COREDLL) \
+    $(_IPHLPAPI) \
+    $(TEST_OAK_LIB_PATH)\perf_winsock_lib.lib \
+    $(_WS2) \
+    $(_KATO)
+
+EXEENTRY=mainWCRTStartup
+
+!ENDIF

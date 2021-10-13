@@ -1,0 +1,12 @@
+db4k
+db4kcs
+tux -o -d dbbvt
+tux -o -d dbdepth
+tux -o -d dblev1
+tux -o -d dbmrkv
+dbmulti
+dbrws
+tux -o -d dbsort
+tux -o -d dirtest
+dmknbrk
+dpersist -fOne -t123 -r100 -i50 -e -x -d2

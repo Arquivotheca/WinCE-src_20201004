@@ -1,0 +1,602 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+/*----------------------------------------------------------------------------
+    obex.idl
+        Interface definitions for OBEX
+
+        This file will be processed by the MIDL tool to
+        produce the type library (obex.tlb) and marshalling code.
+
+    All rights reserved.
+ ----------------------------------------------------------------------------*/
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+cpp_quote("#include <obexerr.h>")
+
+#ifdef UNDER_CE
+#define LPPROPERTYBAG2 LPPROPERTYBAG
+cpp_quote("#define LPPROPERTYBAG2 LPPROPERTYBAG")
+#endif
+
+interface IDeviceEnum;
+interface IPropertyBagEnum;
+interface IObexService;
+interface IObexDevice;
+interface IHeaderCollection;
+interface IHeaderEnum;
+interface IObexServiceConnection;
+
+const DWORD     OBEX_VERSION_10               = 0x10;
+
+const DWORD     OBEX_VERSION                  = OBEX_VERSION_10;
+const DWORD     INVALID_CONN_ID               = 0xffffffff;
+
+
+const DWORD SEND_DEVICE_UPDATES                     = 0x01;
+
+// 
+// OBEX notifications
+//
+typedef enum _OBEX_EVENT
+{
+    OE_QUERY_PASSWORD,
+    OE_NEW_CONNECTION,
+    OE_NEW_COMMAND,
+    OE_ABORT,
+    OE_DISCONNECT,
+	OE_DEVICE_ARRIVAL,
+	OE_DEVICE_DEPARTURE,
+	OE_DEVICE_UPDATE,
+} OBEX_EVENT, * LPOBEX_EVENT;
+
+//
+// Inbox Sink events
+//
+typedef enum _INBOX_EVENT
+{
+    IE_MIME,
+    IE_SYNC,
+} INBOX_EVENT, * LPINBOX_EVENT;
+
+typedef struct _INBOX_EVENT_DATA
+{
+    DWORD                       dwRequest;				// get or put
+    DWORD                       dwInboxEvent;			// sync or mime event?
+	LPCWSTR						pszName;				// mime type or name
+	LPCWSTR						pszInboxDestination;	// where this should go
+    IHeaderCollection *         pHeaderCol;				// headers from the request
+    IStream *                   pStream;				// data
+} INBOX_EVENT_DATA, * PINBOX_EVENT_DATA;
+
+
+// 
+// SetPath Flags
+//
+// Flag to backup one level before applying the setpath
+const DWORD     SETPATH_FLAG_BACKUP            = 0x00000001;
+// Flag to return an error instead of creating a new directory
+const DWORD     SETPATH_FLAG_DONT_CREATE       = 0x00000002;
+
+// 
+// OBEX header support
+//
+// 0x30 to 0x3F are user definable
+//
+const DWORD     OBEX_HEADER_UNICODE            = 0x00;
+const DWORD     OBEX_HEADER_STREAM             = 0x40;
+const DWORD     OBEX_HEADER_1BYTE              = 0x80;
+const DWORD     OBEX_HEADER_4BYTE              = 0xC0;
+
+const DWORD     OBEX_HEADER_COUNT              = ( 0x00 | OBEX_HEADER_4BYTE   );
+const DWORD     OBEX_HEADER_NAME               = ( 0x01 | OBEX_HEADER_UNICODE );
+const DWORD     OBEX_HEADER_TYPE               = ( 0x02 | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_LENGTH             = ( 0x03 | OBEX_HEADER_4BYTE   );
+const DWORD     OBEX_HEADER_TIME_ISO           = ( 0x04 | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_TIME_COMPAT        = ( 0x04 | OBEX_HEADER_4BYTE   );
+const DWORD     OBEX_HEADER_DESCRIPTION        = ( 0x05 | OBEX_HEADER_UNICODE );
+const DWORD     OBEX_HEADER_TARGET             = ( 0x06 | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_HTTP               = ( 0x07 | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_BODY               = ( 0x08 | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_END_OF_BODY        = ( 0x09 | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_WHO                = ( 0x0A | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_CONNECTION_ID      = ( 0x0B | OBEX_HEADER_4BYTE   );
+const DWORD     OBEX_HEADER_APP_PARAMS         = ( 0x0C | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_AUTH_CHALLENGE     = ( 0x0D | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_AUTH_RESPONSE      = ( 0x0E | OBEX_HEADER_STREAM  );
+const DWORD     OBEX_HEADER_OBJECT_CLASS       = ( 0x0F | OBEX_HEADER_STREAM  );
+
+typedef struct _OBEX_HEADER
+{
+    byte        bId;    // id of the header from above
+
+    [switch_is(bId & OBEX_HEADER_4BYTE)]
+    union
+    {   
+        [case(OBEX_HEADER_UNICODE)]
+            [string] LPWSTR pszData;
+        
+        [case(OBEX_HEADER_4BYTE)]
+            DWORD       dwData;
+    
+        [case(OBEX_HEADER_1BYTE)]
+            byte        bData;
+        
+        [case(OBEX_HEADER_STREAM)]
+            struct
+            {   
+                DWORD   dwSize;     // size of the byte array
+                [size_is(dwSize)] byte *  pbaData;
+            } ba;
+
+    } value;
+
+} OBEX_HEADER;
+
+typedef struct _OBEX_REQUEST
+{
+    DWORD                       dwRequest;
+    DWORD                       dwFlags;
+    IHeaderCollection *         pHeaderCol;
+    BOOL                        fStream;
+    IStream *                   pStream;
+} OBEX_REQUEST, * POBEX_REQUEST;
+
+// 
+// OBEX command opcodes
+//
+// 0x06 to 0x0F are reserved
+// 0x10 to 0x1F are user definable
+//
+const DWORD     OBEX_OPCODE_FINALBIT        = 0x80;
+const DWORD     OBEX_OPCODE_CONNECT         = ( 0x00 | OBEX_OPCODE_FINALBIT );
+const DWORD     OBEX_OPCODE_DISCONNECT      = ( 0x01 | OBEX_OPCODE_FINALBIT );
+const DWORD     OBEX_OPCODE_PUT             = 0x02;
+const DWORD     OBEX_OPCODE_GET             = 0x03;
+const DWORD     OBEX_OPCODE_SET_PATH        = ( 0x05 | OBEX_OPCODE_FINALBIT );
+const DWORD     OBEX_OPCODE_ABORT           = ( 0x7F | OBEX_OPCODE_FINALBIT );
+
+//
+// OBEX Response codes
+//
+// 0x00 to 0x0F are reserved
+//
+const DWORD     OBEX_REPLY_CONTINUE                             = 0x10; 
+const DWORD     OBEX_REPLY_SUCCESS                              = 0x20;
+const DWORD     OBEX_REPLY_CREATED                              = 0x21; 
+const DWORD     OBEX_REPLY_ACCEPTED                             = 0x22; 
+const DWORD     OBEX_REPLY_NON_AUTHORITATIVE_INFO               = 0x23; 
+const DWORD     OBEX_REPLY_NO_CONTENT                           = 0x24; 
+const DWORD     OBEX_REPLY_RESET_CONTENT                        = 0x25; 
+const DWORD     OBEX_REPLY_PARTIAL_CONTENT                      = 0x26; 
+
+const DWORD     OBEX_REPLY_MULIPLE_CHOICES                      = 0x30; 
+const DWORD     OBEX_REPLY_MOVED_PERMANENTLY                    = 0x31;
+const DWORD     OBEX_REPLY_MOVED_TEMPORARILY                    = 0x32; 
+const DWORD     OBEX_REPLY_SEE_OTHER                            = 0x33; 
+const DWORD     OBEX_REPLY_NOT_NODIFIED                         = 0x34; 
+const DWORD     OBEX_REPLY_USE_PROXY                            = 0x35; 
+
+const DWORD     OBEX_REPLY_FAIL_BAD_REQUEST                     = 0x40;
+const DWORD     OBEX_REPLY_FAIL_UNAUTHORIZED                    = 0x41;
+const DWORD     OBEX_REPLY_FAIL_PAYMENT_REQUIRED                = 0x42; 
+const DWORD     OBEX_REPLY_FAIL_FORBIDDEN                       = 0x43; 
+const DWORD     OBEX_REPLY_FAIL_NOT_FOUND                       = 0x44; 
+const DWORD     OBEX_REPLY_FAIL_METHOD_NOT_ALLOWED              = 0x45; 
+const DWORD     OBEX_REPLY_FAIL_NOT_ACCEPTABLE                  = 0x46; 
+const DWORD     OBEX_REPLY_FAIL_PROXY_AUTHORIZATION_REQUIRED    = 0x47; 
+const DWORD     OBEX_REPLY_FAIL_REQUEST_TIME_OUT                = 0x48; 
+const DWORD     OBEX_REPLY_FAIL_CONFLICT                        = 0x49; 
+const DWORD     OBEX_REPLY_FAIL_GONE                            = 0x4A;  
+const DWORD     OBEX_REPLY_FAIL_LENGTH_REQUIRED                 = 0x4B; 
+const DWORD     OBEX_REPLY_FAIL_PRECONDITION_FAILED             = 0x4C; 
+const DWORD     OBEX_REPLY_FAIL_REQUESTED_ENTITY_TOO_LARGE      = 0x4D; 
+const DWORD     OBEX_REPLY_FAIL_REQUEST_URL_TOO_LARGE           = 0x4E; 
+const DWORD     OBEX_REPLY_FAIL_UNSUPPORTED_MEDIA_TYPE          = 0x4F; 
+
+const DWORD     OBEX_REPLY_FAIL_INTERNAL_SERVER_ERROR           = 0x50; 
+const DWORD     OBEX_REPLY_FAIL_NOT_IMPLEMENTED                 = 0x51; 
+const DWORD     OBEX_REPLY_FAIL_BAD_GATEWAY                     = 0x52; 
+const DWORD     OBEX_REPLY_FAIL_SERVICE_UNAVAILABLE             = 0x53; 
+const DWORD     OBEX_REPLY_FAIL_GATEWAY_TIMEOUT                 = 0x54; 
+const DWORD     OBEX_REPLY_FAIL_HTTP_VERSION_NOT_SUPPORTED      = 0x55; 
+
+const DWORD     OBEX_REPLY_FAIL_DATABASE_FULL                   = 0x60;
+const DWORD     OBEX_REPLY_FAIL_DATABASE_LOCKED                 = 0x61; 
+
+//
+// device capabilities
+//
+// The lower word is reserved, the upper word can be
+// used for new capabilities.
+//
+const DWORD     OBEX_DEVICE_CAP_UNKNOWN         = 0x00000000;
+const DWORD     OBEX_DEVICE_CAP_PUSH            = 0x00000001; // essentially the default inbox
+const DWORD     OBEX_DEVICE_CAP_FILE_BROWSE     = 0x00000002; // File browser service
+const DWORD     OBEX_DEVICE_CAP_SYNC            = 0x00000004; // IrMC Sync service
+
+    [
+        object,
+        uuid(0C5A5B12-2979-42D1-9E15-A63E34383B58),
+        helpstring("IObex Interface"),
+        pointer_default(unique)
+    ]
+    interface IObex : IUnknown
+    {
+        [helpstring("method Initialize")] 
+        HRESULT Initialize();
+        
+        [helpstring("method Shutdown")] 
+        HRESULT Shutdown();
+        
+        [helpstring("EnumDevices returns the current list of known devices.")] 
+        HRESULT EnumDevices([out] IDeviceEnum **ppDeviceEnum, [in] REFCLSID uuidTransport);
+        
+        [helpstring("method EnumTransports")] 
+        HRESULT EnumTransports([out] IPropertyBagEnum **ppTransportEnum);
+        
+        [helpstring("method RegisterService")] 
+        HRESULT RegisterService([in] IPropertyBag *pPropertyBag, [out] IObexService **ppService);
+
+        [helpstring("Create a device object using the information passed in.")] 
+        HRESULT BindToDevice([in] IPropertyBag *pPropertyBag, [out] IObexDevice **ppDevice);
+
+        [helpstring("Start device enumeration.")] 
+        HRESULT StartDeviceEnum();
+
+        [helpstring("Stop device enumeration.")] 
+        HRESULT StopDeviceEnum();
+    };
+
+
+    [object,
+        uuid(8FF83D03-CD48-420a-83DD-52D39E8607E2),
+        helpstring("IObex2 Interface"),
+        pointer_default(unique)
+    ]
+    interface IObex2 : IObex
+    {
+        [helpstring("Pause device enumeration.")]
+        HRESULT PauseDeviceEnum(BOOL fPauseOn);
+    };
+    
+    [
+        object,
+        uuid(3ED60A15-6FB0-4A81-8ED3-49097A8E292C),
+        helpstring("IObexDevice Interface"),
+        pointer_default(unique)
+    ]
+    interface IObexDevice : IUnknown
+    {
+        [helpstring("Connect to this device")] 
+        HRESULT Connect([in, string, unique] LPCWSTR pszPassword, [in] DWORD dwCapability, [in] IHeaderCollection * pHeaders);
+        
+        [helpstring("Disconnect from this device")] 
+        HRESULT Disconnect([in] IHeaderCollection * pHeaders);
+        
+        [helpstring("Perform a get on this device")] 
+        HRESULT Get([in] IHeaderCollection * pHeaders, [out] IStream **ppStream);
+
+        [helpstring("perform a Put")] 
+        HRESULT Put([in] IHeaderCollection * pHeaders, [in, out, unique] IStream **ppStream);
+        
+        [helpstring("method Abort")] 
+        HRESULT Abort([in] IHeaderCollection * pHeaders);
+        
+        [helpstring("method SetPath")] 
+        HRESULT SetPath([in] LPCWSTR pszName, [in] DWORD dwFlags, [in] IHeaderCollection * pHeaders);
+        
+        [helpstring("method EnumProperties")] 
+        HRESULT EnumProperties([in] REFIID riid, [out, iid_is(riid)] void **ppv);
+
+        [helpstring("method SetPassword")] 
+        HRESULT SetPassword([in] LPCWSTR pszPassword);
+
+        [helpstring("method BindToStorage")] 
+        HRESULT BindToStorage([in] DWORD dwCapability, [out] IStorage **ppStorage);
+    };
+    [
+        object,
+        uuid(6561D66B-8CC1-49F9-8071-632D288EDAF3),
+        helpstring("IHeaderCollection Interface"),
+        pointer_default(unique)
+    ]
+    interface IHeaderCollection : IUnknown
+    {
+        [helpstring("method Add a header of type byte array")]
+        HRESULT AddByteArray ([in] byte Id, [in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+
+        [helpstring("method Add a header of type byte")]
+        HRESULT AddLong ([in] byte Id, [in] unsigned long ulData);
+
+        [helpstring("method Add a header of type byte")]
+        HRESULT AddByte ([in] byte Id, [in] byte pData);
+
+        [helpstring("method Add a header of type byte")]
+        HRESULT AddUnicodeString ([in] byte Id, [in] LPCWSTR pszData);
+
+        [helpstring("method Remove")]
+        HRESULT Remove ([in] byte Id);
+        
+        [helpstring("method Remove")]
+        HRESULT RemoveAll ();
+
+        [helpstring("Add a Count header to the collection.")] 
+        HRESULT AddCount([in] unsigned long ulCount);
+        
+        [helpstring("Add a Name header to the collection.")] 
+        HRESULT AddName([in] LPCWSTR pszName);
+        
+        [helpstring("Add a Type header to the collection.")] 
+        HRESULT AddType([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+        
+        [helpstring("Add a Length header to the collection.")] 
+        HRESULT AddLength([in] unsigned long ulLength);
+        
+        [helpstring("Add a old style time header to the collection.")] 
+        HRESULT AddTimeOld([in] unsigned long ulTime);
+        
+        [helpstring("Add a time (preferred--ISO8601) header to the collection.")] 
+        HRESULT AddTime([in] FILETIME * pFiletime);
+        
+        [helpstring("Add a Description header to the collection.")] 
+        HRESULT AddDescription([in] LPCWSTR pszDescription);
+        
+        [helpstring("Add a Target header to the collection.")] 
+        HRESULT AddTarget([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+        
+        [helpstring("Add an HTTP header to the collection.")] 
+        HRESULT AddHTTP([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+        
+        [helpstring("Add a Body header to the collection.")] 
+        HRESULT AddBody([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+        
+        [helpstring("Add an End of Body header to the collection.")] 
+        HRESULT AddEndOfBody([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+        
+        [helpstring("Add a who header to the collection.")] 
+        HRESULT AddWho([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+        
+        [helpstring("Add a Connection Id header to the collection.")] 
+        HRESULT AddConnectionId([in] unsigned long ulConnectionId);
+        
+        [helpstring("Add an App Params header to the collection.")] 
+        HRESULT AddAppParams([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+        
+        [helpstring("Add an Object Class header to the collection.")] 
+        HRESULT AddObjectClass([in] unsigned long ulSize, [in, size_is(ulSize)] byte * pData);
+
+        [helpstring("Enum the headers")] 
+        HRESULT EnumHeaders([out] IHeaderEnum **pHeaderEnum);
+    };
+    [
+        object,
+        uuid(80DFC5AB-BF07-4612-BACE-AEBC0129590A),
+        helpstring("IObexSink Interface"),
+        pointer_default(unique)
+    ]    
+    interface IObexSink : IUnknown
+    {
+        [helpstring("method Notify")] 
+        HRESULT Notify([in] OBEX_EVENT Event, [in] IUnknown * pUnk1, [in] IUnknown * pUnk2);
+    };
+    [
+        object,
+        uuid(9B00990A-010D-4F19-AE6C-D60DA9B3783E),
+        helpstring("IObexService Interface"),
+        pointer_default(unique)
+    ]
+    interface IObexService : IUnknown
+    {
+        [helpstring("method GetConnection")] 
+        HRESULT GetConnection([out] IObexServiceConnection **ppConnection, [in] boolean fWait);
+        
+        [helpstring("method Close")] 
+        HRESULT Close();
+        
+        [helpstring("method SetPassword")] 
+        HRESULT SetPassword([in] LPCWSTR pszPassword);
+    };
+    [
+        object,
+        uuid(CB258BBB-678B-414A-81A3-CB98B669EDD7),
+        helpstring("IObexServiceConnection Interface"),
+        pointer_default(unique)
+    ]
+    interface IObexServiceConnection : IUnknown
+    {
+        [helpstring("Accept this connection.")] 
+        HRESULT Accept([in] IHeaderCollection * pHeaders);
+
+        [helpstring("Close the connection")] 
+        HRESULT Close([in] IHeaderCollection * pExtraHeaders);
+
+        [helpstring("Get incomming commands.")] 
+        HRESULT GetCommand([in, out] OBEX_REQUEST * pRequest, [in] boolean fWait);
+        
+        [helpstring("Send a response to a command.")] 
+        HRESULT SendResponse([in] DWORD dwResponse, [in] IHeaderCollection * pHeaders);
+        
+        [helpstring("Connection properties (ie, who is connecting).")] 
+        HRESULT EnumProperties([in] REFIID riid, [out, iid_is(riid)] void **ppv);
+        
+        [helpstring("Enum headers sent in the connect of this connection.")] 
+        HRESULT EnumHeaders([out] IHeaderEnum **ppEnum);
+    };
+    [
+        object,
+        uuid(5335417D-96D5-4AB4-9EF0-8F29C82232A3),
+        helpstring("IInboxSink Interface"),
+        pointer_default(unique)
+    ]
+    interface IInboxSink : IUnknown
+    {
+        [helpstring("method Notify")] 
+        HRESULT Notify([in] INBOX_EVENT_DATA * pInboxData);
+    };
+    [
+        object,
+        uuid(5507423D-0DD6-443D-A3CF-756D8E725C77),
+    
+        helpstring("IHeaderEnum Interface"),
+        pointer_default(unique)
+    ]
+    interface IHeaderEnum : IUnknown
+    {
+        HRESULT Next (
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(pceltFetched ? *pceltFetched : 1)]
+            OBEX_HEADER **rgelt,
+            [in, out, unique] ULONG* pceltFetched);
+
+        HRESULT Skip (
+            [in] ULONG celt);
+
+        HRESULT Reset ();
+
+        HRESULT Clone (
+            [out] IHeaderEnum **ppenum);
+        };
+    [
+        object,
+        uuid(6194770D-2B61-47DE-8628-33C42E091181),
+    
+        helpstring("IPropertyBagEnum Interface"),
+        pointer_default(unique)
+    ]
+    interface IPropertyBagEnum : IUnknown
+    {
+        HRESULT Next (
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(pceltFetched ? *pceltFetched : 1)]
+            LPPROPERTYBAG2 * rgelt,
+            [in, out, unique] ULONG* pceltFetched);
+
+        HRESULT Skip (
+            [in] ULONG celt);
+
+        HRESULT Reset ();
+
+        HRESULT Clone (
+            [out] IPropertyBagEnum** ppenum);
+    };
+    [
+        object,
+        uuid(53B5F567-DFE3-46DF-985A-BB993AE1AB00),
+        helpstring("IDeviceEnum Interface"),
+        pointer_default(unique)
+    ]
+    interface IDeviceEnum : IUnknown
+    {
+        HRESULT Next (
+            [in] ULONG celt,
+            [out, size_is(celt), length_is(pceltFetched ? *pceltFetched : 1)]
+            IObexDevice **rgelt,
+            [in, out, unique] ULONG* pceltFetched);
+
+        HRESULT Skip (
+            [in] ULONG celt);
+
+        HRESULT Reset ();
+
+        HRESULT Clone (
+            [out] IDeviceEnum** ppenum);
+    };
+    
+
+
+    [
+        object,
+        uuid(265CB2AB-EEDE-4f0e-A2D9-DF03C067EE56),
+        helpstring("IObexCaps Interface"),
+        pointer_default(unique)
+    ]
+    interface IObexCaps : IUnknown
+    {
+        [helpstring("method Notify")] 
+        HRESULT SetCaps([in] DWORD dwCaps);
+    };
+
+    [
+        object,
+        uuid(dddc1a8f-1e12-46d8-856c-d238a85ad10f),
+        helpstring("IObexResponse"),
+        pointer_default(unique)
+    ]
+    interface IObexResponse : IUnknown
+    {
+        [helpstring("Returns last response code from last packet received by server")] 
+        HRESULT GetLastResponseCode([out, size_is(sizeof(BYTE))] BYTE *pResponseCode);
+    }
+  
+    [
+        uuid(077b9ee1-78f0-4541-8ff4-ebbdb4c497a6),
+        version(1.0),
+        helpstring("OBEX 1.0 Type Library")
+    ]
+    library OBEXLib
+    {
+        importlib("stdole32.tlb");
+        importlib("stdole2.tlb");
+
+        [
+            uuid(30a7bc00-59b6-40bb-aa2b-89eb49ef274e),
+            helpstring("OBEX Class")
+        ]
+        coclass Obex
+        {
+            [default] interface IObex;
+            interface IObex;
+        };
+        [
+            uuid(30a7bc01-59b6-40bb-aa2b-89eb49ef274e),
+            helpstring("HeaderCollection Class")
+        ]
+        coclass HeaderCollection
+        {
+            [default] interface IHeaderCollection;
+            interface IHeaderCollection;
+        };
+        [
+            uuid(30a7bc05-59b6-40bb-aa2b-89eb49ef274e),
+            helpstring("PropertyBag Class")
+        ]
+        coclass PropertyBag
+        {
+            [default] interface IPropertyBag;
+            interface IPropertyBag;
+        };
+
+        [
+            uuid(30A7BC02-59B6-40BB-AA2B-89EB49EF274E),
+        ]
+        coclass IrdaTransport
+        {
+            [default] interface IUnknown;
+        };
+        [
+            uuid(30A7BC03-59B6-40BB-AA2B-89EB49EF274E),
+        ]
+        coclass BthTransport
+        {
+            [default] interface IUnknown;
+        };
+        [
+            uuid(30A7BC04-59B6-40BB-AA2B-89EB49EF274E),
+        ]
+        coclass IpTransport
+        {
+            [default] interface IUnknown;
+        };
+    };

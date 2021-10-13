@@ -1,0 +1,98 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+TARGETNAME=celog
+TARGETTYPE=DYNLINK
+DLLENTRY=KernelDLLEntry
+
+
+#
+# Allow environment variables to change code defaults for convenience
+#
+
+!IFDEF CELOG_CE_MASK
+CDEFINES=$(CDEFINES) -DCELOG_CE_MASK=$(CELOG_CE_MASK)
+!ENDIF
+
+!IFDEF CELOG_USER_MASK
+CDEFINES=$(CDEFINES) -DCELOG_USER_MASK=$(CELOG_USER_MASK)
+!ENDIF
+
+!IFDEF CELOG_PROCESS_MASK
+CDEFINES=$(CDEFINES) -DCELOG_PROCESS_MASK=$(CELOG_PROCESS_MASK)
+!ENDIF
+
+!IFDEF CELOG_MAP_SIZE
+CDEFINES=$(CDEFINES) -DMAP_SIZE=$(CELOG_MAP_SIZE)
+!ENDIF
+
+!IFDEF CELOG_MAP_ADDR
+CDEFINES=$(CDEFINES) -DMAP_ADDR=$(CELOG_MAP_ADDR)
+!ENDIF
+
+!IFDEF CELOG_SYNCBUF_SIZE
+CDEFINES=$(CDEFINES) -DSYNCBUF_SIZE=$(CELOG_SYNCBUF_SIZE)
+!ENDIF
+
+# Unit testing support
+!IFDEF CELOG_UNIT_TEST
+CDEFINES=$(CDEFINES) -DCELOG_UNIT_TEST
+!ENDIF
+
+
+# Necessary to reference the right definitions in celognk.h
+CDEFINES=$(CDEFINES) -DIN_KERNEL -DWINCEMACRO -DCOREDLL
+INCLUDES=\
+    $(_WINCEROOT)\private\winceos\coreos\nk\inc \
+
+# Don't link against coredll.  While it is possible to link against coredll and
+# load into the kernel starting with CE6, it hurts the ability to load celog.dll
+# very early in boot, and makes it harder to port the code to earlier OS's.
+NOCRTDLL=1
+NOLIBC=1
+TARGETLIBS=\
+    $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\fulllibc.lib \
+
+!IF "$(WINCELTCG)" != ""
+#
+# This code doesn't actually require the /GS runtime since it has
+# no vulnerable stack buffers, but LTCG generates a fake reference
+# to the /GS runtime, so provide a fake implementation.  DO NOT
+# use GSNULL.LIB in non-LTCG builds.
+#
+TARGETLIBS=$(TARGETLIBS) \
+    $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\gsnull.lib
+!ENDIF
+
+SOURCES=celog.c
+
+# ARM and MIPS FullLibC does not include interlocked APIs
+ARM_SOURCES=arm\intrlock.s
+MIPS_SOURCES=mips\intrlock.s
+SH_SOURCES=sh\intrlock.src
+
+# We are intentionally using instructions that the ARM assembler
+# warns about, so turn off the warnings.
+!IF "$(_TGTCPUFAMILY)" == "ARM"
+ADEFINES=$(ADEFINES) -ignore 241
+!ENDIF
+
+# Dictated by team policy
+WARNLEVEL=4
+CONFORMING_FORSCOPE=1
+
+
+FILE_VIEW_INCLUDES_FOLDER= \
+    ..\..\inc\celognk.h \
+    ..\..\..\..\..\..\public\COMMON\oak\inc\pkfuncs.h \
+    ..\..\..\..\..\..\public\COMMON\sdk\inc\celog.h \

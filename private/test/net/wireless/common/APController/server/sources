@@ -1,0 +1,73 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+!INCLUDE $(TEST_ROOT)\net\wireless\sources.inc
+
+TARGETNAME=APControl
+TARGETTYPE=PROGRAM
+
+RELEASETYPE=CETK
+
+SOURCES= \
+    APConfigDevice_t.cpp \
+    APControlServer.cpp \
+    APCUtils.cpp \
+    AttenuatorDevice_t.cpp \
+    AzimuthController_t.cpp \
+    BuffaloBroadcomController_t.cpp \
+    BuffaloG54sController_t.cpp \
+    Cisco1200Controller_t.cpp \
+    CiscoAPController_t.cpp \
+    CiscoHandle_t.cpp \
+    CiscoPort_t.cpp \
+    CommPort_t.cpp \
+    DLinkDI524Controller_t.cpp \
+    DLinkDWL3200Controller_t.cpp \
+    HtmlAPController_t.cpp \
+    HtmlForms_t.cpp \
+    HttpPort_t.cpp \
+    ManualAPConfigDevice_t.cpp \
+    ManualAttenuatorDevice_t.cpp \
+    RegistryAPPool_t.cpp \
+    TelnetHandle_t.cpp \
+    TelnetPort_t.cpp \
+    WeinschelController_t.cpp \
+    APControl.rc \
+
+
+INCLUDES= \
+    $(_APCONTROLSVR_INC); \
+    $(_APCONTROL_INC); \
+    $(_WIRELESS_INC); \
+    $(_NETCOMMON_INC); \
+    $(INCLUDES) \
+
+
+TARGETLIBS= \
+    $(_WINSOCK2_LIB) \
+    $(_WININET_LIB) \
+    $(_NETMAIN_LIB) \
+    $(_NETALL_LIB) \
+    $(_BACKCHANNEL_LIB) \
+    $(_CMNPRINT_LIB) \
+    $(_APCONTROLSVR_LIB) \
+    $(_APCONTROL_LIB) \
+    $(_WIRELESS_LIB) \
+    $(_LITEXML_LIB) \
+
+
+!IF ("$(_TGTOS)" == "NTANSI")
+EXEENTRY=mainCRTStartup /SUBSYSTEM:CONSOLE
+!ELSE
+EXEENTRY=wmainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF

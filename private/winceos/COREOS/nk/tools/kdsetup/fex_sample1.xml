@@ -1,0 +1,61 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+The debugger name is a required attribute
+specify the DLL name of the library registed as kernel debugger.
+-->
+<debugger name="kd.dll">
+  <configuration>
+      <!--
+      "status" is a required attribute. Value can be either ON or OFF (to turn ON or OFF exception filtering)
+      "clear" is an optional attribute. Value can be either YES or NO (to clear the current ruleset in KD before adding the rules or leave it as is)
+      -->  
+      <exception_filtering status="ON" clear="NO">
+          <!--
+          Collection of rules to ADD to the current exception filtering ruleset.
+          If there are more rules declared in this collection than the amount that can be added to the ruleset,
+          they will be added in order and the remaining will not be added.
+          -->  
+          <rules>
+             <!--
+             decision is a required attribute. Value can be: break, ignore or absorb.
+             A rule can by generic if it does not contain any elements in it or it can be as specific
+             as needed by adding elements to it. Valid specification elements are: code, handling, process, module, first_address and last_address
+             If a rule element is not specified it is assumed that it is irrelevant to the rule
+             If a rule element has as value the word ANY then it is assumed that it is irrelevant to the rule
+             -->            
+             <rule decision="break">
+                <code>0xC0000005</code>
+                <!--handling can be: handled, unhandled, kernel_safetynet or user_safetynet-->
+                <handling>unhandled</handling>
+                <process>cprog.exe</process>
+                <module>coredll.dll</module>
+                <!--exception address range (offset), the first_address is expected to be less than or equal to the last_address-->
+                <first_address>0x00000000</first_address>
+                <last_address>0x80000000</last_address>
+             </rule>
+             <rule decision="break">
+                <code>ANY</code>
+                <handling>unhandled</handling>
+                <process>ANY</process>
+                <module>core.dll</module>
+                <first_address>ANY</first_address>
+                <last_address>ANY</last_address>
+             </rule>
+          </rules>
+      </exception_filtering>
+  </configuration>
+</debugger>
+

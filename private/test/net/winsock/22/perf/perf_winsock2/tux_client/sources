@@ -1,0 +1,107 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+!ENDIF
+
+
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+TARGETNAME=perf_winsock2_ipv4
+!ELSE
+TARGETNAME=perf_winsock2
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+!ENDIF
+TARGETTYPE=DYNLINK
+
+!IF "$(ENABLE_DEBUGGING_OUTPUT)" == "1"
+CDEFINES=$(CDEFINES) -DENABLE_DEBUGGING_OUTPUT
+!ENDIF
+
+!IF "$(SUPPORT_PERFLOGGER)" == "1"
+CDEFINES=$(CDEFINES) -DSUPPORT_PERFLOGGER
+!ENDIF
+
+SOURCES=\
+    perf_winsock2.rc \
+    tuxmain.cpp \
+    testproc.cpp \
+    resultlog.cpp
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+!IF 0
+--------------------------------------------------------------------
+Always Support IPv6 / Winsock2 when running on the desktop
+--------------------------------------------------------------------
+!ENDIF
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+!ENDIF
+
+INCLUDES=\
+    ..\lib\inc; \
+
+TARGETLIBS=\
+    $(_NTSDK_LIB)\ws2_32.lib \
+    $(_KATO) \
+    $(TEST_OAK_LIB_PATH)\perflog.lib \
+    $(TEST_OAK_LIB_PATH)\perf_winsock_lib.lib
+
+!ELSE
+
+!IF 0
+--------------------------------------------------------------------
+Always enable Kato when building for CE
+--------------------------------------------------------------------
+!ENDIF
+CDEFINES=$(CDEFINES) -DSUPPORT_KATO
+
+INCLUDES=\
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    ..\lib\inc
+
+TARGETLIBS=\
+    $(_COREDLL) \
+    $(_IPHLPAPI) \
+    $(_KATO) \
+    $(TEST_OAK_LIB_PATH)\perflog.lib \
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(_WINSOCK) \
+    $(TEST_OAK_LIB_PATH)\perf_winsock_lib_ipv4.lib
+!ELSE
+TARGETLIBS=$(TARGETLIBS) \
+    $(_WS2) \
+    $(TEST_OAK_LIB_PATH)\perf_winsock_lib.lib
+!ENDIF
+
+!IF "$(WINCEPERF)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(OS_OAK_LIB_PATH)\ceperf.lib
+!ENDIF
+
+
+DLLENTRY=_DllMainCRTStartup
+
+!ENDIF

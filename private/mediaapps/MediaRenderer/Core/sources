@@ -1,0 +1,51 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+# Legacy code.  Permit banned APIs
+ERRORFORBANNEDAPIS=
+
+TARGETNAME=MediaRenderer
+TARGETTYPE=LIBRARY
+
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETNAME).def
+
+COPYRES=1
+WINCETARGETFILES=$(_RELEASELIBDIR)\$(TARGETNAME).res
+
+WINCEATL=1
+WINCEOEM=1
+
+SOURCELIBS=$(_AV_DEVICE)
+
+INCLUDES=                           \
+    ..\inc;                         \
+    $(_PUBLICROOT)\servers\sdk\inc; \
+    $(_PUBLICROOT)\servers\oak\inc; \
+    $(_PUBLICROOT)\directx\sdk\inc; \
+    $(_PUBLICROOT)\ie7\sdk\inc;
+
+SOURCES=                  \
+    MediaRenderer.idl     \
+    MediaRenderer.cpp     \
+    MediaMetadata.cpp     \
+    MediaRenderer.rc      \
+    Device.cpp            \
+    ConnectionManager.cpp \
+    AVTransport.cpp       \
+    AVMetadata.cpp        \
+    RenderingControl.cpp  \
+    utilities.cpp
+
+PRECOMPILED_INCLUDE=stdafx.h
+PRECOMPILED_OBJ=stdafx.obj
+PRECOMPILED_CXX=1

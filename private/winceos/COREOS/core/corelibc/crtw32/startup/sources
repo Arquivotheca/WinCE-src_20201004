@@ -1,0 +1,97 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtstrt
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources_st.inc"
+
+INCLUDES=..\h;..\..\..\inc;..\..\..\..\nk\inc
+# x86
+INCLUDES=$(INCLUDES);..\..\fpw32\cpu_x86
+# RISC
+INCLUDES=$(INCLUDES);..\eh\inc
+
+!IF "$(_TGTCPUFAMILY)"=="MIPS"
+# Work around assembler bug for mips\mipssecgs.s
+WARNISERROR=0 # remove this when the assembler honors -wd
+ADEFINES=$(ADEFINES) -wd4954
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+ASM_SAFESEH=1
+!ENDIF
+
+CDEFINES=$(CDEFINES) -DCRTDLL -D_SYSCRT_ $(XCDEFINES)
+
+SOURCES= \
+    cexit.cpp \
+    crt0dat.c \
+    crt0init.c \
+    onexit.c \
+    dllmain.c \
+    mainacrt.cxx \
+    mainwcrt.cxx \
+    pegdentry.c \
+    pegdmain.c \
+    pegwmain.c \
+    wwinmain.c \
+    crtstrta.cxx \
+    crtstrtg.cxx \
+    crtstrtw.cxx \
+
+ARM_SOURCES= \
+    arm\__mulhi.s \
+    arm\r12ind.s \
+    arm\_intrlck.s \
+    arm\savegpr.s \
+    arm\armsecgs.s \
+    gshandler.cpp \
+    gshandlereh.cpp \
+    gshandlerseh.cpp \
+
+MIPS_SOURCES= \
+    mips\interr.s \
+    mips\load32u.s \
+    mips\prologue.s \
+    mips\prolog1.s \
+    mips\prolog2.s \
+    mips\prolog3.s \
+    mips\prolog4.s \
+    mips\prolog5.s \
+    mips\prolog6.s \
+    mips\prolog7.s \
+    mips\prolog8.s \
+    mips\store32u.s \
+    mips\mipssecgs.s \
+    mips\sync16.s \
+    gshandler.cpp \
+    gshandlereh.cpp \
+    gshandlerseh.cpp \
+
+SH_SOURCES= \
+    sh\shsecgs.src \
+    gshandler.cpp \
+    gshandlereh.cpp \
+    gshandlerseh.cpp \
+
+x86_SOURCES= \
+    x86\fp8.c \
+    x86\_exclst_.asm \
+    x86\x86secgs.c \
+    x86\chandler4gs.c \
+    x86\sehprolg4.asm \
+    x86\sehprolg4gs.asm \
+    x86\loadcfg.c \
+    x86\ehprolg3.c \
+    x86\ehprolg3a.c \
+

@@ -1,0 +1,37 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+!IFDEF SP_REF_VERBOSE
+CDEFINES=$(CDEFINES) -DSP_REF_VERBOSE
+!ENDIF
+
+TARGETNAME=ppp2ras
+TARGETTYPE=LIBRARY
+TARGETLIBS= 
+
+ERRORFORBANNEDAPIS=
+
+CDEFINES = $(CDEFINES) -DDEF_COMPRESSION
+
+INCLUDES= \
+	..\inc; \
+	..\..\..\inc; \
+	..\..\..\security\inc;
+
+
+SOURCES= \
+	ras.c \
+	rasreg.c
+
+#xref VIGUID {2cefa8bf-57b9-44e6-afb2-630c1cdd9216}
+#xref VSGUID {496ce1e5-6644-4328-846f-206a460797be}

@@ -1,0 +1,7 @@
+Version Number        Date            Description
+========================================================================================
+7.0.0                 03/17/2008      Create CellularTest
+7.0.1                 05/30/2008      Add Fault Injection Test and Mobility Test
+7.0.2                 08/15/2008      Add user1 and user2 interactive voice call test
+7.0.3                 11/03/2008      Change user2 to LINEINITIALIZEEXOPTION_USEEVENT mode
+7.0.4                 12/08/2008      Change SMS message length from 70 bytes to 160 bytes

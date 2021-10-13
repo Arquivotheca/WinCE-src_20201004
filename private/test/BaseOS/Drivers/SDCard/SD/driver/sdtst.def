@@ -1,0 +1,14 @@
+NAME SDTst.dll
+
+EXPORTS
+JLP_Close=SMC_Close
+JLP_Deinit=SMC_Deinit
+JLP_Init=SMC_Init
+JLP_IOControl=SMC_IOControl
+JLP_Open=SMC_Open
+JLP_PowerDown=SMC_PowerDown
+JLP_PowerUp=SMC_PowerUp
+JLP_Read=SMC_Read
+JLP_Seek=SMC_Seek
+JLP_Write=SMC_Write
+

@@ -1,0 +1,53 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft
+// premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license
+// agreement, you are not authorized to use this source code.
+// For the terms of the license, please see the license agreement
+// signed by you and Microsoft.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+//
+//
+// Use of this sample source code is subject to the terms of the Microsoft
+// license agreement under which you licensed this sample source code. If
+// you did not accept the terms of the license agreement, you are not
+// authorized to use this sample source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the LICENSE.RTF on your install media or the root of your tools installation.
+// THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+
+#include "resource.h"
+
+
+// pictures
+//
+ID_WIZARD_PNG                           PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\HomeScreen6.png"
+ID_ALBUM_COVER_PNG                      PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\AlbumCoverExample.png"
+ID_MUSIC_IMAGE_PNG                      PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpMLMusicAlbumImageBGBig.png"
+ID_RATE_SELECTED_PNG                    PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpMLMusicRateSelected.png"
+ID_MEDIA_TITLE_PNG                      PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBMediaTitleBG.png"
+ID_NEXT_PRESSED_PNG                     PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBNextFFPressed.png"
+ID_LIST_SELECTED_PNG                    PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBNPListSelected.png"
+ID_PLAY_PRESSED_PNG                     PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBPlayPressed.png"
+ID_PREV_PRESSED_PNG                     PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBPrevFRPressed.png"
+ID_REPEAT_PRESSED_PNG                   PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBRepeatOnePressed.png"
+ID_SHUFFLE_SELECTED_PNG                 PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBShuffleVFrameSelected.png"
+ID_SOUND_PRESSED_PNG                    PNG              DISCARDABLE     "..\\..\\data\\images\\ScreenTransition\\wmpPBSoundPressed.png"
+
+// xamls
+//
+ID_XAML_SLIDE_WIZARD_TREE               SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\SlideWizardInTree.xaml"
+ID_XAML_ZOOM_WIZARD_TREE                SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\ZoomWizardInTree.xaml"
+ID_XAML_LOAD_ON_DEMAND                  SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\LoadOnDemand.xaml"
+ID_XAML_ZOOM_PAGE_1                     SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\SlideWizardPage1.xaml"
+ID_XAML_ZOOM_PAGE_2                     SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\SlideWizardPage2.xaml"
+
+ID_XAML_SLIDE_COMPLEX_TREE              SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\SlideComplexInTree.xaml"
+ID_XAML_ZOOM_COMPLEX_TREE               SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\ZoomComplexInTree.xaml"
+ID_XAML_ZOOM_SCREEN_1                   SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\ZoomScreen1.xaml"
+ID_XAML_ZOOM_SCREEN_2                   SLWE_XAML        DISCARDABLE  "..\\..\\data\\xaml\\ScreenTransition\\ZoomScreen2.xaml"

@@ -1,0 +1,118 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// Microsoft Visual C++ generated resource script.
+//
+#include "ibmrc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "ibmrc.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_IBM_SET_PROTOCOL_T0 "Try to set incorrect protocol T=0"
+    IDS_IBM_SET_PROTOCOL_T1 "Set protocol T=1"
+    IDS_IBM_SELECT_FILE_0007 "SELECT FILE 0007"
+    IDS_IBM_WRITE_BINARY    "WRITE BINARY %3d Byte(s)"
+    IDS_IBM_READ_BINARY     "READ  BINARY %3d Byte(s)"
+    IDS_IBM_READER_PERF_GOOD "Reader performance is good (%u sec)"
+    IDS_IBM_READER_PERF_AVG "Reader performance is average (%u sec)"
+    IDS_IBM_READER_PERF_BAD "Reader performance is bad (%u sec)"
+    IDS_IBM_WRITE_BINARY_PATTERN55 "WRITE BINARY %3d Byte(s) Pattern 55h"
+    IDS_IBM_READ_BINARY_PATTERN55 "READ  BINARY %3d Byte(s) Pattern 55h"
+    IDS_IBM_WRITE_BINARY_PATTERNAA "WRITE BINARY %3d Byte(s) Pattern AAh"
+    IDS_IBM_READ_BINARY_PATTERNAA "READ  BINARY %3d Byte(s) Pattern AAh"
+    IDS_IBM_WRITE_BINARY_PATTERN00 "WRITE BINARY %3d Byte(s) Pattern 00h"
+    IDS_IBM_READ_BINARY_PATTERN00 "READ  BINARY %3d Byte(s) Pattern 00h"
+    IDS_IBM_WRITE_BINARY_PATTERNFF "WRITE BINARY %3d Byte(s) Pattern FFh"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_IBM_READ_BINARY_PATTERNFF "READ  BINARY %3d Byte(s) Pattern FFh"
+    IDS_IBM_SELECT_NONEXISTING_FILE "SELECT NONEXISTING FILE"
+    IDS_IBM_SELECT_COMMAND_NO_FILEID "SELECT COMMAND WITHOUT FILEID"
+    IDS_IBM_SELECT_COMMAND_SHORT_PATH 
+                            "SELECT COMMAND PATH WITH PATH TOO SHORT"
+    IDS_IBM_SELECT_COMMAND_WRONG_LC "SELECT COMMAND PATH WITH WRONG LC"
+    IDS_IBM_SELECT_COMMAND_SHORT "SELECT COMMAND TOO SHORT"
+    IDS_IBM_SELECT_COMMAND_INVALID_P2 "SELECT COMMAND WITH INVALID P2"
+    IDS_IBM_SELECT_COMMAND_NO_FILEID_YES_LE 
+                            "SELECT COMMAND WITHOUT FILEID BUT WITH Le"
+    IDS_IBM_CHANGE_SPEED    "CHANGE SPEED"
+    IDS_IBM_SELECT00007_NO_VALID_RESPONSE 
+                            "SELECT FILE 0007 WILL GET NO VALID RESPONSE"
+    IDS_IBM_SET_PROTOCOL_FAILED "Set Protocol Failed"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

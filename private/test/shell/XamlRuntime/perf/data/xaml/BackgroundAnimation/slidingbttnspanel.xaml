@@ -1,0 +1,64 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft
+premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license
+agreement, you are not authorized to use this source code.
+For the terms of the license, please see the license agreement
+signed by you and Microsoft.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xrpack="http://schemas.microsoft.com/windowsembedded/silverlight/packaging"
+    mc:Ignorable="d xrpack"
+    xrpack:ClassResourceId="Class:1204(IDR_SLD_BTTNS_PANEL_PAGE)"
+    Width="800" Height="600">
+    <UserControl.Resources>
+        <Storyboard x:Name="Init" RepeatBehavior="Forever">
+                            <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="ButtonsBar" RepeatBehavior="Forever" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="-80"/>
+                                <EasingDoubleKeyFrame KeyTime="00:00:00.5000000" Value="400"/>
+                                <EasingDoubleKeyFrame KeyTime="00:00:01" Value="-80"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid x:Name="ButtonsBar" Height="80" Background="#FF743715" Opacity="0.7" Margin="0,200" RenderTransformOrigin="0.5,0.5">
+             <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+            </Grid.RenderTransform>
+            <Image Margin="0,0,0,0" Source="BackgroundAnimation/wmpPBMediaTitleBG.png" Stretch="Fill" Height="80" VerticalAlignment="Top"/>
+            <Button HorizontalAlignment="Left" Margin="8,8,0,17" Width="63" Opacity="0.8" BorderThickness="0" Background="#FF743715">
+                <Image Source="BackgroundAnimation/wmpPBRepeatAllSelected.png" Opacity="1"/>
+            </Button>
+            <Button Margin="90,8,0,17" Opacity="0.8" HorizontalAlignment="Left" Width="60">
+                <Image Source="BackgroundAnimation/wmpPBShuffleVFramePressed.png" Opacity="1"/>
+            </Button>
+            <Button Margin="163,8,0,17" Opacity="0.8" HorizontalAlignment="Left" Width="60">
+                <Image Source="BackgroundAnimation/wmpPBPausePressed.png" Opacity="1"/>
+            </Button>
+            <Button HorizontalAlignment="Right" Margin="0,8,168,17" Width="60" Opacity="0.8">
+                <Image Source="BackgroundAnimation/wmpPBPrevFRPressed.png" Opacity="1"/>
+            </Button>
+            <Button HorizontalAlignment="Right" Margin="0,8,89,17" Width="60" Opacity="0.8">
+                <Image Source="BackgroundAnimation/wmpPBPlayPressed.png" Opacity="1"/>
+            </Button>
+            <Button HorizontalAlignment="Right" Margin="0,8,8,17" Width="60" Opacity="0.8">
+                <Image Source="BackgroundAnimation/wmpPBNextFFPressed.png" Opacity="1"/>
+            </Button>
+        </Grid>
+    </Grid>
+    
+</UserControl>

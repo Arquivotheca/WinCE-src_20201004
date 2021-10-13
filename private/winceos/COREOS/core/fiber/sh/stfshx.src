@@ -1,0 +1,169 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+;
+        .HEADING "SHx Fiber switch implementation"
+;++
+;
+;
+; Module Name:
+;
+;    stfshx.src
+;
+; Abstract:
+;
+;    This module implements the cpu dependent code for fiber switching
+;
+; Revision History:
+;
+;--
+
+        .list OFF
+        .include "ksshx.h"
+        .list ON
+
+    .aif SH_CPU eq h'40
+FX_SIZE:    .equ    h'38    ; pr, r4, r5, r8 - r14, fr12 - fr15 (14 regs)
+    .aelse
+FX_SIZE:    .equ    h'28    ; pr, r4, r5, r8 - r14 (10 regs)
+    .aendi
+
+; tls definitions and offsets (see pkfuncs.h)
+;   SHx doesn't like negative offsets, we add 16 to all of them
+;   to simplify the calculation
+TLSBACKOFF      .equ    16
+PRETLS_BASE     .equ    - 4  + TLSBACKOFF
+PRETLS_BOUND    .equ    - 8  + TLSBACKOFF
+PRETLS_FIBER    .equ    - 12 + TLSBACKOFF
+PRETLS_SIZE     .equ    - 16 + TLSBACKOFF
+
+; FIBERSTRUCT offsets
+FBS_THRD        .equ    0
+FBS_BASE        .equ    4
+FBS_BOUND       .equ    8
+FBS_SP          .equ    12
+FBS_SIZE        .equ    16
+
+
+;;------------------------------------------------------------------------------
+;;
+;; void
+;; MDFiberSwitch (
+;;    IN OUT PFIBERSTRUCT pFiberTo,
+;;    IN DWORD dwThrdId,
+;;    IN OUT LPDWORD pTlsPtr
+;;    )
+;;
+;; Routine Description:
+;;
+;;    This routine is called to switch from a fiber to another fiber
+;;
+;; Arguments:
+;;    (r4) Fiber to switch to
+;;    (r5) Thread Id
+;;    (r6) TLS pointer
+;;
+;; Return Value:
+;;
+;;    None
+;;
+;;------------------------------------------------------------------------------
+        
+        LEAF_ENTRY _MDFiberSwitch
+
+        ; saving the registers on stack
+    .aif SH_CPU eq h'40
+        fmov.s  fr15, @-sp
+        fmov.s  fr14, @-sp
+        fmov.s  fr13, @-sp
+        fmov.s  fr12, @-sp
+    .aendi
+        mov.l   r14, @-sp
+        mov.l   r13, @-sp
+        mov.l   r12, @-sp
+        mov.l   r11, @-sp
+        mov.l   r10, @-sp
+        mov.l   r9,  @-sp
+        mov.l   r8,  @-sp
+;;
+;;  NOTE: PR must be on top of the stack
+;;        mov.l   r5,  @-sp
+;;        mov.l   r4,  @-sp
+        add.l   #-8, sp
+        sts.l   pr,  @-sp
+
+        ; get data from TLS
+        add.l   #-TLSBACKOFF, r6            ; move back 12 bytes so the offset are positive
+        mov.l   @(PRETLS_FIBER, r6), r0     ; r0 == fiber to switch from
+
+        ; save stack info and in current fiber
+        mov.l   sp,  @(FBS_SP, r0)          ; save stack pointer
+        mov.l   @(PRETLS_BOUND, r6), r1     ; r1 == stack bound
+        mov.l   r1,  @(FBS_BOUND, r0)       ; pCurrFiber->dwStkBound = r1
+                                            ; no need to save stack base since it's unchanged
+        ; update TLS with the info of the new fiber
+        ;   (r4) == new fiber
+        ;   (r5) == thread id
+        mov.l   @(FBS_BASE, r4), r1         ; r1 = pFiber->dwStkBase
+        shlr.l  r1                          ; 
+        shll.l  r1                          ; mask LSB (main fiber indicator)
+        mov.l   @(FBS_BOUND, r4), r2        ; r2 = pFiber->dwStkBound
+        mov.l   @(FBS_SIZE, r4), r7         ; r7 = pFiber->dwStkSize
+        mov.l   r4, @(PRETLS_FIBER, r6)     ; update TLS current fiber
+        mov.l   r1, @(PRETLS_BASE, r6)      ; update TLS stack base
+        mov.l   r2, @(PRETLS_BOUND, r6)     ; update TLS stack bound
+        mov.l   r7, @(PRETLS_SIZE, r6)      ; update TLS stack size
+        
+
+        ; restore sp from new fiber
+        mov.l   @(r4, FBS_SP), sp
+
+        ; update thread id for both fiber
+        mov.l   r5, @(FBS_THRD, r4)         ; thread id of new fiber 
+        mov.l   #0, r5
+        mov.l   r5, @(FBS_THRD, r0)         ; previous fiber is free 
+
+        ;
+        ; restoring the registers
+        ;       PR, R4, and R5 must be the first 3 in this order
+        ;
+        lds.l   @sp+, pr
+        
+        mov.l   @sp+, r4        ; r4 and r5 were restored because of
+        mov.l   @sp+, r5        ; FiberBaseFunc argument
+        
+        mov.l   @sp+, r8
+        mov.l   @sp+, r9
+        mov.l   @sp+, r10
+        mov.l   @sp+, r11
+        mov.l   @sp+, r12
+        mov.l   @sp+, r13
+        mov.l   @sp+, r14
+    .aif SH_CPU eq h'40
+        fmov.s  @sp+, fr12
+        fmov.s  @sp+, fr13
+        fmov.s  @sp+, fr14
+        fmov.s  @sp+, fr15
+    .aendi
+
+        ; pop the fiber context and return
+        rts
+        nop
+
+        ENTRY_END _MDFiberSwitch
+
+        .align  4
+        .export _dwSizeCtx
+
+_dwSizeCtx: .data.l     FX_SIZE
+
+
+        .end

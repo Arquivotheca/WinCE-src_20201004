@@ -1,0 +1,26 @@
+//+----------------------------------------------------------------------------
+//
+//
+// File:
+//      XHSC.idl
+//
+// Contents:
+//
+//      XmlHttpConnector type library
+//
+//-----------------------------------------------------------------------------
+
+
+import "oaidl.idl";
+
+#include "ConnGuid.h"
+#include "IdlUtils.h"
+#include "SoapVer.h"
+
+TYPE_LIBRARY(LIBID_XMLHTTPSOAPCONNECTOR, SOAP_SDK_VERSION, "XmlHttp Soap Connector Type Library")
+library XmlHttpConnectorLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+};

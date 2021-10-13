@@ -1,0 +1,58 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+TARGETNAME=OBEXApi
+TARGETTYPE=DYNLINK
+RELEASETYPE=OAK
+DLLENTRY=_DllMainCRTStartup
+
+INCLUDES=..;..\headers
+
+CDEFINES=$(CDEFINES) -D_WIN32_WINCE
+CDEFINES=$(CDEFINES) -DUSE_IRDA
+
+SOURCES = obexp.idl \
+          conpoint.cpp \
+          HeaderEnum.cpp \
+          Obex.cpp \
+          ObexDevice.cpp \
+          ObexIRDATransport.cpp \
+          ObexBTHTransport.cpp \
+          ObexTCPTransport.cpp \
+          ObexTransportConnection.cpp \
+          ObexStream.cpp \
+          IRDATransportSocket.cpp \
+          BTHTransportSocket.cpp \
+          TCPTransportSocket.cpp \
+          PropertyBag.cpp \
+          PropertyBagEnum.cpp \
+          DeviceEnum.cpp \
+          HeaderCollection.cpp \
+          obexp_i.c 
+
+
+TARGETLIBS= \
+    $(_COREDLL) \
+    $(_OLE32) \
+    $(_OLEAUT32) \
+    $(_WS2)
+
+
+SOURCELIBS=\
+    $(_CEOSUTIL) \
+    $(_DCOMUUID) \
+    $(_PUBLICROOT)\servers\oak\lib\$(_CPUINDPATH)\obexuuid.lib
+
+WARNLEVEL=4
+ERRORFORBANNEDAPIS=1
+

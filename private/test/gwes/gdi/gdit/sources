@@ -1,0 +1,61 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+TARGETNAME=gdiT
+TARGETTYPE=DYNLINK
+
+CDEFINES=$(CEDEFINES) /FIwarning.h
+
+SOURCES= \
+    gdiT.rc         \
+    global.cpp      \
+    verify.cpp      \
+    specDC.cpp      \
+    main.cpp        \
+    brush.cpp       \
+    da.cpp          \
+    dc.cpp          \
+    text.cpp        \
+    testchk.cpp     \
+    font.cpp        \
+    do.cpp          \
+    clip.cpp        \
+    draw.cpp        \
+    region.cpp      \
+    pal.cpp         \
+    doc.cpp         \
+    gdi.cpp         \
+    skiptable.cpp   \
+
+INCLUDES= \
+          ..\..\bitmaps;                       \
+          $(TEST_ROOT)\common\libs\imgcompare; \
+          $(INCLUDES)                          \
+
+!IF "$(_TGTOS)" == "CE" 
+TARGETLIBS= \
+    $(_COREDLL)                          \
+    $(_KATO)	                         \
+    $(TEST_OAK_LIB_PATH)\ImgCompare.lib  \
+    $(COMMON_SDK_LIB_PATH)\bcrypt.lib    \
+
+!ELSE
+CDEFINES=-DNT
+TARGETLIBS= \
+    $(_NTSDK_LIB)\comctl32.lib           \
+    $(_NTSDK_LIB)\comdlg32.lib           \
+    $(_NTSDK_LIB)\msimg32.lib            \
+    $(_KATO)                             \
+    $(TEST_OAK_LIB_PATH)\ImgCompare.lib  \
+   			
+!ENDIF

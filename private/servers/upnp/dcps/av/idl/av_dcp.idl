@@ -1,0 +1,1000 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+
+//
+// av_dcp.idl
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (av_dcp.tlb) and marshalling code.
+
+import "oaidl.idl";
+
+
+//
+// Interface IUPnPService_ConnectionManager1
+//
+typedef [v1_enum] enum CONNECTIONMANAGER1_DISPIDS
+{
+     DISPID_SOURCEPROTOCOLINFO = 1,
+     DISPID_SINKPROTOCOLINFO,
+     DISPID_CURRENTCONNECTIONIDS,
+     DISPID_A_ARG_TYPE_CONNECTIONSTATUS,
+     DISPID_A_ARG_TYPE_CONNECTIONMANAGER,
+     DISPID_A_ARG_TYPE_DIRECTION,
+     DISPID_A_ARG_TYPE_PROTOCOLINFO,
+     DISPID_A_ARG_TYPE_CONNECTIONID,
+     DISPID_A_ARG_TYPE_AVTRANSPORTID,
+     DISPID_A_ARG_TYPE_RCSID,
+     DISPID_GETPROTOCOLINFO,
+     DISPID_PREPAREFORCONNECTION,
+     DISPID_CONNECTIONCOMPLETE,
+     DISPID_GETCURRENTCONNECTIONIDS,
+     DISPID_GETCURRENTCONNECTIONINFO
+
+} CONNECTIONMANAGER1_DISPIDS;
+
+[
+     uuid(ff271439-4bba-4644-a206-bf9d136db66b),
+     oleautomation,
+     helpstring("ConnectionManagerService Interface"),
+     pointer_default(unique)
+]
+interface IUPnPService_ConnectionManager1 : IDispatch {
+    [propget, id(DISPID_SOURCEPROTOCOLINFO), helpstring("Property SourceProtocolInfo")]
+    HRESULT SourceProtocolInfo(
+        [out, retval] BSTR *pSourceProtocolInfo);
+
+    [propget, id(DISPID_SINKPROTOCOLINFO), helpstring("Property SinkProtocolInfo")]
+    HRESULT SinkProtocolInfo(
+        [out, retval] BSTR *pSinkProtocolInfo);
+
+    [propget, id(DISPID_CURRENTCONNECTIONIDS), helpstring("Property CurrentConnectionIDs")]
+    HRESULT CurrentConnectionIDs(
+        [out, retval] BSTR *pCurrentConnectionIDs);
+
+    [propget, id(DISPID_A_ARG_TYPE_CONNECTIONSTATUS), helpstring("Property A_ARG_TYPE_ConnectionStatus")]
+    HRESULT A_ARG_TYPE_ConnectionStatus(
+        [out, retval] BSTR *pA_ARG_TYPE_ConnectionStatus);
+
+    [propget, id(DISPID_A_ARG_TYPE_CONNECTIONMANAGER), helpstring("Property A_ARG_TYPE_ConnectionManager")]
+    HRESULT A_ARG_TYPE_ConnectionManager(
+        [out, retval] BSTR *pA_ARG_TYPE_ConnectionManager);
+
+    [propget, id(DISPID_A_ARG_TYPE_DIRECTION), helpstring("Property A_ARG_TYPE_Direction")]
+    HRESULT A_ARG_TYPE_Direction(
+        [out, retval] BSTR *pA_ARG_TYPE_Direction);
+
+    [propget, id(DISPID_A_ARG_TYPE_PROTOCOLINFO), helpstring("Property A_ARG_TYPE_ProtocolInfo")]
+    HRESULT A_ARG_TYPE_ProtocolInfo(
+        [out, retval] BSTR *pA_ARG_TYPE_ProtocolInfo);
+
+    [propget, id(DISPID_A_ARG_TYPE_CONNECTIONID), helpstring("Property A_ARG_TYPE_ConnectionID")]
+    HRESULT A_ARG_TYPE_ConnectionID(
+        [out, retval] long *pA_ARG_TYPE_ConnectionID);
+
+    [propget, id(DISPID_A_ARG_TYPE_AVTRANSPORTID), helpstring("Property A_ARG_TYPE_AVTransportID")]
+    HRESULT A_ARG_TYPE_AVTransportID(
+        [out, retval] long *pA_ARG_TYPE_AVTransportID);
+
+    [propget, id(DISPID_A_ARG_TYPE_RCSID), helpstring("Property A_ARG_TYPE_RcsID")]
+    HRESULT A_ARG_TYPE_RcsID(
+        [out, retval] long *pA_ARG_TYPE_RcsID);
+
+
+    [ id(DISPID_GETPROTOCOLINFO), helpstring("Method GetProtocolInfo")]
+    HRESULT GetProtocolInfo(
+        [in, out] BSTR *pSource,
+        [in, out] BSTR *pSink);
+
+    [ id(DISPID_PREPAREFORCONNECTION), helpstring("Method PrepareForConnection")]
+    HRESULT PrepareForConnection(
+        [in] BSTR RemoteProtocolInfo,
+        [in] BSTR PeerConnectionManager,
+        [in] long PeerConnectionID,
+        [in] BSTR Direction,
+        [in, out] long *pConnectionID,
+        [in, out] long *pAVTransportID,
+        [in, out] long *pRcsID);
+
+    [ id(DISPID_CONNECTIONCOMPLETE), helpstring("Method ConnectionComplete")]
+    HRESULT ConnectionComplete(
+        [in] long ConnectionID);
+
+    [ id(DISPID_GETCURRENTCONNECTIONIDS), helpstring("Method GetCurrentConnectionIDs")]
+    HRESULT GetCurrentConnectionIDs(
+        [in, out] BSTR *pConnectionIDs);
+
+    [ id(DISPID_GETCURRENTCONNECTIONINFO), helpstring("Method GetCurrentConnectionInfo")]
+    HRESULT GetCurrentConnectionInfo(
+        [in] long ConnectionID,
+        [in, out] long *pRcsID,
+        [in, out] long *pAVTransportID,
+        [in, out] BSTR *pProtocolInfo,
+        [in, out] BSTR *pPeerConnectionManager,
+        [in, out] long *pPeerConnectionID,
+        [in, out] BSTR *pDirection,
+        [in, out] BSTR *pStatus);
+};
+
+
+//
+// Interface IUPnPService_AVTransport1
+//
+typedef [v1_enum] enum AVTRANSPORT1_DISPIDS
+{
+     DISPID_TRANSPORTSTATE = 1,
+     DISPID_TRANSPORTSTATUS,
+     DISPID_PLAYBACKSTORAGEMEDIUM,
+     DISPID_RECORDSTORAGEMEDIUM,
+     DISPID_POSSIBLEPLAYBACKSTORAGEMEDIA,
+     DISPID_POSSIBLERECORDSTORAGEMEDIA,
+     DISPID_CURRENTPLAYMODE,
+     DISPID_TRANSPORTPLAYSPEED,
+     DISPID_RECORDMEDIUMWRITESTATUS ,
+     DISPID_CURRENTRECORDQUALITYMODE,
+     DISPID_POSSIBLERECORDQUALITYMODES,
+     DISPID_NUMBEROFTRACKS,
+     DISPID_CURRENTTRACK,
+     DISPID_CURRENTTRACKDURATION,
+     DISPID_CURRENTMEDIADURATION,
+     DISPID_CURRENTTRACKMETADATA,
+     DISPID_CURRENTTRACKURI,
+     DISPID_AVTRANSPORTURI,
+     DISPID_AVTRANSPORTURIMETADATA,
+     DISPID_NEXTAVTRANSPORTURI,
+     DISPID_NEXTAVTRANSPORTURIMETADATA,
+     DISPID_RELATIVETIMEPOSITION,
+     DISPID_ABSOLUTETIMEPOSITION,
+     DISPID_RELATIVECOUNTERPOSITION,
+     DISPID_ABSOLUTECOUNTERPOSITION,
+     DISPID_CURRENTTRANSPORTACTIONS,
+     DISPID_LASTCHANGE_AVT, /* also defined during RenderingControl enum, appened _AVT to differentiate */
+     DISPID_A_ARG_TYPE_SEEKMODE,
+     DISPID_A_ARG_TYPE_SEEKTARGET,
+     DISPID_A_ARG_TYPE_INSTANCEID_AVT, /* also defined during RenderingControl enum, appened _AVT to differentiate */
+     DISPID_SETAVTRANSPORTURI,
+     DISPID_SETNEXTAVTRANSPORTURI,
+     DISPID_GETMEDIAINFO,
+     DISPID_GETTRANSPORTINFO,
+     DISPID_GETPOSITIONINFO,
+     DISPID_GETDEVICECAPABILITIES,
+     DISPID_GETTRANSPORTSETTINGS,
+     DISPID_STOP,
+     DISPID_PLAY,
+     DISPID_PAUSE,
+     DISPID_RECORD,
+     DISPID_SEEK,
+     DISPID_NEXT,
+     DISPID_PREVIOUS,
+     DISPID_SETPLAYMODE,
+     DISPID_SETRECORDQUALITYMODE,
+     DISPID_GETCURRENTTRANSPORTACTIONS
+
+} AVTRANSPORT1_DISPIDS;
+
+[
+     uuid(44ba72e2-6f72-477e-b3bf-297a677c84fa),
+     oleautomation,
+     helpstring("AVTransportService Interface"),
+     pointer_default(unique)
+]
+interface IUPnPService_AVTransport1 : IDispatch {
+    [propget, id(DISPID_TRANSPORTSTATE), helpstring("Property TransportState")]
+    HRESULT TransportState(
+        [out, retval] BSTR *pTransportState);
+
+    [propget, id(DISPID_TRANSPORTSTATUS), helpstring("Property TransportStatus")]
+    HRESULT TransportStatus(
+        [out, retval] BSTR *pTransportStatus);
+
+    [propget, id(DISPID_PLAYBACKSTORAGEMEDIUM), helpstring("Property PlaybackStorageMedium")]
+    HRESULT PlaybackStorageMedium(
+        [out, retval] BSTR *pPlaybackStorageMedium);
+
+    [propget, id(DISPID_RECORDSTORAGEMEDIUM), helpstring("Property RecordStorageMedium")]
+    HRESULT RecordStorageMedium(
+        [out, retval] BSTR *pRecordStorageMedium);
+
+    [propget, id(DISPID_POSSIBLEPLAYBACKSTORAGEMEDIA), helpstring("Property PossiblePlaybackStorageMedia")]
+    HRESULT PossiblePlaybackStorageMedia(
+        [out, retval] BSTR *pPossiblePlaybackStorageMedia);
+
+    [propget, id(DISPID_POSSIBLERECORDSTORAGEMEDIA), helpstring("Property PossibleRecordStorageMedia")]
+    HRESULT PossibleRecordStorageMedia(
+        [out, retval] BSTR *pPossibleRecordStorageMedia);
+
+    [propget, id(DISPID_CURRENTPLAYMODE), helpstring("Property CurrentPlayMode")]
+    HRESULT CurrentPlayMode(
+        [out, retval] BSTR *pCurrentPlayMode);
+
+    [propget, id(DISPID_TRANSPORTPLAYSPEED), helpstring("Property TransportPlaySpeed")]
+    HRESULT TransportPlaySpeed(
+        [out, retval] BSTR *pTransportPlaySpeed);
+
+    [propget, id(DISPID_RECORDMEDIUMWRITESTATUS ), helpstring("Property RecordMediumWriteStatus ")]
+    HRESULT RecordMediumWriteStatus (
+        [out, retval] BSTR *pRecordMediumWriteStatus );
+
+    [propget, id(DISPID_CURRENTRECORDQUALITYMODE), helpstring("Property CurrentRecordQualityMode")]
+    HRESULT CurrentRecordQualityMode(
+        [out, retval] BSTR *pCurrentRecordQualityMode);
+
+    [propget, id(DISPID_POSSIBLERECORDQUALITYMODES), helpstring("Property PossibleRecordQualityModes")]
+    HRESULT PossibleRecordQualityModes(
+        [out, retval] BSTR *pPossibleRecordQualityModes);
+
+    [propget, id(DISPID_NUMBEROFTRACKS), helpstring("Property NumberOfTracks")]
+    HRESULT NumberOfTracks(
+        [out, retval] unsigned long *pNumberOfTracks);
+
+    [propget, id(DISPID_CURRENTTRACK), helpstring("Property CurrentTrack")]
+    HRESULT CurrentTrack(
+        [out, retval] unsigned long *pCurrentTrack);
+
+    [propget, id(DISPID_CURRENTTRACKDURATION), helpstring("Property CurrentTrackDuration")]
+    HRESULT CurrentTrackDuration(
+        [out, retval] BSTR *pCurrentTrackDuration);
+
+    [propget, id(DISPID_CURRENTMEDIADURATION), helpstring("Property CurrentMediaDuration")]
+    HRESULT CurrentMediaDuration(
+        [out, retval] BSTR *pCurrentMediaDuration);
+
+    [propget, id(DISPID_CURRENTTRACKMETADATA), helpstring("Property CurrentTrackMetaData")]
+    HRESULT CurrentTrackMetaData(
+        [out, retval] BSTR *pCurrentTrackMetaData);
+
+    [propget, id(DISPID_CURRENTTRACKURI), helpstring("Property CurrentTrackURI")]
+    HRESULT CurrentTrackURI(
+        [out, retval] BSTR *pCurrentTrackURI);
+
+    [propget, id(DISPID_AVTRANSPORTURI), helpstring("Property AVTransportURI")]
+    HRESULT AVTransportURI(
+        [out, retval] BSTR *pAVTransportURI);
+
+    [propget, id(DISPID_AVTRANSPORTURIMETADATA), helpstring("Property AVTransportURIMetaData")]
+    HRESULT AVTransportURIMetaData(
+        [out, retval] BSTR *pAVTransportURIMetaData);
+
+    [propget, id(DISPID_NEXTAVTRANSPORTURI), helpstring("Property NextAVTransportURI")]
+    HRESULT NextAVTransportURI(
+        [out, retval] BSTR *pNextAVTransportURI);
+
+    [propget, id(DISPID_NEXTAVTRANSPORTURIMETADATA), helpstring("Property NextAVTransportURIMetaData")]
+    HRESULT NextAVTransportURIMetaData(
+        [out, retval] BSTR *pNextAVTransportURIMetaData);
+
+    [propget, id(DISPID_RELATIVETIMEPOSITION), helpstring("Property RelativeTimePosition")]
+    HRESULT RelativeTimePosition(
+        [out, retval] BSTR *pRelativeTimePosition);
+
+    [propget, id(DISPID_ABSOLUTETIMEPOSITION), helpstring("Property AbsoluteTimePosition")]
+    HRESULT AbsoluteTimePosition(
+        [out, retval] BSTR *pAbsoluteTimePosition);
+
+    [propget, id(DISPID_RELATIVECOUNTERPOSITION), helpstring("Property RelativeCounterPosition")]
+    HRESULT RelativeCounterPosition(
+        [out, retval] long *pRelativeCounterPosition);
+
+    [propget, id(DISPID_ABSOLUTECOUNTERPOSITION), helpstring("Property AbsoluteCounterPosition")]
+    HRESULT AbsoluteCounterPosition(
+        [out, retval] long *pAbsoluteCounterPosition);
+
+    [propget, id(DISPID_CURRENTTRANSPORTACTIONS), helpstring("Property CurrentTransportActions")]
+    HRESULT CurrentTransportActions(
+        [out, retval] BSTR *pCurrentTransportActions);
+
+    [propget, id(DISPID_LASTCHANGE_AVT), helpstring("Property LastChange")]
+    HRESULT LastChange(
+        [out, retval] BSTR *pLastChange);
+
+    [propget, id(DISPID_A_ARG_TYPE_SEEKMODE), helpstring("Property A_ARG_TYPE_SeekMode")]
+    HRESULT A_ARG_TYPE_SeekMode(
+        [out, retval] BSTR *pA_ARG_TYPE_SeekMode);
+
+    [propget, id(DISPID_A_ARG_TYPE_SEEKTARGET), helpstring("Property A_ARG_TYPE_SeekTarget")]
+    HRESULT A_ARG_TYPE_SeekTarget(
+        [out, retval] BSTR *pA_ARG_TYPE_SeekTarget);
+
+    [propget, id(DISPID_A_ARG_TYPE_INSTANCEID_AVT), helpstring("Property A_ARG_TYPE_InstanceID")]
+    HRESULT A_ARG_TYPE_InstanceID(
+        [out, retval] unsigned long *pA_ARG_TYPE_InstanceID);
+
+
+    [ id(DISPID_SETAVTRANSPORTURI), helpstring("Method SetAVTransportURI")]
+    HRESULT SetAVTransportURI(
+        [in] unsigned long InstanceID,
+        [in] BSTR CurrentURI,
+        [in] BSTR CurrentURIMetaData);
+
+    [ id(DISPID_SETNEXTAVTRANSPORTURI), helpstring("Method SetNextAVTransportURI")]
+    HRESULT SetNextAVTransportURI(
+        [in] unsigned long InstanceID,
+        [in] BSTR NextURI,
+        [in] BSTR NextURIMetaData);
+
+    [ id(DISPID_GETMEDIAINFO), helpstring("Method GetMediaInfo")]
+    HRESULT GetMediaInfo(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned long *pNrTracks,
+        [in, out] BSTR *pMediaDuration,
+        [in, out] BSTR *pCurrentURI,
+        [in, out] BSTR *pCurrentURIMetaData,
+        [in, out] BSTR *pNextURI,
+        [in, out] BSTR *pNextURIMetaData,
+        [in, out] BSTR *pPlayMedium,
+        [in, out] BSTR *pRecordMedium,
+        [in, out] BSTR *pWriteStatus);
+
+    [ id(DISPID_GETTRANSPORTINFO), helpstring("Method GetTransportInfo")]
+    HRESULT GetTransportInfo(
+        [in] unsigned long InstanceID,
+        [in, out] BSTR *pCurrentTransportState,
+        [in, out] BSTR *pCurrentTransportStatus,
+        [in, out] BSTR *pCurrentSpeed);
+
+    [ id(DISPID_GETPOSITIONINFO), helpstring("Method GetPositionInfo")]
+    HRESULT GetPositionInfo(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned long *pTrack,
+        [in, out] BSTR *pTrackDuration,
+        [in, out] BSTR *pTrackMetaData,
+        [in, out] BSTR *pTrackURI,
+        [in, out] BSTR *pRelTime,
+        [in, out] BSTR *pAbsTime,
+        [in, out] long *pRelCount,
+        [in, out] long *pAbsCount);
+
+    [ id(DISPID_GETDEVICECAPABILITIES), helpstring("Method GetDeviceCapabilities")]
+    HRESULT GetDeviceCapabilities(
+        [in] unsigned long InstanceID,
+        [in, out] BSTR *pPlayMedia,
+        [in, out] BSTR *pRecMedia,
+        [in, out] BSTR *pRecQualityModes);
+
+    [ id(DISPID_GETTRANSPORTSETTINGS), helpstring("Method GetTransportSettings")]
+    HRESULT GetTransportSettings(
+        [in] unsigned long InstanceID,
+        [in, out] BSTR *pPlayMode,
+        [in, out] BSTR *pRecQualityMode);
+
+    [ id(DISPID_STOP), helpstring("Method Stop")]
+    HRESULT Stop(
+        [in] unsigned long InstanceID);
+
+    [ id(DISPID_PLAY), helpstring("Method Play")]
+    HRESULT Play(
+        [in] unsigned long InstanceID,
+        [in] BSTR Speed);
+
+    [ id(DISPID_PAUSE), helpstring("Method Pause")]
+    HRESULT Pause(
+        [in] unsigned long InstanceID);
+
+    [ id(DISPID_RECORD), helpstring("Method Record")]
+    HRESULT Record(
+        [in] unsigned long InstanceID);
+
+    [ id(DISPID_SEEK), helpstring("Method Seek")]
+    HRESULT Seek(
+        [in] unsigned long InstanceID,
+        [in] BSTR Unit,
+        [in] BSTR Target);
+
+    [ id(DISPID_NEXT), helpstring("Method Next")]
+    HRESULT Next(
+        [in] unsigned long InstanceID);
+
+    [ id(DISPID_PREVIOUS), helpstring("Method Previous")]
+    HRESULT Previous(
+        [in] unsigned long InstanceID);
+
+    [ id(DISPID_SETPLAYMODE), helpstring("Method SetPlayMode")]
+    HRESULT SetPlayMode(
+        [in] unsigned long InstanceID,
+        [in] BSTR NewPlayMode);
+
+    [ id(DISPID_SETRECORDQUALITYMODE), helpstring("Method SetRecordQualityMode")]
+    HRESULT SetRecordQualityMode(
+        [in] unsigned long InstanceID,
+        [in] BSTR NewRecordQualityMode);
+
+    [ id(DISPID_GETCURRENTTRANSPORTACTIONS), helpstring("Method GetCurrentTransportActions")]
+    HRESULT GetCurrentTransportActions(
+        [in] unsigned long InstanceID,
+        [in, out] BSTR *pActions);
+};
+
+
+//
+// Interface IUPnPService_RenderingControl1
+//
+typedef [v1_enum] enum RENDERINGCONTROL1_DISPIDS
+{
+     DISPID_PRESETNAMELIST = 1,
+     DISPID_LASTCHANGE_RC, /* also defined during AVTransport enum, appened _RC to differentiate */
+     DISPID_BRIGHTNESS,
+     DISPID_CONTRAST,
+     DISPID_SHARPNESS,
+     DISPID_REDVIDEOGAIN,
+     DISPID_GREENVIDEOGAIN,
+     DISPID_BLUEVIDEOGAIN,
+     DISPID_REDVIDEOBLACKLEVEL,
+     DISPID_GREENVIDEOBLACKLEVEL,
+     DISPID_BLUEVIDEOBLACKLEVEL,
+     DISPID_COLORTEMPERATURE,
+     DISPID_HORIZONTALKEYSTONE,
+     DISPID_VERTICALKEYSTONE,
+     DISPID_MUTE,
+     DISPID_VOLUME,
+     DISPID_VOLUMEDB,
+     DISPID_LOUDNESS,
+     DISPID_A_ARG_TYPE_CHANNEL,
+     DISPID_A_ARG_TYPE_INSTANCEID_RC, /* also defined during AVTransport enum, appened _RC to differentiate */
+     DISPID_A_ARG_TYPE_PRESETNAME,
+     DISPID_LISTPRESETS,
+     DISPID_SELECTPRESET,
+     DISPID_GETBRIGHTNESS,
+     DISPID_SETBRIGHTNESS,
+     DISPID_GETCONTRAST,
+     DISPID_SETCONTRAST,
+     DISPID_GETSHARPNESS,
+     DISPID_SETSHARPNESS,
+     DISPID_GETREDVIDEOGAIN,
+     DISPID_SETREDVIDEOGAIN,
+     DISPID_GETGREENVIDEOGAIN,
+     DISPID_SETGREENVIDEOGAIN,
+     DISPID_GETBLUEVIDEOGAIN,
+     DISPID_SETBLUEVIDEOGAIN,
+     DISPID_GETREDVIDEOBLACKLEVEL,
+     DISPID_SETREDVIDEOBLACKLEVEL,
+     DISPID_GETGREENVIDEOBLACKLEVEL,
+     DISPID_SETGREENVIDEOBLACKLEVEL,
+     DISPID_GETBLUEVIDEOBLACKLEVEL,
+     DISPID_SETBLUEVIDEOBLACKLEVEL,
+     DISPID_GETCOLORTEMPERATURE ,
+     DISPID_SETCOLORTEMPERATURE,
+     DISPID_GETHORIZONTALKEYSTONE,
+     DISPID_SETHORIZONTALKEYSTONE,
+     DISPID_GETVERTICALKEYSTONE,
+     DISPID_SETVERTICALKEYSTONE,
+     DISPID_GETMUTE,
+     DISPID_SETMUTE,
+     DISPID_GETVOLUME,
+     DISPID_SETVOLUME,
+     DISPID_GETVOLUMEDB,
+     DISPID_SETVOLUMEDB,
+     DISPID_GETVOLUMEDBRANGE,
+     DISPID_GETLOUDNESS,
+     DISPID_SETLOUDNESS
+
+} RENDERINGCONTROL1_DISPIDS;
+
+[
+     uuid(0298b219-dd69-451d-bb93-2923839c6dc7),
+     oleautomation,
+     helpstring("RenderingControlService Interface"),
+     pointer_default(unique)
+]
+interface IUPnPService_RenderingControl1 : IDispatch {
+    [propget, id(DISPID_PRESETNAMELIST), helpstring("Property PresetNameList")]
+    HRESULT PresetNameList(
+        [out, retval] BSTR *pPresetNameList);
+
+    [propget, id(DISPID_LASTCHANGE_RC), helpstring("Property LastChange")]
+    HRESULT LastChange(
+        [out, retval] BSTR *pLastChange);
+
+    [propget, id(DISPID_BRIGHTNESS), helpstring("Property Brightness")]
+    HRESULT Brightness(
+        [out, retval] unsigned short *pBrightness);
+
+    [propget, id(DISPID_CONTRAST), helpstring("Property Contrast")]
+    HRESULT Contrast(
+        [out, retval] unsigned short *pContrast);
+
+    [propget, id(DISPID_SHARPNESS), helpstring("Property Sharpness")]
+    HRESULT Sharpness(
+        [out, retval] unsigned short *pSharpness);
+
+    [propget, id(DISPID_REDVIDEOGAIN), helpstring("Property RedVideoGain")]
+    HRESULT RedVideoGain(
+        [out, retval] unsigned short *pRedVideoGain);
+
+    [propget, id(DISPID_GREENVIDEOGAIN), helpstring("Property GreenVideoGain")]
+    HRESULT GreenVideoGain(
+        [out, retval] unsigned short *pGreenVideoGain);
+
+    [propget, id(DISPID_BLUEVIDEOGAIN), helpstring("Property BlueVideoGain")]
+    HRESULT BlueVideoGain(
+        [out, retval] unsigned short *pBlueVideoGain);
+
+    [propget, id(DISPID_REDVIDEOBLACKLEVEL), helpstring("Property RedVideoBlackLevel")]
+    HRESULT RedVideoBlackLevel(
+        [out, retval] unsigned short *pRedVideoBlackLevel);
+
+    [propget, id(DISPID_GREENVIDEOBLACKLEVEL), helpstring("Property GreenVideoBlackLevel")]
+    HRESULT GreenVideoBlackLevel(
+        [out, retval] unsigned short *pGreenVideoBlackLevel);
+
+    [propget, id(DISPID_BLUEVIDEOBLACKLEVEL), helpstring("Property BlueVideoBlackLevel")]
+    HRESULT BlueVideoBlackLevel(
+        [out, retval] unsigned short *pBlueVideoBlackLevel);
+
+    [propget, id(DISPID_COLORTEMPERATURE), helpstring("Property ColorTemperature")]
+    HRESULT ColorTemperature(
+        [out, retval] unsigned short *pColorTemperature);
+
+    [propget, id(DISPID_HORIZONTALKEYSTONE), helpstring("Property HorizontalKeystone")]
+    HRESULT HorizontalKeystone(
+        [out, retval] short *pHorizontalKeystone);
+
+    [propget, id(DISPID_VERTICALKEYSTONE), helpstring("Property VerticalKeystone")]
+    HRESULT VerticalKeystone(
+        [out, retval] short *pVerticalKeystone);
+
+    [propget, id(DISPID_MUTE), helpstring("Property Mute")]
+    HRESULT Mute(
+        [out, retval] VARIANT_BOOL *pMute);
+
+    [propget, id(DISPID_VOLUME), helpstring("Property Volume")]
+    HRESULT Volume(
+        [out, retval] unsigned short *pVolume);
+
+    [propget, id(DISPID_VOLUMEDB), helpstring("Property VolumeDB")]
+    HRESULT VolumeDB(
+        [out, retval] short *pVolumeDB);
+
+    [propget, id(DISPID_LOUDNESS), helpstring("Property Loudness")]
+    HRESULT Loudness(
+        [out, retval] VARIANT_BOOL *pLoudness);
+
+    [propget, id(DISPID_A_ARG_TYPE_CHANNEL), helpstring("Property A_ARG_TYPE_Channel")]
+    HRESULT A_ARG_TYPE_Channel(
+        [out, retval] BSTR *pA_ARG_TYPE_Channel);
+
+    [propget, id(DISPID_A_ARG_TYPE_INSTANCEID_RC), helpstring("Property A_ARG_TYPE_InstanceID")]
+    HRESULT A_ARG_TYPE_InstanceID(
+        [out, retval] unsigned long *pA_ARG_TYPE_InstanceID);
+
+    [propget, id(DISPID_A_ARG_TYPE_PRESETNAME), helpstring("Property A_ARG_TYPE_PresetName")]
+    HRESULT A_ARG_TYPE_PresetName(
+        [out, retval] BSTR *pA_ARG_TYPE_PresetName);
+
+
+    [ id(DISPID_LISTPRESETS), helpstring("Method ListPresets")]
+    HRESULT ListPresets(
+        [in] unsigned long InstanceID,
+        [in, out] BSTR *pCurrentPresetNameList);
+
+    [ id(DISPID_SELECTPRESET), helpstring("Method SelectPreset")]
+    HRESULT SelectPreset(
+        [in] unsigned long InstanceID,
+        [in] BSTR PresetName);
+
+    [ id(DISPID_GETBRIGHTNESS), helpstring("Method GetBrightness")]
+    HRESULT GetBrightness(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentBrightness);
+
+    [ id(DISPID_SETBRIGHTNESS), helpstring("Method SetBrightness")]
+    HRESULT SetBrightness(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredBrightness);
+
+    [ id(DISPID_GETCONTRAST), helpstring("Method GetContrast")]
+    HRESULT GetContrast(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentContrast);
+
+    [ id(DISPID_SETCONTRAST), helpstring("Method SetContrast")]
+    HRESULT SetContrast(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredContrast);
+
+    [ id(DISPID_GETSHARPNESS), helpstring("Method GetSharpness")]
+    HRESULT GetSharpness(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentSharpness);
+
+    [ id(DISPID_SETSHARPNESS), helpstring("Method SetSharpness")]
+    HRESULT SetSharpness(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredSharpness);
+
+    [ id(DISPID_GETREDVIDEOGAIN), helpstring("Method GetRedVideoGain")]
+    HRESULT GetRedVideoGain(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentRedVideoGain);
+
+    [ id(DISPID_SETREDVIDEOGAIN), helpstring("Method SetRedVideoGain")]
+    HRESULT SetRedVideoGain(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredRedVideoGain);
+
+    [ id(DISPID_GETGREENVIDEOGAIN), helpstring("Method GetGreenVideoGain")]
+    HRESULT GetGreenVideoGain(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentGreenVideoGain);
+
+    [ id(DISPID_SETGREENVIDEOGAIN), helpstring("Method SetGreenVideoGain")]
+    HRESULT SetGreenVideoGain(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredGreenVideoGain);
+
+    [ id(DISPID_GETBLUEVIDEOGAIN), helpstring("Method GetBlueVideoGain")]
+    HRESULT GetBlueVideoGain(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentBlueVideoGain);
+
+    [ id(DISPID_SETBLUEVIDEOGAIN), helpstring("Method SetBlueVideoGain")]
+    HRESULT SetBlueVideoGain(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredBlueVideoGain);
+
+    [ id(DISPID_GETREDVIDEOBLACKLEVEL), helpstring("Method GetRedVideoBlackLevel")]
+    HRESULT GetRedVideoBlackLevel(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentRedVideoBlackLevel);
+
+    [ id(DISPID_SETREDVIDEOBLACKLEVEL), helpstring("Method SetRedVideoBlackLevel")]
+    HRESULT SetRedVideoBlackLevel(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredRedVideoBlackLevel);
+
+    [ id(DISPID_GETGREENVIDEOBLACKLEVEL), helpstring("Method GetGreenVideoBlackLevel")]
+    HRESULT GetGreenVideoBlackLevel(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentGreenVideoBlackLevel);
+
+    [ id(DISPID_SETGREENVIDEOBLACKLEVEL), helpstring("Method SetGreenVideoBlackLevel")]
+    HRESULT SetGreenVideoBlackLevel(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredGreenVideoBlackLevel);
+
+    [ id(DISPID_GETBLUEVIDEOBLACKLEVEL), helpstring("Method GetBlueVideoBlackLevel")]
+    HRESULT GetBlueVideoBlackLevel(
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentBlueVideoBlackLevel);
+
+    [ id(DISPID_SETBLUEVIDEOBLACKLEVEL), helpstring("Method SetBlueVideoBlackLevel")]
+    HRESULT SetBlueVideoBlackLevel(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredBlueVideoBlackLevel);
+
+    [ id(DISPID_GETCOLORTEMPERATURE ), helpstring("Method GetColorTemperature ")]
+    HRESULT GetColorTemperature (
+        [in] unsigned long InstanceID,
+        [in, out] unsigned short *pCurrentColorTemperature);
+
+    [ id(DISPID_SETCOLORTEMPERATURE), helpstring("Method SetColorTemperature")]
+    HRESULT SetColorTemperature(
+        [in] unsigned long InstanceID,
+        [in] unsigned short DesiredColorTemperature);
+
+    [ id(DISPID_GETHORIZONTALKEYSTONE), helpstring("Method GetHorizontalKeystone")]
+    HRESULT GetHorizontalKeystone(
+        [in] unsigned long InstanceID,
+        [in, out] short *pCurrentHorizontalKeystone);
+
+    [ id(DISPID_SETHORIZONTALKEYSTONE), helpstring("Method SetHorizontalKeystone")]
+    HRESULT SetHorizontalKeystone(
+        [in] unsigned long InstanceID,
+        [in] short DesiredHorizontalKeystone);
+
+    [ id(DISPID_GETVERTICALKEYSTONE), helpstring("Method GetVerticalKeystone")]
+    HRESULT GetVerticalKeystone(
+        [in] unsigned long InstanceID,
+        [in, out] short *pCurrentVerticalKeystone);
+
+    [ id(DISPID_SETVERTICALKEYSTONE), helpstring("Method SetVerticalKeystone")]
+    HRESULT SetVerticalKeystone(
+        [in] unsigned long InstanceID,
+        [in] short DesiredVerticalKeystone);
+
+    [ id(DISPID_GETMUTE), helpstring("Method GetMute")]
+    HRESULT GetMute(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in, out] VARIANT_BOOL *pCurrentMute);
+
+    [ id(DISPID_SETMUTE), helpstring("Method SetMute")]
+    HRESULT SetMute(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in] VARIANT_BOOL DesiredMute);
+
+    [ id(DISPID_GETVOLUME), helpstring("Method GetVolume")]
+    HRESULT GetVolume(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in, out] unsigned short *pCurrentVolume);
+
+    [ id(DISPID_SETVOLUME), helpstring("Method SetVolume")]
+    HRESULT SetVolume(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in] unsigned short DesiredVolume);
+
+    [ id(DISPID_GETVOLUMEDB), helpstring("Method GetVolumeDB")]
+    HRESULT GetVolumeDB(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in, out] short *pCurrentVolume);
+
+    [ id(DISPID_SETVOLUMEDB), helpstring("Method SetVolumeDB")]
+    HRESULT SetVolumeDB(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in] short DesiredVolume);
+
+    [ id(DISPID_GETVOLUMEDBRANGE), helpstring("Method GetVolumeDBRange")]
+    HRESULT GetVolumeDBRange(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in, out] short *pMinValue,
+        [in, out] short *pMaxValue);
+
+    [ id(DISPID_GETLOUDNESS), helpstring("Method GetLoudness")]
+    HRESULT GetLoudness(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in, out] VARIANT_BOOL *pCurrentLoudness);
+
+    [ id(DISPID_SETLOUDNESS), helpstring("Method SetLoudness")]
+    HRESULT SetLoudness(
+        [in] unsigned long InstanceID,
+        [in] BSTR Channel,
+        [in] VARIANT_BOOL DesiredLoudness);
+};
+
+
+//
+// Interface IUPnPService_ContentDirectory1
+//
+typedef [v1_enum] enum CONTENTDIRECTORY1_DISPIDS
+{
+     DISPID_TRANSFERIDS = 1,
+     DISPID_A_ARG_TYPE_OBJECTID,
+     DISPID_A_ARG_TYPE_RESULT,
+     DISPID_A_ARG_TYPE_SEARCHCRITERIA,
+     DISPID_A_ARG_TYPE_BROWSEFLAG,
+     DISPID_A_ARG_TYPE_FILTER,
+     DISPID_A_ARG_TYPE_SORTCRITERIA,
+     DISPID_A_ARG_TYPE_INDEX,
+     DISPID_A_ARG_TYPE_COUNT,
+     DISPID_A_ARG_TYPE_UPDATEID,
+     DISPID_A_ARG_TYPE_TRANSFERID,
+     DISPID_A_ARG_TYPE_TRANSFERSTATUS,
+     DISPID_A_ARG_TYPE_TRANSFERLENGTH,
+     DISPID_A_ARG_TYPE_TRANSFERTOTAL,
+     DISPID_A_ARG_TYPE_TAGVALUELIST,
+     DISPID_A_ARG_TYPE_URI,
+     DISPID_SEARCHCAPABILITIES,
+     DISPID_SORTCAPABILITIES,
+     DISPID_SYSTEMUPDATEID,
+     DISPID_CONTAINERUPDATEIDS,
+     DISPID_GETSEARCHCAPABILITIES,
+     DISPID_GETSORTCAPABILITIES,
+     DISPID_GETSYSTEMUPDATEID,
+     DISPID_BROWSE,
+     DISPID_SEARCH,
+     DISPID_CREATEOBJECT,
+     DISPID_DESTROYOBJECT,
+     DISPID_UPDATEOBJECT,
+     DISPID_IMPORTRESOURCE,
+     DISPID_EXPORTRESOURCE,
+     DISPID_STOPTRANSFERRESOURCE,
+     DISPID_GETTRANSFERPROGRESS,
+     DISPID_DELETERESOURCE,
+     DISPID_CREATEREFERENCE
+
+} CONTENTDIRECTORY1_DISPIDS;
+
+[
+     uuid(3eadfae5-00c9-4359-8952-950d832574a0),
+     oleautomation,
+     helpstring("ContentDirectoryService Interface"),
+     pointer_default(unique)
+]
+interface IUPnPService_ContentDirectory1 : IDispatch {
+    [propget, id(DISPID_TRANSFERIDS), helpstring("Property TransferIDs")]
+    HRESULT TransferIDs(
+        [out, retval] BSTR *pTransferIDs);
+
+    [propget, id(DISPID_A_ARG_TYPE_OBJECTID), helpstring("Property A_ARG_TYPE_ObjectID")]
+    HRESULT A_ARG_TYPE_ObjectID(
+        [out, retval] BSTR *pA_ARG_TYPE_ObjectID);
+
+    [propget, id(DISPID_A_ARG_TYPE_RESULT), helpstring("Property A_ARG_TYPE_Result")]
+    HRESULT A_ARG_TYPE_Result(
+        [out, retval] BSTR *pA_ARG_TYPE_Result);
+
+    [propget, id(DISPID_A_ARG_TYPE_SEARCHCRITERIA), helpstring("Property A_ARG_TYPE_SearchCriteria")]
+    HRESULT A_ARG_TYPE_SearchCriteria(
+        [out, retval] BSTR *pA_ARG_TYPE_SearchCriteria);
+
+    [propget, id(DISPID_A_ARG_TYPE_BROWSEFLAG), helpstring("Property A_ARG_TYPE_BrowseFlag")]
+    HRESULT A_ARG_TYPE_BrowseFlag(
+        [out, retval] BSTR *pA_ARG_TYPE_BrowseFlag);
+
+    [propget, id(DISPID_A_ARG_TYPE_FILTER), helpstring("Property A_ARG_TYPE_Filter")]
+    HRESULT A_ARG_TYPE_Filter(
+        [out, retval] BSTR *pA_ARG_TYPE_Filter);
+
+    [propget, id(DISPID_A_ARG_TYPE_SORTCRITERIA), helpstring("Property A_ARG_TYPE_SortCriteria")]
+    HRESULT A_ARG_TYPE_SortCriteria(
+        [out, retval] BSTR *pA_ARG_TYPE_SortCriteria);
+
+    [propget, id(DISPID_A_ARG_TYPE_INDEX), helpstring("Property A_ARG_TYPE_Index")]
+    HRESULT A_ARG_TYPE_Index(
+        [out, retval] unsigned long *pA_ARG_TYPE_Index);
+
+    [propget, id(DISPID_A_ARG_TYPE_COUNT), helpstring("Property A_ARG_TYPE_Count")]
+    HRESULT A_ARG_TYPE_Count(
+        [out, retval] unsigned long *pA_ARG_TYPE_Count);
+
+    [propget, id(DISPID_A_ARG_TYPE_UPDATEID), helpstring("Property A_ARG_TYPE_UpdateID")]
+    HRESULT A_ARG_TYPE_UpdateID(
+        [out, retval] unsigned long *pA_ARG_TYPE_UpdateID);
+
+    [propget, id(DISPID_A_ARG_TYPE_TRANSFERID), helpstring("Property A_ARG_TYPE_TransferID")]
+    HRESULT A_ARG_TYPE_TransferID(
+        [out, retval] unsigned long *pA_ARG_TYPE_TransferID);
+
+    [propget, id(DISPID_A_ARG_TYPE_TRANSFERSTATUS), helpstring("Property A_ARG_TYPE_TransferStatus")]
+    HRESULT A_ARG_TYPE_TransferStatus(
+        [out, retval] BSTR *pA_ARG_TYPE_TransferStatus);
+
+    [propget, id(DISPID_A_ARG_TYPE_TRANSFERLENGTH), helpstring("Property A_ARG_TYPE_TransferLength")]
+    HRESULT A_ARG_TYPE_TransferLength(
+        [out, retval] BSTR *pA_ARG_TYPE_TransferLength);
+
+    [propget, id(DISPID_A_ARG_TYPE_TRANSFERTOTAL), helpstring("Property A_ARG_TYPE_TransferTotal")]
+    HRESULT A_ARG_TYPE_TransferTotal(
+        [out, retval] BSTR *pA_ARG_TYPE_TransferTotal);
+
+    [propget, id(DISPID_A_ARG_TYPE_TAGVALUELIST), helpstring("Property A_ARG_TYPE_TagValueList")]
+    HRESULT A_ARG_TYPE_TagValueList(
+        [out, retval] BSTR *pA_ARG_TYPE_TagValueList);
+
+    [propget, id(DISPID_A_ARG_TYPE_URI), helpstring("Property A_ARG_TYPE_URI")]
+    HRESULT A_ARG_TYPE_URI(
+        [out, retval] BSTR *pA_ARG_TYPE_URI);
+
+    [propget, id(DISPID_SEARCHCAPABILITIES), helpstring("Property SearchCapabilities")]
+    HRESULT SearchCapabilities(
+        [out, retval] BSTR *pSearchCapabilities);
+
+    [propget, id(DISPID_SORTCAPABILITIES), helpstring("Property SortCapabilities")]
+    HRESULT SortCapabilities(
+        [out, retval] BSTR *pSortCapabilities);
+
+    [propget, id(DISPID_SYSTEMUPDATEID), helpstring("Property SystemUpdateID")]
+    HRESULT SystemUpdateID(
+        [out, retval] unsigned long *pSystemUpdateID);
+
+    [propget, id(DISPID_CONTAINERUPDATEIDS), helpstring("Property ContainerUpdateIDs")]
+    HRESULT ContainerUpdateIDs(
+        [out, retval] BSTR *pContainerUpdateIDs);
+
+
+    [ id(DISPID_GETSEARCHCAPABILITIES), helpstring("Method GetSearchCapabilities")]
+    HRESULT GetSearchCapabilities(
+        [in, out] BSTR *pSearchCaps);
+
+    [ id(DISPID_GETSORTCAPABILITIES), helpstring("Method GetSortCapabilities")]
+    HRESULT GetSortCapabilities(
+        [in, out] BSTR *pSortCaps);
+
+    [ id(DISPID_GETSYSTEMUPDATEID), helpstring("Method GetSystemUpdateID")]
+    HRESULT GetSystemUpdateID(
+        [in, out] unsigned long *pId);
+
+    [ id(DISPID_BROWSE), helpstring("Method Browse")]
+    HRESULT Browse(
+        [in] BSTR ObjectID,
+        [in] BSTR BrowseFlag,
+        [in] BSTR Filter,
+        [in] unsigned long StartingIndex,
+        [in] unsigned long RequestedCount,
+        [in] BSTR SortCriteria,
+        [in, out] BSTR *pResult,
+        [in, out] unsigned long *pNumberReturned,
+        [in, out] unsigned long *pTotalMatches,
+        [in, out] unsigned long *pUpdateID);
+
+    [ id(DISPID_SEARCH), helpstring("Method Search")]
+    HRESULT Search(
+        [in] BSTR ContainerID,
+        [in] BSTR SearchCriteria,
+        [in] BSTR Filter,
+        [in] unsigned long StartingIndex,
+        [in] unsigned long RequestedCount,
+        [in] BSTR SortCriteria,
+        [in, out] BSTR *pResult,
+        [in, out] unsigned long *pNumberReturned,
+        [in, out] unsigned long *pTotalMatches,
+        [in, out] unsigned long *pUpdateID);
+
+    [ id(DISPID_CREATEOBJECT), helpstring("Method CreateObject")]
+    HRESULT CreateObject(
+        [in] BSTR ContainerID,
+        [in] BSTR Elements,
+        [in, out] BSTR *pObjectID,
+        [in, out] BSTR *pResult);
+
+    [ id(DISPID_DESTROYOBJECT), helpstring("Method DestroyObject")]
+    HRESULT DestroyObject(
+        [in] BSTR ObjectID);
+
+    [ id(DISPID_UPDATEOBJECT), helpstring("Method UpdateObject")]
+    HRESULT UpdateObject(
+        [in] BSTR ObjectID,
+        [in] BSTR CurrentTagValue,
+        [in] BSTR NewTagValue);
+
+    [ id(DISPID_IMPORTRESOURCE), helpstring("Method ImportResource")]
+    HRESULT ImportResource(
+        [in] BSTR SourceURI,
+        [in] BSTR DestinationURI,
+        [in, out] unsigned long *pTransferID);
+
+    [ id(DISPID_EXPORTRESOURCE), helpstring("Method ExportResource")]
+    HRESULT ExportResource(
+        [in] BSTR SourceURI,
+        [in] BSTR DestinationURI,
+        [in, out] unsigned long *pTransferID);
+
+    [ id(DISPID_STOPTRANSFERRESOURCE), helpstring("Method StopTransferResource")]
+    HRESULT StopTransferResource(
+        [in] unsigned long TransferID);
+
+    [ id(DISPID_GETTRANSFERPROGRESS), helpstring("Method GetTransferProgress")]
+    HRESULT GetTransferProgress(
+        [in] unsigned long TransferID,
+        [in, out] BSTR *pTransferStatus,
+        [in, out] BSTR *pTransferLength,
+        [in, out] BSTR *pTransferTotal);
+
+    [ id(DISPID_DELETERESOURCE), helpstring("Method DeleteResource")]
+    HRESULT DeleteResource(
+        [in] BSTR ResourceURI);
+
+    [ id(DISPID_CREATEREFERENCE), helpstring("Method CreateReference")]
+    HRESULT CreateReference(
+        [in] BSTR ContainerID,
+        [in] BSTR ObjectID,
+        [in, out] BSTR *pNewID);
+};
+
+
+
+//
+// UPnP AV toolkit library
+//
+[
+    uuid(2432ad2b-4d63-47fb-9838-beca90e1dc97),
+    version(1.0),
+    helpstring("UPnP AV toolkit 1.0 Type Library")
+]
+library UPNPAVTOOLKITlib
+{
+    importlib("stdole32.tlb");
+    importlib("stdole2.tlb");
+
+    interface IUPnPService_ConnectionManager1;
+    interface IUPnPService_AVTransport1;
+    interface IUPnPService_RenderingControl1;
+    interface IUPnPService_ContentDirectory1;
+};

@@ -1,0 +1,59 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+
+TARGETNAME=upnpctrl
+TARGETTYPE=LIBRARY
+
+TARGETDEFNAME=$(TARGETNAME)
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+COPYRES=1
+WINCETARGETFILES=$(_RELEASELIBDIR)\$(TARGETNAME).res
+
+!include $(UPNPROOT)\upnp.src
+
+
+!IF "$(WINCEDEBUG)"=="debug"
+CDEFINES=$(CDEFINES) -DENABLETRACE
+!ENDIF
+
+
+INCLUDES=                                                           \
+        $(UPNPROOT)\upnpctrl;                                       \
+        $(UPNPROOT)\inc;                                            \
+        $(UPNPROOT)\util;                                           \
+        $(UPNPROOT)\ssdp\inc;                                       \
+        $(UPNPROOT)\yacl;                                           \
+        $(_WINCEROOT)\private\ie7\inetcore\msxml\resource\messages; \
+
+
+SOURCES=                                \
+        devicedescription.cpp           \
+        devicedescriptionparsing.cpp    \
+        device.cpp                      \
+        deviceparsing.cpp               \
+        finder.cpp                      \
+        main.cpp                        \
+        upnpctrl.rc                     \
+        argument.cpp                    \
+        action.cpp                      \
+        serviceimpl.cpp                 \
+        serviceimplparsing.cpp          \
+        statevar.cpp                    \
+        service.cpp                     \
+        connectionpoint.cpp             \
+
+
+#xref VIGUID {51eebb96-4f71-4fe6-bebf-75f6f69179c2}
+#xref VSGUID {50cc6682-1e4a-46d7-aeef-5550a9c58464}

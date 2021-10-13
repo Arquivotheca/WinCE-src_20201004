@@ -1,0 +1,92 @@
+<?xml version="1.0" standalone="yes"?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<!-- ===============================================
+====
+==== WiFiMetrics test configuraton file
+====
+==== Use SkipFile parameter to skip an individual test.
+====
+==== =========================================== -->
+
+<TestRun file = "WiFiMetrics Test Run">
+
+    <!--
+        Directories:
+    -->
+    <TestSetup name="Directory organization"
+
+        RootDirName   = "\windows"
+        ScriptDirName = "\release\WQMConfigs"
+        TempDirName   = "\windows"
+
+    />
+
+    <!--
+        Hardware and device-under-test configuration info:
+        These should be the only files you need to customize.
+    -->
+    <Include type = "params" includeFile = "$(ScriptDirName)\DUTSetup.xml" />
+    <Include type = "params" includeFile = "$(ScriptDirName)\HdweSetup.xml" />
+
+    <!--
+        Each of the following files describe one of the WQM test suites.
+        See those files for more details.
+    -->
+
+    <TestGroup TestGroupName = "Stability" ToSkip = "false" TestWeight = "2.0">
+      <Include
+          skipFile = "false"
+          TstCaseIDStart = "1001"
+          TstCaseIDEnd = "1050"
+          includeFile = "$(ScriptDirName)\ndt_1c_test.xml"
+      />
+
+    </TestGroup>
+
+    <TestGroup TestGroupName = "Communication" ToSkip = "false" TestWeight = "2.0">
+
+      <Include
+          skipFile = "false"
+          TstCaseIDStart = "1101"
+          TstCaseIDEnd = "1150"
+          includeFile = "$(ScriptDirName)\ndt_2c_test.xml"
+      />
+
+    </TestGroup>
+ 
+   
+    <TestGroup TestGroupName = "Security" ToSkip = "false" TestWeight = "10.0">
+      <Include
+          skipFile = "false"
+          TstCaseIDStart = "2000"
+          TstCaseIDEnd = "15000"
+        TestSuiteName    = "AuthMatrix"
+          includeFile = "$(ScriptDirName)\AuthMatrix_test.xml"
+      />
+
+      <Include
+          skipFile = "false"
+          TstCaseIDStart = "36000"
+          TstCaseIDEnd = "50000"
+          EnableConfigSP = "true" 
+        TestSuiteName    = "AuthMatrix_ConfigSP"
+          includeFile = "$(ScriptDirName)\AuthMatrix_test.xml"
+      />
+
+
+    </TestGroup>
+
+
+</TestRun>
+

@@ -1,0 +1,98 @@
+; Copyright (c) 1999-2000 Microsoft Corporation
+LIBRARY         WAVEAPIC
+
+EXPORTS
+    AudioUpdateFromRegistry  @1      NONAME
+    sndPlaySoundW            @2      NONAME
+    PlaySoundW               @3      NONAME
+    waveOutGetNumDevs        @4      NONAME
+    waveOutGetDevCaps        @5      NONAME
+    waveOutGetVolume         @6      NONAME
+    waveOutSetVolume         @7      NONAME
+    waveOutGetErrorText      @8      NONAME
+    waveOutClose             @9      NONAME
+    waveOutPrepareHeader     @10     NONAME
+    waveOutUnprepareHeader   @11     NONAME
+    waveOutWrite             @12     NONAME
+    waveOutPause             @13     NONAME
+    waveOutRestart           @14     NONAME
+    waveOutReset             @15     NONAME
+    waveOutBreakLoop         @16     NONAME
+    waveOutGetPosition       @17     NONAME
+    waveOutGetPitch          @18     NONAME
+    waveOutSetPitch          @19     NONAME
+    waveOutGetPlaybackRate   @20     NONAME
+    waveOutSetPlaybackRate   @21     NONAME
+
+    waveOutGetProperty       @22     NONAME
+    waveOutSetProperty       @23     NONAME
+
+    waveOutGetID             @24     NONAME
+    waveOutMessage           @25     NONAME
+    waveOutOpen              @26     NONAME
+    waveInGetNumDevs         @27     NONAME
+    waveInGetDevCaps         @28     NONAME
+    waveInGetErrorText       @29     NONAME
+    waveInClose              @30     NONAME
+    waveInPrepareHeader      @31     NONAME
+    waveInUnprepareHeader    @32     NONAME
+    waveInAddBuffer          @33     NONAME
+    waveInStart              @34     NONAME
+    waveInStop               @35     NONAME
+    waveInReset              @36     NONAME
+    waveInGetPosition        @37     NONAME
+    waveInGetID              @38     NONAME
+    waveInMessage            @39     NONAME
+    waveInOpen               @40     NONAME
+
+    waveInGetProperty        @41     NONAME
+    waveInSetProperty        @42     NONAME
+
+; @CESYSGEN IF WAVEAPIC_WAVEAPIC_ACM
+    acmDriverAdd             @43     NONAME
+    acmDriverClose           @44     NONAME
+    acmDriverDetails         @45     NONAME
+    acmDriverEnum            @46     NONAME
+    acmDriverID              @47     NONAME
+    acmDriverMessage         @48     NONAME
+    acmDriverOpen            @49     NONAME
+    acmDriverPriority        @50     NONAME
+    acmDriverRemove          @51     NONAME
+
+    acmFilterDetails         @52     NONAME
+    acmFilterEnum            @53     NONAME
+    acmFilterTagDetails      @54     NONAME
+    acmFilterTagEnum         @55     NONAME
+
+    acmFormatDetails         @56     NONAME
+    acmFormatEnum            @57     NONAME
+    acmFormatSuggest         @58     NONAME
+    acmFormatTagDetails      @59     NONAME
+    acmFormatTagEnum         @60     NONAME
+    acmStreamClose           @61     NONAME
+    acmStreamConvert         @62     NONAME
+    acmStreamMessage         @63     NONAME
+    acmStreamOpen            @64     NONAME
+    acmStreamPrepareHeader   @65     NONAME
+    acmStreamReset           @66     NONAME
+    acmStreamSize            @67     NONAME
+    acmStreamUnprepareHeader @68     NONAME
+    acmGetVersion            @69     NONAME
+    acmMetrics               @70     NONAME
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF WAVEAPIC_WAVEAPIC_ACMUI
+    acmFilterChoose          @71     NONAME
+    acmFormatChoose          @72     NONAME
+; @CESYSGEN ENDIF
+
+    mixerGetControlDetails   @73     NONAME
+    mixerGetDevCaps          @74     NONAME
+    mixerGetID               @75     NONAME
+    mixerGetLineControls     @76     NONAME
+    mixerGetLineInfo         @77     NONAME
+    mixerGetNumDevs          @78     NONAME
+    mixerMessage             @79     NONAME
+    mixerOpen                @80     NONAME
+    mixerSetControlDetails   @81     NONAME
+    mixerClose               @82     NONAME

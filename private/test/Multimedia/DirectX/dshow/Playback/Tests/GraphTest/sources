@@ -1,0 +1,118 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+
+!include $(DX_TST_ROOT)\dshow\dshowtest.inc
+
+!if 0
+
+Module Name:
+    sources.
+
+Abstract:
+
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+
+TARGETNAME = GraphTest
+TARGETTYPE = DYNLINK
+TARGETDEFNAME=$(TARGETNAME)
+
+WINCEATL=1
+
+CDEFINES=$(CDEFINES) -D_TUX_SUITE -DBASIC_VERIFIERS -DLATENCY_VERIFIERS /EHsc
+
+SOURCES= \
+    graphtest.rc \
+    TuxMain.cpp \
+    GraphTest.cpp \
+    GraphTestDesc.cpp \
+    GraphTestDescParser.cpp \
+    GraphAudioControl.cpp \
+    GraphBuild.cpp \
+    GraphPlay.cpp \
+    GraphEvent.cpp \
+    GraphEventEx.cpp \
+    GraphCtrl.cpp \
+    GraphRefClock.cpp \
+    GraphEnumFilters.cpp \
+    GraphEnumRegFilters.cpp \
+    GraphEnumPins.cpp \
+    GraphFilterMgr.cpp \
+    GraphVersion.cpp \
+    NonProxyedInterface.cpp \
+    GraphBuilder2.cpp \
+    GraphMediaContent.cpp \
+    GraphMediaContentEx.cpp \
+    GraphPlayList.cpp \
+    GraphOpenProgress.cpp \
+    GraphIBasicAudio.cpp \
+    GraphIFileSourceFilter.cpp \
+    GraphIAMNetShowExProps.cpp \
+    GraphIAMExtendedSeeking.cpp \
+    GraphIAMDroppedFrames.cpp \
+    GraphIQualProp.cpp \
+    GraphIAMAudioRendererStats.cpp \
+    GraphIAudioRendererWaveOut.cpp \
+    GraphIAMNetworkStatus.cpp \
+    GraphNetShowConfig.cpp \
+    
+
+
+INCLUDES=  \
+    ..\..\inc; \
+    ..\..\Framework; \
+    $(DSHOW_TST_COMMON_INC); \
+    $(TEST_ROOT)\common\inc; \
+    $(_WINCEROOT)\public\ostest\sdk\inc; \
+    $(_DIRECTXSDKROOT)\inc\; \
+    $(_DIRECTXOAKROOT)\inc; \
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\sdk\inc;  \
+    $(_DIRECTXSDKROOT)\samples\dshow\Filters\inftee; \
+    $(_WINCEROOT)\private\directx\dshow\h;  \
+    $(TEST_ROOT)\common\inc; \
+    $(_PRIVATEROOT)\directx\dshow\filters\demultiplexer\mpeg2\public\inc; \
+    $(_PRIVATEROOT)\test\multimedia\directx\dshow\common\include; \
+    $(_WINCEROOT)\private\test\Multimedia\common\inc; \
+    $(INCLUDES) \
+
+TARGETLIBS= \
+    $(_KATO) \
+    $(_OLE32)        \
+    $(_OLEAUT32)    \
+    $(_COREDLL)   \
+    $(_UUID) \
+    $(_STRMIIDS)    \
+    $(_STRMBASE)     \
+    $(_MMTIMER)        \
+    $(_QTZBASE)        \
+    $(_DDRAW)    \
+    $(_TOOLHELP)    \
+    $(_URLMON)         \
+    $(TEST_OAK_LIB_PATH)\TestGraph.lib \
+    $(TEST_OAK_LIB_PATH)\BasicVerifiers.lib \
+    $(TEST_OAK_LIB_PATH)\LatencyVerifiers.lib \
+    $(TEST_OAK_LIB_PATH)\Loggers.lib \
+    $(TEST_OAK_LIB_PATH)\Imaging.lib \
+    $(TEST_OAK_LIB_PATH)\VideoUtil.lib \
+    $(TEST_OAK_LIB_PATH)\ValidType.lib \
+    $(TEST_OAK_LIB_PATH)\videostamp.lib \
+    $(TEST_OAK_LIB_PATH)\xmlconfig.lib \
+    $(TEST_OAK_LIB_PATH)\mmocr.lib \
+    $(TEST_OAK_LIB_PATH)\MMCommon.lib \

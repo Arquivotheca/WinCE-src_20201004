@@ -1,0 +1,101 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtstio
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources.inc"
+
+CONDITIONAL_INCLUDES=
+INCLUDES=..\h;..\..\..\inc;..\..\..\..\inc
+
+CDEFINES=$(CDEFINES) -D_SYSCRT_
+
+## shared code reqd by all
+SOURCES= \
+    crtlib.c \
+    lverify.c \
+
+## CORESTRW
+SOURCES= \
+    $(SOURCES) \
+    swscanf.c \
+    vswprint.c \
+    winput.c \
+    woutput.c \
+    fgetwc.c \
+    fputwc.c \
+    ungetwc.c \
+    _getbuf.c \
+    ungetc.c \
+    getwclk.c \
+    putwclk.c \
+    ungetclk.c \
+    ungetwclk.c \
+
+## CORESTRA
+SOURCES= \
+    $(SOURCES) \
+    sscanf.c \
+    vsprintf.c \
+    input.c \
+    output.c \
+
+## internal fns reqd by both CORESIOW and CORESIOA
+SOURCES= \
+    $(SOURCES) \
+    stioinit.c \
+    _sftbuf.c  \
+    _filbuf.c \
+    clearerr.c \
+    stream.c \
+
+## external fns exposed by both CORESIOW and CORESIOA
+SOURCES= \
+    $(SOURCES) \
+    fflush.c \
+    fgetpos.c \
+    fread.c \
+    fseek.c \
+    fseeki64.c \
+    fsetpos.c \
+    ftell.c \
+    ftelli64.c \
+    fwrite.c \
+    setvbuf.c \
+
+## files containing shared code by both SIOW and SIOA
+SOURCES= \
+    $(SOURCES) \
+    gets.c \
+    getws.c \
+    fgets.c \
+    fgetws.c \
+    fputs.c \
+    fopen.c \
+
+## CORESIOW (requires CORESTRW)
+SOURCES= \
+    $(SOURCES) \
+    wscanf.c \
+    vfwprint.c \
+    fwscanf.c \
+
+## CORESIOA (requires CORESTRA)
+SOURCES= \
+    $(SOURCES) \
+    scanf.c \
+    vfprintf.c \
+    fgetc.c \
+    fputc.c \
+    fscanf.c \
+

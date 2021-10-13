@@ -1,0 +1,62 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+TARGETNAME=osaxst1
+DEFFILE=osaxst1.def
+TARGETTYPE=DYNLINK
+DLLENTRY=OsaxsT1DLLEntry
+
+BUILD_SIGN=1
+
+CDEFINES=$(CDEFINES) -DTARGET_BUILD -DOSAXST1_BUILD
+INCLUDES=.;..;..\..\inc;..\..\kernel\sh;..\..\kdstub
+
+SOURCES=            \
+    initt1.cpp      \
+    ..\targdbg.cpp  \
+    ..\step.cpp     \
+    ..\threadaffinity.cpp \
+
+!if "$(_TGTCPUFAMILY)" == "ARM"
+A_ARCH_FLAGS=-arch 5T
+!endif
+
+
+ARM_SOURCES=                \
+   ..\arm\armpcb.s          \
+   ..\arm\wmmx.s            \
+   ..\arm\armcontext.cpp    \
+   ..\arm\armstep.cpp  \
+   ..\arm\thmbstep.cpp \
+
+    
+x86_SOURCES=            \
+    ..\x86\x86step.cpp  \
+
+
+MIPS_SOURCES=               \
+    ..\mips\mipsstep.cpp    \
+
+
+SH_SOURCES=             \
+    ..\sh\shstep.cpp    \
+
+
+TARGETLIBS= \
+    $(_COREDLL)
+
+
+# Dictated by team policy
+WARNLEVEL=4
+CONFORMING_FORSCOPE=1
+ALLOW_CONDITIONAL_IS_CONSTANT=1

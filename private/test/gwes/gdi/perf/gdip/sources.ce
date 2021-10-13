@@ -1,0 +1,78 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+# This source code is licensed under Microsoft Shared Source License
+# Version 1.0 for Windows CE.
+# For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+
+
+TARGETNAME=gdip
+TARGETTYPE=DYNLINK
+
+WINCETARGETFILE0=scriptfiles
+
+CDEFINES=\
+    $(CDEFINES) \
+    /EHsc
+
+SOURCES=    \
+    gdip.rc \
+    benchbase.cpp \
+    bencheng.cpp \
+    testsuite.cpp \
+    utilities.cpp \
+    tuxmain.cpp \
+    dispperfdata.cpp    \
+    bitblt.cpp \
+    maskblt.cpp \
+    stretchblt.cpp \
+    patblt.cpp \
+    fillrgn.cpp \
+    alphablend.cpp \
+    transparentblt.cpp \
+    GetPixel.cpp    \
+    SetPixel.cpp    \
+    rectangle.cpp        \
+    ellipse.cpp        \
+    roundrect.cpp \
+    lineto.cpp        \
+    polyline.cpp    \
+    polygon.cpp    \
+    exttextout.cpp \
+    drawtext.cpp \
+    helpers.cpp \
+    handles.cpp \
+    brush.cpp \
+    pen.cpp \
+    surface.cpp \
+    rop2.cpp \
+    rop3.cpp \
+    rop4.cpp \
+    rgn.cpp \
+    stretchcoordinates.cpp \
+    rectcoordinates.cpp \
+    pointcoordinates.cpp \
+    linecoordinates.cpp \
+    polycoordinates.cpp \
+    font.cpp    \
+    bkmode.cpp \
+    strings.cpp
+
+INCLUDES=$(INCLUDES)
+
+TARGETLIBS= $(_COREDLL) \
+            $(_KATO) \
+            $(TEST_OAK_LIB_PATH)\otak.lib \
+            $(TEST_OAK_LIB_PATH)\section.lib \
+            $(TEST_OAK_LIB_PATH)\CePerfTimer.lib \
+            $(_QALIBDEPS) 
+

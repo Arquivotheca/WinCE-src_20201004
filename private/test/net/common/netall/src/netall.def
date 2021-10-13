@@ -1,0 +1,66 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+LIBRARY NETALL
+
+EXPORTS
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; NOTE: Please update the following comment as you add ordinals
+;
+; Last ordinal used:38
+;
+; NOTE: If you are adding an API here and in a previous OS, the ordinals must
+; be the same in both or apps linked with an older OS will have compatiblity problems
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; NetCmn functions
+	IsStringInt @1
+	SetOptionChars @2
+	WasOption @3
+	GetOption @4
+	GetOptionAsInt @5
+	GetOptionAsDWORD @26
+	StrictOptionsOnly @23
+	CommandLineToArgs @6
+	GetRandomNumber @21
+	GetRandomRange @25
+	GetLastErrorText @24
+	ErrorToText @27
+	RegisterWattFilter @28
+	PrintWattVar @29
+	PrintWttVar @ 38
+
+; NetLog functions
+	NetLogInitWrapper @7
+	NetLogCleanupWrapper @8
+	NetLogIsInitialized @9
+	NetLogSetInitialize @10
+    NetLogGetLogLevel @30
+    NetLogSetLogLevel @31
+    NetLogGetWATTOutput @32
+	NetLogSetWATTOutput @20
+    NetLogV @33
+	NetLogError @11
+	NetLogWarning @12
+	NetLogMessage @13
+	NetLogDebug @14
+	NetLogVerbose @15
+	NetLogGetErrorCount @16
+	NetLogGetWarningCount @17
+    NetLogGetMessageCounts @34
+    NetLogResetMessageCounts @35
+	NetLogGetThreadErrorCount @18
+	NetLogGetThreadWarningCount @19
+    NetLogGetThreadMessageCounts @36
+    NetLogResetThreadMessageCounts @37
+

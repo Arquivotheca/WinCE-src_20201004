@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="inc"
+	ProjectGUID="{13F58B44-E515-493B-935A-40F1AFADE936}"
+	RootNamespace="$(ProjectName)"
+	SccProjectName="//depot/prod/macallan/ship/private/servers/upnp/inc"
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Source Depot"
+	Keyword="MakeFileProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Rockhopper debug|Win32"
+			OutputDirectory="obj"
+			IntermediateDirectory="obj"
+			ConfigurationType="0">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="vs_build3.bat -b $(ProjectDir) $(ConfigurationName)"
+				ReBuildCommandLine="vs_build3.bat -c $(ProjectDir) $(ConfigurationName)"
+				CleanCommandLine="vs_build3.bat -clean $(ProjectDir) $(ConfigurationName)"/>
+		</Configuration>
+		<Configuration
+			Name="Rockhopper retail|Win32"
+			OutputDirectory="obj"
+			IntermediateDirectory="obj"
+			ConfigurationType="0">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="vs_build3.bat -b $(ProjectDir) $(ConfigurationName)"
+				ReBuildCommandLine="vs_build3.bat -c $(ProjectDir) $(ConfigurationName)"
+				CleanCommandLine="vs_build3.bat -clean $(ProjectDir) $(ConfigurationName)"/>
+		</Configuration>
+		<Configuration
+			Name="GEODE retail|Win32"
+			OutputDirectory="obj"
+			IntermediateDirectory="obj"
+			ConfigurationType="0">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="vs_build3.bat -b $(ProjectDir) $(ConfigurationName)"
+				ReBuildCommandLine="vs_build3.bat -c $(ProjectDir) $(ConfigurationName)"
+				CleanCommandLine="vs_build3.bat -clean $(ProjectDir) $(ConfigurationName)"/>
+		</Configuration>
+		<Configuration
+			Name="GEODE debug|Win32"
+			OutputDirectory="obj"
+			IntermediateDirectory="obj"
+			ConfigurationType="0">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="vs_build3.bat -b $(ProjectDir) $(ConfigurationName)"
+				ReBuildCommandLine="vs_build3.bat -c $(ProjectDir) $(ConfigurationName)"
+				CleanCommandLine="vs_build3.bat -clean $(ProjectDir) $(ConfigurationName)"/>
+		</Configuration>
+		<Configuration
+			Name="CEPC retail|Win32"
+			OutputDirectory="obj"
+			IntermediateDirectory="obj"
+			ConfigurationType="0">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="vs_build3.bat -b $(ProjectDir) $(ConfigurationName)"
+				ReBuildCommandLine="vs_build3.bat -c $(ProjectDir) $(ConfigurationName)"
+				CleanCommandLine="vs_build3.bat -clean $(ProjectDir) $(ConfigurationName)"/>
+		</Configuration>
+		<Configuration
+			Name="CEPC debug|Win32"
+			OutputDirectory="obj"
+			IntermediateDirectory="obj"
+			ConfigurationType="0">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="vs_build3.bat -b $(ProjectDir) $(ConfigurationName)"
+				ReBuildCommandLine="vs_build3.bat -c $(ProjectDir) $(ConfigurationName)"
+				CleanCommandLine="vs_build3.bat -clean $(ProjectDir) $(ConfigurationName)"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			<File
+				RelativePath=".\upnp.idl">
+			</File>
+			<File
+				RelativePath=".\upnphost.idl">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath=".\cedefs.h">
+			</File>
+			<File
+				RelativePath=".\ipsupport.h">
+			</File>
+			<File
+				RelativePath=".\makefile.inc">
+			</File>
+			<File
+				RelativePath=".\ncbase.h">
+			</File>
+			<File
+				RelativePath=".\ncdebug.h">
+			</File>
+			<File
+				RelativePath=".\ncdefine.h">
+			</File>
+			<File
+				RelativePath=".\pch.h">
+			</File>
+			<File
+				RelativePath=".\regentry.h">
+			</File>
+			<File
+				RelativePath=".\trace.h">
+			</File>
+			<File
+				RelativePath=".\upnp_config.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+		</Filter>
+		<File
+			RelativePath=".\contents.oak">
+		</File>
+		<File
+			RelativePath=".\makefile">
+		</File>
+		<File
+			RelativePath=".\sources">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

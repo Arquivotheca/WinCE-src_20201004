@@ -1,0 +1,73 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=osaxst0
+DEFFILE=osaxst0.def
+TARGETTYPE=DYNLINK
+DLLENTRY=OsaxsT0DLLEntry
+
+ERRORFORBANNEDAPIS=
+
+NOLTCG=1
+BUILD_SIGN=1
+
+!if "$(_TGTCPUFAMILY)" == "ARM"
+A_ARCH_FLAGS=-arch 5T
+!endif
+
+# Use static C runtime
+CDEFINES=$(CDEFINES) -DTARGET_BUILD
+
+INCLUDES=.;..;..\..\inc;..\..\kernel\sh;..\..\kdstub;..\..\..\core\lmem;..\..\..\core\inc;
+
+SOURCES=            \
+    initt0.cpp          \
+    ..\DwDmpGen.cpp     \
+    ..\except.cpp       \
+    ..\ExceptCommon.cpp \
+    ..\flexptmi.cpp     \
+    ..\mem.cpp          \
+    ..\memcommon.cpp    \
+    ..\targdbg.cpp      \
+    ..\targexcept.cpp   \
+    ..\strings.cpp      \
+    ..\unwinder.cpp     \
+    ..\handle.cpp       \
+    ..\cpu.cpp          \
+    ..\thread.cpp       \
+    ..\vm.cpp           \
+    ..\diagnose.cpp     \
+    ..\deadlock.cpp     \
+    ..\heap.cpp         \
+    ..\lowmem.cpp       \
+    ..\starvation.cpp   \
+    ..\ddxexcept.cpp    \
+    ..\osaxsapi.cpp     \
+    ..\packdata.cpp     \
+    ..\translatera.cpp  \
+
+
+ARM_SOURCES=                \
+   ..\arm\armpcb.s          \
+   ..\arm\wmmx.s            \
+   ..\arm\armcontext.cpp    \
+
+
+TARGETLIBS= \
+    $(_COREDLL)
+   
+    
+# Dictated by team policy
+WARNLEVEL=4
+CONFORMING_FORSCOPE=1
+ALLOW_CONDITIONAL_IS_CONSTANT=1
+    
