@@ -1,0 +1,442 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+/***
+*fcvt.c - convert floating point value to string
+*
+*   Copyright (c) Microsoft Corporation. All rights reserved.
+*
+*Purpose:
+*   Converts a floating point value to a string.
+*
+*Revision History:
+*       09-09-83  RKW   written
+*       09-14-84  DFW   fixed problems with buffer overflow and
+*                       streamlined the code
+*       11-09-87  BCM   different interface under ifdef MTHREAD
+*       11-19-87  WAJ   fcvt now uses emulator data area for buffer
+*       12-11-87  JCR   Added "_LOAD_DS" to declaration
+*       05-24-88  PHG   Merged DLL and normal versions
+*       10-04-88  JCR   386: Removed 'far' keyword
+*       10-20-88  JCR   Changed 'DOUBLE' to 'double' for 386
+*       03-02-90  GJF   Added #include <cruntime.h>. Removed some (now) useless
+*                       preprocessor directives. Also, fixed copyright.
+*       03-06-90  GJF   Fixed calling type, removed some leftover 16-bit
+*                       support.
+*       03-23-90  GJF   Made _fpcvt() _CALLTYPE4 and removed prototype for
+*                       _fptostr() (now in struct.h).
+*       08-01-90  SBM   Renamed <struct.h> to <fltintrn.h>
+*       09-27-90  GJF   New-style function declarators.
+*       01-21-91  GJF   ANSI naming.
+*       10-03-91  JCR   Fixed mthread buffer allocation
+*       02-16-93  GJF   Changed for new _getptd().
+*       04-06-93  SKS   Replace _CRTAPI* with _cdecl
+*       08-05-94  JWM   Insure that _ecvt returns no more than ndigits.
+*       09-06-94  CFW   Remove Cruiser support.
+*       09-06-94  CFW   Replace MTHREAD with _MT.
+*       01-10-95  CFW   Debug CRT allocs.
+*       09-05-00  GB    Changed the defination of fltout functions. Use DOUBLE 
+*                       instead of double
+*       11-19-01  GB    Replaced DOUBLE by _CRT_DOUBLE
+*       12-11-01  BWT   Use _getptd_noexit instead of _getptd.  There's no need to
+*                       exit the process when we can just return null.
+*       06-19-02  MSL   Fixed possible buffer overrun on resultstring
+*                       Switched to use _CVTBUFSIZE instead of CVTBUFSIZE; 
+*                       public symbol
+*                       VS7 551701
+*       08-14-03  AC    Added safe versions (_fcvt_s, _ecvt_s)
+*       04-07-04  MSL   Changes to support locale-specific strgtold12
+*                       VSW 247190
+*       09-13-04  DJT   Fixed _fcvt_s to catch overflow when computing number
+*                       of digits for call to _fpcvt (VSWhidbey:240686).
+*       09-30-04  JL    Add validation in _fpcvt to check if buffer is too small.
+*                       Modified [ef]cvt to ensure output string fits _CVTBUFSIZE.
+*       03-23-05  MSL   Review comment clean up - moved to product studio
+*       04-25-05  AC    Added debug filling
+*                       VSW#2459
+*
+*******************************************************************************/
+
+#include <cruntime.h>
+#include <fltintrn.h>
+#include <cvt.h>
+#include <mtdll.h>
+#include <stdlib.h>
+#include <dbgint.h>
+#include <internal.h>
+#include <internal_securecrt.h>
+#include <setlocal.h>
+
+/*
+ * The static character array buf[_CVTBUFSIZE] is used by the _fpcvt routine
+ * (the workhorse for _ecvt and _fcvt) for storage of its output.  The routine
+ * gcvt expects the user to have set up their own storage.  _CVTBUFSIZE is set
+ * large enough to accomodate the largest double precision number plus 40
+ * decimal places (even though you only have 16 digits of accuracy in a
+ * double precision IEEE number, the user may ask for more to effect 0
+ * padding; but there has to be a limit somewhere).
+ */
+
+/*
+ * define a maximum size for the conversion buffer.  It should be at least
+ * as long as the number of digits in the largest double precision value
+ * (?.?e308 in IEEE arithmetic).  We will use the same size buffer as is
+ * used in the printf support routine (_output)
+ */
+
+static errno_t __cdecl _fpcvt(char*, size_t, STRFLT, int, int *, int *);
+
+/***
+*errocde _fcvt_s(result, sizeInChars, value, ndec, decpr, sign) - convert floating point to char string
+*
+*Purpose:
+*   _fcvt like _ecvt converts the value to a null terminated
+*   string of ASCII digits, and returns a pointer to the
+*   result.  The routine prepares data for Fortran F-format
+*   output with the number of digits following the decimal
+*   point specified by ndec.  The position of the decimal
+*   point relative to the beginning of the string is returned
+*   indirectly through decpt.  The correct digit for Fortran
+*   F-format is rounded.
+*   NOTE - to avoid the possibility of generating floating
+*   point instructions in this code we fool the compiler
+*   about the type of the 'value' parameter using a struct.
+*   This is OK since all we do is pass it off as a
+*   parameter.
+*
+*Entry:
+*   char * result - pointer to the string that will receive the output
+*   size_t sizeInChars - size of the output string 
+*   double value - number to be converted
+*   int ndec - number of digits after decimal point
+*
+*Exit:
+*   returns errno_t != 0 if something went wrong (check the validation section below).
+*   char * result - the output is written into the given result string
+*   int *decpt - pointer to int with pos. of dec. point
+*   int *sign - pointer to int with sign (0 = pos, non-0 = neg)
+*
+*Exceptions:
+*   Input parameters are validated. Refer to the validation section of the function. 
+*
+*******************************************************************************/
+
+errno_t __cdecl _fcvt_s (
+    char *result,
+    size_t sizeInChars,
+    double value,
+    int ndec,
+    int *decpt,
+    int *sign
+    )
+{
+
+    STRFLT pflt;
+    _CRT_DOUBLE *pdvalue = (_CRT_DOUBLE *)&value;
+    int digits = 0;
+    struct _strflt strfltstruct;
+    char resultstring[22 /* MAX_MAN_DIGITS+1 */];
+
+    /* validation section */
+    _VALIDATE_RETURN_ERRCODE(result != NULL, EINVAL);
+    _VALIDATE_RETURN_ERRCODE(sizeInChars > 0, EINVAL);
+    _RESET_STRING(result, sizeInChars);
+    _VALIDATE_RETURN_ERRCODE(decpt != NULL, EINVAL);
+    _VALIDATE_RETURN_ERRCODE(sign != NULL, EINVAL);
+
+    /* ok to take address of stack struct here; fltout2 knows to use ss */
+    pflt = _fltout2( *pdvalue, &strfltstruct, resultstring, _countof(resultstring) );
+
+    digits = pflt->decpt + ndec;
+
+    /* if we detect overflow then set number of digits to the largest possible */
+    if (ndec > 0 && pflt->decpt > 0 && digits < ndec)
+    {
+        digits = INT_MAX;
+    }
+
+    return( _fpcvt( result, sizeInChars, pflt, digits, decpt, sign ) );    
+}
+
+/***
+*char *_fcvt(value, ndec, decpr, sign) - convert floating point to char string
+*
+*Purpose:
+*   _fcvt like _ecvt converts the value to a null terminated
+*   string of ASCII digits, and returns a pointer to the
+*   result.  The routine prepares data for Fortran F-format
+*   output with the number of digits following the decimal
+*   point specified by ndec.  The position of the decimal
+*   point relative to the beginning of the string is returned
+*   indirectly through decpt.  The correct digit for Fortran
+*   F-format is rounded.
+*   NOTE - to avoid the possibility of generating floating
+*   point instructions in this code we fool the compiler
+*   about the type of the 'value' parameter using a struct.
+*   This is OK since all we do is pass it off as a
+*   parameter.
+*
+*Entry:
+*   double value - number to be converted
+*   int ndec - number of digits after decimal point
+*
+*Exit:
+*   returns pointer to the character string representation of value.
+*   also, the output is written into the static char array buf.
+*   int *decpt - pointer to int with pos. of dec. point
+*   int *sign - pointer to int with sign (0 = pos, non-0 = neg)
+*
+*Exceptions:
+*   Input parameters are validated like in _fcvt_s. Returns NULL if something goes wrong.
+*   The function is deprecated, unless the user defines _DO_NOT_DEPRECATE_UNSAFE_FUNCTIONS.
+*
+*******************************************************************************/
+
+char * __cdecl _fcvt (
+    double value,
+    int ndec,
+    int *decpt,
+    int *sign
+    )
+{
+    errno_t e = 0;
+    STRFLT pflt;
+    _CRT_DOUBLE *pdvalue = (_CRT_DOUBLE *)&value;
+
+    /* use a per-thread buffer */
+    char *buf;
+    _ptiddata ptd;
+    struct _strflt strfltstruct;
+    char resultstring[22 /* MAX_MAN_DIGITS+1 */];
+
+    ptd = _getptd_noexit();
+    if (!ptd)
+        return NULL;
+    if ( ptd->_cvtbuf == NULL )
+        if ( (ptd->_cvtbuf = (char *)_malloc_crt(_CVTBUFSIZE)) == NULL )
+            return(NULL);
+    buf = ptd->_cvtbuf;
+
+    /* ok to take address of stack struct here; fltout2 knows to use ss */
+    pflt = _fltout2( *pdvalue, &strfltstruct, resultstring, _countof(resultstring) );
+
+    /* make sure we don't overflow the buffer size.  If the user asks for
+     * more digits than the buffer can handle, truncate it to the maximum
+     * size allowed in the buffer.
+     */
+    ndec = min(ndec, _CVTBUFSIZE - 2 - pflt->decpt);
+
+    e = _fcvt_s( buf, _CVTBUFSIZE, value, ndec, decpt, sign );
+    if ( e != 0 )
+    {
+        return NULL;
+    }
+    return buf;
+}
+
+
+/***
+*char *_ecvt_s(result, sizeInChars, value, ndigit, decpt, sign) - convert floating point to string
+*
+*Purpose:
+*   _ecvt converts value to a null terminated string of
+*   ASCII digits, and returns a pointer to the result.
+*   The position of the decimal point relative to the
+*   begining of the string is stored indirectly through
+*   decpt, where negative means to the left of the returned
+*   digits.  If the sign of the result is negative, the
+*   word pointed to by sign is non zero, otherwise it is
+*   zero.  The low order digit is rounded.
+*
+*Entry:
+*   char * result - pointer to the string that will receive the output
+*   size_t sizeInChars - size of the output string 
+*   double value - number to be converted
+*   int ndec - number of digits after decimal point
+*
+*Exit:
+*   returns errno_t != 0 if something went wrong (check the validation section below).
+*   char * result - the output is written into the given result string
+*   int *decpt - pointer to int with pos. of dec. point
+*   int *sign - pointer to int with sign (0 = pos, non-0 = neg)
+*
+*Exceptions:
+*   Input parameters are validated. Refer to the validation section of the function.
+*
+*******************************************************************************/
+
+errno_t __cdecl _ecvt_s (
+    char *result,
+    size_t sizeInChars,
+    double value,
+    int ndigit,
+    int *decpt,
+    int *sign
+    )
+{
+    _CRT_DOUBLE *pdvalue = (_CRT_DOUBLE *)&value;
+    STRFLT pflt;
+    struct _strflt strfltstruct;        /* temporary buffers */
+    char resultstring[22 /* MAX_MAN_DIGITS+1 */];
+
+    errno_t e;
+    
+    /* validation section */
+    _VALIDATE_RETURN_ERRCODE(result != NULL, EINVAL);
+    _VALIDATE_RETURN_ERRCODE(sizeInChars > 0, EINVAL);
+    _RESET_STRING(result, sizeInChars);
+    _VALIDATE_RETURN_ERRCODE(decpt != NULL, EINVAL);
+    _VALIDATE_RETURN_ERRCODE(sign != NULL, EINVAL);
+
+    /* ok to take address of stack struct here; fltout2 knows to use ss */
+    pflt = _fltout2( *pdvalue, &strfltstruct, resultstring, _countof(resultstring) );
+
+    e = _fpcvt( result, sizeInChars, pflt, ndigit, decpt, sign );
+
+    /* make sure we don't overflow the buffer size.  If the user asks for
+     * more digits than the buffer can handle, truncate it to the maximum
+     * size allowed in the buffer.  The maximum size is sizeInChars - 2
+     * since we use one character for overflow and one for the terminating
+     * null character.
+     */
+    if (ndigit > (int)(sizeInChars - 2))
+    {
+        ndigit = (int)(sizeInChars - 2);
+    }
+
+    /* _fptostr() occasionally returns an extra character in the buffer ... */
+    if (ndigit >= 0 && result[ndigit])
+        result[ndigit] = '\0';
+
+    return e;
+}
+
+/***
+*char *_ecvt(value, ndigit, decpt, sign) - convert floating point to string
+*
+*Purpose:
+*   _ecvt converts value to a null terminated string of
+*   ASCII digits, and returns a pointer to the result.
+*   The position of the decimal point relative to the
+*   begining of the string is stored indirectly through
+*   decpt, where negative means to the left of the returned
+*   digits.  If the sign of the result is negative, the
+*   word pointed to by sign is non zero, otherwise it is
+*   zero.  The low order digit is rounded.
+*
+*Entry:
+*   double value - number to be converted
+*   int ndigit - number of digits after decimal point
+*
+*Exit:
+*   returns pointer to the character representation of value.
+*   also the output is written into the statuc char array buf.
+*   int *decpt - pointer to int with position of decimal point
+*   int *sign - pointer to int with sign in it (0 = pos, non-0 = neg)
+*
+*Exceptions:
+*   Input parameters are validated like in _ecvt_s. Returns NULL if something goes wrong.
+*   The function is deprecated, unless the user defines _DO_NOT_DEPRECATE_UNSAFE_FUNCTIONS.
+*
+*******************************************************************************/
+
+char * __cdecl _ecvt (
+    double value,
+    int ndigit,
+    int *decpt,
+    int *sign
+    )
+{
+    errno_t e = 0;
+
+    /* use a per-thread buffer */
+
+    char *buf;
+
+    _ptiddata ptd;
+
+    ptd = _getptd_noexit();
+    if (!ptd)
+        return NULL;
+    if ( ptd->_cvtbuf == NULL )
+        if ( (ptd->_cvtbuf = (char *)_malloc_crt(_CVTBUFSIZE)) == NULL )
+            return(NULL);
+    buf = ptd->_cvtbuf;
+
+    /* make sure we don't overflow the buffer size.  If the user asks for
+     * more digits than the buffer can handle, truncate it to the maximum
+     * size allowed in the buffer.  The maximum size is _CVTBUFSIZE - 2
+     * since we use one character for overflow and one for the terminating
+     * null character.
+     */
+    ndigit = min(ndigit, _CVTBUFSIZE - 2);
+
+    e = _ecvt_s( buf, _CVTBUFSIZE, value, ndigit, decpt, sign );
+    if ( e != 0 )
+    {
+        return NULL;
+    }
+    return buf;
+}
+
+
+/***
+*char *_fpcvt() - gets final string and sets decpt and sign [STATIC]
+*
+*Purpose:
+*   This is a small common routine used by [ef]cvt[_s].  It calls fptostr
+*   to get the final string and sets the decpt and sign indicators.
+*
+*Entry:
+*
+*Exit:
+*
+*Exceptions:
+*
+*******************************************************************************/
+
+static errno_t __cdecl _fpcvt (
+    char *result,
+    size_t sizeInChars,
+    STRFLT pflt,
+    int digits,
+    int *decpt,
+    int *sign
+    )
+{
+    errno_t e = 0;
+
+    /* make sure we don't overflow the buffer size.  If the user asks for
+     * more digits than the buffer can handle, truncate it to the maximum
+     * size allowed in the buffer.  The maximum size is sizeInChars - 2
+     * since we use one character for overflow and one for the terminating
+     * null character.
+     */
+    _VALIDATE_RETURN_ERRCODE(sizeInChars >= (size_t)((digits > 0 ? digits : 0) + 2), ERANGE);
+
+    e = _fptostr(
+        result, 
+        sizeInChars,
+        (digits > (int)(sizeInChars - 2)) ? (int)(sizeInChars - 2) : digits,
+        pflt);
+    if (e != 0)
+    {
+        errno = e;
+        return e;
+    }
+
+    /* set the sign flag and decimal point position */
+    *sign = (pflt->sign == '-') ? 1 : 0;
+    *decpt = pflt->decpt;
+
+    return 0;
+}

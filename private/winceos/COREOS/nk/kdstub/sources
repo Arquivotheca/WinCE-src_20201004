@@ -1,0 +1,67 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+!INCLUDE "..\sources.inc"
+
+TARGETNAME=kd
+DEFFILE=kd.def
+TARGETTYPE=DYNLINK
+DLLENTRY=KdDLLEntry
+
+WINCEOEM=1
+WINCEPROJ=COMMON
+NOLTCG=1
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+INCLUDES=x86
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)"=="ARM"
+INCLUDES=arm
+ADEFINES=$(ADEFINES) -ignore 241
+!ENDIF
+
+CDEFINES=$(CDEFINES)
+INCLUDES=$(INCLUDES);..\inc;..\osaxs
+
+NOLIBC=1
+NOCRTDLL=1
+BUILD_SIGN=1
+ERRORFORBANNEDAPIS=
+
+SOURCES=           \
+   dbg.c           \
+   kdapi.c         \
+   kdbreak.c       \
+   kdctrl.c        \
+   kddata.c        \
+   kdinit.c        \
+   kdpacket.c      \
+   kdfilter.c      \
+   kdioctl.c       \
+   kdtrap.c        \
+
+x86_SOURCES=       \
+   x86\kdkernel.c 
+
+ARM_SOURCES=       \
+   arm\kdkernel.c  \
+   arm\armpcb.s    \
+
+TARGETLIBS=\
+    $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\bootcrt.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\gsnull.lib \
+
+#xref ModuleMembership kd.dll
+#xref VIGUID {cdf8a1fd-9e76-4878-8381-bc4d47623e4d}
+#xref VSGUID {9a6eaceb-9f7a-4dbe-8a35-07bc24be9f99}

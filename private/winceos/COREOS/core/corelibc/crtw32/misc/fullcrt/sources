@@ -1,0 +1,152 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtmisc_full
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\..\sources_fullcrt.inc"
+
+INCLUDES=..\..\h;..\..\h\$(_TGTCPUFAMILY);..\..\..\..\inc;..\..\..\..\..\nk\inc;..\..\stdhpp;..\..\..\..\buildbtcrt\lib;
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+CDEFINES=$(CDEFINES) -Dmem_S -DI386
+ADEFINES=$(ADEFINES) -Dmem_S -DI386
+ASM_SAFESEH=1
+!ENDIF
+
+
+SOURCES= \
+    ..\abort.c \
+    ..\abs.c \
+    ..\assert.c \
+    ..\_a_cmp.cpp \
+    ..\a_env.c \
+    ..\_a_loc.cpp \
+    ..\_a_map.cpp \
+    ..\_a_str.cpp \
+    ..\bsearch.c \
+    ..\bsearch_s.c \
+    ..\bswap.c \
+    ..\charmax.c \
+    ..\crtsupp.c \
+    ..\ctype.c \
+    ..\_dbgcalloc.cpp \
+    ..\dbgdel.cpp \
+    ..\dbgdel2.cpp \
+    ..\_dbgfree.cpp \
+    ..\_dbgheap.cpp \
+    ..\dbghook.c \
+    ..\_dbgmalloc.cpp \
+    ..\_dbgrealloc.cpp \
+    ..\dbgrpt.c \
+    ..\dbgrptt.c \
+    ..\_dbgrptw.cpp \
+    ..\dbgsec.c \
+    ..\div.c \
+    ..\errmode.c \
+    ..\getenv.c \
+    ..\getpath.c \
+    ..\getqloc.c \
+    ..\glstatus.c \
+    ..\initcoll.c \
+    ..\initctyp.c \
+    ..\inithelp.c \
+    ..\initmon.c \
+    ..\initnum.c \
+    ..\inittime.c \
+    ..\_invarg.cpp \
+    ..\labs.c \
+    ..\lcnvinit.c \
+    ..\lconv.c \
+    ..\ldiv.c \
+    ..\lfind.c \
+    ..\lfind_s.c \
+    ..\llabs.c \
+    ..\localref.c \
+    ..\lsearch.c \
+    ..\lsearch_s.c \
+    ..\makefile \
+    ..\makepath.c \
+    ..\makepath_s.c \
+    ..\mbsearch.cpp \
+    ..\mbtowenv.c \
+    ..\mlfind.cpp \
+    ..\mlock.c \
+    ..\mlsearch.cpp \
+    ..\mqsort.cpp \
+    ..\nlsdata.c \
+    ..\perror.c \
+    ..\purevirt.c \
+    ..\putenv.c \
+    ..\qsort.c \
+    ..\qsort_s.c \
+    ..\rand.c \
+    ..\rand_s.c \
+    ..\rotl.c \
+    ..\rotr.c \
+    ..\searchen.c \
+    ..\setenv.c \
+    ..\setlocal.c \
+    ..\splitpat.c \
+    ..\splitpath_s.c \
+    ..\stdlldiv.c \
+    ..\strerror.c \
+    ..\syserr.c \
+    ..\thread.c \
+    ..\threadex.c \
+    ..\tidtable.c \
+    ..\umask.c \
+    ..\wassert.c \
+    ..\wcserror.c \
+    ..\wgetenv.c \
+    ..\wgetpath.c \
+    ..\winapisupp.c \
+    ..\winapinls.c \
+    ..\winsig.c \
+    ..\winxfltr.c \
+    ..\wmakepat.c \
+    ..\wmakepath_s.c \
+    ..\wperror.c \
+    ..\wputenv.c \
+    ..\wrt2err.c \
+    ..\wsearche.c \
+    ..\wsetenv.c \
+    ..\wsetloca.c \
+    ..\wsplitpa.c \
+    ..\wsplitpath_s.c \
+    ..\wtombenv.c \
+    ..\_w_cmp.cpp \
+    ..\w_env.c \
+    ..\_w_map.cpp \
+    ..\_strerr.c \
+    ..\_wcserr.c \
+
+ARM_SOURCES= \
+     ..\arm\jmpunwd.c \
+     ..\arm\longjmp.s   \
+     ..\arm\setjmp.s
+
+x86_SOURCES= \
+    ..\x86\alloca16.asm \
+    ..\x86\chkstk.asm \
+    ..\x86\calldtor.c \
+    ..\x86\chandler4.c \
+    ..\x86\chkesp.c \
+    ..\x86\eh3valid.c \
+    ..\x86\exsup.c \
+    ..\x86\exsup3.asm \
+    ..\x86\exsup4.asm \
+    ..\x86\longjmp.asm \
+    ..\x86\nlgsupp.asm \
+    ..\x86\sehprolg.asm \
+    ..\x86\sehsupp.c \
+    ..\x86\setjmp.asm \

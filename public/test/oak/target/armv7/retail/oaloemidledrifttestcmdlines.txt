@@ -1,0 +1,16 @@
+// This file consists of command lines for the OEMidle Drift tests for different platforms.
+// Command lines are for Track OEMidle Periodic and Track OEMidle Random test cases.
+
+// When using this file change the tux command line to the following:-
+// tux.exe -o -d oaltesttimers.dll -x 3030,3040 -c"-cmdf OALOemIdleDriftTestCmdLines.txt"
+
+// An example of how to use this file is as follows:
+// CEPC -trackIdlePer RtcToHiPerf <num> <num> -trackIdleRan GtcToHiPerf <num> <num>
+
+
+CEPC   -trackIdlePer GtcToHiPerf 0 -0.00016 GtcToRtc 0 0 HiPerfToRtc 0 0.00016 -trackIdleRan GtcToHiPerf 0 -0.00016 GtcToRtc 0 0 HiPerfToRtc 0 0.00016
+
+VDX    -trackIdlePer GtcToHiPerf 0 -0.0002 GtcToRtc 0 0 HiPerfToRtc 0 0.0002 -trackIdleRan GtcToHiPerf 0 -0.0002 GtcToRtc 0 0 HiPerfToRtc 0 0.0002
+
+NE1TB  -trackIdlePer GtcToHiPerf 0 -0.0002 GtcToRtc 0 0 HiPerfToRtc 0 0.0002 -trackIdleRan GtcToHiPerf 0 -0.0002 GtcToRtc 0 0 HiPerfToRtc 0 0.0002
+

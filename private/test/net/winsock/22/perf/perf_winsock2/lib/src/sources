@@ -1,0 +1,79 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+!ENDIF
+
+
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1" && !("$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI")
+TARGETNAME=perf_winsock_lib_ipv4
+!ELSE
+TARGETNAME=perf_winsock_lib
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+!ENDIF
+TARGETTYPE=LIBRARY
+
+SOURCES=\
+    consetup.cpp \
+    loglib.cpp \
+    tests.cpp \
+    commprot.cpp \
+    conntrk.cpp
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+INCLUDES=\
+    ..\inc; \
+
+TARGETLIBS=\
+    $(_NTSDK_LIB)\ws2_32.lib \
+
+!IF "$(SUPPORT_KATO)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(_KATO)
+!ENDIF
+
+!ELSE
+
+CDEFINES=$(CDEFINES) -DSUPPORT_KATO
+
+INCLUDES=\
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    ..\inc;
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+TARGETLIBS=\
+    $(_COREDLL) \
+    $(_WINSOCK) \
+    $(_IPHLPAPI) \
+!ELSE
+TARGETLIBS=\
+    $(_COREDLL) \
+    $(_WS2) \
+    $(_IPHLPAPI) \
+!ENDIF
+
+TARGETLIBS=$(TARGETLIBS) \
+    $(_KATO)
+
+!ENDIF

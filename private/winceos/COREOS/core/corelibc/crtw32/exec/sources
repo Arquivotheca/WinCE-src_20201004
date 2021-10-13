@@ -1,0 +1,62 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtexec_full
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources_fullcrt.inc"
+
+INCLUDES=..\..\..\inc;..\h
+
+SOURCES= \
+    cenvarg.c \
+    dospawn.c \
+    execl.c \
+    execle.c \
+    execlp.c \
+    execlpe.c \
+    execv.c \
+    execve.c \
+    execvp.c \
+    execvpe.c \
+    getproc.c \
+    loaddll.c \
+    spawnl.c \
+    spawnle.c \
+    spawnlp.c \
+    spawnlpe.c \
+    spawnv.c \
+    spawnve.c \
+    spawnvp.c \
+    spawnvpe.c \
+    system.c \
+    wait.c \
+    wcenvarg.c \
+    wdospawn.c \
+    wexecl.c \
+    wexecle.c \
+    wexeclp.c \
+    wexeclpe.c \
+    wexecv.c \
+    wexecve.c \
+    wexecvp.c \
+    wexecvpe.c \
+    wspawnl.c \
+    wspawnle.c \
+    wspawnlp.c \
+    wspawnv.c \
+    wspawnve.c \
+    wspawnvp.c \
+    wspwnlpe.c \
+    wspwnvpe.c \
+    wsystem.c \
+ 

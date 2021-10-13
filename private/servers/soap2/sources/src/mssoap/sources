@@ -1,0 +1,65 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+!INCLUDE ..\user.mk
+
+TARGETNAME=MSSOAP1
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+ERRORFORBANNEDAPIS=
+
+# Copy DEF file
+TARGETDEFNAME=$(TARGETNAME)
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+# Copy RES file
+COPYRES=1
+WINCETARGETFILES=$(_RELEASELIBDIR)\$(TARGETNAME).res
+
+INCLUDES=\
+    ..\..\inc\soaputil; \
+    ..\..\inc\mssoap; \
+    ..\..\inc\soapmsg; \
+    ..\..\inc\Idl; \
+    ..\..\inc\soapser; \
+    ..\..\inc\soapreader; \
+    ..\..\inc\wsdl; \
+    ..\..\inc\Connect; \
+    ..\..\inc\version; \
+    ..\..\WinCEUtils; \
+    ..\..\inc\version; \
+    $(INCLUDES)
+
+TARGETLIBS=	 \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\WinCEUtils.lib \
+    $(SG_OUTPUT_SDKLIB)\uuid.lib \
+    $(SG_OUTPUT_SDKLIB)\coredll.lib \
+    $(SG_OUTPUT_SDKLIB)\ole32.lib \
+    $(SG_OUTPUT_SDKLIB)\oleaut32.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\MSSOAP.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\wsdl.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapmsg.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\SoapUtil.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapser.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapreader.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapconn.lib \
+    $(TARGETLIBS)
+
+PASS0_SOURCEDIR=..\Idl\$(O)
+
+SOURCES=\
+    faultinf.cpp \
+    mssoap.cpp \
+    mssoap1.rc \
+
+DLLENTRY=_DllMainCRTStartup

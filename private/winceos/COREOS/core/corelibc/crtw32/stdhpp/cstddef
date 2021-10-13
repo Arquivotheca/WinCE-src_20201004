@@ -1,0 +1,46 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// cstddef standard header
+#pragma once
+#ifndef _CSTDDEF_
+#define _CSTDDEF_
+#ifndef RC_INVOKED
+#include <yvals.h>
+
+#ifdef _STD_USING
+ #undef _STD_USING
+  #include <stddef.h>
+ #define _STD_USING
+
+#else /* _STD_USING */
+ #include <stddef.h>
+#endif /* _STD_USING */
+
+ #if _GLOBAL_USING
+_STD_BEGIN
+using _CSTD ptrdiff_t; using _CSTD size_t;
+_STD_END
+ #endif /* _GLOBAL_USING */
+
+ #if _HAS_CPP0X
+_STD_BEGIN
+typedef double max_align_t;	// most aligned type
+_STD_END
+ #endif /* _HAS_CPP0X */
+#endif /* RC_INVOKED */
+#endif /* _CSTDDEF_ */
+
+/*
+ * Copyright (c) 1992-2012 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V6.00:0009 */

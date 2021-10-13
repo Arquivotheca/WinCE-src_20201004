@@ -1,0 +1,34 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+TARGETNAME=fiber
+TARGETTYPE=LIBRARY
+INCLUDES=..\..\nk\inc;..\inc
+CDEFINES=-DCOREDLL -DWINCEMACRO -DFAREAST
+
+!IF "$(_TGTCPUFAMILY)" == "ARM"
+ADEFINES=$(ADEFINES) -ignore 241
+!ENDIF
+
+ASM_SAFESEH=1
+
+# WARNLEVEL=4
+
+SOURCES= fiber.c
+
+x86_SOURCES= x86\stfx86.asm
+
+ARM_SOURCES= arm\stfarm.s
+
+#xref VIGUID {dcebf226-6fd7-4306-aa08-49c978d03340}
+#xref VSGUID {e6821dbc-b541-484a-a46e-9adf6a1851ab}

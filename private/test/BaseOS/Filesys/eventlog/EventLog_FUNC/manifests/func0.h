@@ -1,0 +1,163 @@
+#pragma once
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC0_INT = {0xeb620e7d, 0x29f3, 0x4c0d, {0x9e, 0x82,0x8e,0xb1,0x70,0x0d,0x6e,0xe6}};
+#define chProc0INT 0x6e
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P0_CMD = {0x6e, 0x0, 0x6e, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P0_CMD_value 0x6e
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P0_RESULT = {0x6f, 0x0, 0x6e, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P0_RESULT_value 0x6f
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P0_READY = {0x70, 0x0, 0x6e, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P0_READY_value 0x70
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P0_DEINIT = {0x7b, 0x0, 0x6e, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P0_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC1_INT = {0x6419c8d3, 0x8989, 0x4a2a, {0xa7, 0x63,0xf9,0x28,0x59,0x0b,0xdd,0x1f}};
+#define chProc1INT 0x6f
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P1_CMD = {0x78, 0x0, 0x6f, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P1_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P1_RESULT = {0x79, 0x0, 0x6f, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P1_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P1_READY = {0x7a, 0x0, 0x6f, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P1_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P1_DEINIT = {0x7b, 0x0, 0x6f, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P1_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC2_INT = {0x8b785b2c, 0xbe0b, 0x4fee, {0xaf, 0x89,0x0d,0x19,0x4f,0xca,0x3b,0xca}};
+#define chProc2INT 0x70
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P2_CMD = {0x78, 0x0, 0x70, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P2_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P2_RESULT = {0x79, 0x0, 0x70, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P2_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P2_READY = {0x7a, 0x0, 0x70, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P2_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P2_DEINIT = {0x7b, 0x0, 0x70, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P2_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC3_INT = {0x04ceb815, 0x52b2, 0x4930, {0x81, 0xef,0x95,0x04,0xe1,0xe6,0xad,0x10}};
+#define chProc3INT 0x71
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P3_CMD = {0x78, 0x0, 0x71, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P3_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P3_RESULT = {0x79, 0x0, 0x71, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P3_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P3_READY = {0x7a, 0x0, 0x71, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P3_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P3_DEINIT = {0x7b, 0x0, 0x71, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P3_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC4_INT = {0x94b373c9, 0x4c3e, 0x46c4, {0xb9, 0x6f,0x97,0x48,0xfe,0x54,0x09,0x5b}};
+#define chProc4INT 0x72
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P4_CMD = {0x78, 0x0, 0x72, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P4_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P4_RESULT = {0x79, 0x0, 0x72, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P4_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P4_READY = {0x7a, 0x0, 0x72, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P4_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P4_DEINIT = {0x7b, 0x0, 0x72, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P4_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC5_INT = {0x5f89d77b, 0x2632, 0x4335, {0x86, 0x36,0x74,0x66,0x67,0x12,0xe0,0x18}};
+#define chProc5INT 0x73
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P5_CMD = {0x78, 0x0, 0x73, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P5_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P5_RESULT = {0x79, 0x0, 0x73, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P5_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P5_READY = {0x7a, 0x0, 0x73, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P5_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P5_DEINIT = {0x7b, 0x0, 0x73, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P5_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC6_INT = {0xe5047ce2, 0x2064, 0x4f5a, {0xb0, 0xa3,0xd7,0x87,0x79,0x95,0xb6,0x6d}};
+#define chProc6INT 0x74
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P6_CMD = {0x78, 0x0, 0x74, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P6_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P6_RESULT = {0x79, 0x0, 0x74, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P6_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P6_READY = {0x7a, 0x0, 0x74, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P6_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P6_DEINIT = {0x7b, 0x0, 0x74, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P6_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC7_INT = {0xe8ada0ff, 0xe3fe, 0x4108, {0xab, 0x9d,0x63,0xba,0x2e,0x2e,0xfc,0xb9}};
+#define chProc7INT 0x75
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P7_CMD = {0x78, 0x0, 0x75, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P7_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P7_RESULT = {0x79, 0x0, 0x75, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P7_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P7_READY = {0x7a, 0x0, 0x75, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P7_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P7_DEINIT = {0x7b, 0x0, 0x75, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P7_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC8_INT = {0xe69009a7, 0x7dcd, 0x4398, {0x95, 0x09,0xd5,0xab,0x06,0x23,0x8b,0x61}};
+#define chProc8INT 0x76
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P8_CMD = {0x78, 0x0, 0x76, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P8_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P8_RESULT = {0x79, 0x0, 0x76, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P8_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P8_READY = {0x7a, 0x0, 0x76, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P8_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P8_DEINIT = {0x7b, 0x0, 0x76, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P8_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC9_INT = {0x69869c0e, 0x0fd7, 0x4cf4, {0x97, 0x50,0x49,0x46,0x61,0xa3,0xa0,0xfa}};
+#define chProc9INT 0x77
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P9_CMD = {0x78, 0x0, 0x77, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P9_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P9_RESULT = {0x79, 0x0, 0x77, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P9_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P9_READY = {0x7a, 0x0, 0x77, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P9_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P9_DEINIT = {0x7b, 0x0, 0x77, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P9_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC10_INT = {0xb0f618bd, 0xe7ff, 0x4378, {0xab, 0xd1,0xbe,0xc8,0xc5,0xc8,0x1e,0x19}};
+#define chProc10INT 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P10_CMD = {0x78, 0x0, 0x78, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P10_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P10_RESULT = {0x79, 0x0, 0x78, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P10_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P10_READY = {0x7a, 0x0, 0x78, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P10_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P10_DEINIT = {0x7b, 0x0, 0x78, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P10_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC11_INT = {0x22597219, 0x93f2, 0x40d2, {0x9e, 0x4e,0x6d,0xcc,0x63,0xef,0x0c,0x2a}};
+#define chProc11INT 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P11_CMD = {0x78, 0x0, 0x79, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P11_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P11_RESULT = {0x79, 0x0, 0x79, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P11_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P11_READY = {0x7a, 0x0, 0x79, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P11_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P11_DEINIT = {0x7b, 0x0, 0x79, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P11_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC12_INT = {0x27f1727f, 0x8d1f, 0x41ba, {0xb8, 0x66,0x7a,0xdb,0x1f,0xe5,0xb7,0xa6}};
+#define chProc12INT 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P12_CMD = {0x78, 0x0, 0x7a, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P12_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P12_RESULT = {0x79, 0x0, 0x7a, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P12_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P12_READY = {0x7a, 0x0, 0x7a, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P12_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P12_DEINIT = {0x7b, 0x0, 0x7a, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P12_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC13_INT = {0xf8453718, 0xa42a, 0x470d, {0xae, 0xc8,0x03,0x40,0x2f,0x77,0x94,0x2d}};
+#define chProc13INT 0x7b
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P13_CMD = {0x78, 0x0, 0x7b, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P13_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P13_RESULT = {0x79, 0x0, 0x7b, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P13_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P13_READY = {0x7a, 0x0, 0x7b, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P13_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P13_DEINIT = {0x7b, 0x0, 0x7b, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P13_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC14_INT = {0xebc7a2cd, 0x7139, 0x436f, {0xb4, 0x2f,0xea,0xb2,0x70,0xb1,0x67,0x02}};
+#define chProc14INT 0x7c
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P14_CMD = {0x78, 0x0, 0x7c, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P14_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P14_RESULT = {0x79, 0x0, 0x7c, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P14_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P14_READY = {0x7a, 0x0, 0x7c, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P14_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P14_DEINIT = {0x7b, 0x0, 0x7c, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P14_DEINIT_value 0x7b
+EXTERN_C __declspec(selectany) const GUID WINDOWSCE_EVENTLOG_FUNC_TEST_PROC15_INT = {0x562d438a, 0x1cf0, 0x40fc, {0x9f, 0xab,0xed,0xe5,0x3f,0xb9,0x16,0xff}};
+#define chProc15INT 0x7d
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P15_CMD = {0x78, 0x0, 0x7d, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P15_CMD_value 0x78
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P15_RESULT = {0x79, 0x0, 0x7d, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P15_RESULT_value 0x79
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P15_READY = {0x7a, 0x0, 0x7d, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P15_READY_value 0x7a
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR FUNC_TEST_INT_P15_DEINIT = {0x7b, 0x0, 0x7d, 0x4, 0x0, 0x0, 0x8000000000000000};
+#define FUNC_TEST_INT_P15_DEINIT_value 0x7b
+#define MSG_Publisher_EventMessage       0xB000006EL
+

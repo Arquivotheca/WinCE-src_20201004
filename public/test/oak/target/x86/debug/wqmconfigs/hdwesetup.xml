@@ -1,0 +1,121 @@
+<?xml version="1.0" standalone="yes"?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<!-- ===============================================
+====
+==== WiFiMetrics test configuraton file
+====
+==== Basic network and hardware parameters.
+====
+====
+==== =========================================== -->
+
+<TestSetup name = "HdweSetup">
+
+<!-- Overall test-setup parameters: -->
+<TestSetup name="Default run-mode parameters"
+
+    PassCriteria = "90"
+    FailCriteria = "65"
+    MaxFailCount = "499"
+
+    IsRandom    = "false"
+    IsMultiThrd = "false"
+    BvtTestRun  = "false"
+    
+/>
+
+<!-- AP-Control server configuration: -->
+<TestSetup name="AP-Control server configuration"
+
+    SSIDSuffix       = ""
+    SSIDSuffixArg    = "-suffix $(SSIDSuffix)"
+
+    FixedAPSSID      = "WIFI_OPEN"
+    FixedAPAuth      = "Open"
+    FixedAPEncr      = "ClearText"
+    FixedAPKey       = "01.23.45.67.89"
+    FixedAPKeyIndex  = "0"
+    FixedAPWzcKey    = "1/0x0123456789"
+
+    ConfigAP1Name    = "ROAM_HOMEAP"
+    ConfigAP1SSID    = "ROAM_HOMEAP$(SSIDSuffix)"
+    ConfigAP2Name    = "ROAM_HOTSPOTAP"
+    ConfigAP2SSID    = "ROAM_HOTSPOTAP$(SSIDSuffix)"
+    ConfigAP3Name    = "ROAM_OFFICEAP1"
+    ConfigAP3SSID    = "ROAM_OFFICEAP1$(SSIDSuffix)"
+    ConfigAP4Name    = "ROAM_OFFICEAP2"
+    ConfigAP4SSID    = "ROAM_OFFICEAP2$(SSIDSuffix)"
+    
+    APNamesList      = "$(ConfigAP1Name),$(ConfigAP2Name)"
+
+/>
+
+<!-- Device/server communication: -->
+<!-- Use either LANServerHost or WiFiServerSSID, never both. -->
+<TestSetup name="Communication configuration"
+
+    NDTServerHost     = "@10.10.0.105"
+    NDTServerAdapter  = "PCI\RTLNWIFI1"
+
+    LANServerHost     = "10.10.0.1"
+    LANServerPort     = "33331"
+    LANServerHostArg  = "-lHost $(LANServerHost)"
+    LANServerPortArg  = "-lPort $(LANServerPort)"
+
+    xxWiFiServerHost     = "10.10.0.110"
+    xxWiFiServerPort     = "33331"
+    xxWiFiServerHostArg  = "-wHost $(WiFiServerHost)"
+    xxWiFiServerPortArg  = "-wPort $(WiFiServerPort)"
+    xxWINSOCKSERVER      = "$(WiFiServerHost)"
+
+    xxWiFiServerSSID        = "$(FixedAPSSID)"
+    xxWiFiServerAuth        = "$(FixedAPAuth)"
+    xxWiFiServerEncr        = "$(FixedAPEncr)"
+    xxWiFiServerKey         = "$(FixedAPKey)"
+    xxWiFiServerKeyIndex    = "$(FixedAPKeyIndex)"
+    xxWiFiServerSSIDArg     = "-wSSID $(WiFiServerSSID)"
+    xxWiFiServerAuthArg     = "-wAuth $(WiFiServerAuth)"
+    xxWiFiServerEncrArg     = "-wEncr $(WiFiServerEncr)"
+    xxWiFiServerKeyArg      = "-wKey  $(WiFiServerKey)"
+    xxWiFiServerKeyIndexArg = "-wKeyIndex $(WiFiServerKeyIndex)"
+    
+    AdHocPeerHost        = "169.254.127.127"
+    AdHocPeerSSID        = "CEAdHoc"
+    AdHocPeerAuth        = "Open"
+    AdHocPeerEncr        = "WEP"
+    AdHocPeerKey         = "98:76:54:32:10"
+    AdHocPeerKeyIndex    = "0"
+    AdHocPeerHostArg     = "-aHost $(AdHocPeerHost)"
+    AdHocPeerSSIDArg     = "-aSSID $(AdHocPeerSSID)"
+    AdHocPeerAuthArg     = "-aAuth $(AdHocPeerAuth)"
+    AdHocPeerEncrArg     = "-aEncr $(AdHocPeerEncr)"
+    AdHocPeerKeyArg      = "-aKey  $(AdHocPeerKey)"
+    AdHocPeerKeyIndexArg = "-aKeyIndex $(AdHocPeerKeyIndex)"
+
+/>
+
+<!-- Authentication server configuration: -->
+<TestSetup name="Authentication server configuration"
+
+    EnrollHostName   = "10.10.0.1"
+    EnrollHostPort   = "1812"
+    EnrollPassword   = "0123456789"
+    PEAPAccountCreds = "eappeap:We're#1:wince"
+    TLSAccountCreds  = "eaptls:We're#1:wince"
+    MD5AccountCreds  = "eapmd5:We're#1:wince"
+    
+/>
+
+</TestSetup>
+

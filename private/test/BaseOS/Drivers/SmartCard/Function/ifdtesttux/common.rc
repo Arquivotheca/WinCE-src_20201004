@@ -1,0 +1,464 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// Microsoft Visual C++ generated resource script.
+//
+#include "commonrc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "commonrc.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_IFD_WARN_MISSING_TEST_RESULT 
+                            "\n*** WARNING: Missing TestResult() call\n"
+    IDS_IFD_WARN_MISSING_TEST_START 
+                            "\n*** WARNING: Missing TestStart() call\n"
+    IDS_IFD_FAILED_STRING   "* FAILED  -  %s"
+    IDS_IFD_PASSED          "  Passed"
+    IDS_IFD_IOCTL_FAILED    "IOCTL call failed:\nReturned %8lxH (NTSTATUS %8lxH)\nExpected %s%8lxH (NTSTATUS %8lxH)"
+    IDS_IFD_IOCTL_WRONG_NUMBYTES 
+                            "IOCTL returned wrong number of bytes:\nReturned %3ld bytes\nExpected %3ld bytes"
+    IDS_IFD_WRONG_STATUS    "Card returned wrong status:\nStatus SW1 = %02x SW2 = %02x\nExpected SW1 = %02x SW2 = %02x"
+    IDS_IFD_IOCTL_BAD_DATA  "IOCTL returned incorrect data:\nData returned:\n%s\nExpected data:\n%s"
+    IDS_IFD_NULL_STRING     " "
+    IDS_IFD_NOT             "NOT"
+    IDS_IFD_CHECK_TEST_SUCCESS_MSG 
+                            "%s.\nReturned %8lxH (NTSTATUS %8lxH)\nExpected        0H (NTSTATUS        0H)"
+    IDS_IFD_CHECK_NOT_SUPPORTED_MSG 
+                            "%s.\nReturned %8lxH (NTSTATUS %8xH)\nExpected %38xH (NTSTATUS %8lxH)"
+    IDS_CARD_TESTED_ALREADY "Card has been tested already. Please remove the card"
+    IDS_TESTING_CARD        "Testing card %s"
+    IDS_TEST_NO             "Test No. %2d"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CARD_UNKNOWN        "Card unknown!"
+    IDS_CURRENT_CARD        "       CURRENT CARD"
+    IDS_REMOVE_CARD         "Please remove card"
+    IDS_PART_A              "Part A: Checking card monitor"
+    IDS_READER_FAILED       "Reader failed card insertion monitor"
+    IDS_SMART_CARD_PRESENT  "%2d. IOCTL_SMARTCARD_IS_PRESENT"
+    IDS_SEVICE_CONTROL_IO_SHOULD_RET_TRUE 
+                            "DeviceIoControl should return TRUE with card inserted"
+    IDS_READER_FAILED_CARD_REM "Reader failed card removal monitor"
+    IDS_SMART_CARD_ABSENT   "%2d. IOCTL_SMARTCARD_IS_ABSENT"
+    IDS_DEV_IO_CTRL_SHOULD_RET_TRUE_CARD_REM 
+                            "DeviceIoControl should return TRUE with card removed"
+    IDS_INS_REM_SMART_CARD  "%2d. Insert and remove a smart card repeatedly\r\n"
+    IDS_READER_FAILED_WITH_RET_VAL 
+                            "Reader failed card insertion monitor.\nReturned %2lxH"
+    IDS_READER_FAILED_CARD_REM_WITH_RET_VAL 
+                            "Reader failed card removal monitor:\nReturned %2lxH"
+    IDS_PRESS_ANY_KEY       "Press ENTER key to continue"
+    IDS_PART_B              "Part B: Checking reader"
+    IDS_DEV_NAME            "%2d. Device name"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DEV_NAME_NOT_NT4_COMPLIANT "Device name is not NT 4.0 compliant"
+    IDS_DEV_NAME_NOT_WDM_PNP_COMPLIANT "Device name is not WDM PnP compliant"
+    IDS_NULL_PTR_CHK        "%2d. Null pointer check"
+    IDS_IOCTRL_SMARTCARD_GET_ATTRIBUTE_SHOULD_RET 
+                            "IOCTL_SMARTCARD_GET_ATTRIBUTE (%lxh) should fail\nReturned %2lxH (NTSTATUS %lxH)\nExpected %2lxH (NTSTATUS %lxH)\nor       %2lxH (NTSTATUS %lxH)"
+    IDS_CLOSE_DRIVER_WITH_IO_REQ_PENDING 
+                            "%2d. Close driver with I/O-request still pending"
+    IDS_WAIT_FOR_PRESENT_SUCCEED_UNEXPECTED 
+                            "Wait for present succeeded with no card inserted - it should not."
+    IDS_READER_FAILED_TO_TERMINATE_PENDING_IO_REQ 
+                            "Reader failed to terminate pending i/o request"
+    IDS_PLS_INS_SAMPLE_PC_SC_COMPLIANCE_CARD 
+                            "   >>  Please insert PC/SC Compliance Test Card 1"
+    IDS_READER_TEST_SKIPPED "Part B: Reader test skipped"
+    IDS_RES_MGR_SIMULATION_SKIPPED 
+                            "Part C: Resource Manager Simulation skipped"
+    IDS_SMART_CARD_PROVIDER_TEST_SKIPPED 
+                            "Part D: Smart Card Provider Test skipped"
+    IDS_PART_D              "Part D: Smart Card Provider Test"
+    IDS_INS_ANY_PC_SC_COMPLIANCE_CARD 
+                            "Insert any of the following PC/SC Compliance Test Cards:"
+    IDS_UNABLE_TO_RESET_SMART_CARD "Unable to reset smart card"
+    IDS_POWER_MGMT_TEST_SKIPPED "Part E: Power Management Test skipped"
+    IDS_READER_FAILED_TEST  "Reader failed the test"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_READER_PASSED_TEST  "Reader passed the test"
+    IDS_CARD_MONITOR_TEST_SKIPPED "Part A: Card monitor test skipped"
+    IDS_COLD_RESET          "%2d. Cold reset"
+    IDS_COLD_RESET_FAILED   "Cold reset failed"
+    IDS_COLD_RESET_TOOK_TIME 
+                            "Cold reset took too long.\nElapsed time %ld sec\nExpected time %ld sec"
+    IDS_SET_PROTOCOL_T0_T1  "%2d. Set protocol to T0 | T1"
+    IDS_SET_PROTOCOL_FAILED "Set protocol failed"
+    IDS_IOCTL_SCARD_ATT_VENDOR_NAME_FAILED 
+                            "IOCTL SCARD_ATTR_VENDOR_NAME failed"
+    IDS_NO_VENDOR_NAME_DEFINED "No vendor name defined"
+    IDS_SCARD_ATTR_VENDOR_IFD_TYPE_FAILED 
+                            "IOCTL SCARD_ATTR_VENDOR_IFD_TYPE failed"
+    IDS_NO_IFD_TYPE_DEFINED "No ifd type defined"
+    IDS_SCARD_ATTR_DEVICE_UNIT_FAILED "IOCTL SCARD_ATTR_DEVICE_UNIT failed"
+    IDS_SCARD_ATTR_ATR_STRING_FAILED "IOCTL SCARD_ATTR_ATR_STRING failed"
+    IDS_READER_RET_ATR_WITH_NO_CARD_INS 
+                            "Reader returned ATR with no card inserted"
+    IDS_SCARD_ATTR_DEFAULT_CLK_SCARD_ATTR_MAX_CLK_FAILED 
+                            "IOCTL SCARD_ATTR_DEFAULT_CLK/SCARD_ATTR_MAX_CLK failed"
+    IDS_SCARD_ATTR_DEFAULT_DATA_RATE_SCARD_ATTR_MAX_DATA_RATE_FAILED 
+                            "IOCTL SCARD_ATTR_DEFAULT_DATA_RATE/SCARD_ATTR_MAX_DATA_RATE failed"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SCARD_ATTR_MAX_IFSD_FAILED "IOCTL SCARD_ATTR_MAX_IFSD failed"
+    IDS_SCARD_ATTR_PROTOCOL_TYPES_FAILED 
+                            "IOCTL SCARD_ATTR_PROTOCOL_TYPES failed"
+    IDS_READER_MUST_SUPPORT_T_0_AND_1 "Reader must support T=0 and T=1"
+    IDS_SCARD_ATTR_CURRENT_PROTOCOL_TYPE_FAILED 
+                            "IOCTL SCARD_ATTR_CURRENT_PROTOCOL_TYPE failed"
+    IDS_READER_RETURNED_NO_PROTOCOL "Reader returned no protocol"
+    SCARD_ATTR_CURRENT_PROTOCOL_TYPE_FAILED 
+                            "IOCTL SCARD_ATTR_CURRENT_PROTOCOL_TYPE failed should fail with no card inserted"
+    IDS_IOCTL_RET           "IOCTL returned %lxh"
+    IDS_PLS_INS_SMART_CARD  "   <<  Please insert smart card BACKWARDS"
+    IDS_IOCTL_SMARTCARD_GET_STATE "%2d. IOCTL_SMARTCARD_GET_STATE"
+    IDS_IOCTL_SMARTCARD_GET_STATE_FAILED 
+                            "IOCTL_SMARTCARD_GET_STATE failed.\nReturned %8lxH (NTSTATUS %8lxH).\nExpected %8lxH (NTSTATUS %8lxH)"
+    IDS_INVALID_READER_STATE 
+                            "Invalid reader state.\nReturned %d\nExpected <= %d"
+    IDS_COLD_RESET_FAILED_WITH_RET_VAL 
+                            "Cold reset failed.\nReturned %8lxH (NTSTATUS %8lxH).\nExpected %8lxH (NTSTATUS %8lxH)"
+    IDS_INVALID_VAL_0_3     "Invalid value: %ld (0 - 3)"
+    IDS_INVALID_VAL_1000_20000 "Invalid value %ld (1000 - 20000)"
+    IDS_INVALID_VAL_1_254   "Invalid value: %ld (1 - 254)"
+    IDS_PART_C              "Part C: Resource Manager Simulation"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CARD_INS_FAILED_RET_VAL 
+                            "Card insertion monitor failed.\nReturned %8lxH (NTSTATUS %8lxH).\nExpected %8lxH (NTSTATUS %8lxH)"
+    IDS_GET_OVERLAPPED_RESULT "%2d. Cancel blocking call"
+    IDS_SMART_CARD_NOT_REMOVED "Smart card not removed"
+    IDS_CARD_REM_FAILED_RET_VAL 
+                            "Card removal monitor failed.\nReturned %8lxH (NTSTATUS %8lxH).\nExpected %8lxH (NTSTATUS %8lxH)"
+    IDS_CHECKING_READER_STATUS "%2d. Checking reader status"
+    IDS_READER_RET_ILLEGAL_STATE "Reader returned illegal state SCARD_UNKNOWN"
+    IDS_INVALID_READER_STATE_CUR_EXPECTED_STATE 
+                            "Invalid reader state.\nCurrent state = %d\nExpected state = %d"
+    IDS_IOCTL_SMART_CARD_PRESENT "%2d. IOCTL_SMARTCARD_IS_PRESENT"
+    IDS_MON_SUPPOSE_TO_RET  "Monitor is supposed to return ERROR_IO_PENDING (%lxh)"
+    IDS_IOCTL_SMARTCARD_IS_ABSENT_FAILED_RET_VAL 
+                            "IOCTL_SMARTCARD_IS_ABSENT should fail.\nReturned %8lxH (NTSTATUS %8lxH).\nExpected %8lxH (NTSTATUS %8lxH)"
+    IDS_COLD_RESET_CARD     "%2d. Cold reset card"
+    IDS_COLDRESET           "Cold Reset"
+    IDS_PROTOCOL_SEL_FAILED_WITH_ERROR 
+                            "Protocol selection failed with error %lxh"
+    IDS_SCARD_POWER_DOWN    "%2d. IOCTL_SMARTCARD_POWER (SCARD_POWER_DOWN)"
+    IDS_IOCTL_SMARTCARD_POWER_FAILED "IOCTL_SMARTCARD_POWER failed"
+    IDS_READER_RET_INVALID_STATE "Reader returned invalid state %d"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_PART_E              "Part E: Power Management Test"
+    IDS_NOTE                "Note: Follow the instructions for insertion/removal of the card during suspend."
+    IDS_INSTRUCTION         "Upon entering suspend, the system will automatically resume after 15 seconds."
+    IDS_ENABLE_SHUTDOWN_PRIVILEGE 
+                            "EnableShutdownPrivilege(TRUE) failed, GetLastError = %d"
+    IDS_TEST1               "\nTest 1: DO NOT INSERT smart card during suspend mode"
+    IDS_HIBERNATING_NOW     "Card out / card out - Countdown to suspend...\n"
+    IDS_HIBERNATE_FAILED    "Hibernate failed, GetLastError = %d"
+    IDS_GET_OVERLAPPED_RESULT_FAILED "GetOverlappedResult failed"
+    IDS_INSERT_CARD         "   >>  Please insert smart card"
+    IDS_CHK_READER_STATUS   "Checking reader status"
+    IDS_READER_FAILED_IOCTL_SMARTCARD_GET_STATE 
+                            "Reader failed IOCTL_SMARTCARD_GET_STATE"
+    IDS_INVALID_READER_RET_EXPECTED 
+                            "Invalid reader state.\nReturned %d\nExpected > %d"
+    IDS_TEST2               "\nTest 2: REMOVE smart card DURING suspend mode"
+    IDS_CARD_IN_OUT         "Card in / card out - Countdown to suspend...\n"
+    IDS_TEST_NO_INS_CARD    "%2d. Please insert PC/SC Compliance Test Card 1"
+    IDS_REM_SMART_CARD      "   <<  Please remove smart card"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ABSENT_STATE        "Absent"
+    IDS_PRESENT_STATE       "Present"
+    IDS_SWALLOWED_STATE     "Swallowed"
+    IDS_POWERED_STATE       "Powered"
+    IDS_NEGOTIABLE_STATE    "Negotiable"
+    IDS_SPECIFIC_STATE      "Specific"
+    IDS_SC_READER           "\\\\.\\SCReader"
+    IDS_REM_ALL_CARDS       "   <<  If any smart cards are inserted in any of the readers, please remove them now.\n"
+    IDS_SC_WINCE_READER     "SCR"
+    IDS_DEV_NAME_NOT_WINCE_COMPLIANT "Device name is not WinCE compliant"
+    IDS_WAIT_FOR_ABSENT_SUCCEED_UNEXPECTED 
+                            "Wait for absent succeeded with card inserted - it should not."
+    IDS_CANCELIO_RETURN_ERROR "CancelIoThread completed with error %ld"
+    IDS_OPEN_DRIVER         "Open Driver ""%s""\n"
+    IDS_CANNOT_OPEN_DRIVER  "Can't Open Driver ""%s""\n"
+    IDS_SUSPEND_AND_WAKEUP_RETURN_ERROR 
+                            "SuspendDeviceAndScheduleWakeup completed with error %ld"
+    IDS_WAIT_FOR_REMOVE_FAILED "Wait for remove FAILED!"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_TEST_NO_REM_CARD    "%2d. Please remove smart card"
+    IDS_TEST3               "\nTest 3: DO NOT REMOVE smart card during suspend mode"
+    IDS_CARD_IN_IN          "Card in / card in - Countdown to suspend...\n"
+    IDS_TEST4               "\nTest 4: INSERT smart card DURING suspend mode"
+    IDS_CARD_OUT_IN         "Card out / card in - Countdown to suspend...\n"
+    IDS_ENABLE_SHUTDOWN_PRIVILEGE_FAILED 
+                            "EnableShutdownPrivilege(FALSE) failed, GetLastError = %d"
+    IDS_VENDOR_IFDTYPE      " Vendor                  IfdType                  Type\n"
+    IDS_SELECT_READER       "\rSelect reader:  "
+    IDS_LOOK_UP_PRIVILEGE_VAL_FAILED 
+                            "LookupPrivilegeValue failed, error = %d\r\n"
+    IDS_OPEN_PROCESS_TOKEN_FAILED "OpenProcessToken failed, error = %d\r\n"
+    IDS_OPEN_THREAD_TOKEN_FAILED "OpenThreadToken failed, error = %d\r\n"
+    IDS_SMART_CARD_READER_TEST "Smart Card Reader Test Suite"
+    IDS_VERSION             "Version 2.0.5"
+    IDS_COPY_RIGHT          "Copyright(c) Microsoft Corporation.  All rights reserved."
+    IDS_VALID_CMD_LINE_PARAMETERS 
+                            "-c -d -h -n * -o -p * -r * -s -t * -u -v * -w * -x * -y"
+    IDS_INVALID_PARAMETER   "Invalid Parameter '%s'"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_USAGE               "IfdTestTux [-c] [-d] [-n iterations] [-o] [-p iterations] [-r name] [-t test] [-v name] [-w time]\n"
+    IDS_USAGE_DUMPS_ALL     "   -d        dumps all i/o"
+    IDS_USAGE_AUTOIFD       "   -o        card provider test only checks first card inserted"
+    IDS_USAGE_MANUAL_TEST   "   -m        manual test"
+    IDS_USAGE_READER_USING_DEV_NAME 
+                            "   -r name   opens reader using device name"
+    IDS_USAGE_N             "   -n #      number of times to execute a repetitive test"
+    IDS_TEST_CHECK_INVALID_HANDLE "Check For Invalid Handle"
+    IDS_HANDLE_UNEXPECTEDLY_VALID 
+                            "ERROR: Handle was unexpectedly valid - state=%d"
+    IDS_USAGE_SKIPS_CARDS_TEST "   -sd       skips card tests"
+    IDS_USAGE_SKIP_POWER_MGMT_TEST "   -se       skips power management tests"
+    IDS_USAGE_READER_USING_VENDOR_NAME 
+                            "   -v name   opens reader using vendor name"
+    IDS_USAGE_SPECIFIC_TEST "   -t test   runs only specific card test in part d"
+    IDS_USAGE_WAITING_TIME  "   -w time   specified waiting time"
+    IDS_NO_READER_FOUND     "No reader found\n"
+    IDS_CAN_NOT_OPEN_SMART_CARD_READER "ERROR: Can't open smart card reader"
+    IDS_VENDOR              "Vendor: %s"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_READER              "Reader: %s"
+    IDS_DATE                "Date:   %d/%02d/%02d"
+    IDS_TIME                "Time:   %d:%02d"
+    IDS_OS                  "OS:     %s"
+    IDS_VENDORNAME          "VendorName of reader device %s is NULL"
+    IDS_IFDTYPE             "IfdType of reader device %s is NULL"
+    IDS_DEVICE_CLASSES_KEY  "System\\CurrentControlSet\\Control\\DeviceClasses\\{50DD5230-BA8A-11D1-BF5D-0000F805F530}"
+    IDS_SYMB_LINK           "SymbolicLink"
+    IDS_SCREADER            "\\\\.\\SCReader%d"
+    IDS_DEV_KEY             "System\\CurrentControlSet\\Services\\VxD\\Smclib\\Devices"
+    IDS_DEBUG_IFDTYPE       "DEBUG IfdType"
+    IDS_DEBUG_VENDOR        "DEBUG Vendor"
+    IDS_REQ_DATA            "\n   RequestData:"
+    IDS_IOCTL_RET_VAL       "   IOCTL returned %lxh\n"
+    IDS_REPLY_DATA          "   ReplyData:"
+    IDS_SCRIPT_FILE_CAN_NOT_OPENED "Script file cannot be opened: %s\n"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_MISSING_AND_IN_FUN  "Missing '&' in function name"
+    IDS_MISSING_CMD_APDU    "Missing command APDU"
+    IDS_LINE_INVALID        "Line invalid"
+    IDS_ILLEGAL_VAL_FOUND   "Illegal value found:"
+    IDS_CARD_CMD_FOUND_NO_CARD_DEFINED 
+                            "Card command found, but no card defined"
+    IDS_IFDTEST_DAT_FILE    "ifdtest.dat"
+    IDS_MANUAL_READER_TEST  "Manual reader test\n"
+    IDS_CMDS                "%s Commands:\n"
+    IDS_OTHER_CMDS          "Other Commands:\n   [r]epeat command\n   E[x]it\n"
+    IDS_READER_CMDS         "Reader Commands:\n   Protocol: T=[0], T=[1]\n   Power   : [c]oldReset, Power[d]own, Warm[r]eset\n   Card    : [p]resent, [a]bsent, [s]tatus\n   PwrMngnt: [h]ibernation\n   Test    : [v]endor IOCTL\n"
+    IDS_CARD_CMDS           "Card Commands:\n"
+    IDS_OTHER_EXIT_CMD      "Other Commands:\n   E[x]it\n"
+    IDS_INFO                "\n[%s|%s|%ld] - Command: "
+    IDS_REPEAT_CNT          "Enter repeat count: "
+    IDS_ENT_CMD             "Enter command: "
+    IDS_INVALID_SEL         "Invalid Selection"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CHANGING_T_0        "Changing to T=0"
+    IDS_CHANGING_T_1        "Changing to T=1"
+    IDS_WARM_RESET          "Warm reset"
+    IDS_POWERDOWN           "Power down"
+    IDS_HIBERNATING_TEST_1_MIN 
+                            "Hibernation test...(1 min)\nHibernate machine now!"
+    IDS_CARD_INSERTED       "\n   Card inserted"
+    IDS_CARD_REMOVED        "\n   Card removed"
+    IDS_INS_CARD            "Please insert card"
+    IDS_GET_STATE           "Get state"
+    IDS_GET_STATE_1         "Get state 1"
+    IDS_WAITING_FOR_REMOVAL "Waiting for removal..."
+    IDS_WAITING_FOR_INSERTION "Waiting for insertion..."
+    IDS_UNKNOWN_STATE       "Unknown"
+    IDS_TEST_VENDOR_IOCTL   "Test Vendor IOCTL..."
+    IDS_RET_VAL             "\nReturn value: %lxh (NTSTATUS %lxh)\n"
+    IDS_DATA_RET            "Data returned (%ld bytes):\n   %04x: "
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CANNOT_CLOSE_THREAD_HANDLE 
+                            "Could not properly close thread handle - %d"
+    IDS_CANNOT_CREATE_SUSPEND_WAKEUP_THREAD 
+                            "Could not create suspend/wakeup thread - %d"
+    IDS_WAIT_FOR_INSERT_FAILED "Wait for insert FAILED!"
+    IDS_CANCEL_BLOCKING_DEVICEIOCONTROL_CALL 
+                            "%2d. Cancel blocking DeviceIoControl call."
+    IDS_COULD_NOT_ALLOCATE_POWER_UTILITY 
+                            "Could not allocate power utility object"
+    IDS_COULD_NOT_SETUP_RTC "ERROR: Could not setup RTC alarm as the wakeup resource. System will not automatically resume. Please wake the system manually."
+    IDS_POLLING_ON_STATE_FAILED "ERROR: Polling for ""On"" state failed!"
+    IDS_SYSTEM_HAS_RESUMED  "                              ...System is now back ""On""."
+    IDS_GET_SYSTEMPOWERSTATE_FAILED "GetSystemPowerState failed! Ret=0x%x"
+    IDS_TESTNUM_TESTNAME    "%2d. %s"
+    IDS_PROGRAM_NAME        "ifdtest"
+    IDS_SYSTEM_GOING_TO_SLEEP_NOW "System ""Suspend""-ing now..."
+    IDS_TEST_INSERTREMOVE   "Reader Insertion/Removal Test"
+    IDS_TEST_REMOVEREADERS  ">>> Remove all readers from CE device now"
+    IDS_TEST_INSERTREADER   ">>> Insert reader into CE device now"
+    IDS_TEST_START_ITERATIONNUM "\r\nStart test iteration [%d]..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_TEST_CLOSEREADER    "Close reader"
+    IDS_CAN_NOT_CLOSE_SMART_CARD_READER 
+                            "ERROR: Can't close smart card reader handle."
+    IDS_TEST_OPENREADER     "Open Reader Test"
+    IDS_READER_STILL_FOUND  "Readers are still connected to device."
+    IDS_CANNOT_CREATE_SWITCHBOX_THREAD 
+                            "ERROR: Can't create thread to USB control switchbox - %d."
+    IDS_SWITCHBOX_THREAD_FAILED 
+                            "ERROR: Thread controlling USB switchbox failed."
+    IDS_TEST_INTERRUPTREADER "Reader Surprise Removal Test"
+    IDS_TEST_READERREMOVALWHENBLOCKED "Reader Removal When Blocked Test"
+    IDS_USAGE_P             "   -p #      number of times to execute a specific part of a test"
+    IDS_USAGE_C             "   -c        specifies card should be inserted for the duration of the test"
+    IDS_CANNOT_INITIALIZE_SWITCHBOX 
+                            "ERROR: Could not initialize USB switch Box"
+    IDS_TEST_REMOVEREADER_DURING_TEST 
+                            "\n>>> Remove readers from CE device *during* the following test..."
+    IDS_READER_INTERRUPT_TIME 
+                            "Reader will be interrupted after approximately [%d] ms."
+    IDS_AUTOIFD_PASS_UNEXPECTED 
+                            "ERROR: AutoIFD passed when it should have failed."
+    IDS_TEST_RESUMETHREAD   "Resume thread ""%s"""
+    IDS_COULD_NOT_RESUMETHREAD "Could not resume thread - ret=%d."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CLOSE_DRIVER        "Close Driver ""%s"""
+    IDS_COULD_NOT_ALLOCATE_TEST_STRUCTURES 
+                            "ERROR: Could not properly allocate structures for test."
+    IDS_TEST_MULTIREADER_AUTOIFD "Multiple Reader AutoIFD Test"
+    IDS_DETECTEDCARD_INSREM_ITER 
+                            "        Detected card insertion/removal cycle #%d."
+    IDS_TEST_SUSPENDRESUME_INSERTREMOVE 
+                            "Insert/Remove during Suspend/Resume Test"
+    IDS_TEST_SUSPENDRESUME_INSERTREMOVE_NOTE 
+                            "Note: Follow the instructions for insertion/removal of the card reader\nduring suspend."
+    IDS_REMOVEINSERT_DURING_SUSPEND 
+                            "\n%d. During suspend, detach and reattach the card reader to the *same* USB slot.\nCountdown to suspend...\n"
+    IDS_REMOVEINSERT_DIFFERENTPORT_DURING_SUSPEND 
+                            "\n%d. During suspend, detach and reattach the card reader to a *new* USB slot.\nCountdown to suspend...\n"
+    IDS_REMOVE_NOINSERT_DURINGSUSPEND_SAMEPORT 
+                            "\n%d. During suspend, detach the card reader.\n*After* resume, reattach reader to *same* port.\nCountdown to suspend...\n"
+    IDS_REMOVE_NOINSERT_DURINGSUSPEND_DIFFPORT 
+                            "\n%d. During suspend, detach the card reader.\n*After* resume, reattach reader to a *new* port.\nCountdown to suspend...\n"
+    IDS_INSERT_DURING_SUSPEND 
+                            "\n%d. During suspend, attach the card reader.\nCountdown to suspend...\n"
+    IDS_STRESS_FAILURE_COUNT 
+                            "Stress test mode - unexpected AutoIFD failures = [%d]"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,74 @@
+[Version]
+Signature = "$Windows NT$"
+Provider = "Microsoft"
+CESignature = "$Windows CE$"
+
+[CEStrings]
+AppName = UPnP Control Point
+InstallDir = %CE2%  	                ; \Windows
+
+[CEDevice]
+VersionMin = 5.00
+VersionMax = 9.00
+
+[DefaultInstall]
+CopyFiles = SystemFiles
+AddReg = SystemReg
+
+[SourceDisksFiles.arm]
+upnpsvc.dll = 1,.
+upnpcapi.dll = 1,.
+upnpctrl.dll = 1,.
+
+[SourceDisksNames.arm]
+1="UPnP Control Point"
+
+[DestinationDirs]
+SystemFiles = 0,%InstallDir%
+
+[SystemFiles]
+upnpsvc.dll,,0xc0000000
+upnpcapi.dll,,0xc0000000
+upnpctrl.dll,,0xc0000000
+
+[SystemReg]
+; UPnP service
+HKLM,Services\UPNPSVC,Context,0x00010001,0
+HKLM,Services\UPNPSVC,Dll,0x00000000,"upnpsvc.dll"
+HKLM,Services\UPNPSVC,Order,0x00010001,5
+HKLM,Services\UPNPSVC,Prefix,0x00000000,"UPP"
+HKLM,Services\UPNPSVC,Index,0x00010001,1
+
+; HTTP VROOTs
+HKLM,COMM\HTTPD\VROOTS\/upnp,,0x00000000,"\windows\upnp\"
+HKLM,COMM\HTTPD\VROOTS\/upnp,a,0x00010001,0
+HKLM,COMM\HTTPD\VROOTS\/upnpisapi,,0x00000000,"\windows\upnpsvc.dll"
+HKLM,COMM\HTTPD\VROOTS\/upnpisapi,a,0x00010001,0
+
+; Port
+HKLM,COMM\UPnP,Port,0x00010001,0x1400
+HKLM,COMM\UPnP,DiscoveryTimeToLive,0x00010001,1
+HKLM,Services\HTTPD\Accept\TCP-5120,SockAddr,0x00000001,02,00,14,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+; COM registration
+HKCR,CLSID\{E2085F28-FEB7-404A-B8E7-E659BDEAAA02},,0x00000000,"UPnP DeviceFinder Class"
+HKCR,CLSID\{E2085F28-FEB7-404A-B8E7-E659BDEAAA02}\ProgID,,0x00000000,"UPnP.UPnPDeviceFinder.1"
+HKCR,CLSID\{E2085F28-FEB7-404A-B8E7-E659BDEAAA02}\VersionIndependentProgID,,0x00000000,"UPnP.UPnPDeviceFinder"
+HKCR,CLSID\{E2085F28-FEB7-404A-B8E7-E659BDEAAA02}\InprocServer32,,0x00000000,"\Windows\upnpctrl.dll"
+HKCR,CLSID\{E2085F28-FEB7-404A-B8E7-E659BDEAAA02}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,UPnP.UPnPDeviceFinder.1,,0x00000000,"UPnP DeviceFinder Class"
+HKCR,UPnP.UPnPDeviceFinder.1\CLSID],,0x00000000,"{E2085F28-FEB7-404A-B8E7-E659BDEAAA02}"
+HKCR,UPnP.UPnPDeviceFinder,,0x00000000,"UPnP DeviceFinder Class"
+HKCR,UPnP.UPnPDeviceFinder\CurVer,,0x00000000,"UPnP.UPnPDeviceFinder.1"
+
+HKCR,CLSID\{1d8a9b47-3a28-4ce2-8a4b-bd34e45bceeb},,0x00000000,"UPnP DescriptionDocument Class"
+HKCR,CLSID\{1d8a9b47-3a28-4ce2-8a4b-bd34e45bceeb}\ProgID,,0x00000000,"UPnP.DescriptionDocument.1"
+HKCR,CLSID\{1d8a9b47-3a28-4ce2-8a4b-bd34e45bceeb}\VersionIndependentProgID,,0x00000000,"UPnP.DescriptionDocument"
+HKCR,CLSID\{1d8a9b47-3a28-4ce2-8a4b-bd34e45bceeb}\InprocServer32,,0x00000000,"\Windows\upnpctrl.dll"
+HKCR,CLSID\{1d8a9b47-3a28-4ce2-8a4b-bd34e45bceeb}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,UPnP.DescriptionDocument.1,,0x00000000,"UPnP DescriptionDocument Class"
+HKCR,UPnP.DescriptionDocument.1\CLSID,,0x00000000,"{1d8a9b47-3a28-4ce2-8a4b-bd34e45bceeb}"
+HKCR,UPnP.DescriptionDocument,,0x00000000,"UPnP DescriptionDocument Class"
+HKCR,UPnP.DescriptionDocument\CurVer,,0x00000000,"UPnP.DescriptionDocument.1"

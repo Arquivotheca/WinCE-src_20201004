@@ -1,0 +1,208 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+/*----------------------------------------------------------------------------
+	obexp.idl
+		Private Interface definitions for OBEX
+
+		This file will be processed by the MIDL tool to
+		produce the type library (obex.tlb) and marshalling code.
+
+	All rights reserved.
+
+	Authors:
+		EricDav		Eric Davison
+
+	History:
+		08/23/00		EricDav	Created
+ ----------------------------------------------------------------------------*/
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+interface IObexServiceControl;
+interface IObexTransport;
+interface IObexTransportSocket;
+interface IObexTransportConnection;
+interface IPropertyBagEnum;
+
+import "obex.idl";
+
+#if defined(UNDER_CE) || defined(WINCE)
+#define LPPROPERTYBAG2				LPPROPERTYBAG
+typedef IUnknown *					LPUNKNOWN;
+typedef IHeaderCollection *			LPHEADERCOLLECTION;
+typedef IStream *					LPSTREAM;
+typedef IObexService *				LPSERVICE;
+typedef IHeaderEnum *				LPHEADERENUM;
+typedef IObexDevice *				LPDEVICE;
+typedef IDeviceEnum *				LPDEVICEENUM;
+typedef IPropertyBagEnum *			LPPROPERTYBAGENUM;
+typedef IObexServiceConnection *	LPCONNECTION;
+typedef IObexTransportSocket *		LPSOCKET;
+typedef IObexTransportConnection *  LPTRANSPORTCONNECTION;
+#endif
+// 
+// Transport notifications
+//
+typedef enum _TRANSPORT_EVENT
+{
+	TE_NEW_DEVICE,
+} TRANSPORT_EVENT, * LPTRANSPORT_EVENT;
+
+// 
+// notifications
+//
+typedef enum _SERVICE_EVENT
+{
+	SE_LOGON,
+	SE_LOGOUT,
+	SE_QUERYENDSESSION,
+	SE_POWERBROADCAST,
+	SE_REGISTRY_CHANGE_INIT,
+	SE_REGISTRY_CHANGE,
+} SERVICE_EVENT, * LPSERVICE_EVENT;
+
+
+	[
+		object,
+		uuid(0C5A5B13-2979-42D1-9E15-A63E34383B58),
+		helpstring("IObexServiceControl Interface"),
+		pointer_default(unique)
+	]
+	interface IObexServiceControl : IUnknown
+	{
+		[helpstring("method Initialize")] 
+		HRESULT Initialize();
+		
+		[helpstring("method Shutdown")] 
+		HRESULT Shutdown();
+
+		[helpstring("method Notify")] 
+		HRESULT Notify(SERVICE_EVENT event, WPARAM wParam, LPARAM lParam);
+	};
+
+    [
+        object,
+        uuid(921CB924-3FE6-4be4-9018-92688E6B9FBB),
+        helpstring("IObexAbortTransportEnumeration Interface"),
+        pointer_default(unique)
+    ]
+    interface IObexAbortTransportEnumeration : IUnknown
+    {
+        [helpstring("method Abort")] 
+        HRESULT Abort();
+
+        [helpstring("method Resume")]
+        HRESULT Resume();
+
+        [helpstring("method IsAborting")]
+        HRESULT IsAborting([out] BOOL *fIsAborting);
+    };
+
+
+	[
+		object,
+		uuid(3AC76BC8-6838-4982-BAE8-303AB0FABD80),
+		helpstring("IObexTransport Interface"),
+		pointer_default(unique)
+	]
+	interface IObexTransport : IUnknown
+	{
+		[helpstring("method Init")] 
+		HRESULT Init();
+		
+		[helpstring("method Shutdown")] 
+		HRESULT Shutdown();
+		
+		[helpstring("method CreateSocket")] 
+		HRESULT CreateSocket([in] LPPROPERTYBAG pPropertyBag, [out] IObexTransportSocket ** ppSocket);
+		
+		[helpstring("method EnumDevices")] 
+		HRESULT EnumDevices([out] IPropertyBagEnum ** ppDevices);
+		
+		[helpstring("method EnumProperties")] 
+		HRESULT EnumProperties([out] LPPROPERTYBAG2 * ppProps);
+
+		[helpstring("method UpdateDeviceProperties")] 
+		HRESULT UpdateDeviceProperties([in] LPPROPERTYBAG2 pProps, [out] IPropertyBagEnum ** ppDevices, [in] BOOL fGetJustEnoughToConnect, [out] UINT *uiUpdateStatus);
+	};
+	[
+		object,
+		uuid(DF877DCC-2FC2-4214-8A73-569AD5E0AA05),
+		helpstring("IObexTransportSocket Interface"),
+		pointer_default(unique)
+	]
+	interface IObexTransportSocket : IUnknown
+	{
+		[helpstring("method Close")] 
+		HRESULT Close();
+		
+		[helpstring("method Listen")] 
+		HRESULT Listen([out] IObexTransportConnection ** ppConnection);
+		
+		[helpstring("method Connect")] 
+		HRESULT Connect([in] LPPROPERTYBAG pDeviceProps, [in] DWORD dwCapability, [out] IObexTransportConnection ** ppConnection);
+
+		[helpstring("returns a set of required properties that describes the listening socket.")] 
+		HRESULT GetProperties([out] LPPROPERTYBAG2 * ppListenProps);
+	};
+	[
+		object,
+		uuid(8A8085D5-A975-46C8-A66B-BCDE7A5CA3FD),
+		helpstring("IObexTransportConnection Interface"),
+		pointer_default(unique)
+	]
+	interface IObexTransportConnection : IUnknown
+	{
+		[helpstring("Close this connection.")] 
+		HRESULT Close();
+		
+		[helpstring("Read incoming data from the connection.")] 
+		HRESULT Read([in] unsigned long ulNumBytes, [in, size_is(ulNumBytes)] byte * pbData, [out] unsigned long * pulBytesRead, [in] DWORD dwTimeout);
+		
+		[helpstring("Write data to the connection.")] 
+		HRESULT Write([in] unsigned long ulNumBytes, [in, size_is(ulNumBytes)] byte * pbData);
+		
+		[helpstring("Send data and wait for a response (one complete OBEX packet).")]
+		HRESULT SendRecv([in] unsigned long ulSendBytes, [in, size_is(ulSendBytes)] byte * pbSendData,
+						 [in] unsigned long ulRecvBytes, [in, size_is(ulRecvBytes)] byte * pbRecvData,
+					     [out] unsigned long * pulBytesRecvd, [in] DWORD dwRecvTimeout);
+
+
+		[helpstring("Get properties for this connection.")] 
+		HRESULT EnumProperties([out] LPPROPERTYBAG2 * ppProps);
+	};
+	[
+		object,
+		uuid(8A8085D6-A975-46C8-A66B-BCDE7A5CA3FD),
+		helpstring("ITransportSink Interface"),
+		pointer_default(unique)
+	]
+	interface ITransportSink : IUnknown
+	{
+		[helpstring("method Notify")] 
+		HRESULT Notify([in] DWORD dwEvent);
+	};
+
+	[
+		object,
+		uuid(A6BF730F-FF13-4d53-A481-BC2C01B3D598),
+		helpstring("ISetStreamPath Interface"),
+		pointer_default(unique)
+	]
+	interface ISetStreamPath : IUnknown
+	{
+		[helpstring("method SetPath")] 
+		HRESULT SetPath([in] LPWSTR pszPath);
+	};
+

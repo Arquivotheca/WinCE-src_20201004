@@ -1,0 +1,52 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+!INCLUDE "..\..\sources.inc"
+
+TARGETNAME=AppProfKDll
+TARGETTYPE=DYNLINK
+DLLENTRY=KernelDLLEntry
+DEFFILE=AppProfKDll.def
+
+INCLUDES=\
+
+SOURCES= \
+    AppProfKDll.c \
+
+
+# Don't link against coredll.  While it is possible to link against coredll and
+# load into the kernel starting with CE6, it hurts the ability to load celog.dll
+# very early in boot, and makes it harder to port the code to earlier OS's.
+TARGETLIBS= \
+    $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\bootcrt.lib \
+
+!IF "$(WINCELTCG)" != ""
+#
+# This code doesn't actually require the /GS runtime since it has
+# no vulnerable stack buffers, but LTCG generates a fake reference
+# to the /GS runtime, so provide a fake implementation.  DO NOT
+# use GSNULL.LIB in non-LTCG builds.
+#
+TARGETLIBS=$(TARGETLIBS) \
+	$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\gsnull.lib
+!ENDIF
+
+# Code that loads into the kernel needs to set the -QRimplicit-import- compiler
+# switch, to avoid "error LNK2019: unresolved external symbol __imp___rt_udiv"
+NOCRTDLL=1
+NOLIBC=1
+
+
+# Dictated by team policy
+WARNLEVEL=4
+CONFORMING_FORSCOPE=1

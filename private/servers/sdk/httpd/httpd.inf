@@ -1,0 +1,119 @@
+[Version]
+Signature = "$Windows NT$"
+Provider = "Microsoft"
+CESignature = "$Windows CE$"
+
+[CEStrings]
+AppName = Web Server
+InstallDir = %CE2%  	                ; \Windows
+
+[CEDevice]
+VersionMin = 5.00
+VersionMax = 9.00
+
+[DefaultInstall]
+CopyFiles = SystemFiles, WebServerFiles
+AddReg = SystemReg
+
+[SourceDisksFiles.arm]
+httpd.dll = 1,.
+asp.dll = 1,.
+httpd_default.htm = 1,.
+
+[SourceDisksNames.arm]
+1="Web Server"
+
+[DestinationDirs]
+SystemFiles = 0,%InstallDir%
+WebServerFiles = 0,%InstallDir%\www\wwwpub
+
+[SystemFiles]
+httpd.dll,,0xc0000000
+asp.dll,,0xc0000000
+
+[WebServerFiles]
+default.htm,httpd_default.htm,0xc0000000
+
+[SystemReg]
+; HTTPD service
+HKLM,Services\HTTPD,Context,0x00010001,1
+HKLM,Services\HTTPD,Dll,0x00000000,"HTTPD.dll"
+HKLM,Services\HTTPD,Order,0x00010001,8
+HKLM,Services\HTTPD,Prefix,0x00000000,"HTP"
+HKLM,Services\HTTPD,Index,0x00010001,0
+HKLM,Services\HTTPD,Keep,0x00010001,1
+HKLM,Services\HTTPD,FriendlyName,0x00000000,"World Wide Web Publishing"
+
+; HTTP VROOTs
+HKLM,COMM\HTTPD\VROOTS\/,,0x00000000,"\windows\www\wwwpub\"
+HKLM,COMM\HTTPD\VROOTS\/,a,0x00010001,0
+
+; Port
+HKLM,Services\HTTPD\Accept\TCP-80,SockAddr,0x00000001,02,00,00,50,00,00,00,00,00,00,00,00,00,00,00,00
+HKLM,Services\HTTPD\Accept\TCP-80v6,SockAddr,0x00000001,17,00,00,50,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+HKLM,Services\HTTPD\Accept\TCP-443,SockAddr,0x00000001,02,00,01,BB,00,00,00,00,00,00,00,00,00,00,00,00
+HKLM,Services\HTTPD\Accept\TCP-443v6,SockAddr,0x00000001,17,00,01,BB,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+; Settings
+HKLM,COMM\HTTPD,MaxLogSize,0x00010001,0x8000
+HKLM,COMM\HTTPD,LogFileDirectory,0x00000000,"\windows\www"
+HKLM,COMM\HTTPD,NTLM,0x00010001,1
+HKLM,COMM\HTTPD,Basic,0x00010001,0
+HKLM,COMM\HTTPD,AdminUsers,0x00000000,"ADMIN"
+
+; Content Type
+HKCR,.htm,Content Type,0x00000000,"text/html"
+HKCR,.html,Content Type,0x00000000,"text/html"
+HKCR,.css,Content Type,0x00000000,"text/css"
+HKCR,.asp,Content Type,0x00000000,"text/asp"
+HKCR,.exe,Content Type,0x00000000,"application/x-msdownload"
+HKCR,.gif,Content Type,0x00000000,"image/gif"
+HKCR,.jpe,Content Type,0x00000000,"image/jpeg"
+HKCR,.jpg,Content Type,0x00000000,"image/jpeg"
+HKCR,.jfif,Content Type,0x00000000,"image/pjpeg"
+HKCR,.jpeg,Content Type,0x00000000,"image/jpeg"
+HKCR,.txt,Content Type,0x00000000,"text/plain"
+HKCR,.xml,Content Type,0x00000000,"text/xml"
+HKCR,.xsl,Content Type,0x00000000,"text/xml"
+HKCR,.wav,Content Type,0x00000000,"audio/wav"
+HKCR,.mid,Content Type,0x00000000,"audio/mid"
+HKCR,.rmi,Content Type,0x00000000,"audio/mid"
+HKCR,.avi,Content Type,0x00000000,"video/avi"
+HKCR,.mpeg,Content Type,0x00000000,"video/mpeg"
+HKCR,.mpg,Content Type,0x00000000,"video/mpeg"
+HKCR,.mp2,Content Type,0x00000000,"video/mpeg"
+HKCR,.mp3,Content Type,0x00000000,"audio/mpeg"
+HKCR,.mpa,Content Type,0x00000000,"audio/mpeg"
+HKCR,.qt,Content Type,0x00000000,"video/quicktime"
+HKCR,.mov,Content Type,0x00000000,"video/quicktime"
+HKCR,.wma,Content Type,0x00000000,"audio/x-ms-wma"
+HKCR,.wax,Content Type,0x00000000,"audio/x-ms-wax"
+HKCR,.wvx,Content Type,0x00000000,"video/x-ms-wvx"
+HKCR,.asf,Content Type,0x00000000,"video/x-ms-asf"
+HKCR,.asx,Content Type,0x00000000,"video/x-ms-asf"
+HKCR,.wmv,Content Type,0x00000000,"video/x-ms-wmv"
+HKCR,.wmx,Content Type,0x00000000,"video/x-ms-wmx"
+HKCR,.wm,Content Type,0x00000000,"video/x-ms-wm"
+
+; ASP
+HKCR,CLSID\{920C25D0-25D9-11D0-A55F-00A0C90C2091}\InprocServer32,,0x00000000,"asp.dll"
+HKCR,CLSID\{920C25D0-25D9-11D0-A55F-00A0C90C2091}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,CLSID\{A506D160-25E0-11D0-A55F-00A0C90C2091}\InprocServer32,,0x00000000,"asp.dll"
+HKCR,CLSID\{A506D160-25E0-11D0-A55F-00A0C90C2091}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,CLSID\{46E19BA0-25DD-11D0-A55F-00A0C90C2091}\InprocServer32,,0x00000000,"asp.dll"
+HKCR,CLSID\{46E19BA0-25DD-11D0-A55F-00A0C90C2091}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,CLSID\{38999595-F9B2-11D2-9C53-00C04F681EE7}\InprocServer32,,0x00000000,"asp.dll"
+HKCR,CLSID\{38999595-F9B2-11D2-9C53-00C04F681EE7}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,CLSID\{1C724F9B-FE6B-11D2-9C54-00C04F681EE7}\InprocServer32,,0x00000000,"asp.dll"
+HKCR,CLSID\{1C724F9B-FE6B-11D2-9C54-00C04F681EE7}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,TypeLib\{D97A6DA0-A85C-11CF-83AE-00A0C90C2BD8}\1.0\0,,0x00000000,"asp.dll"
+HKCR,TypeLib\{D97A6DA0-A85C-11CF-83AE-00A0C90C2BD8}\1.0\0,ThreadingModel,0x00000000,"Both"
+
+HKCR,asp.Request\CLSID,,0x00000000,"{920C25D0-25D9-11D0-A55F-00A0C90C2091}"
+HKCR,asp.Server\CLSID,,0x00000000,"{A506D160-25E0-11D0-A55F-00A0C90C2091}"
+HKCR,asp.Response\CLSID,,0x00000000,"{46E19BA0-25DD-11D0-A55F-00A0C90C2091}"

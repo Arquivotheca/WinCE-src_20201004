@@ -1,0 +1,93 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft
+premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license
+agreement, you are not authorized to use this source code.
+For the terms of the license, please see the license agreement
+signed by you and Microsoft.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+!if 0
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of your Microsoft Windows CE
+// Source Alliance Program license form.  If you did not accept the terms of
+// such a license, you are not authorized to use this source code.
+//
+!endif
+
+TARGETNAME=XRPerfScreenTransitionTests
+TARGETTYPE=DYNLINK
+RELEASETYPE=OAK
+DEFFILE=tux.def
+WINCEATL=1
+
+TEST_OAK_LIB_PATH=$(_PUBLICROOT)\test\oak\lib\$(_CPUINDPATH)
+
+CDEFINES=$(CDEFINES) -EHa -DGUIDGEN_ENABLE
+
+
+INCLUDES=\
+         $(_PRIVATEROOT)\test\shell\XamlRuntime\inc; \
+         $(_PRIVATEROOT)\test\common\inc;     \
+         $(_PRIVATEROOT)\test\shell\XamlRuntime\perf\inc; \
+         $(_PRIVATEROOT)\test\common\libs\GUIDGenerator\dll; \
+         $(_PUBLICROOT)\common\sdk\inc;              \
+         $(_PUBLICROOT)\common\oak\inc;              \
+
+
+TARGETLIBS= $(TARGETLIBS) \
+    $(_COREDLL) \
+    $(_UUID) \
+    $(_OLE32) \
+    $(_OLEAUT32) \
+    $(_KATO) \
+    $(_XAMLRUNTIME) \
+    $(_QALIBDEPS) \
+    $(TEST_OAK_LIB_PATH)\PerfScenario.lib \
+    $(TEST_OAK_LIB_PATH)\GUIDGenerator.lib \
+    $(TEST_OAK_LIB_PATH)\PerfTestUtils.lib \
+
+
+SOURCES= \
+        globals.cpp              \
+        ScreenTransition.cpp    \
+        TuxProc.cpp              \
+        resource.rc     \
+        ScreenTransition.rc
+
+TARGETLIBS= $(TARGETLIBS) \
+    $(_OBJDIR)\xrpack\XRPerfScreenTransition.res \
+
+XRPACK_ARGS= \
+    /TargetHeader=XRPerfScreenTransition.h \
+    /TargetRes=XRPerfScreenTransition.res \
+    /OutputFiles=$(_OBJDIR)\xrpack \
+    /ImageCompress \
+    /BAMLFailureAsError \
+    /BamlOn \
+    /ResID=501 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\HomeScreen6.png \
+    /ResID=502 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\AlbumCoverExample.png \
+    /ResID=503 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpMLMusicAlbumImageBGBig.png \
+    /ResID=504 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpMLMusicRateSelected.png \
+    /ResID=505 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBMediaTitleBG.png \
+    /ResID=506 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBNextFFPressed.png \
+    /ResID=507 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBNPListSelected.png \
+    /ResID=508 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBPlayPressed.png \
+    /ResID=509 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBPrevFRPressed.png \
+    /ResID=510 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBRepeatOnePressed.png \
+    /ResID=511 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBShuffleVFrameSelected.png \
+    /ResID=512 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition\ScreenTransition\wmpPBSoundPressed.png \
+    /AutoScan=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\ScreenTransition \
+
+# This allows you to copy auxilliary files if your tests require it.
+# Add copy commands to makefile.inc and uncomment out the next line
+WINCETARGETFILE0=copy_files
+
+# Cleaning up copied files after build
+WINCETARGETFILES=del_files

@@ -1,0 +1,118 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// Microsoft Visual C++ generated resource script.
+//
+#include "athenarc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "athenarc.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+STRINGTABLE
+BEGIN
+    IDS_ATHENA_SETPROTOCOLT0 "Set protocol to T=0"
+    IDS_ATHENA_SETPROTOCOLFAILED "Set protocol failed"
+    IDS_ATHENA_COLDRESET "Cold reset"
+    IDS_ATHENA_CHECKREADERSTATE "Check reader state"
+    IDS_ATHENA_IOCTLFAILED "Ioctl IOCTL_SMARTCARD_GET_STATE failed"
+    IDS_ATHENA_INVALIDREADERSTATE "Invalid reader state.\nReturned %d\nExpected %d"
+    IDS_ATHENA_INITCARD "Initialize card: select all"
+    IDS_ATHENA_ERASECARDFILES "erase card files"
+    IDS_ATHENA_CREATEFILE0002 "Create test file 0002"
+    IDS_ATHENA_SELECTFILEEFPTS "Select file EFptsDataCheck"
+    IDS_ATHENA_WRITEBINARY "Write binary %3d bytes"
+    IDS_ATHENA_UPDATEBINARY "Update binary to file"
+    IDS_ATHENA_READBINARY "Read binary as blocks %3d Byte(s)"
+    IDS_ATHENA_READFROMFILE "Read binary from file"
+    IDS_ATHENA_WRITE255  "Write 255 bytes binary"
+    IDS_ATHENA_RESTARTWORKWAITTIME "Restart of work wait time %3d"
+    IDS_ATHENA_ECHOWITHDELAY "Echo command to card with delay"
+    IDS_ATHENA_CARDTYPENAME "PC/SC Compliance Test Card 1 (Athena)"
+    IDS_ATHENA_SHOULD_FAIL_SMALL_BUFFER 
+                            "Transmit should fail due to too small buffer\nReturned %2lxH\nExpected %2lxH"
+    IDS_ATHENA_SELECTNOFILE  "Select non-existent file"
+    IDS_ATHENA_SELECTMF  "Select MF wite 4 byte command"
+    IDS_ATHENA_SELECT77 "SELECT command path with path too short"
+    IDS_ATHENA_SELECTWRONGLC  "SELECT command path with wrong Lc"
+    IDS_ATHENA_SELECTTOOSHORT  "SELECT command too short"
+    IDS_ATHENA_NULLUPDATE      "NULL update of file"
+    IDS_ATHENA_BUFFERBOUNDARY "Insufficient read buffer"
+    IDS_ATHENA_COMMANDTIMEOUT "Command timeout test"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ATHENA_NO_TEST        "Test not performed"
+    IDS_ATHENA_INCORRECT_DATA """Smart card received incorrect data"""
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

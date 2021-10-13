@@ -1,0 +1,92 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+TARGETNAME=fsdmgr_lib
+TARGETTYPE=LIBRARY
+WINCEPROJ=COMMON
+
+!if 0
+PRECOMPILED_INCLUDE=storeincludes.hpp
+PRECOMPILED_PCH=precomp.pch
+PRECOMPILED_OBJ=precomp.obj
+PRECOMPILED_CXX=1
+!endif
+
+SOURCES= \
+    fsdmain.cpp \
+    mounttable.cpp \
+    mountedvolume.cpp \
+    logicaldisk.cpp \
+    filesystem.cpp \
+    virtroot.cpp \
+    fileapi.cpp \
+    searchapi.cpp \
+    volumeapi.cpp \
+    stgapi_nt.cpp \
+    stgapi.cpp \
+    afsapi.cpp \
+    fsdmgrapi.cpp \
+    pathapi.cpp \
+    fsdhelper.cpp \
+    fsdcache.cpp \
+    storestr.cpp \
+    cache.cpp \
+    blockdevice.cpp \
+    storedisk_nt.cpp \
+    partition_nt.cpp \
+    storemain_nt.cpp \
+    storedisk.cpp \
+    partition.cpp \
+    storemain.cpp \
+    nullpart.cpp \
+    detector.cpp \
+    stgmarshal.cpp \
+    canonicalizer_nt.cpp \
+    canonicalizer.cpp \
+    dlist.c \
+!IF "$(WINCEDEBUG)"!="retail"
+    fsddbg.cpp
+!ENDIF
+
+!INCLUDE "sources.$(_TGTOS)"
+FILE_VIEW_INCLUDES_FOLDER= \
+    blockdevice.hpp \
+    bufferpool.hpp \
+    detector.hpp \
+    dlist.hpp \
+    fileapi.hpp \
+    filesystem.hpp \
+    fsdcache.hpp \
+    fsddbg.h \
+    fsdhelper.hpp \
+    fsdmgrapi.hpp \
+    fsdmgrp.h \
+    handle.hpp \
+    logicaldisk.hpp \
+    mountedvolume.hpp \
+    mounttable.hpp \
+    searchapi.hpp \
+    stgmarshal.hpp \
+    partition_nt.hpp \
+    partition.hpp \
+    storedisk_nt.hpp \
+    storedisk.hpp \
+    storeincludes.hpp \
+    storemain_nt.hpp \
+    storemain.hpp \
+    virtroot_nt.hpp \
+    virtroot.hpp \
+    volumeapi.hpp \
+    canonicalizer.hpp \
+    dlist.h \
+    fsdmapincludes.h \

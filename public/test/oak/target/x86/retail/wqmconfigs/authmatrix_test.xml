@@ -1,0 +1,1207 @@
+<?xml version="1.0" standalone="yes"?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<!-- ===============================================
+====
+==== WiFiMetrics test configuraton file
+====
+==== Authentication Matrix test suite
+====
+==== =========================================== -->
+
+<TestSuite
+    TestDllName      = "WQMAuthMatrixTest.dll"
+    TestFacFuncName  = "CreateAuthMatrixTestSuite"
+
+    PassCriteria = "95"
+    FailCriteria = "80"
+    TestWeight   = "2.0"
+
+    NumberTestPasses = "1"
+    IsBadModes       = "false"
+    IsBadKey         = "false"
+    IsStressTest     = "false"
+
+    DisableCertEnroll	= "false"
+    DisableAuthOpen     = "false"
+    DisableAuthShared   = "false"
+    DisableAuth802      = "false"
+    DisableAuthEAP      = "false"
+    DisableAuthPSK      = "false"
+    DisableAuthWPA2     = "false"
+    DisableCipherClear  = "false"
+    DisableCipherWEP    = "false"
+    DisableCipherTKIP   = "false"
+    DisableCipherAES    = "false"
+    DisableEapAuthTLS   = "false"
+    DisableEapAuthPEAP  = "false"
+    DisableEapAuthMD5   = "false"
+    PrefillEapCred      = "false"
+>
+
+    <Config>
+        <Filter
+            inputFile  = "$(ScriptDirName)\APConfig.xml"
+            outputFile = "$(TempDirName)\tempConfig.xml"
+        />
+        <Command>
+            WiFiTool -adapter $(AdapterName) -power on -reset
+                     -ejectxwifi -disablecustfeedback -disablecertinstall -disableitgproxy -displaytimeout never -IHVExt clear
+        </Command>
+      <Command>
+        WiFiTool -adapter $(AdapterName) -connect -SSID $(FixedAPSSID) -Auth Open -Encr ClearText -tConnTime 80
+      </Command>
+        <Command>
+            APCTool -v
+                    -i $(TempDirName)\tempConfig.xml
+                    $(LANServerHostArg)
+                    $(LANServerPortArg)
+                    $(WiFiServerHostArg)
+                    $(WiFiServerPortArg)
+                    $(WiFiServerSSIDArg)
+                    $(WiFiServerAuthArg)
+                    $(WiFiServerEncrArg)
+                    $(WiFiServerEapAuthArg)
+                    $(WiFiServerKeyIndexArg)
+                    $(WiFiServerKeyArg)
+        </Command>
+    </Config>
+
+    <TestCase
+        TuxTestIDOffset    = "0"
+        TuxTestDescription = "Auth=Open Cipher=ClearText"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "ClearText"
+        BvtTestCase        = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "100"
+        TuxTestDescription = "Auth=Open Cipher=WEP 40-bit key (random)"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "01.23.45.67.89"
+        BvtTestCase        = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "101"
+        TuxTestDescription = "Auth=Open Cipher=WEP 40-bit key (random) AP Auth=Shared"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "01.23.45.67.89"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "01.23.45.67.89"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "110"
+        TuxTestDescription = "Auth=Open Cipher=WEP 40-bit key (semi-null)"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "01.02.03.04.05"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "111"
+        TuxTestDescription = "Auth=Open Cipher=WEP 40-bit key (semi-null), AP Auth=Shared"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "01.02.03.04.05"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "1"
+        APConfigKey        = "01.02.03.04.05"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "120"
+        TuxTestDescription = "Auth=Open Cipher=WEP 40-bit key (semi-ones)"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "FF.FE.FD.FC.FB"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "121"
+        TuxTestDescription = "Auth=Open Cipher=WEP 40-bit key (semi-ones), AP Auth=Shared"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "FF.FE.FD.FC.FB"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "2"
+        APConfigKey        = "FF.FE.FD.FC.FB"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "130"
+        TuxTestDescription = "Auth=Open Cipher=WEP 104-bit key (random)"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "3"
+        STAConfigKey       = "23.45.67.89.ab.cd.ef.01.23.45.67.89.01"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "131"
+        TuxTestDescription = "Auth=Open Cipher=WEP 104-bit key (random), AP Auth=Shared"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "3"
+        STAConfigKey       = "23.45.67.89.ab.cd.ef.01.23.45.67.89.01"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "3"
+        APConfigKey        = "23.45.67.89.ab.cd.ef.01.23.45.67.89.01"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "140"
+        TuxTestDescription = "Auth=Open Cipher=WEP 104-bit key (semi-null)"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "141"
+        TuxTestDescription = "Auth=Open Cipher=WEP 104-bit key (semi-null), AP Auth=Shared"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "2"
+        APConfigKey        = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "150"
+        TuxTestDescription = "Auth=Open Cipher=WEP 104-bit key (semi-ones)"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "151"
+        TuxTestDescription = "Auth=Open Cipher=WEP 104-bit key (semi-ones), AP Auth=Shared"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "1"
+        APConfigKey        = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "200"
+        TuxTestDescription = "(Negative test) AP: Auth=Open Cipher=WEP STA: Auth=Open Cipher=TKIP"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        IsBadModes         = "true"
+    />
+
+
+    <TestCase
+        TuxTestIDOffset    = "210"
+        TuxTestDescription = "(Negative test) STA: Auth=Open Cipher=WEP AP: Auth=Open Cipher=WEP Invalid Key"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "AE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "220"
+        TuxTestDescription = "(Negative test) STA: Auth=Open Cipher=WEP AP: Auth=Shared Invalid Key"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "AF.FE.FD.FC.FB"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "FF.FE.FD.FC.FB"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "300"
+        TuxTestDescription = "(Negative test) AP: Auth=Open Cipher=WEP STA: Auth=Open Cipher=AES"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1000"
+        TuxTestDescription = "(Negative test) AP: Auth=Shared Cipher=WEP STA: Auth=Shared Cipher=ClearText"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "ClearText"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1100"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 40-bit key (random)"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "01.23.45.67.89"
+    />
+
+
+    <TestCase
+        TuxTestIDOffset    = "1101"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 40-bit key (random); AP Auth=Open"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "01.23.45.67.89"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "01.23.45.67.89"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1110"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 40-bit key (semi-null)"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "01.02.03.04.05"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1111"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 40-bit key (semi-null), AP Auth=Open"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "01.02.03.04.05"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "1"
+        APConfigKey        = "01.02.03.04.05"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1120"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 40-bit key (semi-ones)"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "FF.FE.FD.FC.FB"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1121"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 40-bit key (semi-ones), AP Auth=Open"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "FF.FE.FD.FC.FB"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "2"
+        APConfigKey        = "FF.FE.FD.FC.FB"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1130"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 104-bit key (random)"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "3"
+        STAConfigKey       = "23.45.67.89.ab.cd.ef.01.23.45.67.89.01"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1131"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 104-bit key (random), AP Auth=Open"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "3"
+        STAConfigKey       = "23.45.67.89.ab.cd.ef.01.23.45.67.89.01"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "3"
+        APConfigKey        = "23.45.67.89.ab.cd.ef.01.23.45.67.89.01"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1140"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 104-bit key (semi-null)"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1141"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 104-bit key (semi-null), AP Auth=Open"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "2"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "2"
+        APConfigKey        = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1150"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 104-bit key (semi-ones)"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1151"
+        TuxTestDescription = "Auth=Shared Cipher=WEP 104-bit key (semi-ones), AP Auth=Open"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "1"
+        STAConfigKey       = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "1"
+        APConfigKey        = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1200"
+        TuxTestDescription = "(Negative test) AP: Auth=Shared Cipher=WEP STA: Auth=Shared Cipher=TKIP"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "FE.FD.FC.FB.FA.FB.FC.FD.FE.FF.FE.FD.FC"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1210"
+        TuxTestDescription = "(Negative test) STA/AP: Auth=Shared Cipher=WEP Shared Invalid Wep Key"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "02.02.03.04.05"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "01.02.03.04.05"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1220"
+        TuxTestDescription = "(Negative test) AP: Auth=Shared Cipher=WEP STA: Open Invalid Wep Key"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        APConfigAuth       = "Open"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "05.03.04.05.06.07.08.09.00.01.02.03.04"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "1300"
+        TuxTestDescription = "(Negative test) AP: Auth=Shared Cipher=WEP STA: Auth=Shared Cipher=AES"
+        APConfigAuth       = "Shared"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        STAConfigAuth      = "Shared"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        IsBadModes         = "true"
+    />
+
+<!--
+    <TestCase
+        TuxTestIDOffset    = "2000"
+        TuxTestDescription = "(Negative test) AP: Auth=WEP_802_1X Cipher=WEP STA: Auth=WEP_802_1X Cipher=ClearText"
+        APConfigAuth       = "WEP_802_1X"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        STAConfigAuth      = "WEP_802_1X"
+        STAConfigEncr      = "ClearText"
+        IsBadModes         = "true"
+    />
+
+
+    <TestCase
+        TuxTestIDOffset    = "2100"
+        TuxTestDescription = "Auth=WEP_802_1X Cipher=WEP EAP=TLS"
+        STAConfigAuth      = "WEP_802_1X"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+    />
+    <TestCase
+        TuxTestIDOffset    = "2110"
+        TuxTestDescription = "Auth=WEP_802_1X Cipher=WEP EAP=MD5"
+        STAConfigAuth      = "WEP_802_1X"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "MD5"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "2120"
+        TuxTestDescription = "Auth=WEP_802_1X Cipher=WEP EAP=PEAP"
+        STAConfigAuth      = "WEP_802_1X"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "PEAP"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "2200"
+        TuxTestDescription = "(Negative test) AP: Auth=WEP_802_1X Cipher=WEP STA: Auth=WEP_802_1X Cipher=TKIP"
+        APConfigAuth       = "WEP_802_1X"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        STAConfigAuth      = "WEP_802_1X"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "2300"
+        TuxTestDescription = "(Negative test) AP: Auth=WEP_802_1X Cipher=WEP STA: Auth=WEP_802_1X Cipher=AES"
+        APConfigAuth       = "WEP_802_1X"
+        APConfigEncr       = "WEP"
+        APConfigEapAuth    = "TLS"
+        STAConfigAuth      = "WEP_802_1X"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        IsBadModes         = "true"
+    />
+
+-->
+
+    <TestCase
+        TuxTestIDOffset    = "3000"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA Cipher=TKIP STA: Auth=WPA Cipher=ClearText"
+        APConfigAuth       = "WPA"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "ClearText"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "3100"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA Cipher=TKIP STA: Auth=WPA Cipher=WEP"
+        APConfigAuth       = "WPA"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "02.03.04.05.06.07.08.09.00.01.02.03.04"
+        IsBadModes         = "true"
+    />
+
+<!--
+    <TestCase
+        TuxTestIDOffset    = "3200"
+        TuxTestDescription = "Auth=WPA Cipher=TKIP EAP=TLS"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "3210"
+        TuxTestDescription = "Auth=WPA Cipher=TKIP EAP=MD5"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "MD5"
+    />
+-->
+    <TestCase
+        TuxTestIDOffset    = "3220"
+        TuxTestDescription = "Auth=WPA Cipher=TKIP EAP=PEAP --- Eap Cred prefilled"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "PEAP"
+	PrefillEapCred     = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "3230"
+        TuxTestDescription = "Auth=WPA Cipher=AES EAP=PEAP --- Eap Cred prefilled"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "PEAP"
+	PrefillEapCred     = "true"
+    />
+
+
+    <TestCase
+        TuxTestIDOffset    = "3330"
+        TuxTestDescription = "Auth=WPA Cipher=TKIP EAP=PEAP"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "PEAP"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "3340"
+        TuxTestDescription = "Auth=WPA Cipher=AES EAP=PEAP"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "PEAP"
+    />
+
+
+<!--
+    <TestCase
+        TuxTestIDOffset    = "3310"
+        TuxTestDescription = "Auth=WPA Cipher=AES EAP=MD5"
+        STAConfigAuth      = "WPA"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "MD5"
+    />
+-->
+
+    <TestCase
+        TuxTestIDOffset    = "4000"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA_PSK Cipher=TKIP STA: Auth=WPA_PSK Cipher=ClearText"
+        APConfigAuth       = "WPA_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "0123456789"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "ClearText"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4100"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA_PSK Cipher=TKIP STA: Auth=WPA_PSK Cipher=WEP"
+        APConfigAuth       = "WPA_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "FF.FE.FD.FC.FB"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "FF.FE.FD.FC.FB"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4200"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=TKIP 63-digit passphrase (random)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This is a maximum-sized key. Any longer and 802 would complain."
+        BvtTestCase        = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4210"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=TKIP 8-digit passphrase (random)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "MyPhrase"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4220"
+        TuxTestDescription = "(Negative test) Auth=WPA_PSK Cipher=TKIP 7-digit passphrase"
+        APConfigAuth       = "WPA_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "7Lucky77"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "7Lucky7"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4230"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=TKIP 63-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4240"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=TKIP 8-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~z~~z~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4250"
+        TuxTestDescription = "(Negative test) Auth=WPA_PSK Cipher=TKIP 64-digit passphrase"
+        APConfigAuth       = "WPA_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "This key is too long. The maximum legal passphrase length is 63"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This key is too long. The maximum legal passphrase length is 63."
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4260"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=TKIP 63-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!!!!! !!! !!!!!!! !!! !!!!!!! !!! !!! !!!!!!! !!! !!!!!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4270"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=TKIP 8-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4300"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=AES 63-digit passphrase (random)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This is a maximum-sized key. Any longer and 802 would complain."
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4310"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=AES 8-digit passphrase (random)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "MyPhrase"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4320"
+        TuxTestDescription = "(Negative test) Auth=WPA_PSK Cipher=AES 7-digit passphrase"
+        APConfigAuth       = "WPA_PSK"
+        APConfigEncr       = "AES"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "7Lucky77"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "7Lucky7"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4330"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=AES 63-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4340"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=AES 8-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~z~~z~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4350"
+        TuxTestDescription = "(Negative test) Auth=WPA_PSK Cipher=AES 64-digit passphrase"
+        APConfigAuth       = "WPA_PSK"
+        APConfigEncr       = "AES"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "This key is too long. The maximum legal passphrase length is 63"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This key is too long. The maximum legal passphrase length is 63."
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4360"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=AES 63-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!!!!! !!! !!!!!!! !!! !!!!!!! !!! !!! !!!!!!! !!! !!!!!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "4370"
+        TuxTestDescription = "Auth=WPA_PSK Cipher=AES 8-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "5000"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA2 Cipher=TKIP STA: Auth=WPA2 Cipher=ClearText"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "ClearText"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "5100"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA2 Cipher=TKIP STA: Auth=WPA2 Cipher=WEP"
+        APConfigAuth       = "WPA2"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "01.23.45.67.89"
+        IsBadModes         = "true"
+    />
+
+<!--
+    <TestCase
+        TuxTestIDOffset    = "5200"
+        TuxTestDescription = "Auth=WPA2 Cipher=TKIP EAP=TLS"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "5210"
+        TuxTestDescription = "Auth=WPA2 Cipher=TKIP EAP=MD5"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "MD5"
+    />
+-->
+
+    <TestCase
+        TuxTestIDOffset    = "5220"
+        TuxTestDescription = "Auth=WPA2 Cipher=TKIP EAP=PEAP --- Eap Cred prefilled"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "PEAP"
+	PrefillEapCred     = "true"
+    />
+
+
+    <TestCase
+        TuxTestIDOffset    = "5230"
+        TuxTestDescription = "Auth=WPA2 Cipher=AES EAP=PEAP --- Eap Cred prefilled"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "PEAP"
+	PrefillEapCred     = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "5320"
+        TuxTestDescription = "Auth=WPA2 Cipher=TKIP EAP=PEAP"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "PEAP"
+    />
+
+
+    <TestCase
+        TuxTestIDOffset    = "5330"
+        TuxTestDescription = "Auth=WPA2 Cipher=AES EAP=PEAP"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "PEAP"
+    />
+<!--
+    <TestCase
+        TuxTestIDOffset    = "5310"
+        TuxTestDescription = "Auth=WPA2 Cipher=AES EAP=MD5"
+        STAConfigAuth      = "WPA2"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "MD5"
+    />
+-->
+
+    <TestCase
+        TuxTestIDOffset    = "6000"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA2_PSK Cipher=TKIP STA: Auth=WPA2_PSK Cipher=ClearText"
+        APConfigAuth       = "WPA2_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "MyPhrase"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "ClearText"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6100"
+        TuxTestDescription = "(Negative test) AP: Auth=WPA2_PSK Cipher=TKIP STA: Auth=WPA2_PSK Cipher=WEP"
+        APConfigAuth       = "WPA2_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "01.23.45.67.89"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "WEP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "01.23.45.67.89"
+        IsBadModes         = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6200"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=TKIP 63-digit passphrase (random)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This is a maximum-sized key. Any longer and 802 would complain."
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6210"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=TKIP 8-digit passphrase (random)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "MyPhrase"
+        BvtTestCase        = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6220"
+        TuxTestDescription = "(Negative test) Auth=WPA2_PSK Cipher=TKIP 7-digit passphrase"
+        APConfigAuth       = "WPA2_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "7Lucky77"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "7Lucky7"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6230"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=TKIP 63-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6240"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=TKIP 8-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~z~~z~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6250"
+        TuxTestDescription = "(Negative test) Auth=WPA2_PSK Cipher=TKIP 64-digit passphrase"
+        APConfigAuth       = "WPA2_PSK"
+        APConfigEncr       = "TKIP"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "This key is too long. The maximum legal passphrase length is 63"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This key is too long. The maximum legal passphrase length is 63."
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6260"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=TKIP 63-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!!!!! !!! !!!!!!! !!! !!!!!!! !!! !!! !!!!!!! !!! !!!!!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6270"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=TKIP 8-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "TKIP"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6300"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=AES 63-digit passphrase (random)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This is a maximum-sized key. Any longer and 802 would complain."
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6310"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=AES 8-digit passphrase (random)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "MyPhrase"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6320"
+        TuxTestDescription = "(Negative test) Auth=WPA2_PSK Cipher=AES 7-digit passphrase"
+        APConfigAuth       = "WPA2_PSK"
+        APConfigEncr       = "AES"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "7Lucky77"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "7Lucky7"
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6330"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=AES 63-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~z~~~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6340"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=AES 8-digit passphrase (semi-ones)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "~~z~~z~~"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6350"
+        TuxTestDescription = "(Negative test) Auth=WPA2_PSK Cipher=AES 64-digit passphrase"
+        APConfigAuth       = "WPA2_PSK"
+        APConfigEncr       = "AES"
+        APConfigEapAuth    = "TLS"
+        APConfigKeyIndex   = "0"
+        APConfigKey        = "This key is too long. The maximum legal passphrase length is 63"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "This key is too long. The maximum legal passphrase length is 63."
+        IsBadKey           = "true"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6360"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=AES 63-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!!!!! !!! !!!!!!! !!! !!!!!!! !!! !!! !!!!!!! !!! !!!!!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "6370"
+        TuxTestDescription = "Auth=WPA2_PSK Cipher=AES 8-digit passphrase (semi-null)"
+        STAConfigAuth      = "WPA2_PSK"
+        STAConfigEncr      = "AES"
+        STAConfigEapAuth   = "TLS"
+        STAConfigKeyIndex  = "0"
+        STAConfigKey       = "! !!!! !"
+    />
+
+    <TestCase
+        TuxTestIDOffset    = "7000"
+        TuxTestDescription = "Authmatrix Stress Test"
+        STAConfigAuth      = "Open"
+        STAConfigEncr      = "ClearText"
+        IsStressTest       = "true"
+    />
+
+</TestSuite>
+

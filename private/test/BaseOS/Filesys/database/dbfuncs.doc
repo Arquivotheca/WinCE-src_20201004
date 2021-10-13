@@ -1,0 +1,457 @@
+VOLUME FUNCTIONS
+
+BOOL CeMountDBVol(
+		PCEGUID pguid, 
+		LPWSTR lpszVol, 
+		DWORD dwFlags
+);
+
+BOOL CeUnmountDBVol(
+		PCEGUID pguid
+);
+
+BOOL CeFlushDBVol(
+		PCEGUID pguid
+);
+
+BOOL CeEnumDBVolumes(
+		PCEGUID pguid, 
+		LPWSTR lpBuf, 
+		DWORD dwSize
+);
+
+
+DATABASE FUNCTIONS
+CEOID CeCreateDatabase (
+		LPWSTR lpszname, 
+		DWORD dwClassID, 
+		WORD wNumSortOrder, 
+		SORTORDERSPEC *rgSortSpecs
+);
+
+CEOID CeCreateDatabaseEx (
+		PCEGUID pguid, 
+		CEDBASEINFO *pInfo
+);
+
+CEOID CeCreateDatabaseEx2 (
+		PCEGUID pguid, 
+		CEDBASEINFOEX *pInfo
+);
+
+HANDLE CeOpenDatabase (
+		PCEOID poid, 
+		LPWSTR lpszName, 
+		CEPROPID propid, 
+		DWORD dwFlags, 
+		HWND hwndNotify
+);
+
+HANDLE CeOpenDatabaseEx (
+		PCEGUID pguid, 
+		PCEOID poid, 
+		LPWSTR lpszName, 
+		CEPROPID propid, 
+		DWORD dwFlags, 
+		CENOTIFYREQUEST *pReq
+);
+
+HANDLE CeOpenDatabaseEx2 (
+		PCEGUID pguid, 
+		PCEOID poid, 
+		LPWSTR lpszName, 
+		SORTORDERSPECEX* pSort, 
+		DWORD dwFlags, 
+		CENOTIFYREQUEST *pReq
+);
+
+BOOL CeDeleteDatabase (
+		CEOID oid
+);
+
+
+BOOL CeDeleteDatabaseEx (
+		PCEGUID pguid, 
+		CEOID oid
+);
+
+
+RECORD FUNCTIONS
+CEOID CeSeekDatabase (
+		HANDLE hDatabase, 
+		DWORD dwSeekType, 
+		DWORD dwValue, 
+		LPDWORD lpdwIndex
+);
+
+CEOID CeSeekDatabaseEx (
+		HANDLE hDatabase, 
+		DWORD dwSeekType, 
+		DWORD dwValue, 
+		LPDWORD lpdwIndex
+);
+
+CEOID CeWriteRecordProps (
+		HANDLE hDbase, 
+		CEOID oidRecord, 
+		WORD cPropID, 
+		CEPROPVAL *rgPropVal
+);
+
+BOOL CeDeleteRecord (
+		HANDLE hDatabase, 
+		CEOID oidRecord
+);
+
+CEOID CeReadRecordProps (
+		HANDLE hDbase, 
+		DWORD dwFlags, 
+		LPWORD lpcPropID, 
+		CEPROPID *rgPropID, 
+		LPBYTE *lplpBuffer, 
+		LPDWORD lpcbBuffer
+);
+
+CEOID CeReadRecordPropsEx (
+		HANDLE hDbase, 
+		DWORD dwFlags, 
+		LPWORD lpcPropID, 
+		CEPROPID *rgPropID, 
+		LPBYTE *lplpBuffer, 
+        LPDWORD lpcbBuffer, 
+        HANDLE hHeap
+);
+
+
+
+DB INFO FUNCTIONS
+BOOL CeSetDatabaseInfo (
+		CEOID oidDbase, 
+		CEDBASEINFO *pNewInfo
+);
+
+BOOL CeSetDatabaseInfoEx (
+		PCEGUID pguid, 
+		CEOID oidDbase, 
+		CEDBASEINFO *pNewInfo
+);
+
+BOOL CeSetDatabaseInfoEx2 (
+		PCEGUID pguid, 
+		CEOID oidDbase, 
+		CEDBASEINFOEX *pNewInfo
+);
+
+
+BOOL CeOidGetInfo (
+		CEOID oid, 
+		CEOIDINFO *oidInfo
+);
+
+BOOL CeOidGetInfoEx (
+		PCEGUID pguid, 
+		CEOID oid, 
+		CEOIDINFO *oidInfo
+);
+
+BOOL CeOidGetInfoEx2 (
+		PCEGUID pguid, 
+		CEOID oid, 
+		CEOIDINFOEX *oidInfo
+);
+
+DB ENUM/SEEK FUNCTIONS
+HANDLE CeFindFirstDatabase (DWORD dwClassID);
+
+CEOID CeFindNextDatabase (
+		HANDLE hEnum
+);
+
+HANDLE CeFindFirstDatabaseEx (
+		PCEGUID pguid, 
+		DWORD dwClassID
+);
+
+CEOID CeFindNextDatabaseEx (
+		HANDLE hEnum, 
+		PCEGUID pguid
+);
+
+CEOID CeSeekDatabase (
+		HANDLE hDatabase, 
+		DWORD dwSeekType, 
+		DWORD dwValue, 
+		LPDWORD lpdwIndex
+);
+
+CEOID CeSeekDatabaseEx (
+		HANDLE hDatabase, 
+		DWORD dwSeekType, 
+		DWORD dwValue, 
+		LPDWORD lpdwIndex
+);
+
+DB NOTIFICATION FUNCTIONS
+BOOL CeFreeNotification(
+		PCENOTIFYREQUEST pRequest, 
+		PCENOTIFICATION pNotify
+); 
+
+
+
+
+typedef DWORD CEOID;
+typedef CEOID *PCEOID;
+
+typedef struct  _CEGUID {
+    DWORD Data1;
+    DWORD Data2;
+    DWORD Data3;
+    DWORD Data4;
+} CEGUID;
+typedef CEGUID *PCEGUID;
+
+
+typedef struct _CENOTIFYREQUEST {
+    DWORD dwSize;   
+    HWND  hwnd;     
+    DWORD dwFlags;
+    HANDLE hHeap;   
+    DWORD  dwParam;
+} CENOTIFYREQUEST;
+typedef CENOTIFYREQUEST *PCENOTIFYREQUEST;
+
+
+typedef struct _CENOTIFICATION {
+    DWORD dwSize;
+    DWORD dwParam;
+    UINT  uType;
+    CEGUID guid;
+    CEOID  oid;
+    CEOID  oidParent;
+} CENOTIFICATION;
+typedef CENOTIFICATION *PCENOTIFICATION;
+
+
+typedef struct _CEFILEINFO {
+    DWORD    dwAttributes;         
+    CEOID    oidParent;            
+    WCHAR    szFileName[MAX_PATH]; 
+    FILETIME ftLastChanged;        
+    DWORD    dwLength;             
+} CEFILEINFO;
+
+typedef struct _CEDIRINFO {
+    DWORD dwAttributes;        
+    CEOID oidParent;           
+    WCHAR szDirName[MAX_PATH]; 
+} CEDIRINFO;
+
+
+typedef struct STORE_INFORMATION {
+    DWORD dwStoreSize;
+    DWORD dwFreeSize;
+} STORE_INFORMATION, *LPSTORE_INFORMATION;
+
+BOOL GetStoreInformation (LPSTORE_INFORMATION lpsi);
+
+typedef DWORD CEPROPID;
+typedef CEPROPID *PCEPROPID;
+
+typedef struct _CERECORDINFO {
+    CEOID  oidParent;          
+} CERECORDINFO;
+
+
+typedef struct _SORTORDERSPEC {
+    CEPROPID  propid;   
+    DWORD     dwFlags;  
+} SORTORDERSPEC;
+
+
+
+typedef struct _SORTORDERSPECEX {
+    DWORD     dwVersion;   
+    WORD      wNumProps;   
+    WORD      wKeyFlags;   
+    CEPROPID  propid[CEDB_MAXSORTPROP]; 
+    DWORD     dwFlags[CEDB_MAXSORTPROP];
+} SORTORDERSPECEX;
+
+
+
+
+typedef struct _CEDBASEINFO {
+    DWORD    dwFlags;           
+    WCHAR    szDbaseName[CEDB_MAXDBASENAMELEN]; 
+    DWORD    dwDbaseType;       
+    WORD     wNumRecords;       
+    WORD     wNumSortOrder;     
+    DWORD    dwSize;            
+    FILETIME ftLastModified;    
+    SORTORDERSPEC rgSortSpecs[CEDB_MAXSORTORDER];  
+} CEDBASEINFO;
+
+
+typedef struct _CEDBASEINFOEX {
+    DWORD    dwVersion;         
+    DWORD    dwFlags;           
+    WCHAR    szDbaseName[CEDB_MAXDBASENAMELEN]; 
+    DWORD    dwDbaseType;       
+    DWORD    dwNumRecords;      
+    WORD     wNumSortOrder;     
+    WORD     wPad;              
+    DWORD    dwSize;            
+    FILETIME ftLastModified;    
+    SORTORDERSPECEX rgSortSpecs[CEDB_MAXSORTORDER];   
+} CEDBASEINFOEX;
+
+
+
+
+typedef struct _CEBLOB {
+    DWORD           dwCount;
+    LPBYTE          lpb;
+} CEBLOB;
+
+
+typedef union _CEVALUNION {
+    short           iVal;     
+    USHORT          uiVal;    
+    long            lVal;     
+    ULONG           ulVal;    
+    FILETIME        filetime; 
+    LPWSTR          lpwstr;   
+    CEBLOB          blob;     
+    BOOL            boolVal;  
+    double          dblVal;   
+} CEVALUNION;
+ 
+typedef struct _CEPROPVAL {
+    CEPROPID   propid;    
+    WORD       wLenData;  
+    WORD       wFlags;    
+    CEVALUNION val;       
+} CEPROPVAL;
+typedef CEPROPVAL *PCEPROPVAL;
+
+typedef struct _CEPROPTUPLE {
+    WORD       wNumProps; 
+    WORD       wPad;      
+    CEPROPVAL  propval[CEDB_MAXSORTPROP]; 
+} CEPROPTUPLE;
+typedef CEPROPTUPLE *PCEPROPTUPLE;
+
+typedef struct _CEOIDINFO {
+    WORD  wObjType;     
+    WORD   wPad;        
+    union {             
+        CEFILEINFO  infFile;           
+        CEDIRINFO   infDirectory;      
+        CEDBASEINFO infDatabase;       
+        CERECORDINFO infRecord;        
+    };
+} CEOIDINFO;
+
+
+
+typedef struct _CEOIDINFOEX {
+    DWORD dwVersion;   
+    DWORD dwSize;      
+    WORD  wObjType;    
+    WORD   wPad;       
+    union {
+        CEFILEINFO    infFile;       
+        CEDIRINFO     infDirectory;  
+        CEDBASEINFOEX infDatabase;   
+        CERECORDINFO  infRecord;     
+    };
+} CEOIDINFOEX;
+
+
+#define CEDB_SORT_DESCENDING        0x00000001
+#define CEDB_SORT_CASEINSENSITIVE   0x00000002
+#define CEDB_SORT_UNKNOWNFIRST      0x00000004
+#define CEDB_SORT_GENERICORDER      0x00000008  // internally used for generic ordering
+#define CEDB_SORT_IGNORENONSPACE    0x00000010
+#define CEDB_SORT_IGNORESYMBOLS     0x00000020
+#define CEDB_SORT_IGNOREKANATYPE    0x00000040
+#define CEDB_SORT_IGNOREWIDTH       0x00000080
+#define CEDB_SORT_STRINGSORT        0x00000100
+#define CEDB_SORT_UNIQUE            0x00000200
+#define CEDB_SORT_NONNULL           0x00000400
+
+
+#define DB_CEOID_CREATED            (WM_USER + 0x1)
+#define DB_CEOID_DATABASE_DELETED   (WM_USER + 0x2)
+#define DB_CEOID_RECORD_DELETED     (WM_USER + 0x3)
+#define DB_CEOID_FILE_DELETED       (WM_USER + 0x4)
+#define DB_CEOID_DIRECTORY_DELETED  (WM_USER + 0x5)
+#define DB_CEOID_CHANGED            (WM_USER + 0x6)
+
+#define REPL_CHANGE_WILLCLEAR   0x00000001
+#define CEDB_EXNOTIFICATION	0x00000001
+#define TypeFromPropID(propid) LOWORD(propid)
+
+#define CEDB_MAXSORTPROP 3
+#define CEDB_MAXDBASENAMELEN 32
+#define CEDB_MAXSORTORDER    4
+#define CEDB_MAXDATABLOCKSIZE 4092
+#define CEDB_MAXPROPDATASIZE  ((CEDB_MAXDATABLOCKSIZE*16)-1)
+#define CEDB_MAXRECORDSIZE  (128*1024)
+#define CEDB_MAXNUMRECORDS  0xFFFF
+
+
+#define CEDB_VALIDNAME     0x0001
+#define CEDB_VALIDTYPE     0x0002
+#define CEDB_VALIDSORTSPEC 0x0004
+#define CEDB_VALIDMODTIME  0x0008
+#define CEDB_VALIDDBFLAGS  0x0010
+#define CEDB_VALIDCREATE (CEDB_VALIDNAME|CEDB_VALIDTYPE|CEDB_VALIDSORTSPEC|CEDB_VALIDDBFLAGS)
+
+
+#define CEDBASEINFOEX_VERSION 1
+#define CEOIDINFOEX_VERSION 1
+#define SORTORDERSPECEX_VERSION 1
+
+
+#define CEDB_NOCOMPRESS    0x00010000
+#define CEDB_ALLOWREALLOC  0x00000001
+#define CEDB_AUTOINCREMENT          0x00000001
+
+#define CEDB_SEEK_CEOID             0x00000001
+#define CEDB_SEEK_BEGINNING         0x00000002
+#define CEDB_SEEK_END               0x00000004
+#define CEDB_SEEK_CURRENT           0x00000008
+#define CEDB_SEEK_VALUESMALLER      0x00000010
+#define CEDB_SEEK_VALUEFIRSTEQUAL   0x00000020
+#define CEDB_SEEK_VALUEGREATER      0x00000040
+#define CEDB_SEEK_VALUENEXTEQUAL    0x00000080
+
+#define CEDB_PROPNOTFOUND 0x0100
+#define CEDB_PROPDELETE   0x0200
+
+#define CEVT_I2       2
+#define CEVT_UI2      18
+#define CEVT_I4       3
+#define CEVT_UI4      19
+#define CEVT_FILETIME 64
+#define CEVT_LPWSTR   31
+#define CEVT_BLOB     65
+#define CEVT_BOOL     11
+#define CEVT_R8       5
+
+
+
+#define CREATE_SYSTEMGUID(pguid) (memset((pguid), 0, sizeof(CEGUID)))
+#define CREATE_INVALIDGUID(pguid) (memset((pguid), -1, sizeof(CEGUID)))
+
+#define CHECK_SYSTEMGUID(pguid) !((pguid)->Data1|(pguid)->Data2|(pguid)->Data3|(pguid)->Data4)
+#define CHECK_INVALIDGUID(pguid) !~((pguid)->Data1&(pguid)->Data2&(pguid)->Data3&(pguid)->Data4)
+
+#define OBJTYPE_INVALID     0
+#define OBJTYPE_FILE        1
+#define OBJTYPE_DIRECTORY   2
+#define OBJTYPE_DATABASE    3
+#define OBJTYPE_RECORD      4
+

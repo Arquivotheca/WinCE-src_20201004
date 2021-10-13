@@ -1,0 +1,200 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+#
+# Device (CE) build specific information
+#
+
+WINCEOEM=1
+
+NOLTCG=1
+
+# Sign test binaries with the test signing certificate
+#  - Components that explicitly don't want themselves signed with 
+#    the test cert or signed at all, should unset BUILD_SIGN in the
+#    respective sources file
+#
+BUILD_SIGN=1
+
+
+OSTEST_OAK_LIB_PATH=$(_PUBLICROOT)\ostest\oak\lib\$(_CPUINDPATH)
+COMMON_OAK_LIB_PATH=$(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)
+COMMON_SDK_LIB_PATH=$(_PUBLICROOT)\common\sdk\lib\$(_CPUINDPATH)
+DIRECTX_OAK_LIB_PATH=$(_PUBLICROOT)\directx\oak\lib\$(_CPUINDPATH)
+DIRECTX_SDK_LIB_PATH=$(_PUBLICROOT)\directx\sdk\lib\$(_CPUINDPATH)
+DCOM_OAK_LIB_PATH=$(_PUBLICROOT)\dcom\oak\lib\$(_CPUINDPATH)
+DCOM_SDK_LIB_PATH=$(_PUBLICROOT)\dcom\sdk\lib\$(_CPUINDPATH)
+SERVERS_OAK_LIB_PATH=$(_PUBLICROOT)\servers\oak\lib\$(_CPUINDPATH)
+SERVERS_SDK_LIB_PATH=$(_PUBLICROOT)\servers\sdk\lib\$(_CPUINDPATH)
+OSSVCS_OAK_LIB_PATH=$(_PUBLICROOT)\ossvcs\oak\lib\$(_CPUINDPATH)
+CELLCORE_OAK_LIB_PATH=$(_PUBLICROOT)\cellcore\oak\lib\$(_CPUINDPATH)
+CELLCORE_SDK_LIB_PATH=$(_PUBLICROOT)\cellcore\sdk\lib\$(_CPUINDPATH)
+
+SHELL_OAK_LIB_PATH=$(_PUBLICROOT)\shell\oak\lib\$(_CPUINDPATH)
+SHELL_SDK_LIB_PATH=$(_PUBLICROOT)\shell\sdk\lib\$(_CPUINDPATH)
+
+WGI_OAK_LIB_PATH=$(_PUBLICROOT)\wgi\oak\lib\$(_CPUINDPATH)
+WGI_SDK_LIB_PATH=$(_PUBLICROOT)\wgi\sdk\lib\$(_CPUINDPATH)
+
+# External project directories
+_CONTACTSROOT=$(_PRIVATEROOT)\CommsApps\Contacts
+_MESSAGINGROOT=$(_PRIVATEROOT)\CommsApps\Messaging
+_COMMSPLATFORMPRIVROOT=$(_PRIVATEROOT)\CommsPlatform
+_COMMSPLATFORMPUBROOT=$(_PUBLICROOT)\CommsPlatform
+
+!IF "$(BUILDTEST_POSTSYSGEN)" != "1" 
+#------------------------------------------------------
+#       PRESYSGEN
+#------------------------------------------------------
+#build using pre sysgen modules
+_COMMONPUBROOT=$(_PUBLICROOT)\common
+
+
+WINCETREE=test
+
+
+OS_SDK_LIB_PATH=Dont_Use_This_Macro_any_more_Use_the_macros_in_public_common_presysgen.cmn
+OS_OAK_LIB_PATH=Dont_Use_This_Macro_any_more_Use_the_macros_in_public_common_presysgen.cmn
+
+#
+# Paths to managed assemblies
+#
+#
+# TODO BRIAKING%%% - Review how these variables are used, as apps\ is gone
+#
+OS_SDK_MANAGED_PATH=$(_PUBLICROOT)\apps\sdk\target\managed\$(WINCEDEBUG)
+OS_OAK_MANAGED_PATH=$(_PUBLICROOT)\apps\oak\target\managed\$(WINCEDEBUG)
+
+
+
+#need to combine all UUID's for the test since they ussually just link 
+#       to uuid.lib which is generated at sysgen time and can't be
+#       converted to "presysgen"
+_UUID = $(_IEUUID)\
+        $(_DCOMUUID)\
+        $(_SHELLUUID)\
+        $(_DMDLUUID)\
+        $(_UUIDNET) \
+        $(_MSSOAPUUID)\
+        $(_UPNPUUID)\
+        $(_AV_UPNPUUID)
+
+
+
+!INCLUDE $(_COMMONPUBROOT)\presysgen.cmn
+
+
+#
+# Presysgen header file paths
+#
+#   - Whenever the deptrees for the project changes these should be updated with the new include paths.
+#
+
+!IF "$(BUILDTEST_CRTONLY)" != "1" 
+
+#decide which include paths to use based on the project
+_ISVINCPATH=$(_PUBLICROOT)\ostest\sdk\inc;$(_PUBLICROOT)\cellcore\sdk\inc;$(_PUBLICROOT)\directx\sdk\inc;$(_PUBLICROOT)\ossvcs\sdk\inc;$(_PUBLICROOT)\servers\sdk\inc;$(_PUBLICROOT)\html\sdk\inc;$(_PUBLICROOT)\wgi\sdk\inc;$(_PUBLICROOT)\dcom\sdk\inc;$(_PUBLICROOT)\common\sdk\inc;$(_PUBLICROOT)\common\sdk\inc\test;$(_PUBLICROOT)\common\ddk\inc;
+_OEMINCPATH=$(_PUBLICROOT)\cellcore\oak\inc;$(_PUBLICROOT)\directx\oak\inc;$(_PUBLICROOT)\shell\oak\inc;$(_PUBLICROOT)\ossvcs\oak\inc;$(_PUBLICROOT)\servers\oak\inc;$(_PUBLICROOT)\dcom\oak\inc;$(_PUBLICROOT)\common\oak\inc;
+
+!ELSE
+
+!MESSAGE sources.ce: CRT PATH ONLY
+
+# only include minimum paths to build CRT tests
+_ISVINCPATH=$(_PUBLICROOT)\ostest\sdk\inc;$(_PUBLICROOT)\common\sdk\inc\crt;$(_PUBLICROOT)\common\sdk\inc;$(_PUBLICROOT)\common\sdk\inc\test;
+_OEMINCPATH=$(_PUBLICROOT)\common\oak\inc;
+
+!ENDIF
+
+!ELSE
+#------------------------------------------------------
+#       POST-SYSGEN
+#------------------------------------------------------
+_COMMONPUBROOT=$(SG_OUTPUT_ROOT)
+
+
+
+#
+# Sysgened header file paths
+#
+_ISVINCPATH=$(_WINCEROOT)\public\ostest\sdk\inc;$(SG_OUTPUT_ROOT)\sdk\inc;$(_WINCEROOT)\public\common\sdk\inc\test
+_OEMINCPATH=$(_WINCEROOT)\public\ostest\sdk\inc;$(SG_OUTPUT_ROOT)\ddk\inc;$(SG_OUTPUT_ROOT)\sdk\inc;$(SG_OUTPUT_ROOT)\oak\inc;$(_WINCEROOT)\public\common\sdk\inc\test
+
+
+
+#
+# Paths to the OS import library release points
+#
+# If you need to link to an OS DLL, use:
+OS_SDK_LIB_PATH=$(SG_OUTPUT_SDKLIB)
+OS_OAK_LIB_PATH=$(SG_OUTPUT_OAKLIB)
+
+
+# Location of RPCRT runtime
+_RPCRT4=$(_PUBLICROOT)\dcom\sdk\lib\$(_CPUINDPATH)\rpcrt4.lib
+
+
+#
+# Paths to managed assemblies
+#
+#
+OS_SDK_MANAGED_PATH=$(_COMMONSDKROOT)\target\managed\$(WINCEDEBUG)
+OS_OAK_MANAGED_PATH=$(_COMMONOAKROOT)\target\managed\$(WINCEDEBUG)
+
+
+!include $(TEST_ROOT)\sources.sysgen
+
+!ENDIF
+
+#------------------------------------------------------
+#       BOTH PRESYSGEN and SYSGEN builds
+#------------------------------------------------------
+
+# This is the path to the OS header files (pre-sysgen)
+# For most test binaries, use the '$(SG_OUTPUT_ROOT)\sdk\inc' path automatically included above
+OS_SDK_INC_PATH=$(_PUBLICROOT)\common\sdk\inc
+
+
+#-----------------------------------------------------------------
+#test\mobile stuff   
+#-----------------------------------------------------------------
+
+_ISVINCPATH=$(_ISVINCPATH);$(_WINCEROOT)\public\ostest\sdk\inc;
+_OEMINCPATH=$(_OEMINCPATH);$(_PUBLICROOT)\shell\oak\inc;$(_PRIVATEROOT)\ossvcs\inc;$(_PRIVATEROOT)\shell\inc
+
+# Dependencies for lib files
+_QALIBDEPS=\
+    $(TEST_OAK_LIB_PATH)\qa_s.lib \
+    $(_WINSOCK) \
+    $(_TOOLHELP) \
+    $(_SHLWAPI) \
+    $(_OLE32) \
+    $(TEST_OAK_LIB_PATH)\perflog.lib
+    
+_MTULIBDEPS=\
+    $(TEST_OAK_LIB_PATH)\mtu_s.lib \
+
+
+CSC_DEFINES=DEBUG
+
+CDEFINES= $(CDEFINES) -DTPC -DWPC /DWIN32_LEAN_AND_MEAN -D_CRT_NON_CONFORMING_SWPRINTFS -D_OLDNAMES_WCE
+RDEFINES= $(RDEFINES) -DTPC -DWPC
+
+_TOOLBOXROOT=$(_PUBLICROOT)\cellcore\ToolBox
+
+INCLUDES=.;
+
+#
+# TODO %%% - Review test that require mobile\inc
+#            common\libs\mtu\stamplib
+#
+_OEMINCPATH=$(TEST_ROOT)\mobile\inc;$(_ISVINCPATH);$(_OEMINCPATH)

@@ -1,0 +1,23 @@
+!IF 0
+--------------------------------------------------------------------------------
+
+    Windows CE DirectDraw Build Verification Test
+    Copyright (c) 1996-9, Microsoft Corporation
+
+--------------------------------------------------------------------------------
+!ENDIF
+
+!include ..\func.mk
+
+TARGETNAME=DDFunc
+TARGETTYPE=DYNLINK
+
+PRECOMPILED_INCLUDE=main.h
+PRECOMPILED_CXX=1
+
+SOURCES=                    \
+    DDFunc.cpp              \
+    DDFunc_API.cpp          \
+    DDFunc_DDraw.cpp        \
+    DDFunc_DDSurface.cpp    \
+    DDFunc_Sets.cpp         \

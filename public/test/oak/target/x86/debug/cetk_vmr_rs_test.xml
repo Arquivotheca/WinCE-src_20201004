@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+
+<TestConfig Name="VMR Rotation Scaling Tests" Desc="VMR Rotation Scaling End to End Tests">
+    <MediaList>
+      <Media>
+        <Name>CthdNewSignedWMV</Name>
+        <FileName>cthd_320_240_24_newsigned.wmv</FileName>
+        <Description>320x240,24b,24fps,WMV9</Description>
+        <BaseUrl>
+           <IIS_HTTP>http://wcemedia03/mainmedia/cedxmedia/mediafiles/WMV/</IIS_HTTP>
+           <WMS_HTTP>http://wcemedia02/mediafiles/WMV/</WMS_HTTP>
+           <MMSU>mmsu://wcemedia02/mediafiles/WMV/</MMSU>
+           <release>\release\</release>
+           <Disk>\Hard Disk\</Disk>
+        </BaseUrl>
+        <PlaybackDuration>80731</PlaybackDuration>
+        <VideoInfo>
+           <Frames>1940</Frames>
+        </VideoInfo>
+      </Media>
+    </MediaList>
+        
+    <TestList>        
+    <TestGroup Name="VMR Rotation and Scaling Test, Single Stream, Scale, normal playback" TestIdBase="100">
+            <Test Name="Rotation_Scaling_Test_VMR" Desc="WMV, Dynamic Scale 0.5, prefer upstream scale,  allow overlay">
+                <TestId>100</TestId>
+                <RenderingMode>Renderless</RenderingMode>
+		<Media>CthdNewSignedWMV:IIS_HTTP</Media>
+		<NumOfStreams>1</NumOfStreams>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+		<PrefUpstreamScale></PrefUpstreamScale>
+                <DynamicWindowScaleList>50:50</DynamicWindowScaleList>
+            </Test>
+
+            <Test Name="Rotation_Scaling_Test_VMR" Desc="WMV, stopped Scale 1.5, prefer upstream scale, force off screen">
+                <TestId>101</TestId>
+                <RenderingMode>Renderless</RenderingMode>
+		<Media>CthdNewSignedWMV:IIS_HTTP</Media>
+		<NumOfStreams>1</NumOfStreams>
+		<RenderingPrefsSurface>RenderPrefs_ForceOffscreen</RenderingPrefsSurface>
+		<PrefUpstreamScale></PrefUpstreamScale>
+                <StoppedWindowScaleList>150:150</StoppedWindowScaleList>
+            </Test>
+
+	    <Test Name="Rotation_Scaling_Test_VMR" Desc="WMV, Dynamic Scale 0.5, 1, 1.5, prefer upstream scale, default overlay">
+                <TestId>102</TestId>
+                <RenderingMode>Renderless</RenderingMode>
+		<Media>CthdNewSignedWMV:IIS_HTTP</Media>
+		<NumOfStreams>1</NumOfStreams>
+		<PrefUpstreamScale></PrefUpstreamScale>
+                <DynamicWindowScaleList>50:50,100:100,150:150</DynamicWindowScaleList>
+            </Test>
+	</TestGroup>
+
+        <TestGroup Name="VMR Rotation and Scaling Test, Single Stream, Rotate, normal playback" TestIdBase="200">           
+             <Test Name="Rotation_Scaling_Test_VMR" Desc="WMV, Dynamic Rotate 90, 180,270 and 0, prefer upstream rotate, allow overlay">
+                <TestId>200</TestId>
+                <RenderingMode>Renderless</RenderingMode>
+		<Media>CthdNewSignedWMV:IIS_HTTP</Media>
+		<NumOfStreams>1</NumOfStreams>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+		<PrefUpstreamRotate></PrefUpstreamRotate>
+                <DynamicRotateConfigList>90,180,270,0</DynamicRotateConfigList>
+            </Test>
+
+	     <Test Name="Rotation_Scaling_Test_VMR" Desc="WMV, Paused Rotate 180, prefer upstream rotate, force overlay">
+                <TestId>201</TestId>
+                <RenderingMode>Renderless</RenderingMode>
+		<Media>CthdNewSignedWMV:IIS_HTTP</Media>
+		<NumOfStreams>1</NumOfStreams>
+		<RenderingPrefsSurface>RenderPrefs_ForceOverlays</RenderingPrefsSurface>
+		<PrefUpstreamRotate></PrefUpstreamRotate>
+                <PausedRotateConfigList>180</PausedRotateConfigList>
+            </Test>
+	</TestGroup>
+
+        <TestGroup Name="VMR Rotation and Scaling Test, Single Stream, Rotate and Scale, normal playback" TestIdBase="300">
+            <Test Name="Rotation_Scaling_Test_VMR" Desc="WMV, Dynamic Rotate 270, scale 0.5, prefer upstream rotate/scale, allow overlay">
+                <TestId>300</TestId>
+                <RenderingMode>Renderless</RenderingMode>
+		<Media>CthdNewSignedWMV:IIS_HTTP</Media>
+		<NumOfStreams>1</NumOfStreams>
+		<PrefUpstreamRotate></PrefUpstreamRotate>
+		<PrefUpstreamScale></PrefUpstreamScale>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <DynamicRotateConfigList>270</DynamicRotateConfigList>
+		<DynamicWindowScaleList>50:50</DynamicWindowScaleList>
+            </Test>
+
+             <Test Name="Rotation_Scaling_Test_VMR" Desc="WMV, Paused Rotate 180, Scale 2.0, prefer upstream scale, allow overlay">
+                <TestId>301</TestId>
+                <RenderingMode>Renderless</RenderingMode>
+		<Media>CthdNewSignedWMV:IIS_HTTP</Media>
+		<NumOfStreams>1</NumOfStreams>
+		<PrefUpstreamScale></PrefUpstreamScale>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <PausedRotateConfigList>180</PausedRotateConfigList>
+		<PausedWindowScaleList>200:200</PausedWindowScaleList>
+            </Test>
+	</TestGroup>
+
+	<TestGroup Name="VMR Rotation and Scaling Test, Multiple Streams, Scale, normal playback" TestIdBase="400">
+            <Test Name="Rotation_Scaling_Test_VMR" Desc="2 WMV, Dynamic Scale 0.5, prefer upstream scale, allow overlay">
+                <TestId>400</TestId>
+                <MixingMode></MixingMode>
+                <RenderingMode>Renderless</RenderingMode>
+                <NumOfStreams>2</NumOfStreams>
+           <Stream>
+                <ID>0</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,50,50</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+           <Stream>
+                <ID>1</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,100,100</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+		<PrefUpstreamScale></PrefUpstreamScale>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <DynamicWindowScaleList>50:50</DynamicWindowScaleList>
+            </Test>
+
+        <Test Name="Rotation_Scaling_Test_VMR" Desc=" 2 WMV, Stopped Scale 1.5, prefer upstream scale, allow overlay">
+                <TestId>401</TestId>
+                <MixingMode></MixingMode>
+           	<RenderingMode>Renderless</RenderingMode>
+           	<NumOfStreams>2</NumOfStreams>
+           <Stream>
+                <ID>0</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,50,50</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+           <Stream>
+                <ID>1</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,100,100</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+		<PrefUpstreamScale></PrefUpstreamScale>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <StoppedWindowScaleList>150:150</StoppedWindowScaleList>
+            </Test>
+
+	    <Test Name="Rotation_Scaling_Test_VMR" Desc="2 WMV, Dynamic Scale 0.5, 1, 1.5, prefer upstream scale, allow overlay">
+                <TestId>402</TestId>
+                <MixingMode></MixingMode>
+                <RenderingMode>Renderless</RenderingMode>
+                <NumOfStreams>2</NumOfStreams>
+           <Stream>
+                <ID>0</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,50,50</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+           <Stream>
+                <ID>1</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,100,100</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+		<PrefUpstreamScale></PrefUpstreamScale>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <DynamicWindowScaleList>50:50,100:100,150:150</DynamicWindowScaleList>
+            </Test>
+	</TestGroup>
+
+	<TestGroup Name="VMR Rotation and Scaling Test, Multiple Streams, Rotate, normal playback" TestIdBase="500">
+            <Test Name="Rotation_Scaling_Test_VMR" Desc="2 WMV, Dynamic Rotate 90, 180, 270 and 0, prefer upstream Rotate, allow overlay">
+                <TestId>500</TestId>
+                <MixingMode></MixingMode>
+                <RenderingMode>Renderless</RenderingMode>
+                <NumOfStreams>2</NumOfStreams>
+           <Stream>
+                <ID>0</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,50,50</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+           <Stream>
+                <ID>1</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,100,100</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+		<PrefUpstreamRotate></PrefUpstreamRotate>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <DynamicRotateConfigList>90,180,270,0</DynamicRotateConfigList>
+            </Test>
+
+           <Test Name="Rotation_Scaling_Test_VMR" Desc=" 2 WMV, Stopped Rotate 270, prefer upstream Rotate, force off screen">
+                <TestId>501</TestId>
+                <MixingMode></MixingMode>
+                <RenderingMode>Renderless</RenderingMode>
+                <NumOfStreams>2</NumOfStreams>
+           <Stream>
+                <ID>0</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,50,50</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+           <Stream>
+                <ID>1</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,100,100</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+		<PrefUpstreamRotate></PrefUpstreamRotate>
+		<RenderingPrefsSurface>RenderPrefs_ForceOffscreen</RenderingPrefsSurface>
+                <StoppedRotateConfigList>270</StoppedRotateConfigList>
+            </Test>
+	</TestGroup>
+
+	<TestGroup Name="VMR Rotation and Scaling Test, Multiple Streams, Rotate and Scale, normal playback" TestIdBase="600">
+            <Test Name="Rotation_Scaling_Test_VMR" Desc="2 WMV, Dynamic Rotate 270, scale 0.5, prefer upstream Rotate/scale, allow overlay">
+                <TestId>600</TestId>
+                <MixingMode></MixingMode>
+                <RenderingMode>Renderless</RenderingMode>
+                <NumOfStreams>2</NumOfStreams>
+           <Stream>
+                <ID>0</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,50,50</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+           <Stream>
+                <ID>1</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,100,100</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+		<PrefUpstreamRotate></PrefUpstreamRotate>
+		<PrefUpstreamScale></PrefUpstreamScale>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <DynamicRotateConfigList>270</DynamicRotateConfigList>
+		<DynamicWindowScaleList>50:50</DynamicWindowScaleList>
+            </Test>
+
+            <Test Name="Rotation_Scaling_Test_VMR" Desc="2 WMV, Paused Rotate 180, Scale 2.0, prefer upstream Scale, allow overlay">
+                <TestId>601</TestId>
+                <MixingMode></MixingMode>
+                <RenderingMode>Renderless</RenderingMode>
+                <NumOfStreams>2</NumOfStreams>
+           <Stream>
+                <ID>0</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,50,50</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+           <Stream>
+                <ID>1</ID>
+                <Media>CthdNewSignedWMV:IIS_HTTP</Media>
+                <OutputRect>0,0,100,100</OutputRect>
+                <Alpha>0.5</Alpha>
+           </Stream>
+		<PrefUpstreamScale></PrefUpstreamScale>
+		<RenderingPrefsSurface>RenderPrefs_AllowOverlays</RenderingPrefsSurface>
+                <PausedRotateConfigList>180</PausedRotateConfigList>
+		<PausedWindowScaleList>200:200</PausedWindowScaleList>
+            </Test>
+	</TestGroup>
+    </TestList>
+</TestConfig>

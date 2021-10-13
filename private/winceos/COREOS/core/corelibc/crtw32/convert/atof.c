@@ -1,0 +1,139 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+/***
+*atof.c - convert char string to floating point number
+*
+*       Copyright (c) Microsoft Corporation. All rights reserved.
+*
+*Purpose:
+*       Converts a character string into a floating point number.
+*
+*Revision History:
+*       09-09-87  RKW   written
+*       04-13-87  JCR   added const to declaration
+*       11-09-87  BCM   different interface under ifdef MTHREAD
+*       12-11-87  JCR   Added "_LOAD_DS" to declaration
+*       05-24-88  PHG   Merged DLL and normal versions
+*       08-18-88  PHG   now calls isspace to process all kinds of whitespce
+*       10-04-88  JCR   386: Removed 'far' keyword
+*       11-20-89  JCR   atof() is always _cdecl in 386 (not pascal)
+*       03-05-90  GJF   Fixed calling type, added #include <cruntime.h>,
+*                       removed #include <register.h>, removed some redundant
+*                       prototypes, removed some leftover 16-bit support and
+*                       fixed the copyright. Also, cleaned up the formatting
+*                       a bit.
+*       07-20-90  SBM   Compiles cleanly with -W3 (added/removed appropriate
+*                       #includes)
+*       08-01-90  SBM   Renamed <struct.h> to <fltintrn.h>
+*       09-27-90  GJF   New-style function declarator.
+*       10-21-92  GJF   Made char-to-int conversion unsigned.
+*       04-06-93  SKS   Replace _CRTAPI* with _cdecl
+*       09-06-94  CFW   Replace MTHREAD with _MT.
+*       12-15-98  GJF   Changes for 64-bit size_t.
+*       08-19-03  AC    Validate input parameters
+*       04-07-04  MSL   Changes to support locale-specific strgtold12
+*                       VSW 247190
+*
+*******************************************************************************/
+
+#include <stdlib.h>
+#include <math.h>
+#include <cruntime.h>
+#include <fltintrn.h>
+#include <string.h>
+#include <ctype.h>
+#include <mbctype.h>
+#include <locale.h>
+#include <internal.h>
+#include <mtdll.h>
+#include <setlocal.h>
+
+/***
+*double atof(nptr) - convert string to floating point number
+*
+*Purpose:
+*       atof recognizes an optional string of whitespace, then
+*       an optional sign, then a string of digits optionally
+*       containing a decimal point, then an optional e or E followed
+*       by an optionally signed integer, and converts all this to
+*       to a floating point number.  The first unrecognized
+*       character ends the string.
+*
+*Entry:
+*       nptr - pointer to string to convert
+*
+*Exit:
+*       returns floating point value of character representation
+*
+*Exceptions:
+*       Input parameters are validated. Refer to the validation section of the function. 
+*
+*******************************************************************************/
+
+double __cdecl _atof_l(
+        const char *nptr,
+        _locale_t plocinfo
+        )
+{
+
+        struct _flt fltstruct;      /* temporary structure */
+        _LocaleUpdate _loc_update(plocinfo);
+
+        /* validation section */
+        _VALIDATE_RETURN(nptr != NULL, EINVAL, 0.0);
+
+        /* scan past leading space/tab characters */
+
+        while ( _isspace_l((int)(unsigned char)*nptr, _loc_update.GetLocaleT()) )
+                nptr++;
+
+        /* let _fltin routine do the rest of the work */
+
+        return( *(double *)&(_fltin2( &fltstruct, nptr, _loc_update.GetLocaleT())->dval) );
+}
+
+double __cdecl atof(
+        const char *nptr
+        )
+{
+    return _atof_l(nptr, NULL);
+}
+
+unsigned int __strgtold12
+(
+    _LDBL12 *pld12,
+    const char * *p_end_ptr,
+    const char * str,
+    int mult12,
+    int scale,
+    int decpt,
+    int implicit_E
+)
+{
+    _LocaleUpdate _loc_update(NULL);
+  
+    return __strgtold12_l(pld12, p_end_ptr, str, mult12, scale, decpt, implicit_E, _LOCALE_DATA);
+}
+
+unsigned __STRINGTOLD
+(
+    _LDOUBLE *pld,
+    const char  * *p_end_ptr,
+    const char  *str,
+    int mult12
+)
+{
+    _LocaleUpdate _loc_update(NULL);
+
+    return __STRINGTOLD_L(pld, p_end_ptr, str, mult12, _loc_update.GetLocaleT());
+}

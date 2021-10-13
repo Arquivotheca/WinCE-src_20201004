@@ -1,0 +1,56 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrttime_full
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources_fullcrt.inc"
+
+INCLUDES=..\h;..\..\..\inc;
+
+
+SOURCES= \
+    asctime.c \
+    clock.c \
+    ctime.c \
+    ctime64.c \
+    days.c \
+    difftime.c \
+    difftm64.c \
+    dtoxtime.c \
+    dtoxtm64.c \
+    ftime.c \
+    ftime64.c \
+    gmtime.c \
+    gmtime64.c \
+    localtim.c \
+    loctim64.c \
+    mktime.c \
+    mktime64.c \
+    strdate.c \
+    _strftime.cpp \
+    strtime.c \
+    systime.c \
+    time.c \
+    time64.c \
+    timeset.c \
+    tzset.c \
+    utime.c \
+    utime64.c \
+    wasctime.c \
+    _wcsftime.cpp \
+    wctime.c \
+    wctime64.c \
+    wstrdate.c \
+    wstrtime.c \
+    wutime.c \
+    wutime64.c \

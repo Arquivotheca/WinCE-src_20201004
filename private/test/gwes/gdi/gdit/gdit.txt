@@ -1,0 +1,214 @@
+Usage
+====
+
+/? outputs the usage information
+/OutputBitmaps sets the test to output bitmaps of the failures
+/NoVerify turns off driver to driver verification
+/ManualVerify turns on manual verification.  Hit the left shift key to continue when prompted.
+/IgnoreGLE turns off GetLastError checking to speed up the test suite.
+/Width <size> /Height <size> sets the size of surface to use, 176x176 minimum, must be divisible by 2.
+/Surface <surfname> sets the surface type to be tested
+         <surfname> can be one of the following entries
+         Win_Primary
+         GDI_Default
+         GDI_VidMemory
+         GDI_SysMemory
+         GDI_Printer
+         1BPP_BITMAP
+         2BPP_BITMAP
+         4BPP_BITMAP
+         8BPP_BITMAP
+         16BPP_BITMAP
+         24BPP_BITMAP
+         32BPP_BITMAP
+         8BPP_DIB_Pal
+         1BPP_DIB_RGB
+         2BPP_DIB_RGB
+         4BPP_DIB_RGB
+         8BPP_DIB_RGB
+         16BPP_DIB_RGB
+         24BPP_DIB_RGB
+         32BPP_DIB_RGB
+         8BPP_DIB_Pal_BUB
+         1BPP_DIB_RGB_BUB
+         2BPP_DIB_RGB_BUB
+         4BPP_DIB_RGB_BUB
+         8BPP_DIB_RGB_BUB
+         16BPP_DIB_RGB_BUB
+         24BPP_DIB_RGB_BUB
+         32BPP_DIB_RGB_BUB
+
+
+GDIT tests
+========
+
+   GDI API Groups
+
+   Clip
+      100: ExcludeClipRect
+      101: GetClipBox
+      102: GetClipRgn
+      103: IntersectClipRect
+      104: SelectClipRgn
+
+   Draw
+      200: BitBlt
+      201: ClientToScreen
+      202: CreateBitmap
+      203: CreateCompatibleBitmap
+      204: CreateDIBSection
+      205: Ellipse
+      206: DrawEdge
+      207: GetPixel
+      208: MaskBlt
+      209: PatBlt
+      210: Polygon
+      211: Polyline
+      212: Rectangle
+      213: FillRect
+      214: RectVisible
+      215: RoundRect
+      216: ScreenToClient
+      217: SetPixel
+      218: StretchBlt
+      219: TransparentImage
+      220: StretchDIBits
+      221: SetDIBitsToDevice
+      222: GradientFill
+      223: InvertRect
+      224: MoveToEx
+      225: LineTo
+      226: GetDIBColorTable
+      227: SetDIBColorTable
+      228: SetBitmapBits
+      229: DrawFocusRect
+      230: SetROP2
+      231: AlphaBlend
+      232: MapWindowPoints
+      233: GetROP2
+
+   Palette
+      300: GetNearestColor
+      301: GetNearestPaletteIndex
+      302: GetSystemPaletteEntries
+      303: GetPaletteEntries
+      304: SetPaletteEntries
+      305: CreatePalette
+      306: SelectPalette
+      307: RealizePalette
+
+   GDI
+      400: GdiFlush
+      401: GdiSetBatchLimit
+      402: ChangeDisplaySettingsEx
+
+   Region
+      500: CombineRgn
+      501: CreateRectRgn
+      502: CreateRectRgnIndirect
+      503: EqualRgn
+      504: FillRgn
+      505: FrameRgn
+      506: GetRegionData
+      507: GetRgnBox
+      508: OffsetRgn
+      509: PtInRegion
+      510: RectInRegion
+      511: SetRectRgn
+      512: ExtCreateRegion
+
+   Brush & Pens
+      600: CreateDIBPatternBrushPt
+      601: CreatePatternBrush
+      602: CreateSolidBrush
+      603: GetBrushOrgEx
+      604: GetSysColorBrush
+      605: SetBrushOrgEx
+      606: CreatePenIndirect
+      607: GetSystemStockBrush
+      608: CreatePen
+
+   Device Attribute
+      700: GetBkColor
+      701: GetBkMode
+      702: GetTextColor
+      703: SetBkColor
+      704: SetBkMode
+      705: SetTextColor
+      706: SetViewportOrgEx
+      707: SetStretchBltMode
+      708: GetStretchBltMode
+      709: SetTextCharacterExtra
+      710: GetTextCharacterExtra
+      711: SetLayout
+      712: GetLayout
+      713: GetViewportOrgEx
+      714: GetViewportExtEx
+      715: SetWindowOrgEx
+      716: GetWindowOrgEx
+      717: OffsetViewportOrgEx
+      718: GetWindowExtEx
+
+   Device Context
+      800: CreateCompatibleDC
+      801: DeleteDC
+      802: GetDCOrgEx
+      803: GetDeviceCaps
+      804: RestoreDC
+      805: SaveDC
+      806: ScrollDC
+      807: CreateDC
+      808: ExtEscape
+      809: BitmapEscape
+
+   Device Object
+      900: DeleteObject
+      901: GetCurrentObject
+      902: GetObject
+      903: GetObjectType
+      904: GetStockObject
+      905: SelectObject
+
+   Font
+      1000: AddFontResource
+      1001: CreateFontIndirect
+      1002: EnumFonts
+      1003: EnumFontFamilies
+      1004: EnumFontFamProc
+      1005: GetCharABCWidths
+      1006: GetCharWidth
+      1007: GetCharWidth32
+      1008: RemoveFontResource
+      1009: EnableEUDC
+      1010: TranslateCharsetInfo
+      1011: EnumFontFamiliesEx
+
+   Text
+      1100: DrawTextW
+      1101: ExtTextOut
+      1102: GetTextAlign
+      1103: GetTextExtentPoint
+      1104: GetTextExtentPoint32
+      1105: GetTextExtentExPoint
+      1106: GetTextFace
+      1107: GetTextMetrics
+      1108: SetTextAlign
+
+   Print
+      1200: StartDoc
+      1201: EndDoc
+      1202: StartPage
+      1203: EndPage
+      1204: AbortDoc
+      1205: SetAbortProc
+
+   Verify Test
+      1300: CheckAllWhite
+      1301: CheckScreenHalves
+      1302: GetReleaseDC
+      1303: Thrash
+      1304: CheckDriverVerify
+
+   Manual
+      1400: Manual Font Tests
+      1401: Manual Font Clip Tests

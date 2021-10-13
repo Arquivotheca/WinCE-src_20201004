@@ -1,0 +1,48 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+#include <windows.h>
+#include "resource.h"
+#include <bldver.h>
+#include <ctkcommon.ver>
+
+// images
+//
+//App Wide
+ID_IMG_ONE          PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix01.png" 
+ID_IMG_TWO          PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix02.png" 
+ID_IMG_THREE        PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix03.png" 
+ID_IMG_FOUR         PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix04.png" 
+ID_IMG_05           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix05.png" 
+ID_IMG_06           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix06.png" 
+ID_IMG_07           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix07.png" 
+ID_IMG_08           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix08.png" 
+ID_IMG_09           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix09.png" 
+ID_IMG_10           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix10.png" 
+ID_IMG_11           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix11.png" 
+ID_IMG_12           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix12.png" 
+ID_IMG_13           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix13.png" 
+ID_IMG_14           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix14.png" 
+ID_IMG_15           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix15.png" 
+ID_IMG_16           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix16.png" 
+ID_IMG_17           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix17.png" 
+ID_IMG_18           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix18.png" 
+ID_IMG_19           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix19.png" 
+ID_IMG_20           PNG     DISCARDABLE  "..\\..\\data\\images\\ListPerf\\PNGs128x128\\Pix20.png" 
+
+// XAML
+ID_XAML_VSP_ListboxDB   SLWE_XAML   DISCARDABLE  "..\\..\\data\\xaml\\vsp\\VSP_ListboxDB.xaml"
+ID_XAML_VSP_VSP_listboxDBTemplate   SLWE_XAML   DISCARDABLE  "..\\..\\data\\xaml\\vsp\\VSP_listboxDBTemplate.xaml"
+ID_XAML_VSP_VSP_listboxDBTemplateImageOnly   SLWE_XAML   DISCARDABLE  "..\\..\\data\\xaml\\vsp\\VSP_listboxDBTemplateImageOnly.xaml"
+
+
+

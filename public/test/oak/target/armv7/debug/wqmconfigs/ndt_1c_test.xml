@@ -1,0 +1,180 @@
+<?xml version="1.0" standalone="yes"?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<!-- ===============================================
+====
+==== WiFiMetrics test configuraton file
+====
+==== NDIS one-card test
+====
+==== =========================================== -->
+
+<TestSuite
+    TestSuiteName = "Ndt_1card"
+    TestDllName   = "ndt_1c6.dll"
+    IsTuxWrap     = "true"
+
+    NDTLogPackets  = ""
+    NDTCancelTest  = ""
+    NDTFaultTest   = ""
+    TuxCommandLine = "-t $(AdapterName) $(NDTLogPackets) $(NDTAdapterUnbind)  $(NDTCancelTest) $(NDTFaultTest)"
+
+    PassCriteria = "95"
+    FailCriteria = "65"
+    TestWeight   = "2.0"
+
+>
+
+    <Config>
+        <Filter 
+            inputFile  = "$(ScriptDirName)\NDT_APConfig.xml"
+            outputFile = "$(TempDirName)\tempConfig.xml"
+        />
+        <Command>
+            WiFiTool -adapter $(AdapterName) -power on -reset
+                     -ejectxwifi -disablecustfeedback -disablecertinstall -disableitgproxy -displaytimeout never -IHVExt clear
+        </Command>
+       <!-- <Command>
+            APCTool -v
+                    -i $(TempDirName)\tempConfig.xml
+                    $(LANServerHostArg)
+                    $(LANServerPortArg)
+                    $(WiFiServerHostArg)
+                    $(WiFiServerPortArg)
+                    $(WiFiServerSSIDArg)
+                    $(WiFiServerAuthArg)
+                    $(WiFiServerEncrArg)
+                    $(WiFiServerEapAuthArg)
+                    $(WiFiServerKeyIndexArg)
+                    $(WiFiServerKeyArg)
+        </Command>-->
+        <Command>
+            WiFiTool -adapter $(AdapterName) -connect -SSID $(FixedAPSSID) -Auth Open -Encr ClearText -tConnTime 80
+        </Command>
+    </Config>
+
+    <TestCase
+        TuxTestIDOffset    = "0"
+        TuxID              = "1"
+        TuxTestDescription = "TestOpenClose"
+        TestSuiteName      = "WQM_Ndt_1card"
+        BvtTestCase        = "true"
+        Comment            = "Ndis 1 card Open/Close test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "1"
+        TuxID              = "2"
+        TuxTestDescription = "TestSend"
+        TestSuiteName      = "WQM_Ndt_1card"
+        BvtTestCase        = "true"
+        Comment            = "Ndis 1 card send test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "2"
+        TuxID              = "3"
+        TuxTestDescription = "TestLoopbackSend"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 loopback send test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "3"
+        TuxID              = "4"
+        TuxTestDescription = "TestLoopbackStress"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card loopback stress test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "4"
+        TuxID              = "5"
+        TuxTestDescription = "TestSetMulticast"
+       BvtTestCase        = "true"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card set Multicast test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "5"
+        TuxID              = "6"
+        TuxTestDescription = "TestReset"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card reset test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "6"
+        TuxID              = "7"
+        TuxTestDescription = "TestCancelSend"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card cancel send test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "7"
+        TuxID              = "8"
+        TuxTestDescription = "TestFaultHandling"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card Fault handling test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "8"
+        TuxID              = "9"
+        TuxTestDescription = "TestOids"
+        BvtTestCase        = "true"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card Oids test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "9"
+        TuxID              = "10"
+        TuxTestDescription = "Test64BitOids"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card 64 bits OIDs test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "10"
+        TuxID              = "11"
+        TuxTestDescription = "TestSusRes"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card Open/Close test"
+    />
+    
+    <TestCase
+        TuxTestIDOffset    = "11"
+        TuxID              = "12"
+        TuxTestDescription = "TestStressSusRes"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card Open/Close test"
+    />
+    
+    <TestCase type = "Idle"
+        SleepDuration = "30000"
+        Comment       = "Sleep 5 seconds before running ResestOnResume"
+    />
+    
+    <TestCase 
+        TuxTestIDOffset    = "12"
+        TuxID              = "13"
+        TuxTestDescription = "TestResetOnResume"
+        TestSuiteName      = "WQM_Ndt_1card"
+        Comment            = "Ndis 1 card TestResetOnResume test"
+    />
+
+</TestSuite>
+

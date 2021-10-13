@@ -1,0 +1,60 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+
+
+TARGETNAME=wavetest
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   tuxmain.cpp \
+   BadDeviceID.cpp \
+   BadHandles.cpp \
+   errormap.cpp \
+   International.cpp \
+   International_resource.rc \
+   TESTWAVERESOURCE.rc \
+   WaveFile.cpp \
+   WaveFileEx.cpp \
+   test_wavetest.cpp \
+   test_wavein.cpp \
+   TestInHandle.cpp \
+   TestOutHandle.cpp \
+   WaveInterOp.cpp \
+   InvalidBlockAlignment.cpp
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+OAKLIB=$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)
+SDKLIB=$(_NTSDK_LIB)
+
+TARGETLIBS=\
+   $(_KATO) \
+   $(SDKLIB)\winmm.lib
+          
+!ELSE
+
+INCLUDES=\
+    $(TEST_ROOT)\baseos\drivers\common\inc; \
+    $(TEST_ROOT)\baseos\drivers\powerman\common\inc
+
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   $(_COREDLL) \
+   $(_KATO) \
+   $(TEST_OAK_LIB_PATH)\pwrtestlib.lib \
+
+!ENDIF
+ 
+RELEASETYPE=CETK 

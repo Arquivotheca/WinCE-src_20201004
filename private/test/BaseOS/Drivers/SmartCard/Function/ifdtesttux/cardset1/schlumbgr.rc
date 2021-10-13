@@ -1,0 +1,117 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// Microsoft Visual C++ generated resource script.
+//
+#include "schlumbgrrc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "schlumbgrrc.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_SCHL_SET_PROTOCOL_T1 "Try to set incorrect protocol T=1"
+    IDS_SCHL_SET_PROTOCOL_T0 "Set protocol T=0"
+    IDS_SCHL_SELECT_FILE_EFTRANSFERALL "SELECT FILE EFtransferAllBytes"
+    IDS_SCHL_SELECT_FILE_EFTRANSFER_NEXT "SELECT FILE EFtransferNextByte"
+    IDS_SCHL_SELECT_FILE_EFREAD256 "SELECT FILE EFread256Bytes"
+    IDS_SCHL_SELECT_FILE_EFCASE_1APDU "SELECT FILE EFcase1Apdu"
+    IDS_SCHL_SELECT_FILE_EFRESTART_WWT "SELECT FILE EFrestartWorkWaitingTime"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SCHL_WRITE_BINARY   "WRITE BINARY %3d Byte(s)"
+    IDS_SCHL_READ_BINARY    "READ BINARY %3d Byte(s)"
+    IDS_SCHL_SELECT_FILE_EFRESULT "SELECT FILE EFresult"
+    IDS_SCHL_READ_BINARY_FILE_EFRESULT "READ  BINARY FILE EFresult"
+    IDS_SCHL_TRANSFER_ALL_REMAINING "'Transfer all remaining bytes result'"
+    IDS_SCHL_TRANSFER_NEXT_BYTE_RESULT "'Transfer next byte result'"
+    IDS_SCHL_READ_256BYTES_RESULT "'Read 256 bytes ' result"
+    IDS_SCHL_CASE1_APDU_RESULT "'Case 1 APDU' result"
+    IDS_SCHL_RESTART_OF_WORKING_TIME_RESULT 
+                            "'Restart of work waiting time' result"
+    IDS_SCHL_RECVD_ONLY_4BYTE_TPDU "Smart card received only 4-byte-TPDU"
+    IDS_SCHL_NO_TEST        "Test not performed"
+    IDS_SCHL_P3_0           "Smart card received P3 !=0"
+    IDS_SCHL_TEST_FAILED_WITH_ERROR "Test failed. Error code %02xH"
+    IDS_SCHL_SET_PROTOCOL_FAILED "Set Protocol Failed"
+    IDS_SCHL_BAD_DATA       "Smart card received incorrect data"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SCHL_RECEVIED_P3_NOT_0 "Smart card received P3 != 0"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

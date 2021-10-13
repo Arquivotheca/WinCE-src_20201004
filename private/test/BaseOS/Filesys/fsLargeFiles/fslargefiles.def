@@ -1,0 +1,7 @@
+;
+; TRAMFS TUX DLL
+; Copyright (c) Microsoft Corporation
+;
+
+EXPORTS
+    ShellProc

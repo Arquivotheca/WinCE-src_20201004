@@ -1,0 +1,56 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtmisc_boot
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\..\sources_bootcrt.inc"
+
+INCLUDES=..\..\h;..\..\h\$(_TGTCPUFAMILY);..\..\..\..\inc;..\..\..\..\..\nk\inc;..\..\stdhpp
+# x86
+#INCLUDES=$(INCLUDES);..\..\..\fpw32\cpu_x86
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+CDEFINES=$(CDEFINES) -Dmem_S -DI386
+ADEFINES=$(ADEFINES) -Dmem_S -DI386
+ASM_SAFESEH=1
+!ENDIF
+
+SOURCES= \
+    ..\_a_str.cpp \
+    ..\_a_map.cpp \
+    ..\abs.c \
+    ..\bsearch.c \
+    ..\bsearch_s.c \
+    ..\bswap.c \
+    ..\ctype.c \
+    ..\labs.c \
+    ..\lconv.c \
+    ..\ldiv.c \
+    ..\nlsdata.c \
+    ..\qsort.c \
+    ..\qsort_s.c \
+    ..\rand.c \
+    ..\rand_s.c \
+    ..\_w_map.cpp \
+    ..\winapinls.c \
+
+x86_SOURCES= \
+    ..\x86\alloca16.asm \
+    ..\x86\chkstk.asm \
+    ..\x86\calldtor.c \
+    ..\x86\chandler4.c \
+    ..\x86\chkesp.c \
+    ..\x86\eh3valid.c \
+    ..\x86\exsup.c \
+    ..\x86\exsup3.asm \
+    ..\x86\exsup4.asm \

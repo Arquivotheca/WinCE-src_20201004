@@ -1,0 +1,15 @@
+#IE drawing
+
+[BitBlt]
+Source=Video_Memory
+Dest=Primary
+ROP=All
+Width=200
+Height=200
+
+[BitBlt]
+Source=System_Memory
+Dest=System_Memory
+ROP=All
+Width=200
+Height=200

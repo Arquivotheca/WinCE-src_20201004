@@ -1,0 +1,147 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+#
+# main sources file for test tree
+#
+
+RELEASETYPE=OAK
+TEST_ROOT=$(_PRIVATEROOT)\Test
+
+WINCEPROJ=test
+__PROJROOT=$(_PUBLICROOT)\$(WINCEPROJ)
+!INCLUDE $(TEST_ROOT)\sources.$(_TGTOS)
+
+# a few debug messages in build.log can help debug problems :)
+!message $(TEST_ROOT)\sources.test $(_BUILDMSG) __PROJROOT = $(__PROJROOT)
+!message $(TEST_ROOT)\sources.test $(_BUILDMSG) _COMMONPUBROOT = $(_COMMONPUBROOT)
+
+
+EXT_INCLUDES=$(TEST_ROOT)\common\inc;$(EXT_INCLUDES)
+
+#
+# If you need to link to a test library, use this path
+#
+TEST_OAK_LIB_PATH=$(__PROJROOT)\oak\lib\$(__CPUDIR)
+
+
+!IF "$(TEST_W4)"=="1"
+CDEFINES=/W4 /FI$(TEST_ROOT)\common\inc\warning.h
+!ENDIF
+
+#
+# If you need a reference to SLM Mobile Assemblies, please use this path
+#
+SLM_REFERENCE_PATH=$(_PRIVATEROOT)\silverlight\xcp\bins\wm\slm
+SLM_NETCF_PATH=$(_MANAGED_FRAMEWORK_DIR)
+
+#
+# If you need to reference a managed test assembly, use this path
+#
+TEST_OAK_MANAGED_PATH=$(__PROJROOT)\oak\target\MANAGED\$(WINCEDEBUG)
+
+# Microsoft.WindowsCE assemblies
+_CEQANAMESPACE=Microsoft.WindowsCE
+_DATK=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).DATK.dll
+_LOGGER=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).Logging.dll
+_TUXNETCORE=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).TuxNet.Core.dll
+_WIN32API=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).Win32API.dll
+_RANDOM=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).Random.dll
+_DRAWING=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).Drawing.dll
+
+# Microsoft.MobileDevices assemblies
+_WMQANAMESPACE=Microsoft.MobileDevices
+
+!IF "$(_TGTOS)"=="CE"
+# add build version info to all of the test binaries (CE only)
+!IFNDEF PASS0ONLY
+CONLY_FLAGS=$(CONLY_FLAGS) /FI$(TEST_ROOT)\common\inc\imageversion.h
+!ENDIF
+!ENDIF
+
+
+_UTILSDOTNET=$(TEST_OAK_MANAGED_PATH)\$(_WMQANAMESPACE).Utils.dll
+_MOBILITYTOOLKIT=$(TEST_OAK_MANAGED_PATH)\$(_WMQANAMESPACE).MobilityToolKit.dll
+_HARNESSCORE=$(TEST_OAK_MANAGED_PATH)\$(_WMQANAMESPACE).Harness.Core.dll
+_MDUTILS=$(TEST_OAK_MANAGED_PATH)\$(_WMQANAMESPACE).MDUtils.dll
+
+
+#-----------------------------------------------------------------
+#test\common settings
+#-----------------------------------------------------------------
+WTTLOG_ROOT=$(TEST_ROOT)\common\wttlogger\
+
+#-----------------------------------------------------------------
+#test\net settings
+#-----------------------------------------------------------------
+EXT_INCLUDES=$(EXT_INCLUDES);$(_WINCEROOT)\public\common\
+
+
+#-----------------------------------------------------------------
+#test\lx settings
+#-----------------------------------------------------------------
+USP_TUX_SUPPORT=1
+
+
+#-----------------------------------------------------------------
+#test\baseos settings
+#-----------------------------------------------------------------
+FILESYS_TESTROOT=$(TEST_ROOT)\BaseOS\filesys
+KERNEL_TESTROOT=$(TEST_ROOT)\BaseOS\Kernel
+IMGUPD_TESTROOT=$(TEST_ROOT)\BaseOS\imgupd
+DRIVERS_TESTROOT=$(TEST_ROOT)\BaseOS\Drivers
+
+#-----------------------------------------------------------------
+#test\multimedia settings
+#-----------------------------------------------------------------
+
+MM_TST_ROOT=$(TEST_ROOT)\Multimedia
+DX_TST_ROOT=$(MM_TST_ROOT)\directx
+WM_TST_ROOT=$(DX_TST_ROOT)\winmedia
+EXT_INCLUDES=$(TEST_ROOT)\Multimedia\common\inc;$(EXT_INCLUDES)
+
+#-----------------------------------------------------------------
+#test\shell settings
+#-----------------------------------------------------------------
+
+SHELL_D3D_TEST_ROOT=$(TEST_ROOT)\Shell\Graphics\d3d
+SHELL_D3D_PORTED_TEST_ROOT=$(TEST_ROOT)\Shell\Graphics\d3d\ported
+
+#-----------------------------------------------------------------
+#test\xna settings
+XNA_TEST_ROOT=$(TEST_ROOT)\XNA
+XNA_WINDOWS_TEST_ROOT=$(XNA_TEST_ROOT)\ported
+
+#-----------------------------------------------------------------
+#Platform Builder Device-side settings
+#-----------------------------------------------------------------
+PBQA_DEVICEAPPSROOT=$(TEST_ROOT)\PlatformBuilderTests
+
+#-----------------------------------------------------------------
+#Apply warning policy.
+#Disable specific W4 warnings for test tree per policy.
+#-----------------------------------------------------------------
+WARNLEVEL=4
+NO_WARNISERROR=1
+#ERRORFORBANNEDAPIS=WARNONLY
+
+# Note:  ENABLE_ALL_WARNINGS will only be honored here if it is set
+#        in the environment.  The sources file is too late.
+#        To enable these warnings in the sources file, clear the
+#        ALLOW_* in the sources file directly.
+!IF "$(ENABLE_ALL_WARNINGS)" == ""
+# Disable language conformance to maintain compat
+ALLOW_CONDITIONAL_IS_CONSTANT=1
+ALLOW_VAR_INIT_NO_REF=1
+!ENDIF
+

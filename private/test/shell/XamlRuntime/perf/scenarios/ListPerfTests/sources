@@ -1,0 +1,99 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+TARGETNAME=XRListPerfTests
+
+TARGETTYPE=DYNLINK
+RELEASETYPE=OAK
+DEFFILE=tux.def
+WINCEATL=1
+
+TEST_OAK_LIB_PATH=$(_PUBLICROOT)\test\oak\lib\$(_CPUINDPATH)
+
+CDEFINES=$(CDEFINES) -EHa -DGUIDGEN_ENABLE
+
+
+INCLUDES=\
+         $(_PUBLICROOT)\common\sdk\inc;              \
+         $(_PUBLICROOT)\common\oak\inc;              \
+         $(_PRIVATEROOT)\test\common\inc;     \
+         $(_PRIVATEROOT)\test\common\perflog\inc;     \
+         $(_PRIVATEROOT)\test\common\libs\GUIDGenerator\dll; \
+         $(TEST_ROOT)\common\libs\gse2;                  \
+         $(TEST_ROOT)\gwes\input\common\GestureHelper2;  \
+         $(TEST_ROOT)\gwes\inc;  \
+         $(_PRIVATEROOT)\test\shell\XamlRuntime\perf\inc; \
+         $(_PRIVATEROOT)\test\shell\XamlRuntime\api\inc; \
+         $(_PRIVATEROOT)\test\shell\XamlRuntime\inc;
+
+
+TARGETLIBS= $(TARGETLIBS) \
+    $(_COREDLL) \
+    $(_UUID) \
+    $(_OLE32) \
+    $(_OLEAUT32) \
+    $(_KATO) \
+    $(_XAMLRUNTIME) \
+    $(TEST_OAK_LIB_PATH)\PerfTestUtils.lib \
+    $(TEST_OAK_LIB_PATH)\perfscenario.lib \
+    $(TEST_OAK_LIB_PATH)\GUIDGenerator.lib \
+    $(TEST_OAK_LIB_PATH)\GestureHelper2.lib \
+    $(_QALIBDEPS)
+
+
+SOURCES= \
+        globals.cpp \
+        PerfListTests.cpp    \
+        PerfListTests.rc     \
+        EventHandler.cpp \
+        TuxProc.cpp  \
+        utils.cpp  \
+        Initialize.cpp 
+
+TARGETLIBS= $(TARGETLIBS) \
+    $(_OBJDIR)\xrpack\XRPerfList.res \
+
+XRPACK_ARGS= \
+    /TargetHeader=XRPerfList.h \
+    /TargetRes=XRPerfList.res \
+    /OutputFiles=$(_OBJDIR)\xrpack \
+    /BAMLFailureAsError \
+    /BamlOn \
+    /ImageCompress \
+    /ResID=5101 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix01.png \
+    /ResID=5102 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix02.png \
+    /ResID=5103 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix03.png \
+    /ResID=5104 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix04.png \
+    /ResID=5105 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix05.png \
+    /ResID=5106 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix06.png \
+    /ResID=5107 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix07.png \
+    /ResID=5108 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix08.png \
+    /ResID=5109 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix09.png \
+    /ResID=5110 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix10.png \
+    /ResID=5111 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix11.png \
+    /ResID=5112 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix12.png \
+    /ResID=5113 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix13.png \
+    /ResID=5114 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix14.png \
+    /ResID=5115 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix15.png \
+    /ResID=5116 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix16.png \
+    /ResID=5117 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix17.png \
+    /ResID=5118 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix18.png \
+    /ResID=5119 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix19.png \
+    /ResID=5120 /ResFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Images\ListPerf\PNGs128x128\Pix20.png \
+    /XamlFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\vsp\VSP_ListboxDB.xaml\
+    /XamlFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\vsp\VSP_listboxDBTemplate.xaml\
+    /XamlFile=$(_PRIVATEROOT)\test\shell\XamlRuntime\perf\data\Xaml\vsp\VSP_listboxDBTemplateImageOnly.xaml\
+
+# This allows you to copy auxilliary files if your tests require it.
+# Add copy commands to makefile.inc and uncomment out the next line
+WINCETARGETFILE0=copy_files

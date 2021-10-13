@@ -1,0 +1,81 @@
+[Version]
+Signature = "$Windows NT$"
+Provider = "Microsoft"
+CESignature = "$Windows CE$"
+
+[CEStrings]
+AppName = UPnP Device Host
+InstallDir = %CE2%  	                ; \Windows
+
+[CEDevice]
+VersionMin = 5.00
+VersionMax = 9.00
+
+[DefaultInstall]
+CopyFiles = SystemFiles, UPnPFiles
+AddReg = SystemReg
+
+[SourceDisksFiles.arm]
+upnpsvc.dll = 1,.
+upnpcapi.dll = 1,.
+upnphost.dll = 1,.
+upnploader.dll = 1,.
+readme.txt = 1,.
+
+[SourceDisksNames.arm]
+1="UPnP Device Host"
+
+[DestinationDirs]
+SystemFiles = 0,%InstallDir%
+UPnPFiles = 0,%InstallDir%\UPnP
+
+[SystemFiles]
+upnpsvc.dll,,0xc0000000
+upnpcapi.dll,,0xc0000000
+upnphost.dll,,0xc0000000
+upnploader.dll,,0xc0000000
+
+[UPnPFiles]
+readme.txt,,0xc0000000
+
+[SystemReg]
+; UPnP service
+HKLM,Services\UPNPSVC,Context,0x00010001,0
+HKLM,Services\UPNPSVC,Dll,0x00000000,"upnpsvc.dll"
+HKLM,Services\UPNPSVC,Order,0x00010001,5
+HKLM,Services\UPNPSVC,Prefix,0x00000000,"UPP"
+HKLM,Services\UPNPSVC,Index,0x00010001,1
+
+; UPnP loader service
+HKLM,Services\UPNPLOADER,Context,0x00010001,0
+HKLM,Services\UPNPLOADER,Dll,0x00000000,"upnploader.dll"
+HKLM,Services\UPNPLOADER,Order,0x00010001,0x10
+HKLM,Services\UPNPLOADER,Prefix,0x00000000,"UPL"
+HKLM,Services\UPNPLOADER,Index,0x00010001,1
+
+; HTTP VROOTs
+HKLM,COMM\HTTPD\VROOTS\/upnp,,0x00000000,"\windows\upnp\"
+HKLM,COMM\HTTPD\VROOTS\/upnp,a,0x00010001,0
+HKLM,COMM\HTTPD\VROOTS\/upnpisapi,,0x00000000,"\windows\upnpsvc.dll"
+HKLM,COMM\HTTPD\VROOTS\/upnpisapi,a,0x00010001,0
+
+; Port
+HKLM,COMM\UPnP,Port,0x00010001,0x1400
+HKLM,COMM\UPnP,DiscoveryTimeToLive,0x00010001,1
+HKLM,Services\HTTPD\Accept\TCP-5120,SockAddr,0x00000001,02,00,14,00,00,00,00,00,00,00,00,00,00,00,00,00
+HKLM,Services\HTTPD\Accept\TCP-5120v6,SockAddr,0x00000001,17,00,14,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+
+; UPnP settings
+HKLM,COMM\UPnP\Exclude,ExcludeAllExceptListed,0x00010001,1
+
+; COM registration
+HKCR,CLSID\{204810b9-73b2-11d4-bf42-00b0d0118b56},,0x00000000,"UPnP Registrar Class"
+HKCR,CLSID\{204810b9-73b2-11d4-bf42-00b0d0118b56}\ProgID,,0x00000000,"UPnP.UPnPRegistrar.1"
+HKCR,CLSID\{204810b9-73b2-11d4-bf42-00b0d0118b56}\VersionIndependentProgID,,0x00000000,"UPnP.UPnPRegistrar"
+HKCR,CLSID\{204810b9-73b2-11d4-bf42-00b0d0118b56}\InprocServer32,,0x00000000,"\Windows\upnphost.dll"
+HKCR,CLSID\{204810b9-73b2-11d4-bf42-00b0d0118b56}\InprocServer32,ThreadingModel,0x00000000,"Both"
+
+HKCR,UPnP.UPnPRegistrar.1,,0x00000000,"UPnP Registrar Class"
+HKCR,UPnP.UPnPRegistrar.1\CLSID],,0x00000000,"{204810b9-73b2-11d4-bf42-00b0d0118b56}"
+HKCR,UPnP.UPnPRegistrar,,0x00000000,"UPnP Registrar Class"
+HKCR,UPnP.UPnPRegistrar\CurVer,,0x00000000,"UPnP.UPnPRegistrar.1"

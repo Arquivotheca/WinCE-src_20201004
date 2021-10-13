@@ -1,0 +1,933 @@
+ AlchemyTestUtils
+
+ Timestamp is 56281bc9 (Wed Oct 21 16:12:09 2015)
+
+ Preferred load address is 10000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000004H .CRT$XCA                CODE
+ 0001:00000004 00000004H .CRT$XCU                CODE
+ 0001:00000008 00000004H .CRT$XCZ                CODE
+ 0001:0000000c 00000004H .CRT$XIA                CODE
+ 0001:00000010 00000004H .CRT$XIZ                CODE
+ 0001:00000014 00000004H .CRT$XPA                CODE
+ 0001:00000018 00000004H .CRT$XPZ                CODE
+ 0001:0000001c 00000004H .CRT$XTA                CODE
+ 0001:00000020 00000004H .CRT$XTZ                CODE
+ 0001:00000030 00002640H .rdata                  CODE
+ 0001:00002670 00000040H .rdata$debug            CODE
+ 0001:000026b0 000029f0H .text                   CODE
+ 0001:000050a0 0000003cH .text$yc                CODE
+ 0001:000050dc 0000000cH .text$yd                CODE
+ 0001:000050e8 000003b8H .xdata                  CODE
+ 0001:000054a0 000000bcH .xdata$x                CODE
+ 0001:0000555c 00000000H ATL$__a                 CODE
+ 0001:0000555c 00000000H ATL$__z                 CODE
+ 0001:0000555c 00000050H .idata$2                CODE
+ 0001:000055ac 00000014H .idata$3                CODE
+ 0001:000055c0 000000fcH .idata$4                CODE
+ 0001:000056bc 000000bcH .idata$6                CODE
+ 0001:00005780 00000333H .edata                  CODE
+ 0002:00000000 000000fcH .idata$5                DATA
+ 0002:00000100 000002a4H .data                   DATA
+ 0002:000003a4 00000070H .bss                    DATA
+ 0003:00000000 000002b0H .pdata                  DATA
+
+  Address         Publics by Value              Rva+Base       Lib:Object
+
+ 0000:00000000       ___safe_se_handler_table   00000000     <absolute>
+ 0000:00000000       ___safe_se_handler_count   00000000     <absolute>
+ 0000:00000000       _load_config_used          10000000     <linker-defined>
+ 0001:00000000       __xc_a                     10001000     ccrt0:crt0init.obj
+ 0001:00000008       __xc_z                     10001008     ccrt0:crt0init.obj
+ 0001:0000000c       __xi_a                     1000100c     ccrt0:crt0init.obj
+ 0001:00000010       __xi_z                     10001010     ccrt0:crt0init.obj
+ 0001:00000014       __xp_a                     10001014     ccrt0:crt0init.obj
+ 0001:00000018       __xp_z                     10001018     ccrt0:crt0init.obj
+ 0001:0000001c       __xt_a                     1000101c     ccrt0:crt0init.obj
+ 0001:00000020       __xt_z                     10001020     ccrt0:crt0init.obj
+ 0001:00000068       ??_C@_1GI@LNFHMDLF@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAF?$AAr?$AAo?$AAm?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi@ 10001068     AlchemyXML.obj
+ 0001:000000d0       ??_C@_1JC@DINJCNAI@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAF?$AAr?$AAo?$AAm?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAA?$AAI@ 100010d0     AlchemyXML.obj
+ 0001:00000168       ??_C@_1FM@KIGLPELD@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAF?$AAr?$AAo?$AAm?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi@ 10001168     AlchemyXML.obj
+ 0001:000001c8       ??_C@_1FM@ONEPEBPG@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAC?$AAh?$AAe?$AAc?$AAk?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5@ 100011c8     AlchemyXML.obj
+ 0001:00000228       ??_C@_1GC@DHHEIIMA@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo@ 10001228     AlchemyXML.obj
+ 0001:00000290       ??_C@_1FE@LDAOHPHL@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAT?$AAa?$AAg?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo?$AA?5?$AAg?$AAe?$AAt@ 10001290     AlchemyXML.obj
+ 0001:000002e8       ??_C@_1FI@PFDBCFIM@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo@ 100012e8     AlchemyXML.obj
+ 0001:00000388       ??_C@_1FO@OKJLDMHB@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo@ 10001388     AlchemyXML.obj
+ 0001:00000430       ??_C@_1FM@MIHNAKCG@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo@ 10001430     AlchemyXML.obj
+ 0001:000004d8       ??_C@_1HA@KFIABPDG@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAV?$AAa?$AAl?$AAu?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa@ 100014d8     AlchemyXML.obj
+ 0001:00000548       ??_C@_1HM@ODNEGFAN@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAV?$AAa?$AAl?$AAu?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa@ 10001548     AlchemyXML.obj
+ 0001:000005c8       ??_C@_1HM@MLDHKLJH@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAV?$AAa?$AAl?$AAu?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa@ 100015c8     AlchemyXML.obj
+ 0001:00000648       ??_C@_1HG@IMOELBCI@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAV?$AAa?$AAl?$AAu?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa@ 10001648     AlchemyXML.obj
+ 0001:000006c0       ??_C@_1HI@CIKLDPGC@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAV?$AAa?$AAl?$AAu?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa@ 100016c0     AlchemyXML.obj
+ 0001:00000790       ??_C@_1GK@IPBGOIEM@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAD?$AAo?$AAu?$AAb?$AAl?$AAe?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe@ 10001790     AlchemyXML.obj
+ 0001:000007fc       ??_C@_17EKDACLFK@?$AA?$CF?$AAl?$AAf?$AA?$AA@ 100017fc     AlchemyXML.obj
+ 0001:00000808       ??_C@_1GA@IBEKBHCH@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAD?$AAo?$AAu?$AAb?$AAl?$AAe?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe@ 10001808     AlchemyXML.obj
+ 0001:000008b0       ??_C@_1GE@ECPFADEI@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAI?$AAn?$AAt?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt@ 100018b0     AlchemyXML.obj
+ 0001:00000918       ??_C@_1FK@PDMOGBCA@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAI?$AAn?$AAt?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt@ 10001918     AlchemyXML.obj
+ 0001:000009c0       ??_C@_1GK@NAHBBBHO@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe@ 100019c0     AlchemyXML.obj
+ 0001:00000a30       ??_C@_1GA@FHEBMPJE@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAS?$AAt?$AAr?$AAi?$AAn?$AAg?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe@ 10001a30     AlchemyXML.obj
+ 0001:00000ad8       ??_C@_1FE@OFBAMIPK@?$AAF?$AAA?$AAI?$AAL?$AAE?$AAD?$AA?$CI?$AAR?$AAe?$AAc?$AAu?$AAr?$AAs?$AAe?$AAC?$AAh?$AAi?$AAl?$AAd?$AAr?$AAe?$AAn?$AAS?$AAt?$AAa?$AAc?$AAk?$AA?$CJ?$AA?3?$AA?5?$AAt?$AAo@ 10001ad8     AlchemyXML.obj
+ 0001:00000b30       ??_C@_1GO@FIPIECDA@?$AAF?$AAA?$AAI?$AAL?$AAE?$AAD?$AA?$CI?$AAR?$AAe?$AAc?$AAu?$AAr?$AAs?$AAe?$AAC?$AAh?$AAi?$AAl?$AAd?$AAr?$AAe?$AAn?$AAS?$AAt?$AAa?$AAc?$AAk?$AA?$CJ?$AA?3?$AA?5?$AAt?$AAo@ 10001b30     AlchemyXML.obj
+ 0001:00000ba0       ??_C@_1HA@HFKONPAO@?$AAF?$AAA?$AAI?$AAL?$AAE?$AAD?$AA?$CI?$AAR?$AAe?$AAc?$AAu?$AAr?$AAs?$AAe?$AAC?$AAh?$AAi?$AAl?$AAd?$AAr?$AAe?$AAn?$AAS?$AAt?$AAa?$AAc?$AAk?$AA?$CJ?$AA?3?$AA?5?$AAt?$AAo@ 10001ba0     AlchemyXML.obj
+ 0001:00000c10       ??_C@_1BA@MFDDMHK@?$AA?$FL?$AA?$CF?$AAf?$AA?0?$AA?$CF?$AAf?$AA?$FN?$AA?$AA@ 10001c10     AlchemyXML.obj
+ 0001:00000c20       ??_C@_1BE@POOCPEFN@?$AAU?$AAp?$AAp?$AAe?$AAr?$AAL?$AAe?$AAf?$AAt?$AA?$AA@ 10001c20     AlchemyXML.obj
+ 0001:00000c80       ??_7XMLCollection@@6B@     10001c80     AlchemyXML.obj
+ 0001:00000cf0       ??_C@_1EM@CFLEFEML@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo?$AA?5?$AAc?$AAr?$AAe?$AAa?$AAt?$AAe?$AA?5?$AAm?$AAe?$AAs?$AAs?$AAa?$AAg?$AAe?$AA?5@ 10001cf0     AlchemyXML.obj
+ 0001:00000d3c       ??_C@_1DM@IMGMMFAO@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo?$AA?5?$AAs?$AAe?$AAn?$AAd?$AA?5?$AAm?$AAe?$AAs?$AAs?$AAa?$AAg?$AAe?$AA?$AA@ 10001d3c     AlchemyXML.obj
+ 0001:00000d78       ??_C@_1CK@FOBBBNBG@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?3?$AA?5?$AAo?$AAu?$AAt?$AA?5?$AAo?$AAf?$AA?5?$AAm?$AAe?$AAm?$AAo?$AAr?$AAy?$AA?$AA@ 10001d78     AlchemyXML.obj
+ 0001:00000da8       ??_C@_1GM@NIDJBIHE@?$AAE?$AAr?$AAr?$AAo?$AAr?$AA?5?$AAr?$AAe?$AAa?$AAd?$AAi?$AAn?$AAg?$AA?5?$AAm?$AAe?$AAs?$AAs?$AAa?$AAg?$AAe?$AA?5?$AAd?$AAa?$AAt?$AAa?$AA?5?$AAf?$AAr?$AAo?$AAm?$AA?5@ 10001da8     AlchemyXML.obj
+ 0001:00000e88       ??_C@_1BO@DKHHMCAA@?$AAE?$AAl?$AAe?$AAm?$AAe?$AAn?$AAt?$AAP?$AAo?$AAi?$AAn?$AAt?$AAe?$AAr?$AA?$AA@ 10001e88     AlchemyXML.obj
+ 0001:00000ea8       ??_C@_1O@KEPOIAMF@?$AA0?$AAx?$AA?$CF?$AA?4?$AA8?$AAx?$AA?$AA@ 10001ea8     AlchemyXML.obj
+ 0001:00000f00       ??_C@_1BC@HBBJIOBG@?$AA?4?$AAC?$AAo?$AAn?$AAt?$AAe?$AAn?$AAt?$AA?$AA@ 10001f00     AlchemyXML.obj
+ 0001:00000f18       ??_C@_1GK@HOABILAG@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAB?$AAy?$AAT?$AAa?$AAg?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe@ 10001f18     AlchemyXML.obj
+ 0001:00000f88       ??_C@_1FM@CEHOLKFK@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAB?$AAy?$AAT?$AAa?$AAg?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe@ 10001f88     AlchemyXML.obj
+ 0001:00000fe8       ??_C@_1GA@PAGADIJH@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAB?$AAy?$AAT?$AAa?$AAg?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe@ 10001fe8     AlchemyXML.obj
+ 0001:000010a8       ??_C@_1FK@PKJAMLEL@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAs?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo?$AA?5?$AAL?$AAo?$AAa@ 100020a8     AlchemyXML.obj
+ 0001:00001108       ??_C@_1GE@MOBDKNOJ@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAs?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo?$AA?5?$AAg?$AAe?$AAt@ 10002108     AlchemyXML.obj
+ 0001:000011b8       ??_C@_1HG@HNOFFPGC@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAB?$AAy?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3@ 100021b8     AlchemyXML.obj
+ 0001:00001230       ??_C@_19DINFBLAK@?$AAN?$AAa?$AAm?$AAe?$AA?$AA@ 10002230     AlchemyXML.obj
+ 0001:00001240       ??_C@_1HE@MFGKPINB@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAB?$AAy?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3@ 10002240     AlchemyXML.obj
+ 0001:000012b8       ??_C@_1GM@CEMJIDIF@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAO?$AAb?$AAj?$AAe?$AAc?$AAt?$AAB?$AAy?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AAN?$AAa?$AAm?$AAe?$AA?$CJ?$AA?3@ 100022b8     AlchemyXML.obj
+ 0001:000013d8       ??_C@_1IM@GOMFJPCH@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAF?$AAr?$AAa?$AAm?$AAe?$AAR?$AAa?$AAt?$AAe?$AAF?$AAr?$AAo?$AAm?$AAW?$AAi?$AAn?$AAd?$AAo?$AAw?$AA?$CJ?$AA?3?$AA?5?$AAF@ 100023d8     AlchemyAnimation.obj
+ 0001:00001468       ??_C@_1IE@EDGELLFD@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAF?$AAr?$AAa?$AAm?$AAe?$AAR?$AAa?$AAt?$AAe?$AAF?$AAr?$AAo?$AAm?$AAW?$AAi?$AAn?$AAd?$AAo?$AAw?$AA?$CJ?$AA?3?$AA?5?$AAF@ 10002468     AlchemyAnimation.obj
+ 0001:000014f0       ??_C@_1HM@DDOGMFIP@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAF?$AAr?$AAa?$AAm?$AAe?$AAR?$AAa?$AAt?$AAe?$AAF?$AAr?$AAo?$AAm?$AAW?$AAi?$AAn?$AAd?$AAo?$AAw?$AA?$CJ?$AA?3?$AA?5?$AAF@ 100024f0     AlchemyAnimation.obj
+ 0001:00001570       ??_C@_1HG@OAGJBGKF@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAF?$AAr?$AAa?$AAm?$AAe?$AAR?$AAa?$AAt?$AAe?$AAF?$AAr?$AAo?$AAm?$AAW?$AAi?$AAn?$AAd?$AAo?$AAw?$AA?$CJ?$AA?3?$AA?5?$AAF@ 10002570     AlchemyAnimation.obj
+ 0001:000015e8       ??_C@_1HG@COJIOEPB@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAG?$AAe?$AAt?$AAF?$AAr?$AAa?$AAm?$AAe?$AAR?$AAa?$AAt?$AAe?$AAF?$AAr?$AAo?$AAm?$AAW?$AAi?$AAn?$AAd?$AAo?$AAw?$AA?$CJ?$AA?3?$AA?5?$AAF@ 100025e8     AlchemyAnimation.obj
+ 0001:00001660       ??_C@_1HI@ONFNDCBK@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAC?$AAl?$AAo?$AAc?$AAk?$AAC?$AAo?$AAm?$AAm?$AAa?$AAn?$AAd?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo?$AA?5?$AAr@ 10002660     AlchemyAnimation.obj
+ 0001:000016d8       ??_C@_1GC@GOOEPGJ@?$AAE?$AAR?$AAR?$AAO?$AAR?$AA?$CI?$AAC?$AAl?$AAo?$AAc?$AAk?$AAC?$AAo?$AAm?$AAm?$AAa?$AAn?$AAd?$AA?$CJ?$AA?3?$AA?5?$AAF?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?5?$AAt?$AAo?$AA?5?$AAs@ 100026d8     AlchemyAnimation.obj
+ 0001:00001740       ??_C@_1HO@HGNOOFIP@?$AAE?$AAr?$AAr?$AAo?$AAr?$AA?$CI?$AAF?$AAi?$AAn?$AAd?$AAW?$AAi?$AAn?$AAd?$AAo?$AAw?$AAW?$AAT?$AAi?$AAm?$AAe?$AAO?$AAu?$AAt?$AA?$CJ?$AA?3?$AA?5?$AAT?$AAi?$AAm?$AAe?$AAd@ 10002740     WindowUtil.obj
+ 0001:000017c0       ??_7Queue@@6B@             100027c0     Queue.obj
+ 0001:000017c4       ??_C@_13HADIAKP@?$AAS?$AA?$AA@ 100027c4     XmlDocument:XmlElement.obj
+ 0001:000017e8       ??_C@_13LHMFKAAD@?$AAM?$AA?$AA@ 100027e8     XmlDocument:XmlElement.obj
+ 0001:000017ec       ??_C@_13MKMNOPIJ@?$AAD?$AA?$AA@ 100027ec     XmlDocument:XmlElement.obj
+ 0001:000017f0       ??_C@_13OPKGLAFF@?$AAB?$AA?$AA@ 100027f0     XmlDocument:XmlElement.obj
+ 0001:000017f4       ??_C@_17LLMMEOJD@?$AAV?$AAa?$AAl?$AA?$AA@ 100027f4     XmlDocument:XmlElement.obj
+ 0001:000017fc       ??_C@_1BI@JFAIJMHL@?$AAF?$AAo?$AAr?$AAc?$AAe?$AAR?$AAe?$AAm?$AAo?$AAv?$AAe?$AA?$AA@ 100027fc     XmlDocument:XmlElement.obj
+ 0001:00001814       ??_C@_1BC@GCKHIPE@?$AAN?$AAo?$AAR?$AAe?$AAm?$AAo?$AAv?$AAe?$AA?$AA@ 10002814     XmlDocument:XmlElement.obj
+ 0001:00001828       ??_C@_1O@JDLOHAN@?$AAD?$AAe?$AAl?$AAe?$AAt?$AAe?$AA?$AA@ 10002828     XmlDocument:XmlElement.obj
+ 0001:00001a08       ??_C@_13BBDEGPLJ@?$AA?$CK?$AA?$AA@ 10002a08     XmlDocument:XmlElement.obj
+ 0001:00001af8       ??_C@_1DO@OHCAMLCH@?$AAX?$AAm?$AAl?$AAA?$AAt?$AAt?$AAr?$AAi?$AAb?$AAu?$AAt?$AAe?$AAC?$AAo?$AAl?$AAl?$AAe?$AAc?$AAt?$AAi?$AAo?$AAn?$AA?5?$AAf?$AAa?$AAi?$AAl?$AAe?$AAd?$AA?4?$AA?$AA@ 10002af8     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001cb0       ??_C@_1FK@PGACCAFB@?$AAR?$AA6?$AA0?$AA0?$AA2?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAf?$AAl?$AAo?$AAa?$AAt?$AAi?$AAn?$AAg?$AA?5?$AAp?$AAo?$AAi?$AAn?$AAt?$AA?5?$AAs?$AAu?$AAp?$AAp?$AAo?$AAr?$AAt?$AA?5@ 10002cb0     ccrt0:crt0msg.obj
+ 0001:00001d10       ??_C@_1FE@LLNEDJMD@?$AAR?$AA6?$AA0?$AA0?$AA8?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAe?$AAn?$AAo?$AAu?$AAg?$AAh?$AA?5?$AAs?$AAp?$AAa?$AAc?$AAe?$AA?5?$AAf?$AAo?$AAr?$AA?5?$AAa?$AAr@ 10002d10     ccrt0:crt0msg.obj
+ 0001:00001d68       ??_C@_1FI@HONFMGBI@?$AAR?$AA6?$AA0?$AA0?$AA9?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAe?$AAn?$AAo?$AAu?$AAg?$AAh?$AA?5?$AAs?$AAp?$AAa?$AAc?$AAe?$AA?5?$AAf?$AAo?$AAr?$AA?5?$AAe?$AAn@ 10002d68     ccrt0:crt0msg.obj
+ 0001:00001dc0       ??_C@_1EG@BEHAGFJD@?$AAR?$AA6?$AA0?$AA1?$AA0?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAa?$AAb?$AAo?$AAr?$AAt?$AA?$CI?$AA?$CJ?$AA?5?$AAh?$AAa?$AAs?$AA?5?$AAb?$AAe?$AAe?$AAn?$AA?5?$AAc?$AAa?$AAl?$AAl?$AAe?$AAd@ 10002dc0     ccrt0:crt0msg.obj
+ 0001:00001e08       ??_C@_1FI@LOGNIKDM@?$AAR?$AA6?$AA0?$AA1?$AA6?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAe?$AAn?$AAo?$AAu?$AAg?$AAh?$AA?5?$AAs?$AAp?$AAa?$AAc?$AAe?$AA?5?$AAf?$AAo?$AAr?$AA?5?$AAt?$AAh@ 10002e08     ccrt0:crt0msg.obj
+ 0001:00001e60       ??_C@_1FK@BEOGODMC@?$AAR?$AA6?$AA0?$AA1?$AA7?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAu?$AAn?$AAe?$AAx?$AAp?$AAe?$AAc?$AAt?$AAe?$AAd?$AA?5?$AAm?$AAu?$AAl?$AAt?$AAi?$AAt?$AAh?$AAr?$AAe?$AAa?$AAd?$AA?5@ 10002e60     ccrt0:crt0msg.obj
+ 0001:00001ec0       ??_C@_1EC@JIBHAOPH@?$AAR?$AA6?$AA0?$AA1?$AA8?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAu?$AAn?$AAe?$AAx?$AAp?$AAe?$AAc?$AAt?$AAe?$AAd?$AA?5?$AAh?$AAe?$AAa?$AAp?$AA?5?$AAe?$AAr?$AAr?$AAo?$AAr?$AA?$AN?$AA?6@ 10002ec0     ccrt0:crt0msg.obj
+ 0001:00001f08       ??_C@_1FC@ECHBIFBC@?$AAR?$AA6?$AA0?$AA1?$AA9?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAu?$AAn?$AAa?$AAb?$AAl?$AAe?$AA?5?$AAt?$AAo?$AA?5?$AAo?$AAp?$AAe?$AAn?$AA?5?$AAc?$AAo?$AAn?$AAs?$AAo?$AAl?$AAe?$AA?5@ 10002f08     ccrt0:crt0msg.obj
+ 0001:00001f60       ??_C@_1GK@FHCKBEFA@?$AAR?$AA6?$AA0?$AA2?$AA4?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAe?$AAn?$AAo?$AAu?$AAg?$AAh?$AA?5?$AAs?$AAp?$AAa?$AAc?$AAe?$AA?5?$AAf?$AAo?$AAr?$AA?5?$AA_?$AAo@ 10002f60     ccrt0:crt0msg.obj
+ 0001:00001fd0       ??_C@_1EM@MAADIHMB@?$AAR?$AA6?$AA0?$AA2?$AA5?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAp?$AAu?$AAr?$AAe?$AA?5?$AAv?$AAi?$AAr?$AAt?$AAu?$AAa?$AAl?$AA?5?$AAf?$AAu?$AAn?$AAc?$AAt?$AAi?$AAo?$AAn?$AA?5?$AAc@ 10002fd0     ccrt0:crt0msg.obj
+ 0001:00002020       ??_C@_1GK@MCAAGJMO@?$AAR?$AA6?$AA0?$AA2?$AA6?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAe?$AAn?$AAo?$AAu?$AAg?$AAh?$AA?5?$AAs?$AAp?$AAa?$AAc?$AAe?$AA?5?$AAf?$AAo?$AAr?$AA?5?$AAs?$AAt@ 10003020     ccrt0:crt0msg.obj
+ 0001:00002090       ??_C@_1GK@MFGOKLAG@?$AAR?$AA6?$AA0?$AA2?$AA7?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAe?$AAn?$AAo?$AAu?$AAg?$AAh?$AA?5?$AAs?$AAp?$AAa?$AAc?$AAe?$AA?5?$AAf?$AAo?$AAr?$AA?5?$AAl?$AAo@ 10003090     ccrt0:crt0msg.obj
+ 0001:00002100       ??_C@_1EK@HHFLMAOL@?$AAR?$AA6?$AA0?$AA2?$AA8?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAu?$AAn?$AAa?$AAb?$AAl?$AAe?$AA?5?$AAt?$AAo?$AA?5?$AAi?$AAn?$AAi?$AAt?$AAi?$AAa?$AAl?$AAi?$AAz?$AAe?$AA?5?$AAh?$AAe@ 10003100     ccrt0:crt0msg.obj
+ 0001:0000214c       ??_C@_1DO@BMFCDCD@?$AAR?$AA6?$AA0?$AA3?$AA0?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAC?$AAR?$AAT?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAi?$AAn?$AAi?$AAt?$AAi?$AAa?$AAl?$AAi?$AAz?$AAe?$AAd?$AA?$AN?$AA?6?$AA?$AA@ 1000314c     ccrt0:crt0msg.obj
+ 0001:00002190       ??_C@_1MG@ENCOOIDF@?$AAR?$AA6?$AA0?$AA3?$AA1?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAA?$AAt?$AAt?$AAe?$AAm?$AAp?$AAt?$AA?5?$AAt?$AAo?$AA?5?$AAi?$AAn?$AAi?$AAt?$AAi?$AAa?$AAl?$AAi?$AAz?$AAe?$AA?5?$AAt@ 10003190     ccrt0:crt0msg.obj
+ 0001:00002258       ??_C@_1GG@GOPILAJP@?$AAR?$AA6?$AA0?$AA3?$AA2?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAn?$AAo?$AAt?$AA?5?$AAe?$AAn?$AAo?$AAu?$AAg?$AAh?$AA?5?$AAs?$AAp?$AAa?$AAc?$AAe?$AA?5?$AAf?$AAo?$AAr?$AA?5?$AAl?$AAo@ 10003258     ccrt0:crt0msg.obj
+ 0001:000022c0       ??_C@_1BOO@KGEDBGAJ@?$AAR?$AA6?$AA0?$AA3?$AA3?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAA?$AAt?$AAt?$AAe?$AAm?$AAp?$AAt?$AA?5?$AAt?$AAo?$AA?5?$AAu?$AAs?$AAe?$AA?5?$AAM?$AAS?$AAI?$AAL?$AA?5?$AAc?$AAo?$AAd@ 100032c0     ccrt0:crt0msg.obj
+ 0001:000024b0       ??_C@_1GG@MKFPEKFO@?$AAR?$AA6?$AA0?$AA3?$AA4?$AA?$AN?$AA?6?$AA?9?$AA?5?$AAi?$AAn?$AAc?$AAo?$AAn?$AAs?$AAi?$AAs?$AAt?$AAe?$AAn?$AAt?$AA?5?$AAo?$AAn?$AAe?$AAx?$AAi?$AAt?$AA?5?$AAb?$AAe?$AAg@ 100034b0     ccrt0:crt0msg.obj
+ 0001:00002518       ??_C@_1BO@BFCDCGC@?$AAD?$AAO?$AAM?$AAA?$AAI?$AAN?$AA?5?$AAe?$AAr?$AAr?$AAo?$AAr?$AA?$AN?$AA?6?$AA?$AA@ 10003518     ccrt0:crt0msg.obj
+ 0001:00002538       ??_C@_1BK@KMOMNAAI@?$AAS?$AAI?$AAN?$AAG?$AA?5?$AAe?$AAr?$AAr?$AAo?$AAr?$AA?$AN?$AA?6?$AA?$AA@ 10003538     ccrt0:crt0msg.obj
+ 0001:00002554       ??_C@_1BM@JBBEPPHI@?$AAT?$AAL?$AAO?$AAS?$AAS?$AA?5?$AAe?$AAr?$AAr?$AAo?$AAr?$AA?$AN?$AA?6?$AA?$AA@ 10003554     ccrt0:crt0msg.obj
+ 0001:00002570       ??_C@_15JNBOKNOG@?$AA?$AN?$AA?6?$AA?$AA@ 10003570     ccrt0:crt0msg.obj
+ 0001:00002578       ??_C@_1BO@BKOMIGKJ@?$AAr?$AAu?$AAn?$AAt?$AAi?$AAm?$AAe?$AA?5?$AAe?$AAr?$AAr?$AAo?$AAr?$AA?5?$AA?$AA@ 10003578     ccrt0:crt0msg.obj
+ 0001:00002650       IID_IXMLDOMDocument        10003650     ieuuid:ieuuid.obj
+ 0001:00002660       CLSID_DOMDocument          10003660     ieuuid:ieuuid.obj
+ 0001:000026b0       ?FreeString@@YAXPAG@Z      100036b0 f   AlchemyXML.obj
+ 0001:000026b8       ?GetStringFromElement@@YAPAGPAVXmlElement@@@Z 100036b8 f   AlchemyXML.obj
+ 0001:0000271c       ?ElementCheckName@@YA_NPAGPAVXmlElement@@@Z 1000371c f   AlchemyXML.obj
+ 0001:0000277c       ?RemoveUselessContent@@YAPAGPAGAAPAGAAH@Z 1000377c f   AlchemyXML.obj
+ 0001:000027dc       ?CheckRemovableTag@@YA_NPAGPAPAG@Z 100037dc f   AlchemyXML.obj
+ 0001:00002844       ??1?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@QAA@XZ 10003844 f i AlchemyXML.obj
+ 0001:00002854       ?DeleteXMLSearchNode@@YAXPAU_XMLSearchNode@@@Z 10003854 f i AlchemyXML.obj
+ 0001:0000289c       ?GetTagName@@YAPAGPAG@Z    1000389c f   AlchemyXML.obj
+ 0001:00002960       ?GetElementValue@@YAPAGPAG@Z 10003960 f   AlchemyXML.obj
+ 0001:00002a24       ?GetElementType@@YAPAGPAG@Z 10003a24 f   AlchemyXML.obj
+ 0001:00002ae8       ?ElementGetStringValue@@YA_NPAG0IPAVXmlElement@@@Z 10003ae8 f   AlchemyXML.obj
+ 0001:00002c2c       ?AddChild@@YAXPAVXmlElement@@PAU_XMLSearchNode@@@Z 10003c2c f i AlchemyXML.obj
+ 0001:00002c9c       ?_Grow@?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@IAA_NI@Z 10003c9c f i AlchemyXML.obj
+ 0001:00002d08       ?DeleteXMLSearchNodeTree@@YAXPAU_XMLSearchNode@@@Z 10003d08 f   AlchemyXML.obj
+ 0001:00002d5c       ?getNext@@YAPAU_XMLSearchNode@@PAU1@@Z 10003d5c f i AlchemyXML.obj
+ 0001:00002e40       ?GetDoubleAttribute@@YA_NPAG0PAN@Z 10003e40 f   AlchemyXML.obj
+ 0001:00002f0c       ?GetIntAttribute@@YA_NPAG0PAH@Z 10003f0c f   AlchemyXML.obj
+ 0001:00002fd0       ?GetStringAttribute@@YAPAGPAG0@Z 10003fd0 f   AlchemyXML.obj
+ 0001:00003080       ?ElementCheckAttributeValue@@YA_NPAG0PAVXmlElement@@@Z 10004080 f   AlchemyXML.obj
+ 0001:000030bc       ?get_buffer@?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@QAA?AV_buffer@12@XZ 100040bc f i AlchemyXML.obj
+ 0001:000030c4       ?RecurseChildrenStack@@YAPAU_XMLSearchNode@@PAG0PAVXmlElement@@@Z 100040c4 f   AlchemyXML.obj
+ 0001:000031d4       ?GetPointAttribute@@YA_NPAG0PAUtagPOINT@@@Z 100041d4 f   AlchemyXML.obj
+ 0001:0000322c       ?GetElementUpperLeftAndString@@YAPAGPAG00PAUtagPOINT@@@Z 1000422c f   AlchemyXML.obj
+ 0001:00003334       ?append@?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@QAA_NPBG@Z 10004334 f i AlchemyXML.obj
+ 0001:00003390       ??1?$vector@PAGV?$reference_allocator@Vallocator@ce@@@details@ce@@U?$exponential_growth@$09@3@@ce@@QAA@XZ 10004390 f i AlchemyXML.obj
+ 0001:000033a8       ?AppendMessage@@YAXAAV?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@PAGAAPAGAAHPAPAG@Z 100043a8 f   AlchemyXML.obj
+ 0001:00003494       ??1XMLCollection@@UAA@XZ   10004494 f i AlchemyXML.obj
+ 0001:000034d0       ?_Insert_dispatch@?$vector@PAGVallocator@ce@@U?$exponential_growth@$09@2@@ce@@AAA_NPAPAGIABQAGABUtrue_type@detail@2@@Z 100044d0 f i AlchemyXML.obj
+ 0001:00003618       ?GetTree@@YAPAGPAUHWND__@@HKPAPAG@Z 10004618 f   AlchemyXML.obj
+ 0001:00003880       ??_GXMLCollection@@UAAPAXI@Z 10004880 f i AlchemyXML.obj
+ 0001:00003880       ??_EXMLCollection@@UAAPAXI@Z 10004880 f i AlchemyXML.obj
+ 0001:000038cc       ?GetTreeFromElementPointer@@YAPAGPAUHWND__@@KPAPAG@Z 100048cc f   AlchemyXML.obj
+ 0001:000038d8       ?GetTreeFromWindow@@YAPAGPAUHWND__@@@Z 100048d8 f   AlchemyXML.obj
+ 0001:000038e4       ?GetElementPointerTree@@YAPAGPAUHWND__@@HKPAPAG@Z 100048e4 f   AlchemyXML.obj
+ 0001:00003a14       ?RecurseChildrenCheck@@YAXPAG00PAVXmlElement@@PAPAVXMLCollection@@_NHH@Z 10004a14 f   AlchemyXML.obj
+ 0001:00003bc4       ?GetObjectByTagName@@YAPAGPAG0@Z 10004bc4 f   AlchemyXML.obj
+ 0001:00003cc8       ?GetObjects@@YAPAVXMLCollection@@PAG000HH@Z 10004cc8 f   AlchemyXML.obj
+ 0001:00003d80       ?GetObjectByAttributeName@@YAPAGPAG0@Z 10004d80 f   AlchemyXML.obj
+ 0001:00003e8c       ?GetObjectsByTagName@@YAPAVXMLCollection@@PAG0@Z 10004e8c f   AlchemyXML.obj
+ 0001:00003eac       ?GetObjectsByAttributeName@@YAPAVXMLCollection@@PAG0@Z 10004eac f   AlchemyXML.obj
+ 0001:00003ed0       ?GetObjectByCount@@YAPAGPAG000PAIHH@Z 10004ed0 f   AlchemyXML.obj
+ 0001:00003f44       ?GetFrameRateFromWindow@@YA_NPAUHWND__@@PAM@Z 10004f44 f   AlchemyAnimation.obj
+ 0001:00004054       ?ClockCommand@@YA_NPAUHWND__@@IJ@Z 10005054 f   AlchemyAnimation.obj
+ 0001:000040a8       ?AdvanceClockInWindow@@YA_NPAUHWND__@@H@Z 100050a8 f   AlchemyAnimation.obj
+ 0001:000040b0       ?StopClockInWindow@@YA_NPAUHWND__@@@Z 100050b0 f   AlchemyAnimation.obj
+ 0001:000040b8       ?StartClockInWindow@@YA_NPAUHWND__@@@Z 100050b8 f   AlchemyAnimation.obj
+ 0001:000040c0       ?FindWindowWTimeOut@@YAPAUHWND__@@PBGI@Z 100050c0 f   WindowUtil.obj
+ 0001:00004110       ??0Queue@@QAA@XZ           10005110 f   Queue.obj
+ 0001:00004124       ??1Queue@@UAA@XZ           10005124 f   Queue.obj
+ 0001:00004160       ?GetRemoteHandle@Queue@@QAAPAXXZ 10005160 f   Queue.obj
+ 0001:00004164       ?GetLocalHandle@Queue@@QAAPAXXZ 10005164 f   Queue.obj
+ 0001:00004168       ??_GQueue@@UAAPAXI@Z       10005168 f i Queue.obj
+ 0001:00004168       ??_EQueue@@UAAPAXI@Z       10005168 f i Queue.obj
+ 0001:0000418c       ?Create@Queue@@QAAJPAUHWND__@@@Z 1000518c f   Queue.obj
+ 0001:00004228       ?XMLCollectionFree@@YAXPAVXMLCollection@@@Z 10005228 f   XMLCollection.obj
+ 0001:00004238       ?XMLCollectionGetCount@@YAIPAVXMLCollection@@@Z 10005238 f   XMLCollection.obj
+ 0001:00004244       ?XMLCollectionGetObject@@YAPAGPAVXMLCollection@@I@Z 10005244 f   XMLCollection.obj
+ 0001:0000425c       GetLastError               1000525c f   coredll:COREDLL.dll
+ 0001:00004268       InitializeCriticalSection  10005268 f   coredll:COREDLL.dll
+ 0001:00004274       DeleteCriticalSection      10005274 f   coredll:COREDLL.dll
+ 0001:00004280       NKDbgPrintfW               10005280 f   coredll:COREDLL.dll
+ 0001:0000428c       SendMessageW               1000528c f   coredll:COREDLL.dll
+ 0001:00004298       ReadMsgQueue               10005298 f   coredll:COREDLL.dll
+ 0001:000042a4       RegisterWindowMessageW     100052a4 f   coredll:COREDLL.dll
+ 0001:000042b0       GetWindowThreadProcessId   100052b0 f   coredll:COREDLL.dll
+ 0001:000042bc       OpenProcess                100052bc f   coredll:COREDLL.dll
+ 0001:000042c8       VirtualAllocEx             100052c8 f   coredll:COREDLL.dll
+ 0001:000042d4       SendMessageTimeout         100052d4 f   coredll:COREDLL.dll
+ 0001:000042e0       VirtualFreeEx              100052e0 f   coredll:COREDLL.dll
+ 0001:000042ec       ReadProcessMemory          100052ec f   coredll:COREDLL.dll
+ 0001:000042f8       FindWindowW                100052f8 f   coredll:COREDLL.dll
+ 0001:00004304       Sleep                      10005304 f   coredll:COREDLL.dll
+ 0001:00004310       CloseMsgQueue              10005310 f   coredll:COREDLL.dll
+ 0001:0000431c       DuplicateHandle            1000531c f   coredll:COREDLL.dll
+ 0001:00004328       CloseHandle                10005328 f   coredll:COREDLL.dll
+ 0001:00004334       CreateMsgQueue             10005334 f   coredll:COREDLL.dll
+ 0001:00004340       SysFreeString              10005340 f   oleaut32:OLEAUT32.dll
+ 0001:0000434c       SysAllocStringLen          1000534c f   oleaut32:OLEAUT32.dll
+ 0001:00004358       ??1CComBSTR@ATL@@QAA@XZ    10005358 f i XmlDocument:XmlElement.obj
+ 0001:00004360       ??0XmlElement@@QAA@PAUIXMLDOMNode@@@Z 10005360 f   XmlDocument:XmlElement.obj
+ 0001:0000439c       ?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 1000539c f   XmlDocument:XmlElement.obj
+ 0001:000043e8       ?AtlThrowImpl@ATL@@YAXJ@Z  100053e8 f i XmlDocument:XmlElement.obj
+ 0001:00004400       ?GetXmlSize@XmlElement@@QAAJPAI@Z 10005400 f   XmlDocument:XmlElement.obj
+ 0001:0000445c       ?GetXml@XmlElement@@QAAJPAGI@Z 1000545c f   XmlDocument:XmlElement.obj
+ 0001:000044b4       ?GetText@XmlElement@@QAAJPAGI@Z 100054b4 f   XmlDocument:XmlElement.obj
+ 0001:00004508       ?GetTagName@XmlElement@@QAAJPAGI@Z 10005508 f   XmlDocument:XmlElement.obj
+ 0001:0000455c       ?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 1000555c f   XmlDocument:XmlElement.obj
+ 0001:00004600       ??0XmlAttributeCollection@@QAA@PAUIXMLDOMNode@@@Z 10005600 f   XmlDocument:XmlAttributeCollection.obj
+ 0001:00004648       ??1XmlAttributeCollection@@QAA@XZ 10005648 f   XmlDocument:XmlAttributeCollection.obj
+ 0001:00004670       ?GetLength@XmlAttributeCollection@@QAAJPAJ@Z 10005670 f   XmlDocument:XmlAttributeCollection.obj
+ 0001:0000467c       ??1CComVariant@ATL@@QAA@XZ 1000567c f i XmlDocument:XmlAttributeCollection.obj
+ 0001:00004680       ?GetItem@XmlAttributeCollection@@QAAJPAVXmlAttribute@@I@Z 10005680 f   XmlDocument:XmlAttributeCollection.obj
+ 0001:0000472c       ??0XmlElementList@@QAA@PAUIXMLDOMSelection@@@Z 1000572c f   XmlDocument:XmlElementList.obj
+ 0001:00004764       ??1XmlElement@@QAA@XZ      10005764 f   XmlDocument:XmlElement.obj
+ 0001:00004764       ??1XmlElementList@@QAA@XZ  10005764 f   XmlDocument:XmlElementList.obj
+ 0001:00004784       ?GetItem@XmlElementList@@QAAJPAPAVXmlElement@@I@Z 10005784 f   XmlDocument:XmlElementList.obj
+ 0001:000047f0       ?GetLength@XmlElementList@@QAAJPAJ@Z 100057f0 f   XmlDocument:XmlElementList.obj
+ 0001:000047fc       ??0XmlAttribute@@QAA@XZ    100057fc f   XmlDocument:XmlAttribute.obj
+ 0001:000047fc       ??0XmlDocument@@QAA@XZ     100057fc f   XmlDocument:XmlDocument.obj
+ 0001:00004804       ??1XmlDocument@@QAA@XZ     10005804 f   XmlDocument:XmlDocument.obj
+ 0001:0000482c       ?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 1000582c f   XmlDocument:XmlDocument.obj
+ 0001:0000489c       ?Initialize@XmlDocument@@AAAJXZ 1000589c f   XmlDocument:XmlDocument.obj
+ 0001:000048d8       ?ParseLoadError@XmlDocument@@AAAJXZ 100058d8 f   XmlDocument:XmlDocument.obj
+ 0001:00004924       ?LoadXml@XmlDocument@@QAAJPAG@Z 10005924 f   XmlDocument:XmlDocument.obj
+ 0001:00004964       ??1XmlAttribute@@QAA@XZ    10005964 f   XmlDocument:XmlAttribute.obj
+ 0001:00004988       ?GetName@XmlAttribute@@QAAJPAGI@Z 10005988 f   XmlDocument:XmlAttribute.obj
+ 0001:000049b0       ?GetValue@XmlAttribute@@QAAJPAGI@Z 100059b0 f   XmlDocument:XmlAttribute.obj
+ 0001:000049d8       ?Set@XmlAttribute@@QAAJPAG0@Z 100059d8 f   XmlDocument:XmlAttribute.obj
+ 0001:00004a58       DllMain                    10005a58 f   ccrt0:dllmain.obj
+ 0001:00004ae8       _DllMainCRTStartup         10005ae8 f   ccrt0:pegdmain.obj
+ 0001:00004b0c       __security_push_cookie     10005b0c     ccrt0:secpushpop.obj
+ 0001:00004b24       __security_pop_cookie      10005b24     ccrt0:secpushpop.obj
+ 0001:00004b40       __ppgsfailure              10005b40     ccrt0:secpushpop.obj
+ 0001:00004b58       __GSHandlerCheckCommon     10005b58 f   ccrt0:gshandler.obj
+ 0001:00004b70       __GSHandlerCheck           10005b70 f   ccrt0:gshandler.obj
+ 0001:00004b94       _onexit                    10005b94 f   ccrt0:onexit.obj
+ 0001:00004c54       atexit                     10005c54 f   ccrt0:onexit.obj
+ 0001:00004c6c       __GSHandlerCheck_EH        10005c6c f   ccrt0:gshandlereh.obj
+ 0001:00004d74       _cinit                     10005d74 f   ccrt0:crt0dat.obj
+ 0001:00004de0       _cexit                     10005de0 f   ccrt0:crt0dat.obj
+ 0001:00004dec       _amsg_exit                 10005dec f   ccrt0:crt0dat.obj
+ 0001:00004e0c       __security_init_cookie     10005e0c f   ccrt0:seccinit.obj
+ 0001:00004e44       __security_check_cookie    10005e44     ccrt0:armsecgs.obj
+ 0001:00004e58       __gsfailure                10005e58     ccrt0:armsecgs.obj
+ 0001:00004e8c       __report_rangecheckfailure 10005e8c     ccrt0:armsecgs.obj
+ 0001:00004e98       _initp_misc_cfltcvt_tab    10005e98 f   ccrt0:cmiscdat.obj
+ 0001:00004ea8       __crt_ExitProcess          10005ea8 f   ccrt0:exitproc_proxy.obj
+ 0001:00004eb0       _NMSG_WRITE                10005eb0 f   ccrt0:crt0msg.obj
+ 0001:00004eb4       _FF_MSGBANNER              10005eb4 f   ccrt0:crt0msg.obj
+ 0001:00004ed0       _fptrap                    10005ed0 f   ccrt0:crt0fp.obj
+ 0001:00004ed8       wcschr                     10005ed8 f   msvcrt:MSVCRT.dll
+ 0001:00004ee4       wcsstr                     10005ee4 f   msvcrt:MSVCRT.dll
+ 0001:00004ef0       ??2@YAPAXI@Z               10005ef0 f   msvcrt:MSVCRT.dll
+ 0001:00004efc       ??3@YAXPAX@Z               10005efc f   msvcrt:MSVCRT.dll
+ 0001:00004f08       memset                     10005f08 f   msvcrt:MSVCRT.dll
+ 0001:00004f14       wcscmp                     10005f14 f   msvcrt:MSVCRT.dll
+ 0001:00004f20       memmove                    10005f20 f   msvcrt:MSVCRT.dll
+ 0001:00004f2c       wcslen                     10005f2c f   msvcrt:MSVCRT.dll
+ 0001:00004f38       ??_V@YAXPAX@Z              10005f38 f   msvcrt:MSVCRT.dll
+ 0001:00004f44       __CxxFrameHandler3         10005f44 f   msvcrt:MSVCRT.dll
+ 0001:00004f50       ??_U@YAPAXI@Z              10005f50 f   msvcrt:MSVCRT.dll
+ 0001:00004f5c       swscanf                    10005f5c f   msvcrt:MSVCRT.dll
+ 0001:00004f68       _wtoi                      10005f68 f   msvcrt:MSVCRT.dll
+ 0001:00004f74       memcpy                     10005f74 f   msvcrt:MSVCRT.dll
+ 0001:00004f80       wcscat                     10005f80 f   msvcrt:MSVCRT.dll
+ 0001:00004f8c       _snwprintf                 10005f8c f   msvcrt:MSVCRT.dll
+ 0001:00004f98       _CxxThrowException         10005f98 f   msvcrt:MSVCRT.dll
+ 0001:00004fa4       ??_7type_info@@6B@         10005fa4 f   msvcrt:MSVCRT.dll
+ 0001:00004fb0       __C_specific_handler       10005fb0 f   msvcrt:MSVCRT.dll
+ 0001:00004fbc       _XcptFilter                10005fbc f   msvcrt:MSVCRT.dll
+ 0001:00004fc8       _lock                      10005fc8 f   msvcrt:MSVCRT.dll
+ 0001:00004fd4       _unlock                    10005fd4 f   msvcrt:MSVCRT.dll
+ 0001:00004fe0       _msize                     10005fe0 f   msvcrt:MSVCRT.dll
+ 0001:00004fec       malloc                     10005fec f   msvcrt:MSVCRT.dll
+ 0001:00004ff8       realloc                    10005ff8 f   msvcrt:MSVCRT.dll
+ 0001:00005004       __security_gen_cookie2     10006004 f   msvcrt:MSVCRT.dll
+ 0001:00005010       __report_gsfailure         10006010 f   msvcrt:MSVCRT.dll
+ 0001:0000501c       _set_error_mode            1000601c f   msvcrt:MSVCRT.dll
+ 0001:00005028       StringCchLengthW           10006028 f   coredll:COREDLL.dll
+ 0001:00005034       StringCchCopyNW            10006034 f   coredll:COREDLL.dll
+ 0001:00005040       DisableThreadLibraryCalls  10006040 f   coredll:COREDLL.dll
+ 0001:0000504c       TerminateProcess           1000604c f   coredll:COREDLL.dll
+ 0001:00005058       CoUninitialize             10006058 f   ole32:ole32.dll
+ 0001:00005064       CoInitializeEx             10006064 f   ole32:ole32.dll
+ 0001:00005070       CoCreateInstance           10006070 f   ole32:ole32.dll
+ 0001:0000507c       SysAllocString             1000607c f   oleaut32:OLEAUT32.dll
+ 0001:00005088       VariantInit                10006088 f   oleaut32:OLEAUT32.dll
+ 0001:00005094       VariantClear               10006094 f   oleaut32:OLEAUT32.dll
+ 0001:000050dc       ??__Fcs@?1??get_lock@?$singleton@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03V?$static_allocator@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03@2@@ce@@KAAAVcritical_section@2@XZ@YAXXZ 100060dc f i AlchemyXML.obj
+ 0001:000054a0       _CT??_R0J@84               100064a0     XmlDocument:XmlElement.obj
+ 0001:000054bc       _CTA1J                     100064bc     XmlDocument:XmlElement.obj
+ 0001:000054c4       _TI1J                      100064c4     XmlDocument:XmlElement.obj
+ 0001:000054d4       _CT??_R0?AVCAtlException@ATL@@@84 100064d4     XmlDocument:XmlElement.obj
+ 0001:000054f0       _CTA1?AVCAtlException@ATL@@ 100064f0     XmlDocument:XmlElement.obj
+ 0001:000054f8       _TI1?AVCAtlException@ATL@@ 100064f8     XmlDocument:XmlElement.obj
+ 0001:00005508       _CT??_R0PAG@84             10006508     XmlDocument:XmlAttributeCollection.obj
+ 0001:00005524       _CT??_R0PAX@84             10006524     XmlDocument:XmlAttributeCollection.obj
+ 0001:00005540       _CTA2PAG                   10006540     XmlDocument:XmlAttributeCollection.obj
+ 0001:0000554c       _TI2PAG                    1000654c     XmlDocument:XmlAttributeCollection.obj
+ 0001:0000555c       __IMPORT_DESCRIPTOR_COREDLL 1000655c     coredll:COREDLL.dll
+ 0001:00005570       __IMPORT_DESCRIPTOR_OLEAUT32 10006570     oleaut32:OLEAUT32.dll
+ 0001:00005584       __IMPORT_DESCRIPTOR_MSVCRT 10006584     msvcrt:MSVCRT.dll
+ 0001:00005598       __IMPORT_DESCRIPTOR_ole32  10006598     ole32:ole32.dll
+ 0001:000055ac       __NULL_IMPORT_DESCRIPTOR   100065ac     coredll:COREDLL.dll
+ 0002:00000000       __imp_GetLastError         10007000     coredll:COREDLL.dll
+ 0002:00000004       __imp_InitializeCriticalSection 10007004     coredll:COREDLL.dll
+ 0002:00000008       __imp_DeleteCriticalSection 10007008     coredll:COREDLL.dll
+ 0002:0000000c       __imp_NKDbgPrintfW         1000700c     coredll:COREDLL.dll
+ 0002:00000010       __imp_SendMessageW         10007010     coredll:COREDLL.dll
+ 0002:00000014       __imp_ReadMsgQueue         10007014     coredll:COREDLL.dll
+ 0002:00000018       __imp_RegisterWindowMessageW 10007018     coredll:COREDLL.dll
+ 0002:0000001c       __imp_GetWindowThreadProcessId 1000701c     coredll:COREDLL.dll
+ 0002:00000020       __imp_OpenProcess          10007020     coredll:COREDLL.dll
+ 0002:00000024       __imp_VirtualAllocEx       10007024     coredll:COREDLL.dll
+ 0002:00000028       __imp_SendMessageTimeout   10007028     coredll:COREDLL.dll
+ 0002:0000002c       __imp_VirtualFreeEx        1000702c     coredll:COREDLL.dll
+ 0002:00000030       __imp_ReadProcessMemory    10007030     coredll:COREDLL.dll
+ 0002:00000034       __imp_FindWindowW          10007034     coredll:COREDLL.dll
+ 0002:00000038       __imp_Sleep                10007038     coredll:COREDLL.dll
+ 0002:0000003c       __imp_CloseMsgQueue        1000703c     coredll:COREDLL.dll
+ 0002:00000040       __imp_DuplicateHandle      10007040     coredll:COREDLL.dll
+ 0002:00000044       __imp_CloseHandle          10007044     coredll:COREDLL.dll
+ 0002:00000048       __imp_CreateMsgQueue       10007048     coredll:COREDLL.dll
+ 0002:0000004c       __imp_TerminateProcess     1000704c     coredll:COREDLL.dll
+ 0002:00000050       __imp_DisableThreadLibraryCalls 10007050     coredll:COREDLL.dll
+ 0002:00000054       __imp_StringCchLengthW     10007054     coredll:COREDLL.dll
+ 0002:00000058       __imp_StringCchCopyNW      10007058     coredll:COREDLL.dll
+ 0002:0000005c       \177COREDLL_NULL_THUNK_DATA 1000705c     coredll:COREDLL.dll
+ 0002:00000060       __imp_??2@YAPAXI@Z         10007060     msvcrt:MSVCRT.dll
+ 0002:00000064       __imp_??3@YAXPAX@Z         10007064     msvcrt:MSVCRT.dll
+ 0002:00000068       __imp_memset               10007068     msvcrt:MSVCRT.dll
+ 0002:0000006c       __imp_wcscmp               1000706c     msvcrt:MSVCRT.dll
+ 0002:00000070       __imp_memmove              10007070     msvcrt:MSVCRT.dll
+ 0002:00000074       __imp_wcsstr               10007074     msvcrt:MSVCRT.dll
+ 0002:00000078       __imp_??_V@YAXPAX@Z        10007078     msvcrt:MSVCRT.dll
+ 0002:0000007c       __imp___CxxFrameHandler3   1000707c     msvcrt:MSVCRT.dll
+ 0002:00000080       __imp_??_U@YAPAXI@Z        10007080     msvcrt:MSVCRT.dll
+ 0002:00000084       __imp_swscanf              10007084     msvcrt:MSVCRT.dll
+ 0002:00000088       __imp__wtoi                10007088     msvcrt:MSVCRT.dll
+ 0002:0000008c       __imp_memcpy               1000708c     msvcrt:MSVCRT.dll
+ 0002:00000090       __imp_wcscat               10007090     msvcrt:MSVCRT.dll
+ 0002:00000094       __imp__snwprintf           10007094     msvcrt:MSVCRT.dll
+ 0002:00000098       __imp__CxxThrowException   10007098     msvcrt:MSVCRT.dll
+ 0002:0000009c       __imp_??_7type_info@@6B@   1000709c     msvcrt:MSVCRT.dll
+ 0002:000000a0       __imp___C_specific_handler 100070a0     msvcrt:MSVCRT.dll
+ 0002:000000a4       __imp__XcptFilter          100070a4     msvcrt:MSVCRT.dll
+ 0002:000000a8       __imp__lock                100070a8     msvcrt:MSVCRT.dll
+ 0002:000000ac       __imp__unlock              100070ac     msvcrt:MSVCRT.dll
+ 0002:000000b0       __imp__msize               100070b0     msvcrt:MSVCRT.dll
+ 0002:000000b4       __imp_malloc               100070b4     msvcrt:MSVCRT.dll
+ 0002:000000b8       __imp_realloc              100070b8     msvcrt:MSVCRT.dll
+ 0002:000000bc       __imp___security_gen_cookie2 100070bc     msvcrt:MSVCRT.dll
+ 0002:000000c0       __imp___report_gsfailure   100070c0     msvcrt:MSVCRT.dll
+ 0002:000000c4       __imp__set_error_mode      100070c4     msvcrt:MSVCRT.dll
+ 0002:000000c8       __imp_wcschr               100070c8     msvcrt:MSVCRT.dll
+ 0002:000000cc       __imp_wcslen               100070cc     msvcrt:MSVCRT.dll
+ 0002:000000d0       \177MSVCRT_NULL_THUNK_DATA 100070d0     msvcrt:MSVCRT.dll
+ 0002:000000d4       __imp_SysAllocStringLen    100070d4     oleaut32:OLEAUT32.dll
+ 0002:000000d8       __imp_SysFreeString        100070d8     oleaut32:OLEAUT32.dll
+ 0002:000000dc       __imp_VariantInit          100070dc     oleaut32:OLEAUT32.dll
+ 0002:000000e0       __imp_SysAllocString       100070e0     oleaut32:OLEAUT32.dll
+ 0002:000000e4       __imp_VariantClear         100070e4     oleaut32:OLEAUT32.dll
+ 0002:000000e8       \177OLEAUT32_NULL_THUNK_DATA 100070e8     oleaut32:OLEAUT32.dll
+ 0002:000000ec       __imp_CoInitializeEx       100070ec     ole32:ole32.dll
+ 0002:000000f0       __imp_CoUninitialize       100070f0     ole32:ole32.dll
+ 0002:000000f4       __imp_CoCreateInstance     100070f4     ole32:ole32.dll
+ 0002:000000f8       \177ole32_NULL_THUNK_DATA  100070f8     ole32:ole32.dll
+ 0002:00000100       ??_R0J@8                   10007100     XmlDocument:XmlElement.obj
+ 0002:0000010c       ??_R0?AVCAtlException@ATL@@@8 1000710c     XmlDocument:XmlElement.obj
+ 0002:0000012c       ??_R0PAG@8                 1000712c     XmlDocument:XmlAttributeCollection.obj
+ 0002:0000013c       ??_R0PAX@8                 1000713c     XmlDocument:XmlAttributeCollection.obj
+ 0002:0000014c       __security_cookie          1000714c     ccrt0:seccinit.obj
+ 0002:00000150       __security_cookie_complement 10007150     ccrt0:seccinit.obj
+ 0002:00000158       __initialmbcinfo           10007158     ccrt0:cmiscdat.obj
+ 0002:00000378       __ptmbcinfo                10007378     ccrt0:cmiscdat.obj
+ 0002:0000037c       _cfltcvt_tab               1000737c     ccrt0:cmiscdat.obj
+ 0002:000003a4       ?cs@?1??get_lock@?$singleton@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03V?$static_allocator@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03@2@@ce@@KAAAVcritical_section@3@XZ@4V43@A 100073a4     AlchemyXML.obj
+ 0002:000003b8       ??_B?1??get_lock@?$singleton@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03V?$static_allocator@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03@2@@ce@@KAAAVcritical_section@2@XZ@51 100073b8     AlchemyXML.obj
+ 0002:000003bc       ?_factory@?$singleton@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03V?$static_allocator@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03@2@@ce@@1Ulock_factory@12@A 100073bc     AlchemyXML.obj
+ 0002:000003c0       __argc                     100073c0     ccrt0:crt0dat.obj
+ 0002:000003c4       __argv                     100073c4     ccrt0:crt0dat.obj
+ 0002:000003c8       __wargv                    100073c8     ccrt0:crt0dat.obj
+ 0002:000003cc       _environ                   100073cc     ccrt0:crt0dat.obj
+ 0002:000003d0       _wenviron                  100073d0     ccrt0:crt0dat.obj
+ 0002:000003d4       _pgmptr                    100073d4     ccrt0:crt0dat.obj
+ 0002:000003d8       _wpgmptr                   100073d8     ccrt0:crt0dat.obj
+ 0002:000003dc       _C_Exit_Done               100073dc     ccrt0:crt0dat.obj
+ 0002:000003e0       _umaskval                  100073e0     ccrt0:crt0dat.obj
+ 0002:000003e4       _exitflag                  100073e4     ccrt0:crt0dat.obj
+ 0002:000003e8       _C_Termination_Done        100073e8     ccrt0:crt0dat.obj
+ 0002:000003ec       __winitenv                 100073ec     ccrt0:crt0dat.obj
+ 0002:000003f0       __initenv                  100073f0     ccrt0:crt0dat.obj
+ 0002:000003f4       _stdbuf                    100073f4     ccrt0:cmiscdat.obj
+ 0002:000003fc       __app_type                 100073fc     ccrt0:crt0msg.obj
+ 0002:00000400       __dyn_tls_init_callback    10007400     <common>
+ 0002:00000404       _FPinit                    10007404     <common>
+ 0002:00000408       __onexitbegin              10007408     <common>
+ 0002:0000040c       __onexitend                1000740c     <common>
+ 0002:00000410       _pRawDllMain               10007410     <common>
+
+ entry point at        0001:00004ae8
+
+ Static symbols
+
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     msvcrt:MSVCRT.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     coredll:COREDLL.dll
+ 0000:ffff6000       .debug$S                   10000000     ole32:ole32.dll
+ 0000:ffff6000       .debug$S                   10000000     ole32:ole32.dll
+ 0000:ffff6000       .debug$S                   10000000     ole32:ole32.dll
+ 0000:ffff6000       .debug$S                   10000000     oleaut32:OLEAUT32.dll
+ 0000:ffff6000       .debug$S                   10000000     oleaut32:OLEAUT32.dll
+ 0000:ffff6000       .debug$S                   10000000     oleaut32:OLEAUT32.dll
+ 0000:ffff6000       .debug$S                   10000000     oleaut32:OLEAUT32.dll
+ 0000:ffff6000       .debug$S                   10000000     oleaut32:OLEAUT32.dll
+ 0001:00000004       ?_factory$initializer$@?$singleton@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03V?$static_allocator@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03@2@@ce@@1P6AXXZA 10001004     AlchemyXML.obj
+ 0001:00000340       __unwindtable$?GetTagName@@YAPAGPAG@Z 10001340     AlchemyXML.obj
+ 0001:00000348       $T3                        10001348     AlchemyXML.obj
+ 0001:00000360       __ehfuncinfo$?GetTagName@@YAPAGPAG@Z 10001360     AlchemyXML.obj
+ 0001:000003e8       __unwindtable$?GetElementValue@@YAPAGPAG@Z 100013e8     AlchemyXML.obj
+ 0001:000003f0       $T3                        100013f0     AlchemyXML.obj
+ 0001:00000408       __ehfuncinfo$?GetElementValue@@YAPAGPAG@Z 10001408     AlchemyXML.obj
+ 0001:00000490       __unwindtable$?GetElementType@@YAPAGPAG@Z 10001490     AlchemyXML.obj
+ 0001:00000498       $T3                        10001498     AlchemyXML.obj
+ 0001:000004b0       __ehfuncinfo$?GetElementType@@YAPAGPAG@Z 100014b0     AlchemyXML.obj
+ 0001:00000738       __unwindtable$?ElementGetStringValue@@YA_NPAG0IPAVXmlElement@@@Z 10001738     AlchemyXML.obj
+ 0001:00000740       $T3                        10001740     AlchemyXML.obj
+ 0001:00000768       __ehfuncinfo$?ElementGetStringValue@@YA_NPAG0IPAVXmlElement@@@Z 10001768     AlchemyXML.obj
+ 0001:00000868       __unwindtable$?GetDoubleAttribute@@YA_NPAG0PAN@Z 10001868     AlchemyXML.obj
+ 0001:00000870       $T3                        10001870     AlchemyXML.obj
+ 0001:00000888       __ehfuncinfo$?GetDoubleAttribute@@YA_NPAG0PAN@Z 10001888     AlchemyXML.obj
+ 0001:00000978       __unwindtable$?GetIntAttribute@@YA_NPAG0PAH@Z 10001978     AlchemyXML.obj
+ 0001:00000980       $T3                        10001980     AlchemyXML.obj
+ 0001:00000998       __ehfuncinfo$?GetIntAttribute@@YA_NPAG0PAH@Z 10001998     AlchemyXML.obj
+ 0001:00000a90       __unwindtable$?GetStringAttribute@@YAPAGPAG0@Z 10001a90     AlchemyXML.obj
+ 0001:00000a98       $T3                        10001a98     AlchemyXML.obj
+ 0001:00000ab0       __ehfuncinfo$?GetStringAttribute@@YAPAGPAG0@Z 10001ab0     AlchemyXML.obj
+ 0001:00000c38       __unwindtable$?GetElementUpperLeftAndString@@YAPAGPAG00PAUtagPOINT@@@Z 10001c38     AlchemyXML.obj
+ 0001:00000c40       $T3                        10001c40     AlchemyXML.obj
+ 0001:00000c58       __ehfuncinfo$?GetElementUpperLeftAndString@@YAPAGPAG00PAUtagPOINT@@@Z 10001c58     AlchemyXML.obj
+ 0001:00000c88       __unwindtable$?_Insert_dispatch@?$vector@PAGVallocator@ce@@U?$exponential_growth@$09@2@@ce@@AAA_NPAPAGIABQAGABUtrue_type@detail@2@@Z 10001c88     AlchemyXML.obj
+ 0001:00000c90       $T3                        10001c90     AlchemyXML.obj
+ 0001:00000cc8       __ehfuncinfo$?_Insert_dispatch@?$vector@PAGVallocator@ce@@U?$exponential_growth@$09@2@@ce@@AAA_NPAPAGIABQAGABUtrue_type@detail@2@@Z 10001cc8     AlchemyXML.obj
+ 0001:00000e18       __unwindtable$?GetTree@@YAPAGPAUHWND__@@HKPAPAG@Z 10001e18     AlchemyXML.obj
+ 0001:00000e28       $T3                        10001e28     AlchemyXML.obj
+ 0001:00000e60       __ehfuncinfo$?GetTree@@YAPAGPAUHWND__@@HKPAPAG@Z 10001e60     AlchemyXML.obj
+ 0001:00000eb8       __unwindtable$?GetElementPointerTree@@YAPAGPAUHWND__@@HKPAPAG@Z 10001eb8     AlchemyXML.obj
+ 0001:00000ec0       $T3                        10001ec0     AlchemyXML.obj
+ 0001:00000ed8       __ehfuncinfo$?GetElementPointerTree@@YAPAGPAUHWND__@@HKPAPAG@Z 10001ed8     AlchemyXML.obj
+ 0001:00001048       __unwindtable$?GetObjectByTagName@@YAPAGPAG0@Z 10002048     AlchemyXML.obj
+ 0001:00001058       $T3                        10002058     AlchemyXML.obj
+ 0001:00001080       __ehfuncinfo$?GetObjectByTagName@@YAPAGPAG0@Z 10002080     AlchemyXML.obj
+ 0001:00001170       __unwindtable$?GetObjects@@YAPAVXMLCollection@@PAG000HH@Z 10002170     AlchemyXML.obj
+ 0001:00001178       $T3                        10002178     AlchemyXML.obj
+ 0001:00001190       __ehfuncinfo$?GetObjects@@YAPAVXMLCollection@@PAG000HH@Z 10002190     AlchemyXML.obj
+ 0001:00001328       __unwindtable$?GetObjectByAttributeName@@YAPAGPAG0@Z 10002328     AlchemyXML.obj
+ 0001:00001338       $T3                        10002338     AlchemyXML.obj
+ 0001:00001360       __ehfuncinfo$?GetObjectByAttributeName@@YAPAGPAG0@Z 10002360     AlchemyXML.obj
+ 0001:00001388       c_ClockMessageName         10002388     AlchemyAnimation.obj
+ 0001:000013ac       c_FrameRateMessageName     100023ac     AlchemyAnimation.obj
+ 0001:000017c8       szStringVal                100027c8     XmlDocument:XmlElement.obj
+ 0001:000017cc       multiszStringVal           100027cc     XmlDocument:XmlElement.obj
+ 0001:000017d0       szDwordVal                 100027d0     XmlDocument:XmlElement.obj
+ 0001:000017d4       szBinaryVal                100027d4     XmlDocument:XmlElement.obj
+ 0001:000017d8       szValToken                 100027d8     XmlDocument:XmlElement.obj
+ 0001:000017dc       szForceRemove              100027dc     XmlDocument:XmlElement.obj
+ 0001:000017e0       szNoRemove                 100027e0     XmlDocument:XmlElement.obj
+ 0001:000017e4       szDelete                   100027e4     XmlDocument:XmlElement.obj
+ 0001:00001838       __unwindtable$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 10002838     XmlDocument:XmlElement.obj
+ 0001:00001850       __catchsym$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z$3 10002850     XmlDocument:XmlElement.obj
+ 0001:00001864       __tryblocktable$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 10002864     XmlDocument:XmlElement.obj
+ 0001:00001878       $T5                        10002878     XmlDocument:XmlElement.obj
+ 0001:000018c0       __ehfuncinfo$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 100028c0     XmlDocument:XmlElement.obj
+ 0001:000018e8       __unwindtable$?GetXmlSize@XmlElement@@QAAJPAI@Z 100028e8     XmlDocument:XmlElement.obj
+ 0001:000018f0       $T3                        100028f0     XmlDocument:XmlElement.obj
+ 0001:00001908       __ehfuncinfo$?GetXmlSize@XmlElement@@QAAJPAI@Z 10002908     XmlDocument:XmlElement.obj
+ 0001:00001930       __unwindtable$?GetXml@XmlElement@@QAAJPAGI@Z 10002930     XmlDocument:XmlElement.obj
+ 0001:00001938       $T3                        10002938     XmlDocument:XmlElement.obj
+ 0001:00001950       __ehfuncinfo$?GetXml@XmlElement@@QAAJPAGI@Z 10002950     XmlDocument:XmlElement.obj
+ 0001:00001978       __unwindtable$?GetText@XmlElement@@QAAJPAGI@Z 10002978     XmlDocument:XmlElement.obj
+ 0001:00001980       $T3                        10002980     XmlDocument:XmlElement.obj
+ 0001:00001998       __ehfuncinfo$?GetText@XmlElement@@QAAJPAGI@Z 10002998     XmlDocument:XmlElement.obj
+ 0001:000019c0       __unwindtable$?GetTagName@XmlElement@@QAAJPAGI@Z 100029c0     XmlDocument:XmlElement.obj
+ 0001:000019c8       $T3                        100029c8     XmlDocument:XmlElement.obj
+ 0001:000019e0       __ehfuncinfo$?GetTagName@XmlElement@@QAAJPAGI@Z 100029e0     XmlDocument:XmlElement.obj
+ 0001:00001a10       __unwindtable$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 10002a10     XmlDocument:XmlElement.obj
+ 0001:00001a30       __catchsym$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z$4 10002a30     XmlDocument:XmlElement.obj
+ 0001:00001a44       __tryblocktable$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 10002a44     XmlDocument:XmlElement.obj
+ 0001:00001a58       $T5                        10002a58     XmlDocument:XmlElement.obj
+ 0001:00001ab0       __ehfuncinfo$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 10002ab0     XmlDocument:XmlElement.obj
+ 0001:00001ad8       szStringVal                10002ad8     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001adc       multiszStringVal           10002adc     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001ae0       szDwordVal                 10002ae0     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001ae4       szBinaryVal                10002ae4     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001ae8       szValToken                 10002ae8     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001aec       szForceRemove              10002aec     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001af0       szNoRemove                 10002af0     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001af4       szDelete                   10002af4     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001b38       __unwindtable$?GetItem@XmlAttributeCollection@@QAAJPAVXmlAttribute@@I@Z 10002b38     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001b48       $T3                        10002b48     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001b70       __ehfuncinfo$?GetItem@XmlAttributeCollection@@QAAJPAVXmlAttribute@@I@Z 10002b70     XmlDocument:XmlAttributeCollection.obj
+ 0001:00001b98       __unwindtable$?GetItem@XmlElementList@@QAAJPAPAVXmlElement@@I@Z 10002b98     XmlDocument:XmlElementList.obj
+ 0001:00001ba0       $T3                        10002ba0     XmlDocument:XmlElementList.obj
+ 0001:00001bb8       __ehfuncinfo$?GetItem@XmlElementList@@QAAJPAPAVXmlElement@@I@Z 10002bb8     XmlDocument:XmlElementList.obj
+ 0001:00001be0       szStringVal                10002be0     XmlDocument:XmlDocument.obj
+ 0001:00001be4       multiszStringVal           10002be4     XmlDocument:XmlDocument.obj
+ 0001:00001be8       szDwordVal                 10002be8     XmlDocument:XmlDocument.obj
+ 0001:00001bec       szBinaryVal                10002bec     XmlDocument:XmlDocument.obj
+ 0001:00001bf0       szValToken                 10002bf0     XmlDocument:XmlDocument.obj
+ 0001:00001bf4       szForceRemove              10002bf4     XmlDocument:XmlDocument.obj
+ 0001:00001bf8       szNoRemove                 10002bf8     XmlDocument:XmlDocument.obj
+ 0001:00001bfc       szDelete                   10002bfc     XmlDocument:XmlDocument.obj
+ 0001:00001c00       __unwindtable$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 10002c00     XmlDocument:XmlDocument.obj
+ 0001:00001c18       __catchsym$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z$3 10002c18     XmlDocument:XmlDocument.obj
+ 0001:00001c2c       __tryblocktable$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 10002c2c     XmlDocument:XmlDocument.obj
+ 0001:00001c40       $T5                        10002c40     XmlDocument:XmlDocument.obj
+ 0001:00001c88       __ehfuncinfo$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 10002c88     XmlDocument:XmlDocument.obj
+ 0001:00002598       rterrs                     10003598     ccrt0:crt0msg.obj
+ 0001:00002710       $LN14                      10003710     AlchemyXML.obj
+ 0001:00002714       $LN15                      10003714     AlchemyXML.obj
+ 0001:00002718       $LN16                      10003718     AlchemyXML.obj
+ 0001:00002778       $LN11                      10003778     AlchemyXML.obj
+ 0001:0000294a       __unwind$12                1000394a f   AlchemyXML.obj
+ 0001:00002954       $LN33                      10003954     AlchemyXML.obj
+ 0001:00002958       $LN34                      10003958     AlchemyXML.obj
+ 0001:0000295c       $LN35                      1000395c     AlchemyXML.obj
+ 0001:00002a0e       __unwind$12                10003a0e f   AlchemyXML.obj
+ 0001:00002a18       $LN33                      10003a18     AlchemyXML.obj
+ 0001:00002a1c       $LN34                      10003a1c     AlchemyXML.obj
+ 0001:00002a20       $LN35                      10003a20     AlchemyXML.obj
+ 0001:00002ad2       __unwind$12                10003ad2 f   AlchemyXML.obj
+ 0001:00002adc       $LN33                      10003adc     AlchemyXML.obj
+ 0001:00002ae0       $LN34                      10003ae0     AlchemyXML.obj
+ 0001:00002ae4       $LN35                      10003ae4     AlchemyXML.obj
+ 0001:00002c0e       __unwind$28                10003c0e f   AlchemyXML.obj
+ 0001:00002c18       $LN74                      10003c18     AlchemyXML.obj
+ 0001:00002c1c       $LN75                      10003c1c     AlchemyXML.obj
+ 0001:00002c20       $LN76                      10003c20     AlchemyXML.obj
+ 0001:00002c24       $LN77                      10003c24     AlchemyXML.obj
+ 0001:00002c28       $LN78                      10003c28     AlchemyXML.obj
+ 0001:00002ef8       __unwind$12                10003ef8 f   AlchemyXML.obj
+ 0001:00002f00       $LN33                      10003f00     AlchemyXML.obj
+ 0001:00002f04       $LN34                      10003f04     AlchemyXML.obj
+ 0001:00002f08       $LN35                      10003f08     AlchemyXML.obj
+ 0001:00002fbe       __unwind$11                10003fbe f   AlchemyXML.obj
+ 0001:00002fc8       $LN32                      10003fc8     AlchemyXML.obj
+ 0001:00002fcc       $LN33                      10003fcc     AlchemyXML.obj
+ 0001:0000306e       __unwind$10                1000406e f   AlchemyXML.obj
+ 0001:00003078       $LN27                      10004078     AlchemyXML.obj
+ 0001:0000307c       $LN28                      1000407c     AlchemyXML.obj
+ 0001:000031c8       $LN44                      100041c8     AlchemyXML.obj
+ 0001:000031cc       $LN45                      100041cc     AlchemyXML.obj
+ 0001:000031d0       $LN46                      100041d0     AlchemyXML.obj
+ 0001:00003228       $LN13                      10004228     AlchemyXML.obj
+ 0001:0000331a       __unwind$12                1000431a f   AlchemyXML.obj
+ 0001:00003324       $LN32                      10004324     AlchemyXML.obj
+ 0001:00003328       $LN33                      10004328     AlchemyXML.obj
+ 0001:0000332c       $LN34                      1000432c     AlchemyXML.obj
+ 0001:00003330       $LN35                      10004330     AlchemyXML.obj
+ 0001:000034cc       $LN62                      100044cc     AlchemyXML.obj
+ 0001:00003610       __unwind$21                10004610 f i AlchemyXML.obj
+ 0001:0000385c       __unwind$21                1000485c f   AlchemyXML.obj
+ 0001:00003864       __unwind$22                10004864 f   AlchemyXML.obj
+ 0001:0000386c       $LN129                     1000486c     AlchemyXML.obj
+ 0001:00003870       $LN130                     10004870     AlchemyXML.obj
+ 0001:00003874       $LN131                     10004874     AlchemyXML.obj
+ 0001:00003878       $LN132                     10004878     AlchemyXML.obj
+ 0001:0000387c       $LN133                     1000487c     AlchemyXML.obj
+ 0001:000038c8       $LN64                      100048c8     AlchemyXML.obj
+ 0001:000039f6       __unwind$14                100049f6 f   AlchemyXML.obj
+ 0001:00003a00       $LN38                      10004a00     AlchemyXML.obj
+ 0001:00003a04       $LN39                      10004a04     AlchemyXML.obj
+ 0001:00003a08       $LN40                      10004a08     AlchemyXML.obj
+ 0001:00003a0c       $LN41                      10004a0c     AlchemyXML.obj
+ 0001:00003a10       $LN42                      10004a10     AlchemyXML.obj
+ 0001:00003bb0       $LN94                      10004bb0     AlchemyXML.obj
+ 0001:00003bb4       $LN95                      10004bb4     AlchemyXML.obj
+ 0001:00003bb8       $LN96                      10004bb8     AlchemyXML.obj
+ 0001:00003bbc       $LN97                      10004bbc     AlchemyXML.obj
+ 0001:00003bc0       $LN98                      10004bc0     AlchemyXML.obj
+ 0001:00003ca6       __unwind$10                10004ca6 f   AlchemyXML.obj
+ 0001:00003cae       __unwind$11                10004cae f   AlchemyXML.obj
+ 0001:00003cb8       $LN221                     10004cb8     AlchemyXML.obj
+ 0001:00003cbc       $LN222                     10004cbc     AlchemyXML.obj
+ 0001:00003cc0       $LN223                     10004cc0     AlchemyXML.obj
+ 0001:00003cc4       $LN224                     10004cc4     AlchemyXML.obj
+ 0001:00003d6a       __unwind$9                 10004d6a f   AlchemyXML.obj
+ 0001:00003d74       $LN27                      10004d74     AlchemyXML.obj
+ 0001:00003d78       $LN28                      10004d78     AlchemyXML.obj
+ 0001:00003d7c       $LN29                      10004d7c     AlchemyXML.obj
+ 0001:00003e68       __unwind$10                10004e68 f   AlchemyXML.obj
+ 0001:00003e70       __unwind$11                10004e70 f   AlchemyXML.obj
+ 0001:00003e78       $LN221                     10004e78     AlchemyXML.obj
+ 0001:00003e7c       $LN222                     10004e7c     AlchemyXML.obj
+ 0001:00003e80       $LN223                     10004e80     AlchemyXML.obj
+ 0001:00003e84       $LN224                     10004e84     AlchemyXML.obj
+ 0001:00003e88       $LN225                     10004e88     AlchemyXML.obj
+ 0001:00003ecc       $LN9                       10004ecc     AlchemyXML.obj
+ 0001:00004034       $LN21                      10005034     AlchemyAnimation.obj
+ 0001:00004038       $LN22                      10005038     AlchemyAnimation.obj
+ 0001:0000403c       $LN23                      1000503c     AlchemyAnimation.obj
+ 0001:00004040       $LN24                      10005040     AlchemyAnimation.obj
+ 0001:00004044       $LN25                      10005044     AlchemyAnimation.obj
+ 0001:00004048       $LN26                      10005048     AlchemyAnimation.obj
+ 0001:0000404c       $LN27                      1000504c     AlchemyAnimation.obj
+ 0001:00004050       $LN28                      10005050     AlchemyAnimation.obj
+ 0001:0000409c       $LN12                      1000509c     AlchemyAnimation.obj
+ 0001:000040a0       $LN13                      100050a0     AlchemyAnimation.obj
+ 0001:000040a4       $LN14                      100050a4     AlchemyAnimation.obj
+ 0001:0000410c       $LN19                      1000510c     WindowUtil.obj
+ 0001:00004120       $LN6                       10005120     Queue.obj
+ 0001:0000415c       $LN9                       1000515c     Queue.obj
+ 0001:00004224       $LN61                      10005224     Queue.obj
+ 0001:00004394       $LN15                      10005394     XmlDocument:XmlElement.obj
+ 0001:00004398       $LN16                      10005398     XmlDocument:XmlElement.obj
+ 0001:000043d6       __catch$7                  100053d6 f   XmlDocument:XmlElement.obj
+ 0001:000043de       __unwind$8                 100053de f   XmlDocument:XmlElement.obj
+ 0001:000043e4       $LN30                      100053e4     XmlDocument:XmlElement.obj
+ 0001:000043fc       $LN12                      100053fc     XmlDocument:XmlElement.obj
+ 0001:00004456       __unwind$4                 10005456 f   XmlDocument:XmlElement.obj
+ 0001:000044ac       __unwind$4                 100054ac f   XmlDocument:XmlElement.obj
+ 0001:00004502       __unwind$4                 10005502 f   XmlDocument:XmlElement.obj
+ 0001:00004556       __unwind$4                 10005556 f   XmlDocument:XmlElement.obj
+ 0001:000045dc       __catch$9                  100055dc f   XmlDocument:XmlElement.obj
+ 0001:000045e4       __unwind$10                100055e4 f   XmlDocument:XmlElement.obj
+ 0001:000045ec       __unwind$11                100055ec f   XmlDocument:XmlElement.obj
+ 0001:000045f4       $LN55                      100055f4     XmlDocument:XmlElement.obj
+ 0001:000045f8       $LN56                      100055f8     XmlDocument:XmlElement.obj
+ 0001:000045fc       $LN57                      100055fc     XmlDocument:XmlElement.obj
+ 0001:00004640       $LN15                      10005640     XmlDocument:XmlAttributeCollection.obj
+ 0001:00004644       $LN16                      10005644     XmlDocument:XmlAttributeCollection.obj
+ 0001:00004718       __unwind$9                 10005718 f   XmlDocument:XmlAttributeCollection.obj
+ 0001:00004720       __unwind$10                10005720 f   XmlDocument:XmlAttributeCollection.obj
+ 0001:00004728       $LN39                      10005728     XmlDocument:XmlAttributeCollection.obj
+ 0001:0000475c       $LN15                      1000575c     XmlDocument:XmlElementList.obj
+ 0001:00004760       $LN16                      10005760     XmlDocument:XmlElementList.obj
+ 0001:000047e6       __unwind$9                 100057e6 f   XmlDocument:XmlElementList.obj
+ 0001:000047ec       $LN20                      100057ec     XmlDocument:XmlElementList.obj
+ 0001:00004888       __catch$9                  10005888 f   XmlDocument:XmlDocument.obj
+ 0001:00004890       __unwind$10                10005890 f   XmlDocument:XmlDocument.obj
+ 0001:00004898       $LN32                      10005898     XmlDocument:XmlDocument.obj
+ 0001:000048d0       $LN11                      100058d0     XmlDocument:XmlDocument.obj
+ 0001:000048d4       $LN12                      100058d4     XmlDocument:XmlDocument.obj
+ 0001:000049ac       $LN10                      100059ac     XmlDocument:XmlAttribute.obj
+ 0001:000049d4       $LN10                      100059d4     XmlDocument:XmlAttribute.obj
+ 0001:00004a6c       _DllMainCRTStartupHelper   10005a6c f   ccrt0:pegdmain.obj
+ 0001:00004ae4       $LN32                      10005ae4     ccrt0:pegdmain.obj
+ 0001:00004b0c       Temp.00000000              10005b0c     ccrt0:secpushpop.obj
+ 0001:00004b22       Temp.00000001              10005b22     ccrt0:secpushpop.obj
+ 0001:00004b22       __security_push_cookie_epilog1_start 10005b22     ccrt0:secpushpop.obj
+ 0001:00004b24       __security_push_cookie_end 10005b24     ccrt0:secpushpop.obj
+ 0001:00004b3a       __security_pop_cookie_epilog1_start 10005b3a     ccrt0:secpushpop.obj
+ 0001:00004b3a       Temp.00000002              10005b3a     ccrt0:secpushpop.obj
+ 0001:00004b3c       Temp.00000003              10005b3c     ccrt0:secpushpop.obj
+ 0001:00004b3e       _lc010_002565_             10005b3e     ccrt0:secpushpop.obj
+ 0001:00004b40       Temp.00000004              10005b40     ccrt0:secpushpop.obj
+ 0001:00004b40       __security_pop_cookie_end  10005b40     ccrt0:secpushpop.obj
+ 0001:00004b42       Temp.00000005              10005b42     ccrt0:secpushpop.obj
+ 0001:00004b50       Temp.00000006              10005b50     ccrt0:secpushpop.obj
+ 0001:00004b50       __ppgsfailure_epilog1_start 10005b50     ccrt0:secpushpop.obj
+ 0001:00004b52       Temp.00000007              10005b52     ccrt0:secpushpop.obj
+ 0001:00004b56       Temp.00000008              10005b56     ccrt0:secpushpop.obj
+ 0001:00004b58       __ppgsfailure_end          10005b58     ccrt0:secpushpop.obj
+ 0001:00004c4c       $LN40                      10005c4c     ccrt0:onexit.obj
+ 0001:00004c50       $LN41                      10005c50     ccrt0:onexit.obj
+ 0001:00004c98       doexit                     10005c98 f   ccrt0:crt0dat.obj
+ 0001:00004d58       $LN62                      10005d58     ccrt0:crt0dat.obj
+ 0001:00004d5c       $LN63                      10005d5c     ccrt0:crt0dat.obj
+ 0001:00004d60       $LN64                      10005d60     ccrt0:crt0dat.obj
+ 0001:00004d64       $LN65                      10005d64     ccrt0:crt0dat.obj
+ 0001:00004d68       $LN66                      10005d68     ccrt0:crt0dat.obj
+ 0001:00004d6c       $LN67                      10005d6c     ccrt0:crt0dat.obj
+ 0001:00004d70       $LN68                      10005d70     ccrt0:crt0dat.obj
+ 0001:00004dc8       $LN30                      10005dc8     ccrt0:crt0dat.obj
+ 0001:00004dcc       $LN31                      10005dcc     ccrt0:crt0dat.obj
+ 0001:00004dd0       $LN32                      10005dd0     ccrt0:crt0dat.obj
+ 0001:00004dd4       $LN33                      10005dd4     ccrt0:crt0dat.obj
+ 0001:00004dd8       $LN34                      10005dd8     ccrt0:crt0dat.obj
+ 0001:00004ddc       $LN35                      10005ddc     ccrt0:crt0dat.obj
+ 0001:00004e38       $LN12                      10005e38     ccrt0:seccinit.obj
+ 0001:00004e3c       $LN13                      10005e3c     ccrt0:seccinit.obj
+ 0001:00004e40       $LN14                      10005e40     ccrt0:seccinit.obj
+ 0001:00004e50       Temp.00000000              10005e50     ccrt0:armsecgs.obj
+ 0001:00004e52       __security_check_cookie_end 10005e52     ccrt0:armsecgs.obj
+ 0001:00004e58       Temp.00000001              10005e58     ccrt0:armsecgs.obj
+ 0001:00004e5a       Temp.00000002              10005e5a     ccrt0:armsecgs.obj
+ 0001:00004e82       __gsfailure_end            10005e82     ccrt0:armsecgs.obj
+ 0001:00004e96       __report_rangecheckfailure_end 10005e96     ccrt0:armsecgs.obj
+ 0001:00004ea4       $LN12                      10005ea4     ccrt0:cmiscdat.obj
+ 0001:000050a0       ??__E?_factory@?$singleton@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03V?$static_allocator@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03@2@@ce@@1Ulock_factory@12@A@@YAXXZ 100060a0 f   AlchemyXML.obj
+ 0001:000050cc       $LN16                      100060cc     AlchemyXML.obj
+ 0001:000050d0       $LN17                      100060d0     AlchemyXML.obj
+ 0001:000050d4       $LN18                      100060d4     AlchemyXML.obj
+ 0001:000050d8       $LN19                      100060d8     AlchemyXML.obj
+ 0001:000050e4       $LN8                       100060e4     AlchemyXML.obj
+ 0001:000050e8       $unwind2$?ElementCheckName@@YA_NPAGPAVXmlElement@@@Z 100060e8     AlchemyXML.obj
+ 0001:00005108       $unwind2$?GetTagName@@YAPAGPAG@Z 10006108     AlchemyXML.obj
+ 0001:00005120       $unwind2$?GetElementValue@@YAPAGPAG@Z 10006120     AlchemyXML.obj
+ 0001:00005138       $unwind2$?GetElementType@@YAPAGPAG@Z 10006138     AlchemyXML.obj
+ 0001:00005150       $unwind2$?ElementGetStringValue@@YA_NPAG0IPAVXmlElement@@@Z 10006150     AlchemyXML.obj
+ 0001:00005170       $unwind2$?GetDoubleAttribute@@YA_NPAG0PAN@Z 10006170     AlchemyXML.obj
+ 0001:00005190       $unwind2$?GetIntAttribute@@YA_NPAG0PAH@Z 10006190     AlchemyXML.obj
+ 0001:000051b0       $unwind2$?GetStringAttribute@@YAPAGPAG0@Z 100061b0     AlchemyXML.obj
+ 0001:000051c8       $unwind2$?ElementCheckAttributeValue@@YA_NPAG0PAVXmlElement@@@Z 100061c8     AlchemyXML.obj
+ 0001:000051e8       $unwind2$?RecurseChildrenStack@@YAPAU_XMLSearchNode@@PAG0PAVXmlElement@@@Z 100061e8     AlchemyXML.obj
+ 0001:00005200       $unwind2$?GetElementUpperLeftAndString@@YAPAGPAG00PAUtagPOINT@@@Z 10006200     AlchemyXML.obj
+ 0001:00005220       $unwind2$?_Insert_dispatch@?$vector@PAGVallocator@ce@@U?$exponential_growth@$09@2@@ce@@AAA_NPAPAGIABQAGABUtrue_type@detail@2@@Z 10006220     AlchemyXML.obj
+ 0001:00005238       $unwind2$?GetTree@@YAPAGPAUHWND__@@HKPAPAG@Z 10006238     AlchemyXML.obj
+ 0001:00005258       $unwind2$?GetElementPointerTree@@YAPAGPAUHWND__@@HKPAPAG@Z 10006258     AlchemyXML.obj
+ 0001:00005278       $unwind2$?RecurseChildrenCheck@@YAXPAG00PAVXmlElement@@PAPAVXMLCollection@@_NHH@Z 10006278     AlchemyXML.obj
+ 0001:00005290       $unwind2$?GetObjectByTagName@@YAPAGPAG0@Z 10006290     AlchemyXML.obj
+ 0001:000052a8       $unwind2$?GetObjects@@YAPAVXMLCollection@@PAG000HH@Z 100062a8     AlchemyXML.obj
+ 0001:000052c0       $unwind2$?GetObjectByAttributeName@@YAPAGPAG0@Z 100062c0     AlchemyXML.obj
+ 0001:000052d8       $unwind2$?Create@Queue@@QAAJPAUHWND__@@@Z 100062d8     Queue.obj
+ 0001:000052f0       $unwind3$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 100062f0     XmlDocument:XmlElement.obj
+ 0001:00005308       $unwind4$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 10006308     XmlDocument:XmlElement.obj
+ 0001:00005318       $unwind2$?GetXmlSize@XmlElement@@QAAJPAI@Z 10006318     XmlDocument:XmlElement.obj
+ 0001:00005330       $unwind2$?GetXml@XmlElement@@QAAJPAGI@Z 10006330     XmlDocument:XmlElement.obj
+ 0001:00005348       $unwind2$?GetText@XmlElement@@QAAJPAGI@Z 10006348     XmlDocument:XmlElement.obj
+ 0001:00005360       $unwind2$?GetTagName@XmlElement@@QAAJPAGI@Z 10006360     XmlDocument:XmlElement.obj
+ 0001:00005378       $unwind3$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 10006378     XmlDocument:XmlElement.obj
+ 0001:00005390       $unwind4$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 10006390     XmlDocument:XmlElement.obj
+ 0001:000053a0       $unwind2$?GetItem@XmlAttributeCollection@@QAAJPAVXmlAttribute@@I@Z 100063a0     XmlDocument:XmlAttributeCollection.obj
+ 0001:000053b8       $unwind2$?GetItem@XmlElementList@@QAAJPAPAVXmlElement@@I@Z 100063b8     XmlDocument:XmlElementList.obj
+ 0001:000053d0       $unwind3$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 100063d0     XmlDocument:XmlDocument.obj
+ 0001:000053e8       $unwind4$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 100063e8     XmlDocument:XmlDocument.obj
+ 0001:000053f8       $unwind3$_DllMainCRTStartupHelper 100063f8     ccrt0:pegdmain.obj
+ 0001:0000541c       __security_push_cookie_xdata 1000641c     ccrt0:secpushpop.obj
+ 0001:00005424       __security_push_cookie_xdata_prolog 10006424     ccrt0:secpushpop.obj
+ 0001:00005426       __security_push_cookie_xdata_epilog1 10006426     ccrt0:secpushpop.obj
+ 0001:00005428       __security_push_cookie_xdata_end 10006428     ccrt0:secpushpop.obj
+ 0001:00005428       __security_pop_cookie_xdata 10006428     ccrt0:secpushpop.obj
+ 0001:00005430       __security_pop_cookie_xdata_epilog1 10006430     ccrt0:secpushpop.obj
+ 0001:00005430       __security_pop_cookie_xdata_prolog 10006430     ccrt0:secpushpop.obj
+ 0001:00005434       __security_pop_cookie_xdata_end 10006434     ccrt0:secpushpop.obj
+ 0001:00005434       __ppgsfailure_xdata        10006434     ccrt0:secpushpop.obj
+ 0001:0000543c       __ppgsfailure_xdata_prolog 1000643c     ccrt0:secpushpop.obj
+ 0001:0000543f       __ppgsfailure_xdata_epilog1 1000643f     ccrt0:secpushpop.obj
+ 0001:00005444       __ppgsfailure_xdata_end    10006444     ccrt0:secpushpop.obj
+ 0001:00005448       $unwind3$_onexit           10006448     ccrt0:onexit.obj
+ 0001:00005470       $unwind3$doexit            10006470     ccrt0:crt0dat.obj
+ 0001:00005498       __gsfailure_xdata          10006498     ccrt0:armsecgs.obj
+ 0001:0000549c       __gsfailure_xdata_prolog   1000649c     ccrt0:armsecgs.obj
+ 0001:000054a0       __gsfailure_xdata_end      100064a0     ccrt0:armsecgs.obj
+ 0001:000056bc       .idata$6                   100066bc     coredll:COREDLL.dll
+ 0001:000056ec       .idata$6                   100066ec     oleaut32:OLEAUT32.dll
+ 0001:000056fa       .idata$6                   100066fa     msvcrt:MSVCRT.dll
+ 0001:0000573e       .idata$6                   1000673e     ole32:ole32.dll
+ 0001:00005780       .edata                     10006780     AlchemyTestUtils.exp
+ 0001:000057a8       rgpv                       100067a8     AlchemyTestUtils.exp
+ 0001:00005810       rgszName                   10006810     AlchemyTestUtils.exp
+ 0001:00005878       rgwOrd                     10006878     AlchemyTestUtils.exp
+ 0001:000058ac       szName                     100068ac     AlchemyTestUtils.exp
+ 0001:000058c1       $N00001                    100068c1     AlchemyTestUtils.exp
+ 0001:000058d6       $N00002                    100068d6     AlchemyTestUtils.exp
+ 0001:000058e9       $N00003                    100068e9     AlchemyTestUtils.exp
+ 0001:000058f4       $N00004                    100068f4     AlchemyTestUtils.exp
+ 0001:00005907       $N00005                    10006907     AlchemyTestUtils.exp
+ 0001:0000591d       $N00006                    1000691d     AlchemyTestUtils.exp
+ 0001:0000592c       $N00007                    1000692c     AlchemyTestUtils.exp
+ 0001:00005949       $N00008                    10006949     AlchemyTestUtils.exp
+ 0001:00005959       $N00009                    10006959     AlchemyTestUtils.exp
+ 0001:00005970       $N00010                    10006970     AlchemyTestUtils.exp
+ 0001:00005980       $N00011                    10006980     AlchemyTestUtils.exp
+ 0001:00005999       $N00012                    10006999     AlchemyTestUtils.exp
+ 0001:000059aa       $N00013                    100069aa     AlchemyTestUtils.exp
+ 0001:000059bd       $N00014                    100069bd     AlchemyTestUtils.exp
+ 0001:000059d7       $N00015                    100069d7     AlchemyTestUtils.exp
+ 0001:000059eb       $N00016                    100069eb     AlchemyTestUtils.exp
+ 0001:000059fd       $N00017                    100069fd     AlchemyTestUtils.exp
+ 0001:00005a10       $N00018                    10006a10     AlchemyTestUtils.exp
+ 0001:00005a1b       $N00019                    10006a1b     AlchemyTestUtils.exp
+ 0001:00005a23       $N00020                    10006a23     AlchemyTestUtils.exp
+ 0001:00005a3d       $N00021                    10006a3d     AlchemyTestUtils.exp
+ 0001:00005a4f       $N00022                    10006a4f     AlchemyTestUtils.exp
+ 0001:00005a62       $N00023                    10006a62     AlchemyTestUtils.exp
+ 0001:00005a74       $N00024                    10006a74     AlchemyTestUtils.exp
+ 0001:00005a86       $N00025                    10006a86     AlchemyTestUtils.exp
+ 0001:00005a9c       $N00026                    10006a9c     AlchemyTestUtils.exp
+ 0003:00000000       $pdata1$?GetStringFromElement@@YAPAGPAVXmlElement@@@Z 10008000     AlchemyXML.obj
+ 0003:00000008       $pdata1$?ElementCheckName@@YA_NPAGPAVXmlElement@@@Z 10008008     AlchemyXML.obj
+ 0003:00000010       $pdata1$?RemoveUselessContent@@YAPAGPAGAAPAGAAH@Z 10008010     AlchemyXML.obj
+ 0003:00000018       $pdata1$?CheckRemovableTag@@YA_NPAGPAPAG@Z 10008018     AlchemyXML.obj
+ 0003:00000020       $pdata1$?DeleteXMLSearchNode@@YAXPAU_XMLSearchNode@@@Z 10008020     AlchemyXML.obj
+ 0003:00000028       $pdata1$?GetTagName@@YAPAGPAG@Z 10008028     AlchemyXML.obj
+ 0003:00000030       $pdata1$?GetElementValue@@YAPAGPAG@Z 10008030     AlchemyXML.obj
+ 0003:00000038       $pdata1$?GetElementType@@YAPAGPAG@Z 10008038     AlchemyXML.obj
+ 0003:00000040       $pdata1$?ElementGetStringValue@@YA_NPAG0IPAVXmlElement@@@Z 10008040     AlchemyXML.obj
+ 0003:00000048       $pdata1$?AddChild@@YAXPAVXmlElement@@PAU_XMLSearchNode@@@Z 10008048     AlchemyXML.obj
+ 0003:00000050       $pdata1$?_Grow@?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@IAA_NI@Z 10008050     AlchemyXML.obj
+ 0003:00000058       $pdata1$?DeleteXMLSearchNodeTree@@YAXPAU_XMLSearchNode@@@Z 10008058     AlchemyXML.obj
+ 0003:00000060       $pdata1$?getNext@@YAPAU_XMLSearchNode@@PAU1@@Z 10008060     AlchemyXML.obj
+ 0003:00000068       $pdata1$?GetDoubleAttribute@@YA_NPAG0PAN@Z 10008068     AlchemyXML.obj
+ 0003:00000070       $pdata1$?GetIntAttribute@@YA_NPAG0PAH@Z 10008070     AlchemyXML.obj
+ 0003:00000078       $pdata1$?GetStringAttribute@@YAPAGPAG0@Z 10008078     AlchemyXML.obj
+ 0003:00000080       $pdata1$?ElementCheckAttributeValue@@YA_NPAG0PAVXmlElement@@@Z 10008080     AlchemyXML.obj
+ 0003:00000088       $pdata1$?RecurseChildrenStack@@YAPAU_XMLSearchNode@@PAG0PAVXmlElement@@@Z 10008088     AlchemyXML.obj
+ 0003:00000090       $pdata1$?GetPointAttribute@@YA_NPAG0PAUtagPOINT@@@Z 10008090     AlchemyXML.obj
+ 0003:00000098       $pdata1$?GetElementUpperLeftAndString@@YAPAGPAG00PAUtagPOINT@@@Z 10008098     AlchemyXML.obj
+ 0003:000000a0       $pdata1$?append@?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@QAA_NPBG@Z 100080a0     AlchemyXML.obj
+ 0003:000000a8       $pdata1$?AppendMessage@@YAXAAV?$_string_t@G$0BA@U?$char_traits@G@ce@@Vallocator@2@@ce@@PAGAAPAGAAHPAPAG@Z 100080a8     AlchemyXML.obj
+ 0003:000000b0       $pdata1$??1XMLCollection@@UAA@XZ 100080b0     AlchemyXML.obj
+ 0003:000000b8       $pdata1$?_Insert_dispatch@?$vector@PAGVallocator@ce@@U?$exponential_growth@$09@2@@ce@@AAA_NPAPAGIABQAGABUtrue_type@detail@2@@Z 100080b8     AlchemyXML.obj
+ 0003:000000c0       $pdata1$?GetTree@@YAPAGPAUHWND__@@HKPAPAG@Z 100080c0     AlchemyXML.obj
+ 0003:000000c8       $pdata1$??_GXMLCollection@@UAAPAXI@Z 100080c8     AlchemyXML.obj
+ 0003:000000d0       $pdata1$?GetElementPointerTree@@YAPAGPAUHWND__@@HKPAPAG@Z 100080d0     AlchemyXML.obj
+ 0003:000000d8       $pdata1$?RecurseChildrenCheck@@YAXPAG00PAVXmlElement@@PAPAVXMLCollection@@_NHH@Z 100080d8     AlchemyXML.obj
+ 0003:000000e0       $pdata1$?GetObjectByTagName@@YAPAGPAG0@Z 100080e0     AlchemyXML.obj
+ 0003:000000e8       $pdata1$?GetObjects@@YAPAVXMLCollection@@PAG000HH@Z 100080e8     AlchemyXML.obj
+ 0003:000000f0       $pdata1$?GetObjectByAttributeName@@YAPAGPAG0@Z 100080f0     AlchemyXML.obj
+ 0003:000000f8       $pdata1$?GetObjectsByTagName@@YAPAVXMLCollection@@PAG0@Z 100080f8     AlchemyXML.obj
+ 0003:00000100       $pdata1$?GetObjectsByAttributeName@@YAPAVXMLCollection@@PAG0@Z 10008100     AlchemyXML.obj
+ 0003:00000108       $pdata1$?GetObjectByCount@@YAPAGPAG000PAIHH@Z 10008108     AlchemyXML.obj
+ 0003:00000110       $pdata1$?GetFrameRateFromWindow@@YA_NPAUHWND__@@PAM@Z 10008110     AlchemyAnimation.obj
+ 0003:00000118       $pdata1$?ClockCommand@@YA_NPAUHWND__@@IJ@Z 10008118     AlchemyAnimation.obj
+ 0003:00000120       $pdata1$?FindWindowWTimeOut@@YAPAUHWND__@@PBGI@Z 10008120     WindowUtil.obj
+ 0003:00000128       $pdata1$??1Queue@@UAA@XZ   10008128     Queue.obj
+ 0003:00000130       $pdata1$??_GQueue@@UAAPAXI@Z 10008130     Queue.obj
+ 0003:00000138       $pdata1$?Create@Queue@@QAAJPAUHWND__@@@Z 10008138     Queue.obj
+ 0003:00000140       $pdata1$??0XmlElement@@QAA@PAUIXMLDOMNode@@@Z 10008140     XmlDocument:XmlElement.obj
+ 0003:00000148       $pdata1$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 10008148     XmlDocument:XmlElement.obj
+ 0003:00000150       $pdata2$?GetAttributes@XmlElement@@QAAJPAPAVXmlAttributeCollection@@@Z 10008150     XmlDocument:XmlElement.obj
+ 0003:00000158       $pdata1$?AtlThrowImpl@ATL@@YAXJ@Z 10008158     XmlDocument:XmlElement.obj
+ 0003:00000160       $pdata1$?GetXmlSize@XmlElement@@QAAJPAI@Z 10008160     XmlDocument:XmlElement.obj
+ 0003:00000168       $pdata1$?GetXml@XmlElement@@QAAJPAGI@Z 10008168     XmlDocument:XmlElement.obj
+ 0003:00000170       $pdata1$?GetText@XmlElement@@QAAJPAGI@Z 10008170     XmlDocument:XmlElement.obj
+ 0003:00000178       $pdata1$?GetTagName@XmlElement@@QAAJPAGI@Z 10008178     XmlDocument:XmlElement.obj
+ 0003:00000180       $pdata1$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 10008180     XmlDocument:XmlElement.obj
+ 0003:00000188       $pdata2$?GetChildren@XmlElement@@QAAJPAPAVXmlElementList@@@Z 10008188     XmlDocument:XmlElement.obj
+ 0003:00000190       $pdata1$??0XmlAttributeCollection@@QAA@PAUIXMLDOMNode@@@Z 10008190     XmlDocument:XmlAttributeCollection.obj
+ 0003:00000198       $pdata1$??1XmlAttributeCollection@@QAA@XZ 10008198     XmlDocument:XmlAttributeCollection.obj
+ 0003:000001a0       $pdata1$?GetItem@XmlAttributeCollection@@QAAJPAVXmlAttribute@@I@Z 100081a0     XmlDocument:XmlAttributeCollection.obj
+ 0003:000001a8       $pdata1$??0XmlElementList@@QAA@PAUIXMLDOMSelection@@@Z 100081a8     XmlDocument:XmlElementList.obj
+ 0003:000001b0       $pdata1$??1XmlElementList@@QAA@XZ 100081b0     XmlDocument:XmlElementList.obj
+ 0003:000001b0       $pdata1$??1XmlElement@@QAA@XZ 100081b0     XmlDocument:XmlElementList.obj
+ 0003:000001b8       $pdata1$?GetItem@XmlElementList@@QAAJPAPAVXmlElement@@I@Z 100081b8     XmlDocument:XmlElementList.obj
+ 0003:000001c0       $pdata1$??1XmlDocument@@QAA@XZ 100081c0     XmlDocument:XmlDocument.obj
+ 0003:000001c8       $pdata1$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 100081c8     XmlDocument:XmlDocument.obj
+ 0003:000001d0       $pdata2$?GetDocumentElement@XmlDocument@@QAAJPAPAVXmlElement@@@Z 100081d0     XmlDocument:XmlDocument.obj
+ 0003:000001d8       $pdata1$?Initialize@XmlDocument@@AAAJXZ 100081d8     XmlDocument:XmlDocument.obj
+ 0003:000001e0       $pdata1$?ParseLoadError@XmlDocument@@AAAJXZ 100081e0     XmlDocument:XmlDocument.obj
+ 0003:000001e8       $pdata1$?LoadXml@XmlDocument@@QAAJPAG@Z 100081e8     XmlDocument:XmlDocument.obj
+ 0003:000001f0       $pdata1$??1XmlAttribute@@QAA@XZ 100081f0     XmlDocument:XmlAttribute.obj
+ 0003:000001f8       $pdata1$?GetName@XmlAttribute@@QAAJPAGI@Z 100081f8     XmlDocument:XmlAttribute.obj
+ 0003:00000200       $pdata1$?GetValue@XmlAttribute@@QAAJPAGI@Z 10008200     XmlDocument:XmlAttribute.obj
+ 0003:00000208       $pdata1$?Set@XmlAttribute@@QAAJPAG0@Z 10008208     XmlDocument:XmlAttribute.obj
+ 0003:00000210       $pdata1$DllMain            10008210     ccrt0:dllmain.obj
+ 0003:00000218       $pdata1$_DllMainCRTStartupHelper 10008218     ccrt0:pegdmain.obj
+ 0003:00000220       $pdata2$_DllMainCRTStartupHelper 10008220     ccrt0:pegdmain.obj
+ 0003:00000228       $pdata1$_DllMainCRTStartup 10008228     ccrt0:pegdmain.obj
+ 0003:00000248       $pdata1$__GSHandlerCheck   10008248     ccrt0:gshandler.obj
+ 0003:00000250       $pdata1$_onexit            10008250     ccrt0:onexit.obj
+ 0003:00000258       $pdata2$_onexit            10008258     ccrt0:onexit.obj
+ 0003:00000260       $pdata1$atexit             10008260     ccrt0:onexit.obj
+ 0003:00000268       $pdata1$__GSHandlerCheck_EH 10008268     ccrt0:gshandlereh.obj
+ 0003:00000270       $pdata1$doexit             10008270     ccrt0:crt0dat.obj
+ 0003:00000278       $pdata2$doexit             10008278     ccrt0:crt0dat.obj
+ 0003:00000280       $pdata1$_cinit             10008280     ccrt0:crt0dat.obj
+ 0003:00000288       $pdata1$_amsg_exit         10008288     ccrt0:crt0dat.obj
+ 0003:00000290       $pdata1$__security_init_cookie 10008290     ccrt0:seccinit.obj
+ 0003:000002a0       $pdata1$_FF_MSGBANNER      100082a0     ccrt0:crt0msg.obj
+ 0003:000002a8       $pdata1$??__E?_factory@?$singleton@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03V?$static_allocator@V?$free_list@$0GE@Vallocator@ce@@@ce@@$03@2@@ce@@1Ulock_factory@12@A@@YAXXZ 100082a8     AlchemyXML.obj

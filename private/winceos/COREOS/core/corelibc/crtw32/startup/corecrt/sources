@@ -1,0 +1,62 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtstrt_core
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\..\sources_st.inc"
+
+INCLUDES=..\..\h;..\..\..\..\inc;..\..\..\..\..\nk\inc
+# RISC
+INCLUDES=$(INCLUDES);..\..\eh\inc
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+ASM_SAFESEH=1
+!ENDIF
+
+CDEFINES=$(CDEFINES) -D_SYSCRT_ $(XCDEFINES) -D_WCE_CORECRT
+
+SOURCES= \
+    ..\cmiscdat.c \
+    ..\crt0dat.c \
+    ..\crt0fp.c \
+    ..\crt0init.c \
+    ..\crt0msg.c \
+    ..\crtstrta.cxx \
+    ..\crtstrtw.cxx \
+    ..\dllmain.c \
+    ..\mainacrt.cxx \
+    ..\mainwcrt.cxx \
+    ..\onexit.c \
+    ..\pegdentry.c \
+    ..\pegdmain.c \
+    ..\pegwmain.c \
+    ..\wwinmain.c \
+
+ARM_SOURCES= \
+    ..\arm\armsecgs.asm \
+    ..\arm\secpushpop.asm \
+    ..\arm\gshandler.c \
+    ..\arm\gshandlereh.c \
+    ..\arm\gshandlerseh.c \
+
+x86_SOURCES= \
+    ..\x86\fp8.c \
+    ..\x86\_exclst_.asm \
+    ..\x86\x86secgs.c \
+    ..\x86\chandler4gs.c \
+    ..\x86\sehprolg4.asm \
+    ..\x86\sehprolg4gs.asm \
+    ..\x86\loadcfg.c \
+    ..\x86\ehprolg3.c \
+    ..\x86\ehprolg3a.c \
+

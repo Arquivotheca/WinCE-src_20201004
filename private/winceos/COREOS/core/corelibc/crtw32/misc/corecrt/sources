@@ -1,0 +1,73 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtmisc_core
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\..\sources_corecrt.inc"
+
+INCLUDES=..\..\h;..\..\h\$(_TGTCPUFAMILY);..\..\..\..\inc;..\..\..\..\..\nk\inc;..\..\stdhpp;..\..\..\..\buildbtcrt\lib;
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+CDEFINES=$(CDEFINES) -Dmem_S -DI386
+ADEFINES=$(ADEFINES) -Dmem_S -DI386
+ASM_SAFESEH=1
+!ENDIF
+
+SOURCES= \
+    ..\a_env.c \
+    ..\_a_loc.cpp \
+    ..\_a_map.cpp \
+    ..\_a_str.cpp \
+    ..\bsearch.c \
+    ..\bswap.c \
+    ..\crtsupp.c \
+    ..\ctype.c \
+    ..\dbghook.c \
+    ..\errmode.c \
+    ..\glstatus.c \
+    ..\initcoll.c \
+    ..\inithelp.c \
+    ..\initmon.c \
+    ..\initnum.c \
+    ..\_invarg.cpp \
+    ..\lconv.c \
+    ..\mlock.c \
+    ..\nlsdata.c \
+    ..\setenv.c \
+    ..\tidtable.c \
+    ..\winapisupp.c \
+    ..\winapinls.c \
+    ..\wsetenv.c \
+    ..\_w_cmp.cpp \
+    ..\w_env.c \
+    ..\_w_map.cpp \
+
+ARM_SOURCES= \
+     ..\arm\longjmp.s   \
+     ..\arm\setjmp.s
+
+x86_SOURCES= \
+    ..\x86\alloca16.asm \
+    ..\x86\chkstk.asm \
+    ..\x86\calldtor.c \
+    ..\x86\chandler4.c \
+    ..\x86\chkesp.c \
+    ..\x86\eh3valid.c \
+    ..\x86\exsup.c \
+    ..\x86\exsup3.asm \
+    ..\x86\exsup4.asm \
+    ..\x86\longjmp.asm \
+    ..\x86\nlgsupp.asm \
+    ..\x86\sehprolg.asm \
+    ..\x86\sehsupp.c \
+    ..\x86\setjmp.asm \

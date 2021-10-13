@@ -1,0 +1,201 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrttran_full
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\..\sources_fullcrt.inc"
+
+CDEFINES=$(CDEFINES) -D_SYSCRT_
+ASM_SAFESEH=1
+
+INCLUDES=..\..\include;\
+    ..\..\..\crtw32\h;\
+!IF "$(_TGTCPUFAMILY)"=="x86"
+    ..\..\..\crtw32\h\x86;\
+!ENDIF
+    ..\..\inc;\
+!IF "$(_TGTCPUFAMILY)"=="x86"
+    ..\..\inc\x86;\
+!ENDIF
+
+SOURCES= \
+    ..\bessel.c \
+    ..\contrlfp.c \
+    ..\fpexcept.c \
+    ..\matherr.c \
+    ..\util.c
+
+ARM_SOURCES= \
+    ..\arm\arm_fmod.c     \
+    ..\arm\arm_fmodf.c     \
+    ..\fabsf.c \
+    ..\frexp.c \
+    ..\ldexp.c \
+    ..\pow.c \
+    ..\powhlp.c \
+    ..\arm\arm_tanh.c \
+    ..\arm\_chgsign.c \
+    ..\arm\_chgsignf.c \
+    ..\arm\_copysign.c \
+    ..\arm\_copysignf.c \
+    ..\arm\_exp.c \
+    ..\arm\_expf.c \
+    ..\arm\_finite.c \
+    ..\arm\_finitef.c \
+    ..\arm\acos.c \
+    ..\arm\acosf.c \
+    ..\arm\asin.c \
+    ..\arm\asinf.c \
+    ..\arm\arm_atan.c \
+    ..\arm\atan2.c \
+    ..\arm\atan2f.c \
+    ..\arm\atanf.c \
+    ..\arm\cabs.c \
+    ..\arm\cabsf.c \
+    ..\arm\ceil.asm \
+    ..\arm\cosh.c \
+    ..\arm\coshf.c \
+    ..\arm\exp2.c \
+    ..\arm\fabs.asm \
+    ..\arm\filter.c \
+    ..\arm\floor.asm \
+    ..\arm\fpctrl.c \
+    ..\arm\fpraise.c \
+    ..\arm\frnd.c \
+    ..\arm\huge.c \
+    ..\arm\arm_hypot.c \
+    ..\arm\hypotf.c \
+    ..\arm\ieee.c \
+    ..\ieeemisc.c \
+    ..\arm\libm_error.c \
+    ..\arm\log.c \
+    ..\arm\log10.c \
+    ..\arm\log10f.c \
+    ..\arm\log2.c \
+    ..\arm\logb.c \
+    ..\arm\logbf.c \
+    ..\arm\logf.c \
+    ..\arm\arm_modf.c \
+    ..\arm\modff.c \
+    ..\arm\powf.c \
+    ..\arm\remainder.c \
+    ..\arm\remainder_piby2.c \
+    ..\arm\arm_sincos.c \
+    ..\arm\sincosf.c \
+    ..\arm\sinh.c \
+    ..\arm\sinhf.c \
+    ..\arm\arm_sqrt.c \
+    ..\arm\sqrtf.c \
+    ..\arm\arm_tan.c \
+    ..\arm\tanf.c \
+    ..\arm\tanhf.c \
+
+x86_SOURCES= \
+    ..\ceil.c \
+    ..\fabs.c \
+    ..\fmod.c \
+    ..\floor.c \
+    ..\frexp.c \
+    ..\hypot.c \
+    ..\ieeemisc.c \
+    ..\ldexp.c \
+    ..\modf.c \
+    ..\powhlp.c \
+    ..\sqrtf.c \
+    ..\x86\87cdisp.asm \
+    ..\x86\87csqrt.asm \
+    ..\x86\87ctran.asm \
+    ..\x86\87ctrig.asm \
+    ..\x86\87ctriga.asm \
+    ..\x86\87ctrigh.asm \
+    ..\x86\87disp.asm \
+    ..\x86\87except.c \
+    ..\x86\87fmod.asm \
+    ..\x86\87tran.asm \
+    ..\x86\87trig.asm \
+    ..\x86\87triga.asm \
+    ..\x86\87trigh.asm \
+    ..\x86\acos.asm \
+    ..\x86\asin.asm \
+    ..\x86\atan.asm \
+    ..\x86\atan_table.c \
+    ..\x86\common.asm \
+    ..\x86\cos.asm  \
+    ..\x86\filter.c \
+    ..\x86\fpctrl.c \
+    ..\x86\frnd.c   \
+    ..\x86\fsqrt.c  \
+    ..\x86\ftol.asm \
+    ..\x86\ftol2.asm \
+    ..\x86\genexcep.asm \
+    ..\x86\huge.asm \
+    ..\x86\ieee87.c \
+    ..\x86\libm_error.c \
+    ..\x86\log.asm  \
+    ..\x86\log10.asm \
+    ..\x86\mathfcns.c  \
+    ..\x86\pow.asm  \
+    ..\x86\sin.asm  \
+    ..\x86\sqrt.asm \
+    ..\x86\ceil_pentium4.asm \
+    ..\x86\floor_pentium4.asm \
+    ..\x86\tan.asm \
+    ..\x86\filter_simd.c \
+    ..\x86\libm_error.c \
+    ..\x86\acos_pentium4.asm \
+    ..\x86\asin_pentium4.asm \
+    ..\x86\atan_pentium4.asm \
+    ..\x86\cos_pentium4.asm \
+    ..\x86\exp_pentium4.asm \
+    ..\x86\log_pentium4.asm \
+    ..\x86\log10_pentium4.asm \
+    ..\x86\modf_pentium4.asm \
+    ..\x86\pow_pentium4.asm \
+    ..\x86\sin_pentium4.asm \
+    ..\x86\tan_pentium4.asm \
+    ..\x86\acosf_sse2.c \
+    ..\x86\acos_sse2.c \
+    ..\x86\asinf_sse2.c \
+    ..\x86\asin_sse2.c \
+    ..\x86\atan2_sse2.c \
+    ..\x86\atanf_sse2.c \
+    ..\x86\atan_sse2.c \
+    ..\x86\cosf_sse2.c \
+    ..\x86\cos_sse2.c \
+    ..\x86\expf_sse2.c \
+    ..\x86\exp_sse2.c \
+    ..\x86\log10f_sse2.c \
+    ..\x86\log10_sse2.c \
+    ..\x86\logf_sse2.c \
+    ..\x86\log_sse2.c \
+    ..\x86\powf_sse2.c \
+    ..\x86\pow_sse2.c \
+    ..\x86\sincosf_sse2.c \
+    ..\x86\sincos_sse2.c \
+    ..\x86\sinf_sse2.c \
+    ..\x86\sin_sse2.c \
+    ..\x86\tanf_sse2.c \
+    ..\x86\tan_sse2.c \
+    ..\x86\xmmi2_fp_emul.c \
+    ..\x86\xmmi_fp_emul.c \
+    ..\x86\acos_sse2_precise.asm \
+    ..\x86\asin_sse2_precise.asm \
+    ..\x86\atan_sse2_precise.asm \
+    ..\x86\cos_sse2_precise.asm \
+    ..\x86\exp_sse2_precise.asm \
+    ..\x86\log10_sse2_precise.asm \
+    ..\x86\log_sse2_precise.asm \
+    ..\x86\pow_sse2_precise.asm \
+    ..\x86\sin_sse2_precise.asm \
+    ..\x86\sqrt_sse2_precise.asm \
+    ..\x86\tan_sse2_precise.asm \

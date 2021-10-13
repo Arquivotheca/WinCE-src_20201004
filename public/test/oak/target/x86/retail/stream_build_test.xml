@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft
+premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license
+agreement, you are not authorized to use this source code.
+For the terms of the license, please see the license agreement
+signed by you and Microsoft.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<TestConfig Name="Graph Build Tests" Desc="Graph or Multiple Graph Build Tests" GenerateId="true">
+  <MediaList Container="\release\stream_playback_media.xml">
+  </MediaList>
+  <TestList>
+    <TestGroup Name="Build Tests" TestIdBase="0">
+      <Test Name="EmptyGraphQueryInterfaceTest" Desc="WMV7/HTTP/IIS">
+        <Media>WMV7:IIS_HTTP</Media>
+      </Test>
+      <Test Name="AddSourceFilterTest" Desc="WMV8/HTTP/IIS - verify source filter gets added">
+        <Media>WMV8:IIS_HTTP</Media>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="WMV9/HTTP/IIS - verify that the correct graph gets built">
+        <Media>WMV91:IIS_HTTP</Media>
+        <Verify>
+          <CorrectGraph>NSSOURCE:ICMDISP:WMVDEC:VMRREND</CorrectGraph>
+        </Verify>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="WMV9/HTTP/IIS - verify the graph build latency">
+        <Media>WMV92:IIS_HTTP</Media>
+        <Verify>
+          <BuildGraphLatency>2000</BuildGraphLatency>
+        </Verify>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="WMV9/HTTP/WMS - verify the graph build latency">
+        <Media>WMV92:WMS_HTTP</Media>
+        <Verify>
+          <BuildGraphLatency>2000</BuildGraphLatency>
+        </Verify>
+      </Test>
+      <Test Name="BuildGraphMultipleTest" Desc="WMV9/HTTP/WMS">
+        <Media>WMV91:WMS_HTTP</Media>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="Graph build, ASF with MP3 Audio, WMS Streaming">
+        <Media>Hotfix29790:WMS_HTTP</Media>
+        <Verify>
+          <CorrectGraph>NSSOURCE:ACMDISP</CorrectGraph>
+        </Verify>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="Graph build, Hotfix media file">
+        <Media>Hotfix29981:IIS_HTTP</Media>
+        <Verify>
+          <CorrectGraph>MPGSPLIT</CorrectGraph>
+        </Verify>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="Graph build, Hotfix media file">
+        <Media>Hotfix29988:IIS_HTTP</Media>
+        <Verify>
+          <CorrectGraph>WMVDEC</CorrectGraph>
+        </Verify>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="WMV9/HTTP/IIS - verify that the correct graph gets built">
+        <Media>WMV91:IIS_HTTP</Media>
+        <Verify>
+          <CorrectGraph>NSSOURCE:ICMDISP:SIGMAD:ACMDISP</CorrectGraph>
+        </Verify>
+      </Test>
+      <Test Name="BuildGraphTest" Desc="Graph build, Hotfix media file">
+        <Media>Hotfix29988:IIS_HTTP</Media>
+        <Verify>
+          <CorrectGraph>SIGMAD</CorrectGraph>
+        </Verify>
+      </Test>
+    </TestGroup>
+  </TestList>
+</TestConfig>

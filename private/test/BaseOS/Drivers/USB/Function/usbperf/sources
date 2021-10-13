@@ -1,0 +1,56 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+!IF 0
+
+Module Name:
+    sources.
+
+Abstract:
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+
+Author:
+    davli
+
+!ENDIF
+
+
+TARGETNAME=usbperf
+TARGETTYPE=DYNLINK
+
+WARNLEVEL=4
+WARNISERROR=1
+#ERRORFORBANNEDAPIS=1
+
+TARGETLIBS= \
+    $(_COREDLL) \
+    $(TEST_OAK_LIB_PATH)\usbcomon.lib \
+    $(TEST_OAK_LIB_PATH)\GUIDGenerator.lib \
+    $(_KATO)
+
+
+PREPROCESSDEFFILE=1
+INCLUDES=..\..\common; \
+         $(INCLUDES) \
+         $(_PRIVATEROOT)\test\common\libs\GUIDGenerator\dll; \
+                  
+SOURCES= \
+    dialogboxes.rc \
+    syncobj.cpp  \
+    USBCLASS.CPP \
+    usbperf.cpp  \
+    perfTST.cpp \
+    sysmon.cpp \

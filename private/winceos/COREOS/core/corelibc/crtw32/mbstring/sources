@@ -1,0 +1,107 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtmbst_full
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources_fullcrt.inc"
+
+INCLUDES=..\h;..\..\..\inc;
+
+CDEFINES=$(CDEFINES) -D_SYSCRT -D_MBCS
+
+SOURCES= \
+    _ismbalnm.cpp \
+    _ismbalph.cpp \
+    _ismbbyte.cpp \
+    _ismbdgt.cpp \
+    _ismbgrph.cpp \
+    _ismbknj.cpp \
+    _ismblgl.cpp \
+    _ismblwr.cpp \
+    _ismbprn.cpp \
+    _ismbpunc.cpp \
+    _ismbsle.cpp \
+    _ismbspc.cpp \
+    _ismbstr.cpp \
+    _ismbupr.cpp \
+    _mbbtype.cpp \
+    _mbccpy.cpp \
+    mbccpy_s.c \
+    _mbccpy_s_l.cpp \
+    mbclen.c \
+    _mbclevel.cpp \
+    _mbctype.cpp \
+    _mbsbtype.cpp \
+    mbscat_s.c \
+    _mbscat_s_l.cpp \
+    _mbschr.cpp \
+    _mbscmp.cpp \
+    _mbscoll.cpp \
+    mbscpy_s.c \
+    _mbscpy_s_l.cpp \
+    _mbscspn.cpp \
+    _mbsdec.cpp \
+    _mbsicmp.cpp \
+    _mbsicoll.cpp \
+    mbsinc.c \
+    _mbslen.cpp \
+    _mbslen_s.cpp \
+    _mbslwr.cpp \
+    _mbsnbcat.cpp \
+    mbsnbcat_s.c \
+    _mbsnbcat_s_l.cpp \
+    _mbsnbcmp.cpp \
+    _mbsnbcnt.cpp \
+    _mbsnbcol.cpp \
+    _mbsnbcpy.cpp \
+    mbsnbcpy_s.c \
+    _mbsnbcpy_s_l.cpp \
+    _mbsnbicm.cpp \
+    _mbsnbico.cpp \
+    _mbsnbset.cpp \
+    mbsnbset_s.c \
+    _mbsnbset_s_l.cpp \
+    _mbsncat.cpp \
+    mbsncat_s.c \
+    _mbsncat_s_l.cpp \
+    _mbsnccnt.cpp \
+    _mbsncmp.cpp \
+    _mbsncoll.cpp \
+    _mbsncpy.cpp \
+    mbsncpy_s.c \
+    _mbsncpy_s_l.cpp \
+    _mbsnextc.cpp \
+    _mbsnicmp.cpp \
+    _mbsnicol.cpp \
+    mbsninc.c \
+    _mbsnset.cpp \
+    mbsnset_s.c \
+    _mbsnset_s_l.cpp \
+    _mbspbrk.cpp \
+    _mbsrchr.cpp \
+    _mbsrev.cpp \
+    _mbsset.cpp \
+    mbsset_s.c \
+    _mbsset_s_l.cpp \
+    _mbsspn.cpp \
+    _mbsspnp.cpp \
+    _mbsstr.cpp \
+    _mbstok.cpp \
+    _mbstok_s.cpp \
+    _mbsupr.cpp \
+    mbtohira.c \
+    mbtokata.c \
+    _mbtolwr.cpp \
+    _mbtoupr.cpp \
+    _tojisjms.cpp \
+    _tombbmbc.cpp \

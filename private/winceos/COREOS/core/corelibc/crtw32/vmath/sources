@@ -1,0 +1,217 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtvmth
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources_fullcrt.inc"
+
+INCLUDES=..\h;..\h\$(_TGTCPUFAMILY);..\..\langapi\include;..\stdhpp;
+
+SOURCES=\
+
+ARM_SOURCES= \
+     arm\svml_vasin.cpp \
+     arm\svml_vatan.cpp \
+     arm\svml_vexp.cpp \
+     arm\svml_vfmod.cpp \
+     arm\svml_vlog.cpp \
+     arm\svml_vop.h \
+     arm\svml_vpow.cpp \
+     arm\svml_vsin.cpp \
+     arm\svml_vsinh.cpp \
+     arm\svml_vtan.cpp \
+     arm\svml_vtanh.cpp \
+
+x86_SOURCES= \
+     x86\svml_dacos2_dispatch.asm \
+     x86\svml_dacos2_sse2.asm \
+     x86\svml_dacos4_avx.asm \
+     x86\svml_dacos4_dispatch.asm \
+     x86\svml_dasin2_dispatch.asm \
+     x86\svml_dasin2_sse2.asm \
+     x86\svml_dasin4_avx.asm \
+     x86\svml_dasin4_dispatch.asm \
+     x86\svml_datan22_dispatch.asm \
+     x86\svml_datan22_sse2.asm \
+     x86\svml_datan24_avx.asm \
+     x86\svml_datan24_dispatch.asm \
+     x86\svml_datan2_dispatch.asm \
+     x86\svml_datan2_sse2.asm \
+     x86\svml_datan4_avx.asm \
+     x86\svml_datan4_dispatch.asm \
+     x86\svml_dcos2_dispatch.asm \
+     x86\svml_dcos2_sse2.asm \
+     x86\svml_dcos2_sse4.asm \
+     x86\svml_dcos4_avx.asm \
+     x86\svml_dcos4_dispatch.asm \
+     x86\svml_dcosh2_dispatch.asm \
+     x86\svml_dcosh2_sse2.asm \
+     x86\svml_dcosh4_avx.asm \
+     x86\svml_dcosh4_dispatch.asm \
+     x86\svml_dexp2_dispatch.asm \
+     x86\svml_dexp2_sse2.asm \
+     x86\svml_dexp2_sse4.asm \
+     x86\svml_dexp4_avx.asm \
+     x86\svml_dexp4_dispatch.asm \
+     x86\svml_dfmod2_dispatch.asm \
+     x86\svml_dfmod4_dispatch.asm \
+     x86\svml_dlog102_dispatch.asm \
+     x86\svml_dlog102_sse2.asm \
+     x86\svml_dlog104_avx.asm \
+     x86\svml_dlog104_dispatch.asm \
+     x86\svml_dlog2_dispatch.asm \
+     x86\svml_dlog2_sse2.asm \
+     x86\svml_dlog4_avx.asm \
+     x86\svml_dlog4_dispatch.asm \
+     x86\svml_dpow2_dispatch.asm \
+     x86\svml_dpow2_sse2.asm \
+     x86\svml_dpow4_avx.asm \
+     x86\svml_dpow4_dispatch.asm \
+     x86\svml_dsin2_dispatch.asm \
+     x86\svml_dsin2_sse2.asm \
+     x86\svml_dsin2_sse4.asm \
+     x86\svml_dsin4_avx.asm \
+     x86\svml_dsin4_dispatch.asm \
+     x86\svml_dsinh2_dispatch.asm \
+     x86\svml_dsinh2_sse2.asm \
+     x86\svml_dsinh4_avx.asm \
+     x86\svml_dsinh4_dispatch.asm \
+     x86\svml_dtan2_dispatch.asm \
+     x86\svml_dtan2_sse2.asm \
+     x86\svml_dtan2_sse4.asm \
+     x86\svml_dtan4_avx.asm \
+     x86\svml_dtan4_dispatch.asm \
+     x86\svml_dtanh2_dispatch.asm \
+     x86\svml_dtanh2_sse2.asm \
+     x86\svml_dtanh4_avx.asm \
+     x86\svml_dtanh4_dispatch.asm \
+     x86\svml_dtrig.asm \
+     x86\svml_d_acos_cout.asm \
+     x86\svml_d_acos_data.asm \
+     x86\svml_d_asin_cout.asm \
+     x86\svml_d_asin_data.asm \
+     x86\svml_d_atan2_cout.asm \
+     x86\svml_d_atan2_data.asm \
+     x86\svml_d_atan_cout.asm \
+     x86\svml_d_atan_data.asm \
+     x86\svml_d_cosh_cout.asm \
+     x86\svml_d_cosh_data.asm \
+     x86\svml_d_cos_cout.asm \
+     x86\svml_d_cos_data.asm \
+     x86\svml_d_exp_cout.asm \
+     x86\svml_d_exp_data.asm \
+     x86\svml_d_log10_cout.asm \
+     x86\svml_d_log10_data.asm \
+     x86\svml_d_log_cout.asm \
+     x86\svml_d_log_data.asm \
+     x86\svml_d_pow_cout.asm \
+     x86\svml_d_pow_data.asm \
+     x86\svml_d_sinh_cout.asm \
+     x86\svml_d_sinh_data.asm \
+     x86\svml_d_sin_cout.asm \
+     x86\svml_d_sin_data.asm \
+     x86\svml_d_tanh_cout.asm \
+     x86\svml_d_tanh_data.asm \
+     x86\svml_d_tan_cout.asm \
+     x86\svml_d_tan_data.asm \
+     x86\svml_sacosf4_dispatch.asm \
+     x86\svml_sacosf4_sse2.asm \
+     x86\svml_sacosf8_avx.asm \
+     x86\svml_sacosf8_dispatch.asm \
+     x86\svml_sasinf4_dispatch.asm \
+     x86\svml_sasinf4_sse2.asm \
+     x86\svml_sasinf8_avx.asm \
+     x86\svml_sasinf8_dispatch.asm \
+     x86\svml_satan2f4_dispatch.asm \
+     x86\svml_satan2f4_sse2.asm \
+     x86\svml_satan2f8_avx.asm \
+     x86\svml_satan2f8_dispatch.asm \
+     x86\svml_satanf4_dispatch.asm \
+     x86\svml_satanf4_sse2.asm \
+     x86\svml_satanf8_avx.asm \
+     x86\svml_satanf8_dispatch.asm \
+     x86\svml_scosf4_dispatch.asm \
+     x86\svml_scosf4_sse2.asm \
+     x86\svml_scosf4_sse4.asm \
+     x86\svml_scosf8_avx.asm \
+     x86\svml_scosf8_dispatch.asm \
+     x86\svml_scoshf4_dispatch.asm \
+     x86\svml_scoshf4_sse2.asm \
+     x86\svml_scoshf8_avx.asm \
+     x86\svml_scoshf8_dispatch.asm \
+     x86\svml_sexpf4_dispatch.asm \
+     x86\svml_sexpf4_sse2.asm \
+     x86\svml_sexpf4_sse4.asm \
+     x86\svml_sexpf8_avx.asm \
+     x86\svml_sexpf8_dispatch.asm \
+     x86\svml_sfmodf4_dispatch.asm \
+     x86\svml_sfmodf8_dispatch.asm \
+     x86\svml_slog10f4_dispatch.asm \
+     x86\svml_slog10f4_sse2.asm \
+     x86\svml_slog10f8_avx.asm \
+     x86\svml_slog10f8_dispatch.asm \
+     x86\svml_slogf4_dispatch.asm \
+     x86\svml_slogf4_sse2.asm \
+     x86\svml_slogf8_avx.asm \
+     x86\svml_slogf8_dispatch.asm \
+     x86\svml_spowf4_dispatch.asm \
+     x86\svml_spowf4_sse2.asm \
+     x86\svml_spowf8_avx.asm \
+     x86\svml_spowf8_dispatch.asm \
+     x86\svml_ssinf4_dispatch.asm \
+     x86\svml_ssinf4_sse2.asm \
+     x86\svml_ssinf4_sse4.asm \
+     x86\svml_ssinf8_avx.asm \
+     x86\svml_ssinf8_dispatch.asm \
+     x86\svml_ssinhf4_dispatch.asm \
+     x86\svml_ssinhf4_sse2.asm \
+     x86\svml_ssinhf8_avx.asm \
+     x86\svml_ssinhf8_dispatch.asm \
+     x86\svml_stanf4_dispatch.asm \
+     x86\svml_stanf4_sse2.asm \
+     x86\svml_stanf4_sse4.asm \
+     x86\svml_stanf8_avx.asm \
+     x86\svml_stanf8_dispatch.asm \
+     x86\svml_stanhf4_dispatch.asm \
+     x86\svml_stanhf4_sse2.asm \
+     x86\svml_stanhf8_avx.asm \
+     x86\svml_stanhf8_dispatch.asm \
+     x86\svml_s_acos_cout.asm \
+     x86\svml_s_acos_data.asm \
+     x86\svml_s_asin_cout.asm \
+     x86\svml_s_asin_data.asm \
+     x86\svml_s_atan2_cout.asm \
+     x86\svml_s_atan2_data.asm \
+     x86\svml_s_atan_cout.asm \
+     x86\svml_s_atan_data.asm \
+     x86\svml_s_cosh_cout.asm \
+     x86\svml_s_cosh_data.asm \
+     x86\svml_s_cos_cout.asm \
+     x86\svml_s_cos_data.asm \
+     x86\svml_s_exp_cout.asm \
+     x86\svml_s_exp_data.asm \
+     x86\svml_s_log10_cout.asm \
+     x86\svml_s_log10_data.asm \
+     x86\svml_s_log_cout.asm \
+     x86\svml_s_log_data.asm \
+     x86\svml_s_pow_cout.asm \
+     x86\svml_s_pow_data.asm \
+     x86\svml_s_sinh_cout.asm \
+     x86\svml_s_sinh_data.asm \
+     x86\svml_s_sin_cout.asm \
+     x86\svml_s_sin_data.asm \
+     x86\svml_s_tanh_cout.asm \
+     x86\svml_s_tanh_data.asm \
+     x86\svml_s_tan_cout.asm \
+     x86\svml_s_tan_data.asm \
+

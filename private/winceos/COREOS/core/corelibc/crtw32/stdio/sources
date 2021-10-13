@@ -1,0 +1,129 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=ccrtstio_full
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources_fullcrt.inc"
+
+CONDITIONAL_INCLUDES=
+INCLUDES=..\h;..\..\..\inc;..\..\..\..\inc
+
+CDEFINES=$(CDEFINES) -D_SYSCRT_
+
+SOURCES= \
+    clearerr.c \
+    closeall.c \
+    fclose.c \
+    fdopen.c \
+    feoferr.c \
+    fflush.c \
+    fgetc.c \
+    fgetchar.c \
+    fgetpos.c \
+    fgets.c \
+    fgetwc.c \
+    fgetwchr.c \
+    fgetws.c \
+    fileno.c \
+    files.c \
+    fopen.c \
+    fprintf.c \
+    fputc.c \
+    fputchar.c \
+    fputs.c \
+    fputwc.c \
+    fputwchr.c \
+    fputws.c \
+    fread.c \
+    freopen.c \
+    fscanf.c \
+    fseek.c \
+    fseeki64.c \
+    fsetpos.c \
+    ftell.c \
+    ftelli64.c \
+    fwprintf.c \
+    fwrite.c \
+    fwscanf.c \
+    gets.c \
+    getw.c \
+    getws.c \
+    ncommode.c \
+    openo.cpp \
+    outputformat.c \
+    popen.c \
+    printf.c \
+    puts.c \
+    putw.c \
+    putws.c \
+    rewind.c \
+    rmtmp.c \
+    scanf.c \
+    setbuf.c \
+    setmaxf.c \
+    setvbuf.c \
+    snprintf.c \
+    snprnc.c \
+    snscanf.c \
+    snwprint.c \
+    snwscanf.c \
+    sprintf.c \
+    sscanf.c \
+    stream.c \
+    swprintf.c \
+    swprintn.cpp \
+    swprnc.c \
+    swscanf.c \
+    tempnam.c \
+    test_out.c \
+    tmpfile.c \
+    ungetc.c \
+    ungetwc.c \
+    vfprintf.c \
+    vfwprint.c \
+    vprintf.c \
+    vsnprint.c \
+    vsnprnc.c \
+    vsnwprnt.c \
+    vsprintf.c \
+    vswprint.c \
+    vswprnc.c \
+    vwprintf.c \
+    wfdopen.c \
+    wfopen.c \
+    wfreopen.c \
+    wpopen.c \
+    wprintf.c \
+    wscanf.c \
+    wtempnam.c \
+    wtmpfile.c \
+    _filbuf.c \
+    _file.c \
+    _filwbuf.c \
+    _flsbuf.c \
+    _flswbuf.c \
+    _freebuf.c \
+    _getbuf.c \
+    _input.cpp \
+    _inputs.cpp \
+    _open.c \
+    _output.cpp \
+    _outputp.cpp \
+    _outputs.cpp \
+    _sftbuf.c \
+    _winput.cpp \
+    _winputs.cpp \
+    _wopen.c \
+    _woutput.cpp \
+    _woutputp.cpp \
+    _woutputs.cpp \

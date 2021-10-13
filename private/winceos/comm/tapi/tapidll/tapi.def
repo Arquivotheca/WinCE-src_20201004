@@ -1,0 +1,109 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft
+; premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license
+; agreement, you are not authorized to use this source code.
+; For the terms of the license, please see the license agreement
+; signed by you and Microsoft.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+LIBRARY         TAPI32
+
+EXPORTS
+	   
+   lineClose=xxx_lineClose @358
+   lineDeallocateCall=xxx_lineDeallocateCall @359
+   lineDrop=xxx_lineDrop @360
+   lineGetDevCaps=xxx_lineGetDevCaps @361
+   lineGetDevConfig=xxx_lineGetDevConfig @362
+   lineGetTranslateCaps=xxx_lineGetTranslateCaps @363
+   lineInitialize @364
+   lineMakeCall=xxx_lineMakeCall @365
+   lineNegotiateAPIVersion=xxx_lineNegotiateAPIVersion @366
+   lineOpen=xxx_lineOpen @367
+   lineSetDevConfig=xxx_lineSetDevConfig @368
+   lineSetStatusMessages=xxx_lineSetStatusMessages @369
+   lineShutdown @370
+   lineTranslateAddress=xxx_lineTranslateAddress @371
+   lineGetID=xxx_lineGetID @372
+   lineTranslateDialog=xxx_lineTranslateDialog @373
+   lineConfigDialogEdit=xxx_lineConfigDialogEdit @374
+   lineAddProvider=xxx_lineAddProvider @375
+   lineSetCurrentLocation=xxx_lineSetCurrentLocation @1168
+
+   lineAccept=xxx_lineAccept @1246
+   lineAddToConference=xxx_lineAddToConference @1247
+   lineAnswer=xxx_lineAnswer @1248
+   lineBlindTransfer=xxx_lineBlindTransfer @1249
+   lineCompleteTransfer=xxx_lineCompleteTransfer @1250
+   lineDevSpecific=xxx_lineDevSpecific @1251
+   lineDial=xxx_lineDial @1252
+   lineForward=xxx_lineForward @1253
+   lineGenerateDigits=xxx_lineGenerateDigits @1254
+   lineGenerateTone=xxx_lineGenerateTone @1255
+   lineGetAddressCaps=xxx_lineGetAddressCaps @1256
+   lineGetAddressID=xxx_lineGetAddressID @1257
+   lineGetAddressStatus=xxx_lineGetAddressStatus @1258
+   lineGetAppPriority=xxx_lineGetAppPriority @1259
+   lineGetCallInfo=xxx_lineGetCallInfo @1260
+   lineGetCallStatus=xxx_lineGetCallStatus @1261
+   lineGetConfRelatedCalls=xxx_lineGetConfRelatedCalls @1262
+   lineGetIcon=xxx_lineGetIcon @1263
+   lineGetLineDevStatus=xxx_lineGetLineDevStatus @1264
+   lineGetMessage=xxx_lineGetMessage @1265
+   lineGetNewCalls=xxx_lineGetNewCalls @1266
+   lineGetNumRings=xxx_lineGetNumRings @1267
+   lineGetProviderList=xxx_lineGetProviderList @1268
+   lineGetStatusMessages=xxx_lineGetStatusMessages @1269
+   lineHandoff=xxx_lineHandoff @1270
+   lineHold=xxx_lineHold @1271
+   lineInitializeEx @1272
+   lineMonitorDigits=xxx_lineMonitorDigits @1273
+   lineMonitorMedia=xxx_lineMonitorMedia @1274
+   lineNegotiateExtVersion=xxx_lineNegotiateExtVersion @1275
+   linePickup=xxx_linePickup @1276
+   linePrepareAddToConference=xxx_linePrepareAddToConference @1277
+   lineRedirect=xxx_lineRedirect @1278
+   lineReleaseUserUserInfo=xxx_lineReleaseUserUserInfo @1279
+   lineRemoveFromConference=xxx_lineRemoveFromConference @1280
+   lineSendUserUserInfo=xxx_lineSendUserUserInfo @1281
+   lineSetAppPriority=xxx_lineSetAppPriority @1282
+   lineSetCallParams=xxx_lineSetCallParams @1283
+   lineSetCallPrivilege=xxx_lineSetCallPrivilege @1284
+   lineSetMediaMode=xxx_lineSetMediaMode @1285
+   lineSetNumRings=xxx_lineSetNumRings @1286
+   lineSetTerminal=xxx_lineSetTerminal @1287
+   lineSetTollList=xxx_lineSetTollList @1288
+   lineSetupConference=xxx_lineSetupConference @1289
+   lineSetupTransfer=xxx_lineSetupTransfer @1290
+   lineSwapHold=xxx_lineSwapHold @1291
+   lineUnhold=xxx_lineUnhold @1292
+
+   phoneClose=xxx_phoneClose @1293
+   phoneConfigDialog=xxx_phoneConfigDialog @1294
+   phoneDevSpecific=xxx_phoneDevSpecific @1295
+   phoneGetDevCaps=xxx_phoneGetDevCaps @1296
+   phoneGetGain=xxx_phoneGetGain @1297
+   phoneGetHookSwitch=xxx_phoneGetHookSwitch @1298
+   phoneGetIcon=xxx_phoneGetIcon @1299
+   phoneGetID=xxx_phoneGetID @1300
+   phoneGetMessage=xxx_phoneGetMessage @1301
+   phoneGetRing=xxx_phoneGetRing @1302
+   phoneGetStatus=xxx_phoneGetStatus @1303
+   phoneGetStatusMessages=xxx_phoneGetStatusMessages @1304
+   phoneGetVolume=xxx_phoneGetVolume @1305
+   phoneInitializeEx @1306
+   phoneNegotiateAPIVersion=xxx_phoneNegotiateAPIVersion @1307
+   phoneNegotiateExtVersion=xxx_phoneNegotiateExtVersion @1308
+   phoneOpen=xxx_phoneOpen @1309
+   phoneSetGain=xxx_phoneSetGain @1310
+   phoneSetHookSwitch=xxx_phoneSetHookSwitch @1311
+   phoneSetRing=xxx_phoneSetRing @1312
+   phoneSetStatusMessages=xxx_phoneSetStatusMessages @1313
+   phoneSetVolume=xxx_phoneSetVolume @1314
+   phoneShutdown @1315
+   lineStartDTMF=xxx_lineStartDTMF @2608
+   lineStopDTMF=xxx_lineStopDTMF @2609
