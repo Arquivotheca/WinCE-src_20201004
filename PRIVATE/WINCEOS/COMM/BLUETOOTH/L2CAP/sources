@@ -1,0 +1,18 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=l2cap
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+!INCLUDE ..\bth.inc
+
+SOURCES= l2cap.cxx
+
+#xref VIGUID {39ea92ef-dd1f-4858-839a-38b651c208bc}
+#xref VSGUID {e1f349a7-6df7-4060-b594-d53227805093}

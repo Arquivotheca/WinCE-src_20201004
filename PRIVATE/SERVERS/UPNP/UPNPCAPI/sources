@@ -1,0 +1,28 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=UPNPCAPI
+TARGETTYPE=LIBRARY
+
+
+
+!IF "$(WINCEDEBUG)"=="debug"
+CDEFINES=$(CDEFINES) -DENABLETRACE
+!ENDIF
+
+INCLUDES=.;..\inc;..\util;..\ssdp\inc;..\ssdp\ssdpapi
+
+SOURCES= \
+        upnpcapi.cpp \
+        cbtarget.cpp \
+
+TARGETDEFNAME=$(TARGETNAME)
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+#xref VIGUID {dd5c2007-02e3-4367-b92e-e18590577865}
+#xref VSGUID {a8b70cd3-3299-47f8-9812-652241082763}

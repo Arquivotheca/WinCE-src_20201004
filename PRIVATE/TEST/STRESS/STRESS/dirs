@@ -1,0 +1,9 @@
+DIRS_CE=utils \
+    sClient \
+    extensions \
+    modules \
+    oemstress \
+    tools
+
+DIRS_NT=extension \
+    extensions

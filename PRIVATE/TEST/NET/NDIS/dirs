@@ -1,0 +1,5 @@
+DIRS_CE = \
+	NDT \
+        NDP \
+	LongTerm \
+	misc

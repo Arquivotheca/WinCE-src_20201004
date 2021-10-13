@@ -1,0 +1,11 @@
+DIRS=\
+	bvt \
+	stress \
+	TSP \
+	NSP \
+	misc \
+	sledge \
+	IPvX \
+	Verify
+DIRS_CE=\
+	BuildBvt

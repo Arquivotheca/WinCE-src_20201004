@@ -1,0 +1,30 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+INCLUDES=..\..\inc
+TARGETNAME=services
+EXEENTRY=WinMain
+TARGETTYPE=LIBRARY
+TARGETLIBS=$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib
+GLOBAL_RESBASE=services
+COPYRES=1
+WINCETARGETFILES=$(_RELEASELIBDIR)\$(TARGETNAME).res
+
+SYNCHRONIZE_DRAIN=1
+SYNCHRONIZE_BLOCK=1
+
+SOURCES = \
+    services.rc \
+    service.cpp \
+    servload.cpp \
+    servacpt.cpp \
+    servcmd.cpp
+
+#xref VIGUID {94dfa1fd-8d28-4f72-9532-9964b7604bc7}
+#xref VSGUID {f531a58c-6084-4e0b-bbf1-20d3ed0c66c5}

@@ -1,0 +1,101 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// Soapmsg.idl : IDL source for the SoapClient and SoapServer classes
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (soapmsg.tlb) and marshalling code.
+
+#include "soapmsgids.h"
+
+// {4BDFD94B-415C-46f2-95E1-D145AB080F9E}
+//IMPLEMENT_OLECREATE(<<class>>, <<external_name>>, 
+//   0x4bdfd94b, 0x415c, 0x46f2, 0x95, 0xe1, 0xd1, 0x45, 0xab, 0x8, 0xf, 0x9e);
+
+#ifdef SOAP_INTERFACES
+	DUAL_INTERFACE(UUID_ISOAPCLIENT, SOAP_SDK_VERSION, "ISOAPClient Interface")
+	interface ISOAPClient : IDispatch
+	{
+		[id(DISPID_SOAPCLIENT_INIT), helpstring("Loads the specified WSDL file")] HRESULT mssoapinit(
+					[in] BSTR bstrWSDLFile,
+					[in, defaultvalue("")] BSTR bstrServiceName,
+					[in, defaultvalue("")] BSTR bstrPort,
+					[in, defaultvalue("")] BSTR bstrWSMLFile
+				);
+		[propget, id(DISPID_SOAPCLIENT_FAULTCODE), helpstring("SOAP defined fault code")] 
+			HRESULT faultcode(
+					[out, retval] BSTR * bstrFaultcode);
+					
+		[propget, id(DISPID_SOAPCLIENT_FAULTSTRING), helpstring("Brief explanation of the SOAP fault")] 
+			HRESULT faultstring(
+					[out, retval] BSTR * bstrFaultstring);
+					
+		[propget, id(DISPID_SOAPCLIENT_FAULTACTOR), helpstring("Information about the source of the fault")] 
+			HRESULT faultactor(
+					[out, retval] BSTR * bstrActor);
+					
+		[propget, id(DISPID_SOAPCLIENT_FAULTDETAIL), helpstring("Detailed fault information")] 
+			HRESULT detail(
+					[out, retval] BSTR * bstrDetail);
+					
+		[propget, helpstring("Sets the specified property on the client")] 
+    		HRESULT ClientProperty([in] BSTR PropertyName, [out, retval] VARIANT *pPropertyValue);
+
+
+		[propputref, helpstring("Sets the headerhandler for the next calls against this client instance")] 
+    		HRESULT HeaderHandler([in] IDispatch *pHeaderHandler);
+    		
+		[propput, helpstring("Sets the specified property on the client")] 
+    		HRESULT ClientProperty([in] BSTR PropertyName, [in] VARIANT PropertyValue);
+    
+		[propget, helpstring("Passes the specified property to the SoapConnector")] 
+    		HRESULT ConnectorProperty([in] BSTR PropertyName, [out, retval] VARIANT *pPropertyValue);
+    		
+		[propput, helpstring("Passes the specified property to the SoapConnector")] 
+    		HRESULT ConnectorProperty([in] BSTR PropertyName, [in] VARIANT PropertyValue);
+    		
+	};
+
+
+	// {E8685095-8543-4771-B2EE-E17C58379E47}
+	//IMPLEMENT_OLECREATE(<<class>>, <<external_name>>, 
+	//  0xe8685095, 0x8543, 0x4771, 0xb2, 0xee, 0xe1, 0x7c, 0x58, 0x37, 0x9e, 0x47);
+
+
+	DUAL_INTERFACE(UUID_ISOAPSERVER, SOAP_SDK_VERSION, "ISOAPServer Interface")
+	interface ISOAPServer : IDispatch
+	{
+		[id(DISPID_SOAPSERVER_INIT), helpstring("Loads the specified WSDL and WSML files")] HRESULT Init(
+				[in] BSTR pUrlWSDLFile,
+				[in] BSTR bstrWSMLFileSpec);
+
+		[id(DISPID_SOAPSERVER_SOAPINVOKE), helpstring("Invokes a COM method as specified in the incoming message")] HRESULT SoapInvoke(
+				[in] VARIANT varInput,
+				[in] IUnknown *pOutputStream, 
+				[in, defaultvalue("")] BSTR bstrSoapAction);
+	};
+
+#endif
+
+#ifdef SOAP_COCLASSES 
+
+    LOCAL_COCLASS(CLSID_SOAPSERVER, SOAP_SDK_VERSION, "SoapServer Class")
+    coclass SoapServer
+    {
+        [default] interface ISoapServer;
+    };
+
+    LOCAL_COCLASS(CLSID_SOAPCLIENT, SOAP_SDK_VERSION, "SoapClient Class")
+    coclass SoapClient
+    {
+        [default] interface ISoapClient;
+    };
+#endif
+ 
+

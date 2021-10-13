@@ -1,0 +1,27 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=autodial
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+WINCEOEM=1
+SYNCHRONIZE_DRAIN=1
+TARGETDEFNAME=$(TARGETNAME)
+
+TARGET_PDB_NAME=$(_RELEASELIBDIR)\$(TARGETNAME).pdb
+PRECOMPILED_OBJ=obj\$(_CPUINDPATH)\$(TARGETNAME).obj
+
+INCLUDES=..\inc
+
+SOURCES= autodial.c \
+         status.cpp
+
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+#xref VIGUID {5cbcf09f-2927-48d3-88f5-f14ae6267236}
+#xref VSGUID {6af83420-b84a-44a3-9a88-0b25d5a4a445}

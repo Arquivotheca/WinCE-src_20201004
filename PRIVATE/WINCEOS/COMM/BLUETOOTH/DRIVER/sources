@@ -1,0 +1,22 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=btd
+TARGETTYPE=LIBRARY
+TARGETDEFNAME=$(TARGETNAME)
+RELEASETYPE=OAK
+
+!INCLUDE ..\bth.inc
+
+DEFFILE=$(TARGETNAME).def
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+SOURCES=dummy.c
+
+#xref VIGUID {24de18a9-fee1-4ffb-86b6-671bedb7c811}
+#xref VSGUID {27f7b3cb-dabe-468b-8bc3-a128e9001385}

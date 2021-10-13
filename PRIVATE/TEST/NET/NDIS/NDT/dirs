@@ -1,0 +1,8 @@
+DIRS_CE= \
+    sys \
+    lib \
+    server \
+    1c_tests \
+    2c_tests \
+    stress_tests \
+    perf_tests

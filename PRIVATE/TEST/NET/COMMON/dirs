@@ -1,0 +1,21 @@
+DIRS=\
+	netras\
+	RasLink\
+	netall\
+	cefileio\
+	netmain\
+	memleak\
+	crc\
+	fcrc\
+	newcmn\
+	echosvc\
+	cmnprint\
+	certlib\
+
+
+DIRS_CE=\
+	logon\
+	netinit\
+	netall\
+	qapt\
+	

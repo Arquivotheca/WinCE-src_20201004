@@ -1,0 +1,24 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+RELEASETYPE=OAK
+RCADDNULL=1
+WINCEOEM=1
+WINCEATL30=1
+
+GLOBAL_RESBASE=asp
+
+CDEFINES=$(CDEFINES) -D_ATL_NO_SECURITY 
+MIDL_FLAGS=$(MIDL_FLAGS) -D_MIDL_USER_MARSHAL_DISABLED=1 -DUNDER_CE -DWINCE_BUILD
+
+INCLUDES=..\collects;..\core;..\auth;..\parseext;..\..\..\comm\inc;..\..\inc
+
+
+# one huge PDB file for all of ASP
+TARGET_PDB_NAME=$(_RELEASELIBDIR)\asp.pdb

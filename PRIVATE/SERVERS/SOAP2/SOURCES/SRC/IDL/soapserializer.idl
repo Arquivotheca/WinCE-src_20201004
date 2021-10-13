@@ -1,0 +1,137 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// soapserializer.idl : IDL source for wsdlserializer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (soapserializer.tlb) and marshalling code.
+
+#include "soapserguid.h"
+
+#ifdef SOAP_INTERFACES	 
+	DUAL_INTERFACE(UUID_ISOAPSERIAL, SOAP_SDK_VERSION, "ISoapSerializer Interface")
+	interface ISoapSerializer : IDispatch
+	{
+		[id(DISPID_SOAPSERIALIZER_INIT), helpstring("Initialize the Serializer with the output stream or response object")] 
+	    		HRESULT Init(
+				      	[in] VARIANT vDestination);
+						
+		[id(DISPID_SOAPSERIALIZER_STARTENVELOPE), helpstring("Start the SOAP envelope in a SOAP message")] 
+	    		HRESULT startEnvelope(
+				      	[in, defaultvalue ("") ] BSTR env_Prefix,  
+						[in, defaultvalue ("NONE") ] BSTR enc_style_uri,
+						[in, defaultvalue ("") ] BSTR xml_encoding);
+						
+		[id(DISPID_SOAPSERIALIZER_ENDENVELOPE), helpstring("Finish the SOAP envelope")] 
+				HRESULT endEnvelope();
+
+		[id(DISPID_SOAPSERIALIZER_STARTHEADER), helpstring("Start SOAP header")] 
+				HRESULT startHeader(
+						[in, defaultvalue ("NONE")] BSTR enc_style_uri);
+				
+		[id(DISPID_SOAPSERIALIZER_STARTHEADERELEMENT), helpstring("Start a SOAP header element")] 
+			HRESULT startHeaderElement(
+				[in]                    BSTR name,	       	
+				[in, defaultvalue ("")] BSTR ns_uri,	    
+				[in, defaultvalue (0)]  int  mustUnderstand,
+				[in, defaultvalue ("")] BSTR actor_uri,     
+				[in, defaultvalue ("NONE")] BSTR enc_style_uri, 
+				[in, defaultvalue ("")] BSTR prefix);
+
+		[id(DISPID_SOAPSERIALIZER_ENDHEADERELEMENT), helpstring("End a SOAP header element")] 
+			HRESULT endHeaderElement();
+			
+		[id(DISPID_SOAPSERIALIZER_ENDHEADER), helpstring("End the SOAP header")] 
+			HRESULT endHeader();
+
+		[id(DISPID_SOAPSERIALIZER_STARTBODY), helpstring("Start the Soap body")] 
+			HRESULT startBody([in, defaultvalue("NONE")] BSTR enc_style_uri);	
+
+		[id(DISPID_SOAPSERIALIZER_ENDBODY), helpstring("End the SOAP body")] 
+			HRESULT endBody();
+
+		[id(DISPID_SOAPSERIALIZER_STARTELEMENT), helpstring("Start an Element in the SOAP Body")] 
+			HRESULT startElement(
+					[in]                    BSTR name, 				
+					[in, defaultvalue ("")] BSTR ns_uri,			
+					[in, defaultvalue ("NONE")] BSTR enc_style_uri,
+					[in, defaultvalue ("")] BSTR prefix);
+					
+		[id(DISPID_SOAPSERIALIZER_ENDELEMENT), helpstring("End an Element in the SOAP Body")] 
+			HRESULT endElement();
+
+		[id(DISPID_SOAPSERIALIZER_ATTRIBUTE), helpstring("Define an Attribute for the current element")] 
+			HRESULT SoapAttribute(
+						[in]                    BSTR name,
+						[in, defaultvalue ("")] BSTR ns_uri,
+						[in, defaultvalue ("")] BSTR value,
+						[in, defaultvalue ("")] BSTR prefix);
+
+		[id(DISPID_SOAPSERIALIZER_NAMESPACE), helpstring("Define a Namespace for the current element")] 
+			HRESULT SoapNamespace(
+						[in] BSTR prefix,
+						[in] BSTR ns_uri);
+
+		[id(DISPID_SOAPSERIALIZER_DEFAULTNAMESPACE), helpstring("Define a default Namespace")] 
+			HRESULT SoapDefaultNamespace(
+						[in] BSTR ns_uri);
+
+		[id(DISPID_SOAPSERIALIZER_WRITESTRING), helpstring("Write a string into the stream with escaping and encoding")] 
+			HRESULT writeString(
+						[in] BSTR string);
+
+		[id(DISPID_SOAPSERIALIZER_WRITEBUFFER), helpstring("Write a buffer directly into the stream without escaping or encoding characters")] 
+			HRESULT writeBuffer(
+						[in] long len,
+						[in] char * buffer);
+
+		[id(DISPID_SOAPSERIALIZER_STARTFAULT), helpstring("Start a SOAP Fault")] 
+			HRESULT startFault(
+						[in]                    BSTR faultcode,
+						[in]                    BSTR faultstring,						
+						[in, defaultvalue ("")] BSTR faultactor,
+						[in, defaultvalue ("")] BSTR faultcodeNS);
+
+
+		[id(DISPID_SOAPSERIALIZER_STARTFAULTDETAIL), helpstring("Start the fault detail element")] 
+			HRESULT startFaultDetail(
+						[in, defaultvalue ("NONE") ] BSTR enc_style_uri);
+
+
+		[id(DISPID_SOAPSERIALIZER_ENDFAULTDETAIL), helpstring("End the fault detail")] 
+			HRESULT endFaultDetail();
+			
+		[id(DISPID_SOAPSERIALIZER_ENDFAULT), helpstring("End a SOAP Fault")] 
+			HRESULT endFault();
+
+		[id(DISPID_SOAPSERIALIZER_RESET), helpstring("Reset the serializer for reuse")] 
+			HRESULT reset();
+
+		[id(DISPID_SOAPSERIALIZER_WRITEXML), helpstring("Write a CDATA section into the stream")] 
+			HRESULT writeXML(
+						[in] BSTR string);
+
+		[id(DISPID_SOAPSERIALIZER_GETPREFIX), helpstring("Retrieves the prefix for existing namespace")] 
+			HRESULT getPrefixForNamespace(
+						[in] BSTR ns_string,
+						[out, retval] BSTR* ns_prefix);
+						
+		[propget, helpstring("Get EncodingStream on the destination")]    	
+			HRESULT EncodingStream([out, retval] IUnknown **ppIEncodingStream);
+	};
+
+#endif
+
+#ifdef SOAP_COCLASSES 
+    LOCAL_COCLASS(CLSID_SOAPSERIALIZER, SOAP_SDK_VERSION, "SoapSerializer Class")
+    coclass SoapSerializer
+    {
+        [default] interface ISoapSerializer;
+    };
+#endif 

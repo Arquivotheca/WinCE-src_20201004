@@ -1,0 +1,30 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=sdpbase
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+!INCLUDE ..\..\bth.inc
+
+INCLUDES=..\..\inc;..\inc
+
+SOURCES =\
+       sdpbase.cxx \
+       sdpns.cxx \
+       btsdp.cpp \
+       btsdpcon.cpp \
+       SdpDB.cpp \
+       SdpDBServer.cpp \
+
+FO_SOURCES= sdpbase.cxx
+WINCEOEM=1
+
+
+#xref VIGUID {8b9569c8-0d83-476e-bfac-7a059076909f}
+#xref VSGUID {92562515-0df6-486a-8068-ccb71d52d1ea}

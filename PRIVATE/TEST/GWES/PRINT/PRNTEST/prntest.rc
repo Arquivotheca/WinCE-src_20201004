@@ -1,0 +1,111 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+#include <windows.h>
+#include "prntest.h"
+#include "drawfunc.h"
+
+
+//#define IDS_String_FIRST       100
+//#define IDS_String_MS_LONG     100
+//#define IDS_String_DF_LONG     101
+//#define IDS_String_2           102
+//#define IDS_String_3           103
+//#define IDS_String_4           104
+//#define IDS_String_5           105
+//#define IDS_String_Perftest    106
+
+//#define IDC_EDIT_1   400  // for NetPath Dialog
+
+cat     BITMAP "cat.bmp"
+house   BITMAP "house.2bp"
+winnt4  BITMAP "winnt4.bmp"
+16biti4 BITMAP "16biti4.bmp"
+bently  BITMAP "bently.bmp"
+globe8  BITMAP "globe8.bmp"
+
+cmdbar2  BITMAP "cmdbar2.bmp"
+
+bitmapma    BITMAP "bitmapma.bmp"
+white320   BITMAP "white320.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+QueryDlgBox DIALOG DISCARDABLE  50, 10, 200, 80
+STYLE DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | WS_SYSMENU |WS_POPUP |DS_SETFOREGROUND
+CAPTION "Query Information"
+FONT 10, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EDIT_1, 4,30,100,16,ES_AUTOHSCROLL
+    LTEXT           "Please enter the network path of this printer.",IDC_STATIC1, 4,6,180,20
+    DEFPUSHBUTTON    "OK", IDOK, 4, 50, 42, 16, WS_GROUP
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+PrintDlgBox DIALOG DISCARDABLE  50, 10, 180, 80
+STYLE DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | WS_SYSMENU |WS_POPUP |DS_SETFOREGROUND
+CAPTION "Printing Status"
+FONT 10, "MS Sans Serif"
+BEGIN
+    LTEXT           "If you want to cancel priting job, please press Cancel Button.",IDC_STATIC1, 4,6,160,50
+    DEFPUSHBUTTON    "Cancel", IDCANCEL, 44, 58, 42, 16, WS_GROUP
+END
+
+
+
+STRINGTABLE
+BEGIN
+IDS_String_PerfTest, "Start Performance testing.\r\nIf you want to cancel it, please press Cancel Button."
+IDS_String_PerfPages,"Printing Performance Test:\r\nPlease enter the number of pages you want to print."
+
+#ifdef JAPAN
+IDS_String_MS_LONG, "ＭＳ Ｐゴシック000"       // MSGOTHIC.ttc:
+IDS_String_DF_LONG, "[ＤＦＰ特太ゴシック体]001"   // dfgoteb.ttc
+
+IDS_String_5, "「あるところまでに行けば収束する。いつまでも残るものではない」（塙義一・日産自動車社長）という楽観論は少数派だ。経営責任については、「金融は経済の血液だけに、金融機関救済を優先すべきだ」（江本寛治・川崎製鉄社長）と、責任の追及は後回しにすべきだとの意見も出された。鰍ﾆ日本証券業協会の過怠金を、上限１億円から５億円に引き上げる（２）東証は証券会社の自己売買と顧客からの委託売買を区分して受注し、利益の付け替え防止などに万全を期005"
+IDS_String_4, "す（３）刑法の犯罪物没収規定を補うため、不正に得た利益や免れた損失の追徴規定を証券取引法に新設する（４）証券取引等監視委員会は風説の流布などへの監視を強化する――など。（村田一・昭和電工会長）004"
+
+IDS_String_3, "追加的な景気対策では「最低でも５兆円、できれば１０兆円の大規模な減税を打ち出すべきだ」（岡田卓也・ジャスコ会長）のほか、「財政再建を後回しにしても思い切った対策を」（村田一・昭和電工会長）、「法人税を米国並みの４０％に近づけるスピードをアップさせることが必要」（橋本徹・富士銀行会長）といった意見が出ている。003"
+IDS_String_2, "市場改革策は、（１）相場操縦などの不正行為に対する東京証券取引所と日本証券業協会の過怠金を、上限１億円から５億円に引き上げる（２）東証は証券会社の自己売買と顧客からの委託売買を区分して受注し、利益の付け替え防止などに万全を期す（３）刑法の犯罪物没収規定を補うため、不正に得た利益や免れた損失の追徴規定（English）を証券取引法に新設する（４）証券取引等監視委員会は風説の流布などへの監視を強化する――など。外為市場介入で外貨準備が５カ月ぶり減少。大蔵省が６日発表した１９９７年１２月末時点の外貨準備高は、前月末に比べて７５億９３００万ドル減の２２０７億９２００万ドルで、同年７月末以来、５カ月ぶりで減少に転じた。002"
+
+#else
+IDS_String_MS_LONG, "ABcdefgjkLMWxyz: 123456  $#^&*%000"       //
+IDS_String_DF_LONG, "\+_)(*&}{ !@#$&* Brown001"   //
+
+IDS_String_5, "Directions to Carillon Point, Kirkland: From I-405, take exit #17:  NE 70th Place.  Take a left at the first light and a left at the next light onto NE 70th.  Continue SW 1.5 miles to the intersection of Lake Washington Blvd, and the entrance to Carillon point.  Enter the development and follow the signs to hotel registration. The hotel is the second building on your right.From I-405, take exit #17:  NE 70th Place.  Take a left at the first light and a left at the next light onto NE 70th.005"
+IDS_String_4, "Manual printer tests Group 1: PagesetupDlg() manaul tests: total 5 cases: 1. Draft Mode check box should remain checked 2. Printer list remains selected  PCL Inkjet 3. Port list    remains selected  LPT1 4. Paper Size list remains 	    Letter 5. Landscape radio button should be selected. 1. change Printer     to PCL laser 2. change Port to IRDA: "
+
+IDS_String_3, "A frog walks into a bar and asks the bartender: do you have any grapes? The puzzled bartender tells the frog no, and the frog leaves the bar. The next day the same frog returns and asks the bartender again: do you have any grapes? The perplexed bartender again tells the frog no, and kindly asks him to leave the bar. The next day the frog returns and asks the bartender a third time: do you have any grapes? The bartender, now quite annoyed with this routine, says no, and tells the frog that if he asks again, he'll nail him to the wall of the bar. The next day the frog returns to the bar a fourth time and asks the bartender: do you have any nails? No, says the puzzled bartender. Oh good, says the frog, then do you have any grapes?"
+IDS_String_2, "Bad condition testing through ports and all printers: case 1: During printing, turn off printer power. Expect: printer driver output correct error message. Printer on port IRDA is offline. Turn on the power and click Retry button on the dialog. Expect: Printing continues. case 2: During printing, Pull out the paper drawer to simulate the paper JAM situation. Expect: Timeout on printer on port IRDA. Pull Back the drawer and click Retry button on the dialog. Expect: Printing continues"
+
+#endif
+
+IDS_String_MS_LONG_JPN, "ＭＳ Ｐゴシック000"       // MSGOTHIC.ttc:
+IDS_String_DF_LONG_JPN, "[ＤＦＰ特太ゴシック体]001"   // dfgoteb.ttc
+
+IDS_String_5_JPN, "「あるところまでに行けば収束する。いつまでも残るものではない」（塙義一・日産自動車社長）という楽観論は少数派だ。経営責任については、「金融は経済の血液だけに、金融機関救済を優先すべきだ」（江本寛治・川崎製鉄社長）と、責任の追及は後回しにすべきだとの意見も出された。鰍ﾆ日本証券業協会の過怠金を、上限１億円から５億円に引き上げる（２）東証は証券会社の自己売買と顧客からの委託売買を区分して受注し、利益の付け替え防止などに万全を期005"
+IDS_String_4_JPN, "す（３）刑法の犯罪物没収規定を補うため、不正に得た利益や免れた損失の追徴規定を証券取引法に新設する（４）証券取引等監視委員会は風説の流布などへの監視を強化する――など。（村田一・昭和電工会長）004"
+
+IDS_String_3_JPN, "追加的な景気対策では「最低でも５兆円、できれば１０兆円の大規模な減税を打ち出すべきだ」（岡田卓也・ジャスコ会長）のほか、「財政再建を後回しにしても思い切った対策を」（村田一・昭和電工会長）、「法人税を米国並みの４０％に近づけるスピードをアップさせることが必要」（橋本徹・富士銀行会長）といった意見が出ている。003"
+IDS_String_2_JPN, "市場改革策は、（１）相場操縦などの不正行為に対する東京証券取引所と日本証券業協会の過怠金を、上限１億円から５億円に引き上げる（２）東証は証券会社の自己売買と顧客からの委託売買を区分して受注し、利益の付け替え防止などに万全を期す（３）刑法の犯罪物没収規定を補うため、不正に得た利益や免れた損失の追徴規定（English）を証券取引法に新設する（４）証券取引等監視委員会は風説の流布などへの監視を強化する――など。外為市場介入で外貨準備が５カ月ぶり減少。大蔵省が６日発表した１９９７年１２月末時点の外貨準備高は、前月末に比べて７５億９３００万ドル減の２２０７億９２００万ドルで、同年７月末以来、５カ月ぶりで減少に転じた。002"
+
+END
+
+
+
+
+
+

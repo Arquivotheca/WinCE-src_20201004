@@ -1,0 +1,18 @@
+DIRS_CE=\
+   common \
+   bufperf \
+   database \
+   drivers \
+   fatfs \
+   reg \
+   tools \
+   udf \
+   trust  \
+   multhred \
+   notification \
+   fsd \
+   fsdtst \
+   readonly
+
+DIRS_NT=\
+   tools

@@ -1,0 +1,39 @@
+DIRS=\
+   dbptags \
+   xmltags \
+   tooltalk \
+   kato	 \
+   tux	\
+   bvt \
+   cett \
+   perflog \
+   showmem \
+   HostsDB \
+   apitc \
+   gth \
+   shim \
+   intl \
+   itlgen \
+   RDPPerfConfig \
+
+DIRS_CE=\
+   keepaliv \
+   debugmsg \
+   cecopy \
+   cescript \
+   screencap \
+   prt_scrn \
+   perfHarness \
+   tuxwrap \
+   ppshcopy \
+   IETest \
+   batparser \
+   scrrot \
+   eatcpu \
+
+
+DIRS_NT=\
+   starcmd \
+   csvparse \
+   scram \
+

@@ -1,0 +1,37 @@
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+Copyright (c) 1996-2000 Microsoft Corporation.  All rights reserved.
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+
+WINCEOEM=1
+
+TARGETNAME=serdrvbvt
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   tuxmain.cpp \
+   testproc.cpp \
+   util.cpp
+
+INCLUDES= $(_PROJECTSDKROOT)\inc; \
+          $(_PROJECTOAKROOT)\inc;
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETTHREADMODEL=MT
+TARGETLIBS=\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ELSE
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ENDIF

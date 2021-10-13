@@ -1,0 +1,21 @@
+!IF "$(_TGTOS)" == "CE"
+
+TARGETNAME=partest
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   tuxmain.cpp \
+   apitest.cpp \
+   globals.cpp \
+   util.cpp \
+   parport.cpp
+
+INCLUDES=$(_PROJECTSDKROOT)\inc;$(_PROJECTSDKROOT)\inc;
+
+DLLENTRY=DllMain
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib  
+
+!ENDIF

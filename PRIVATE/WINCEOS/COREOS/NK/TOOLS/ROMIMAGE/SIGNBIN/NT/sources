@@ -1,0 +1,16 @@
+TARGETNAME=signbin
+TARGETTYPE=PROGRAM
+
+CDEFINES=
+
+LINKER_FLAGS= -FIXED:NO
+
+SOURCES=\
+    signbin.cpp  \
+    traverse.cpp \
+    binutils.cpp \
+
+INCLUDES=$(_COMMONROOT)\oak\inc;$(_WINCEROOT)\public\common\oak\inc;
+
+TARGETLIBS= \
+

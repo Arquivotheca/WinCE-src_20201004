@@ -1,0 +1,34 @@
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+Copyright (c) 1996-2000 Microsoft Corporation.  All rights reserved.
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+TARGETNAME=tapiserver
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   tuxmain.cpp \
+   tapiserver.cpp \
+   tapiinfo.c
+
+INCLUDES=$(_PROJECTROOT)\sdk\inc;$(_PRIVATEROOT)\test\inc;$(_PUBLICROOT)\qa\sdk\inc;$(INCLUDES)
+
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETTHREADMODEL=MT
+TARGETLIBS=\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ELSE
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ENDIF

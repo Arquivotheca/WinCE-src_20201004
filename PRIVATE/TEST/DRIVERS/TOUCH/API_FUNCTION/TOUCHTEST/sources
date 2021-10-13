@@ -1,0 +1,39 @@
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+Copyright (c) 2000 Microsoft Corporation.  All rights reserved.
+                                                                    
+--------------------------------------------------------------------
+!ENDIF
+
+TARGETNAME=touchtest
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   tuxmain.cpp \
+   winmain.cpp \
+   apitest.cpp \
+   functiontest.cpp \
+   depthtest.cpp 
+
+INCLUDES=$(_PROJECTSDKROOT)\inc;
+
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETTHREADMODEL=MT
+TARGETLIBS=\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ELSE
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+#$(_TARGETPLATROOT)\lib\$(_CPUINDPATH)\touch.lib \
+#   	$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\tchmdd.lib \
+#   	$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\tch_cal.lib \
+   	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ENDIF

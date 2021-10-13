@@ -1,0 +1,28 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=services
+EXEENTRY=mainWCRTStartup
+SYNCHRONIZE_DRAIN=1
+TARGETTYPE=PROGRAM
+TARGETLIBS=
+
+!IF ("$(_WINCEOSVER)" != "400")
+TARGETLIBS=$(_PUBLICROOT)\servers\oak\lib\$(_CPUINDPATH)\servlink.lib
+!ENDIF
+
+TARGETLIBS= \
+	$(TARGETLIBS) \
+	$(_PUBLICROOT)\servers\oak\lib\$(_CPUINDPATH)\services.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ceosutil.lib \
+	$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\winsock.lib \
+	$(_RELEASELIBDIR)\services.res
+
+SOURCES =

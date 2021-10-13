@@ -1,0 +1,6 @@
+DIRS_CE=	BVT_API\
+     		BVT    \
+     		Function
+
+DIRS_NT=	Function \
+                BVT_API

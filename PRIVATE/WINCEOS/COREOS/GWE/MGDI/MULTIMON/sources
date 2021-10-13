@@ -1,0 +1,40 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+DEFFILE=multimon.def
+TARGETDEFNAME=multimon
+TARGETNAME=multimon_lib
+TARGETTYPE=LIBRARY
+
+INCLUDES=..\inc;..\..\inc;..\..\..\nk\inc
+
+SOURCES=\
+        muldriver.cpp	\
+	mulmisc.cpp
+
+WINCETARGETFILE0=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\multimon.def
+
+CDEFINES=$(CDEFINES) -DDDI 
+
+PRECOMPILED_INCLUDE=precomp.h
+PRECOMPILED_CXX=1
+
+#
+# As final step, grab info common to all MGDI subdirs
+#
+#!include "..\mgdi.src"
+
+#TARGET_PDB_NAME=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\multimon.pdb
+
+#Since we're sharing the PDBs
+#SYNCHRONIZE_DRAIN=1
+
+
+
+#xref VIGUID {e349c3fa-1f64-402c-9997-039626c25188}
+#xref VSGUID {76d02ec3-ddec-45d8-b6d6-e2b0b6df48e6}

@@ -1,0 +1,60 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+;-------------------------------------------------------------------------------
+;
+;   
+;-------------------------------------------------------------------------------
+        .list OFF
+        .include "kxshx.h"
+        .list ON
+
+        .import _NKCallIntChainWrapped
+
+
+        .section .text,code
+;-------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------
+        LEAF_ENTRY _NKCallIntChain
+        
+        ; save state 
+        sts     pr,  @-r15              ; Save current return address
+        sts     macl,  @-r15
+        sts     mach,  @-r15
+        stc     GBR, @-r15
+        mov.l   r7,  @-r15
+        mov.l   r5,  @-r15
+        mov.l   r4,  @-r15
+        add.l   #-16,r15
+        
+        ;
+        ; Call the C function, NKCallIntChainWrapped
+        ;
+        mov     #_NKCallIntChainWrapped, r2
+        jsr     @r2
+        nop
+        
+        add.l   #16,r15
+        mov.l   @r15+, r4               ; Restore registers
+        mov.l   @r15+, r5
+        mov.l   @r15+, r7
+        ldc     @r15+, GBR
+        lds     @r15+, mach
+        lds     @r15+, macl
+        lds     @r15+, pr               ; Restore return address
+
+        rts
+        nop
+
+        .endf
+
+        .end
+
+        
+
+

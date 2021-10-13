@@ -1,0 +1,184 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//+-------------------------------------------------------------------------
+//
+//
+//  File:       udfsmain.cpp
+//
+//  Contents:
+//
+//  Classes:
+//
+//  Functions:
+//
+//--------------------------------------------------------------------------
+
+#include "udfs.h"
+
+
+#define ARRAYSIZE(a)            (sizeof(a)/sizeof(a[0]))
+#define ERRFALSE(exp)           extern char __ERRXX[(exp)!=0]
+
+PUDFSDRIVERLIST g_pHeadFSD = NULL;          
+CRITICAL_SECTION g_csMain;
+HANDLE g_hHeap;
+
+
+//+-------------------------------------------------------------------------
+//
+//  Function:   DllMain
+//
+//  Synopsis:
+//
+//  Arguments:  [DllInstance] --
+//              [Reason]      --
+//              [Reserved]    --
+//
+//  Returns:
+//
+//
+//  Notes:
+//
+//--------------------------------------------------------------------------
+
+BOOL WINAPI DllMain(HANDLE DllInstance, DWORD Reason, LPVOID Reserved)
+{
+    switch(Reason) {
+        case DLL_PROCESS_ATTACH:
+
+            DisableThreadLibraryCalls( (HMODULE)DllInstance);
+            DEBUGREGISTER((HINSTANCE) DllInstance);
+
+#if DEBUG
+            if (ZONE_INITBREAK) {
+                DebugBreak();
+            }
+#endif
+            InitializeCriticalSection(&g_csMain);
+            g_hHeap = HeapCreate(0, 1024 * 20, 0); // Growable Heap - no maximum size
+            DEBUGMSG(ZONE_INIT,(TEXT("UDFSFS!UDFSMain: DLL_PROCESS_ATTACH\n")));
+            return TRUE;
+
+        case DLL_PROCESS_DETACH:
+            DeleteCriticalSection(&g_csMain);
+            HeapDestroy( g_hHeap);
+            DEBUGMSG(ZONE_INIT,(TEXT("UDFSFS!UDFSMain: DLL_PROCESS_DETACH\n")));
+            return TRUE;
+
+        default:
+            DEBUGMSG(ZONE_INIT,(TEXT("UDFSFS!UDFSMain: Reason #%d ignored\n"), Reason));
+            return TRUE;
+    }
+
+    DEBUGMSG(ZONE_INIT,(TEXT("UDFSFS!UDFSMain: Reason #%d failed\n"), Reason));
+    
+    return FALSE;
+}
+
+
+//---------------------------------------------------------------------------
+//
+//  Function:   FSD_MountDisk
+//
+//  Synopsis:   Initialization service called by FSDMGR.DLL
+//
+//  Arguments:  
+//      hdsk == FSDMGR disk handle, or NULL to deinit all
+//      frozen volumes on *any* disk that no longer has any open
+//      files or dirty buffers.
+//
+//  Returns:    BOOL   
+//
+//  Notes:
+//
+//---------------------------------------------------------------------------
+
+BOOL FSD_MountDisk(HDSK hDsk)
+{
+    PUDFSDRIVER pUDFS;
+    BOOL fRet;
+
+    DEBUGMSG( ZONEID_INIT, (TEXT("UDFS!MountDisk hDsk=%08X\r\n"), hDsk));
+    //
+    //  Create the volume class
+    //
+
+    pUDFS = new CReadOnlyFileSystemDriver();
+
+    if (pUDFS == NULL) {
+        SetLastError(ERROR_NOT_ENOUGH_MEMORY);
+        return FALSE;
+    }
+    
+    fRet = pUDFS->Initialize(hDsk);
+
+    if (fRet) {
+        EnterCriticalSection( &g_csMain);
+        UDFSDRIVERLIST *pUDFSEntry = new UDFSDRIVERLIST;
+        if (pUDFSEntry) {
+            pUDFSEntry->hDsk = hDsk;
+            pUDFSEntry->pUDFS = pUDFS;
+            pUDFSEntry->pUDFSNext  = g_pHeadFSD;
+            g_pHeadFSD = pUDFSEntry;
+        } else {
+            DEBUGCHK(0);
+        }    
+        LeaveCriticalSection( &g_csMain);
+    } else {
+        delete pUDFS;
+    }
+    return fRet;
+}
+
+
+//---------------------------------------------------------------------------
+//
+//  Function:   FSD_UnmountDisk
+//
+//  Synopsis:   Deinitialization service called by FSDMGR.DLL
+//
+//  Arguments:  
+//      hdsk == FSDMGR disk handle, or NULL to deinit all
+//      frozen volumes on *any* disk that no longer has any open
+//      files or dirty buffers.
+//
+//  Returns:    BOOL   
+//
+//  Notes:
+//
+//---------------------------------------------------------------------------
+
+BOOL FSD_UnmountDisk(HDSK hDsk)
+{
+    DEBUGMSG( ZONEID_INIT, (TEXT("UDFS!UnmountDisk hDsk=%08X\r\n"), hDsk));
+    EnterCriticalSection(&g_csMain);
+    PUDFSDRIVERLIST pUDFSEntry = g_pHeadFSD;
+    PUDFSDRIVERLIST pUDFSPrev = NULL;
+    while( pUDFSEntry) {
+        if (pUDFSEntry->hDsk == hDsk) {
+            if (pUDFSPrev) {
+                pUDFSPrev->pUDFSNext = pUDFSEntry->pUDFSNext;
+            } else {
+                g_pHeadFSD = pUDFSEntry->pUDFSNext;
+            }
+            break;
+        }
+        pUDFSPrev = pUDFSEntry;
+        pUDFSEntry = pUDFSEntry->pUDFSNext;
+    }
+    LeaveCriticalSection(&g_csMain);
+    if (pUDFSEntry) {
+        pUDFSEntry->pUDFS->DeregisterVolume(pUDFSEntry->pUDFS);
+        delete pUDFSEntry;
+        return TRUE;
+    }
+
+    return FALSE;
+}
+

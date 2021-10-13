@@ -1,0 +1,30 @@
+TARGETNAME=ghstres2
+TARGETTYPE=PROGRAM
+
+SOURCES=\
+   ghstres2.cpp
+
+INCLUDES= \
+    ..\..\..\..\common\inc
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETLIBS=\
+   $(_SDKROOT)\nt\lib\x86\ws2_32.lib \
+   $(_SDKROOT)\nt\lib\x86\libcd.lib\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netall.lib \
+   $(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)\netmain.lib \
+!ELSE
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netall.lib \
+   $(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)\netmain.lib \
+!ENDIF
+
+!IF ("$(_TGTOS)" == "NT")
+EXEENTRY=wmainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF
+
+!IF ("$(_TGTOS)" == "NTANSI")
+EXEENTRY=mainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF

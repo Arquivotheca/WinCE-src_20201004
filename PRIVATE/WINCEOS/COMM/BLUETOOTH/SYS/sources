@@ -1,0 +1,19 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=btsysd
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+!INCLUDE ..\bth.inc
+
+SOURCES= btd.cxx btdebug.cxx bthstack.cxx btutils.cxx btconsole.cxx
+INCLUDES=..\sdp\inc
+
+#xref VIGUID {af1ce1bc-eab8-4a65-8f3b-0cd4f0d52991}
+#xref VSGUID {02b2b211-00ce-4e10-87b3-d611cc150666}

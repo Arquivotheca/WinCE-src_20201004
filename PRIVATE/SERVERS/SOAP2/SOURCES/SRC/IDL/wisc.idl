@@ -1,0 +1,34 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//+----------------------------------------------------------------------------
+//
+//
+// File:
+//      WISC.idl
+//
+// Contents:
+//
+//      WinInetConnector type library
+//
+//-----------------------------------------------------------------------------
+
+
+import "oaidl.idl";
+
+#include "ConnGuid.h"
+#include "IdlUtils.h"
+#include "SoapVer.h"
+
+TYPE_LIBRARY(LIBID_WININETSOAPCONNECTOR, SOAP_SDK_VERSION, "WinInet Soap Connector Type Library")
+library WinInetConnectorLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+};

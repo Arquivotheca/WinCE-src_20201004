@@ -1,0 +1,22 @@
+TARGETNAME=keymap
+TARGETTYPE=DYNLINK
+
+SOURCES=keyengin.cpp \
+	testSequence.cpp \
+	tuxmain.cpp
+
+INCLUDES= $(_PROJECTSDKROOT)\inc            
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+TARGETLIBS= $(_PROJECTOAKROOT)\LIB\$(_CPUINDPATH)\kato.lib
+
+!ELSE
+
+DLLENTRY=DllMain
+
+TARGETLIBS= $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+!ENDIF
+

@@ -1,0 +1,23 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=devmain
+TARGETTYPE=LIBRARY
+
+CONDITIONAL_INCLUDES=devemul.h proxy.h shlobj.h
+
+SOURCES = \
+    device.c \
+    devload.c \
+    pnp.c \
+    iomgr.c
+
+
+#xref VIGUID {c99b2075-bc13-4fcb-a875-107c33f2642b}
+#xref VSGUID {da92d59f-18ac-4d5b-8b57-044189c0cca8}

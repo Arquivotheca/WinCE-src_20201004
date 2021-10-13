@@ -1,0 +1,18 @@
+TARGETNAME=signimg
+TARGETTYPE=PROGRAM
+
+CDEFINES=
+
+EXEENTRY=mainWCRTStartup
+
+LINKER_FLAGS= -FIXED:NO
+
+SOURCES=\
+    signimg.cpp  \
+    traverse.cpp \
+
+INCLUDES=$(_COMMONROOT)\oak\inc;$(_WINCEROOT)\public\common\oak\inc;
+
+TARGETLIBS= \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+    

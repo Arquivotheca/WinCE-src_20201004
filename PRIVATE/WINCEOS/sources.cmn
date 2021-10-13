@@ -1,0 +1,25 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+#
+# NOTE : This is the internal version of sources.cmn.  If you change this
+# please update the version in winceos\external as well.
+#
+#
+
+
+WINCEOEM=1
+WINCEPROJ=COMMON
+WINCETREE=winceos
+WARNISERROR=1
+
+# Set FULL_GWE_DEBUG to turn on some (painfully slow) runtime checks
+!IFDEF FULL_GWE_DEBUG
+CDEFINES=$(CDEFINES) -DFULL_GWE_DEBUG
+!ENDIF

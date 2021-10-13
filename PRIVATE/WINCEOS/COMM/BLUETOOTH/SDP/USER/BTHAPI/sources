@@ -1,0 +1,43 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=sdpuser
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+!INCLUDE ..\..\..\bth.inc
+
+#UMTYPE=windows
+#
+#DLLENTRY=DllMain
+#
+#ATL_VER=30
+#USE_ATL=1
+WINCEATL=1
+USE_NATIVE_EH=1
+#USE_MSVCRT=1
+
+#PRECOMPILED_CXX=1
+#PRECOMPILED_INCLUDE=stdafx.h
+#PRECOMPILED_PCH=precomp.pch
+#PRECOMPILED_OBJ=precomp.obj
+
+INCLUDES=..\..\inc;..\..\..\inc
+
+CDEFINES=$(CDEFINES) -D_ATL_NO_SECURITY
+
+SOURCES=     \
+  stdafx.cpp \
+  bthapi.cpp \
+  SdpRecord.cpp \
+  SdpSearch.cpp \
+  SdpStream.cpp \
+  SdpNodeContainer.cpp \
+  SdpNodeList.cpp \
+  util.cpp \
+  bthapi.rc

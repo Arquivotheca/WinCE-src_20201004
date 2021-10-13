@@ -1,0 +1,522 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+#include <windows.h>
+#include <kato.h>
+#include "global.h"
+#include "main.h"
+#include "clparse.h"
+
+// Statics
+static const TCHAR  *gszClassName = TEXT("GDI: gdit");
+
+// shell and log vars
+SPS_SHELL_INFO g_spsShellInfo;
+CKato  *aLog = NULL;
+
+// Shared globals
+HWND    ghwndTopMain;
+RECT    grcTopMain;
+BOOL    gSanityChecks = 0;
+PFNGRADIENTFILL gpfnGradientFill;
+PFNSTARTDOC gpfnStartDoc;
+PFNENDDOC gpfnEndDoc;
+PFNSTARTPAGE gpfnStartPage;
+PFNENDPAGE gpfnEndPage;
+    
+static HANDLE ghPowerManagement;
+static HINSTANCE ghinstCoreDLL;
+BOOL gRotateAvail = FALSE;
+int gBpp;
+// Bitmap Destination, default to the release directory.
+TCHAR gtcBitmapDestination[MAX_PATH] = TEXT("\\Release\\");
+
+// dummy main
+BOOL    WINAPI
+DllMain(HANDLE hInstance, ULONG dwReason, LPVOID lpReserved)
+{
+    if (dwReason == DLL_PROCESS_ATTACH)
+    {
+#ifdef UNDER_CE
+        // Need to disable IME so that the toolbar
+        // does not interfere with the screen.
+        ImmDisableIME(0);
+#endif
+    }
+
+    return 1;
+
+}
+
+BOOL FAR PASCAL InitTopMainWindow();
+void FAR PASCAL DestroyTopMainWindow();
+void FAR PASCAL IncreaseProgramMemory();
+void FAR PASCAL RestoreProgramMemory();
+void FAR PASCAL InitFunctionPointers();
+void FAR PASCAL FreeFunctionPointers();
+void FAR PASCAL InitDevice();
+void FAR PASCAL FreeDevice();
+
+//#define INTERNATIONAL
+
+/***********************************************************************************
+***
+***   Log Definitions
+***
+************************************************************************************/
+
+#define MY_EXCEPTION          0
+#define MY_FAIL               2
+#define MY_ABORT              4
+#define MY_SKIP               6
+#define MY_NOT_IMPLEMENTED    8
+#define MY_PASS              10
+
+//******************************************************************************
+//***** Support
+//******************************************************************************
+
+void
+initAll(void)
+{
+    aLog->BeginLevel(0, TEXT("BEGIN GROUP: ******* GDI Testing *******"));
+    InitDevice();
+    IncreaseProgramMemory(); // adjust program memory before initializing verification
+    InitFunctionPointers(); // function pointers must be initialized before verification
+    initFonts();
+    InitSurf();
+    InitVerify();
+    InitTopMainWindow();
+
+}
+
+void
+closeAll(void)
+{
+    aLog->EndLevel(TEXT("END GROUP: ******* GDI Testing *******"));
+    FreeVerify();
+    freeFonts();
+    FreeSurf();
+    DestroyTopMainWindow();
+    FreeFunctionPointers();
+    FreeDevice();
+    RestoreProgramMemory();
+}
+
+void
+ProcessCommandLine()
+{
+    class CClParse cCLPparser(g_spsShellInfo.szDllCmdLine);
+
+    // if a string is available, then load the string into the bitmap destination string
+    // and turn on bitmap output.
+    if(cCLPparser.GetOptString(TEXT("O"), gtcBitmapDestination, MAX_PATH))
+    {
+        // this will never be a 0 length string, thus we can subtract by 1 safely here.
+        // if it were a 0 length string, then GetOptString would return false.
+        if(gtcBitmapDestination[_tcslen(gtcBitmapDestination) - 1] != '\\')
+            _tcscat(gtcBitmapDestination, TEXT("\\"));
+        g_OutputBitmaps = TRUE;
+    }
+    // determine if the user wants bitmaps
+    else if(cCLPparser.GetOpt(TEXT("O")))
+        g_OutputBitmaps = TRUE;
+
+    return;
+}
+
+//******************************************************************************
+//***** ShellProc
+//******************************************************************************
+
+SHELLPROCAPI ShellProc(UINT uMsg, SPPARAM spParam)
+{
+    SPS_BEGIN_TEST *pBeginTestInfo;
+    
+    switch (uMsg)
+    {
+
+        case SPM_REGISTER:
+            ((LPSPS_REGISTER) spParam)->lpFunctionTable = g_lpFTE;
+#ifdef UNICODE
+            return SPR_HANDLED | SPF_UNICODE;
+#else // UNICODE
+            return SPR_HANDLED;
+#endif // UNICODE
+
+        case SPM_LOAD_DLL:
+            aLog = (CKato *) KatoGetDefaultObject();
+
+#ifdef UNICODE
+            ((LPSPS_LOAD_DLL)spParam)->fUnicode = TRUE;
+#endif
+
+            // We need to keep the IME toolbar from interfering with the test.
+#ifdef UNDER_CE
+            ImmDisableIME(0);
+#endif
+
+        case SPM_UNLOAD_DLL:
+        case SPM_START_SCRIPT:
+        case SPM_STOP_SCRIPT:
+            return SPR_HANDLED;
+
+        case SPM_SHELL_INFO:
+            g_spsShellInfo = *(LPSPS_SHELL_INFO) spParam;
+            globalInst = g_spsShellInfo.hLib;
+            ProcessCommandLine();
+            return SPR_HANDLED;
+
+        case SPM_BEGIN_GROUP:
+            initAll();
+            return SPR_HANDLED;
+
+        case SPM_END_GROUP:
+            closeAll();
+            return SPR_HANDLED;
+
+        case SPM_BEGIN_TEST:
+            assert(spParam!=NULL);
+            pBeginTestInfo = reinterpret_cast<SPS_BEGIN_TEST *>(spParam);
+            srand(pBeginTestInfo->dwRandomSeed);
+            aLog->BeginLevel(((LPSPS_BEGIN_TEST) spParam)->lpFTE->dwUniqueID, TEXT("BEGIN TEST: <%s>, Thds=%u,"),
+                             ((LPSPS_BEGIN_TEST) spParam)->lpFTE->lpDescription, ((LPSPS_BEGIN_TEST) spParam)->dwThreadCount);
+            return SPR_HANDLED;
+
+        case SPM_END_TEST:
+            aLog->EndLevel(TEXT("END TEST: <%s>"), ((LPSPS_END_TEST) spParam)->lpFTE->lpDescription);
+            return SPR_HANDLED;
+
+        case SPM_EXCEPTION:
+            aLog->Log(MY_EXCEPTION, TEXT("Exception occurred!"));
+            return SPR_HANDLED;
+    }
+    return SPR_NOT_HANDLED;
+}
+
+/***********************************************************************************
+***
+***   Log Functions
+***
+************************************************************************************/
+
+//******************************************************************************
+void
+info(infoType iType, LPCTSTR szFormat, ...)
+{
+    TCHAR   szBuffer[1024] = {NULL};
+
+    va_list pArgs;
+
+    va_start(pArgs, szFormat);
+    _vsntprintf(szBuffer, countof(szBuffer) - 1, szFormat, pArgs);
+    va_end(pArgs);
+
+    switch (iType)
+    {
+        case FAIL:
+            aLog->Log(MY_FAIL, TEXT("FAIL: %s"), szBuffer);
+            break;
+        case ECHO:
+            aLog->Log(MY_PASS, szBuffer);
+            break;
+        case DETAIL:
+            aLog->Log(MY_PASS + 1, TEXT("    %s"), szBuffer);
+            break;
+        case ABORT:
+            aLog->Log(MY_ABORT, TEXT("Abort: %s"), szBuffer);
+            break;
+        case SKIP:
+            aLog->Log(MY_SKIP, TEXT("Skip: %s"), szBuffer);
+            break;
+    }
+}
+
+//******************************************************************************
+TESTPROCAPI getCode(void)
+{
+
+    for (int i = 0; i < 15; i++)
+        if (aLog->GetVerbosityCount((DWORD) i) > 0)
+            switch (i)
+            {
+                case MY_EXCEPTION:
+                    return TPR_HANDLED;
+                case MY_FAIL:
+                    return TPR_FAIL;
+                case MY_ABORT:
+                    return TPR_ABORT;
+                case MY_SKIP:
+                    return TPR_SKIP;
+                case MY_NOT_IMPLEMENTED:
+                    return TPR_HANDLED;
+                case MY_PASS:
+                    return TPR_PASS;
+                default:
+                    return TPR_NOT_HANDLED;
+            }
+    return TPR_PASS;
+}
+
+LONG    CALLBACK
+WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    return (DefWindowProc(hwnd, message, wParam, lParam));
+}
+
+BOOL FAR PASCAL
+InitTopMainWindow()
+{
+    // use HDC's here because everything isn't initialized completely yet, and this
+    // is just for gathering information.
+    HDC     hdc;
+    WNDCLASS wc;
+    
+    wc.style = 0;
+    wc.lpfnWndProc = (WNDPROC) WndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = globalInst;
+    wc.hIcon = 0;
+    wc.hCursor = 0;
+    wc.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
+    wc.lpszMenuName = 0;
+    wc.lpszClassName = gszClassName;
+    if (!RegisterClass(&wc))
+    {
+        info(DETAIL, TEXT("InitTopMainWindow(): RegisterClass() Failed: err=%ld\n"), GetLastError());
+        return FALSE;
+    }
+
+    // get the height, minus the task bar.
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &grcTopMain, 0);
+
+    // get the real width, this will be the same as the width returned above for non-multimon systems.
+    grcTopMain.right = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+
+    info(DETAIL, TEXT("gdit: work area =[%d %d %d %d]\n"), grcTopMain.left, grcTopMain.top, grcTopMain.right,
+         grcTopMain.bottom);
+
+    ghwndTopMain =
+        CreateWindowEx(0, gszClassName, NULL, WS_POPUP, grcTopMain.left, grcTopMain.top, grcTopMain.right - grcTopMain.left,
+                       grcTopMain.bottom - grcTopMain.top, NULL, NULL, globalInst, NULL);
+
+    if (ghwndTopMain == 0)
+    {
+        info(DETAIL, TEXT("InitTopMainWindow(): CreateWindow Failed: err=%ld\n"), GetLastError());
+        return (FALSE);
+    }
+
+    SetForegroundWindow(ghwndTopMain);
+    ShowWindow(ghwndTopMain, SW_SHOWNORMAL);
+    UpdateWindow(ghwndTopMain);
+    GetWindowRect(ghwndTopMain, &grcTopMain);
+    info(DETAIL, TEXT("gdit: TopMainWindow: Window position =[%d %d %d %d]\n"), grcTopMain.left, grcTopMain.top,
+         grcTopMain.right, grcTopMain.bottom);
+
+    GetClientRect(ghwndTopMain, &grcTopMain);
+    info(DETAIL, TEXT("gdit: TopMainWindow: client Rc=[%d %d %d %d]\n"), grcTopMain.left, grcTopMain.top, grcTopMain.right,
+         grcTopMain.bottom);
+
+    Sleep(500);
+    SetCursorPos((grcTopMain.bottom - grcTopMain.top) /2 , (grcTopMain.right - grcTopMain.left) /2);
+    Sleep(500);
+    SetCursor(NULL);
+
+    hdc = GetDC(ghwndTopMain);
+    PatBlt(hdc, 0, 0, zx, zy, WHITENESS);
+    info(DETAIL, TEXT("gdit: BITSPIXEL =%u\n"), GetDeviceCaps(hdc, BITSPIXEL));
+    info(DETAIL, TEXT("gdit: RASTERCAPS=0x%lX\n"), GetDeviceCaps(hdc, RASTERCAPS));
+    info(DETAIL, TEXT("gdit: TEXTCAPS  =0x%lX\n"), GetDeviceCaps(hdc, TEXTCAPS));
+    ReleaseDC(ghwndTopMain, hdc);
+    //  MessageBox(NULL, TEXT("Check"), TEXT("Check"), MB_OK);
+    if(g_OutputBitmaps)
+    {
+        info(DETAIL, TEXT("Bitmap output on error enabled"));
+        info(DETAIL, TEXT("Bitmaps will be saved to %s"), gtcBitmapDestination);
+    }
+
+    return TRUE;
+}
+
+void FAR PASCAL
+DestroyTopMainWindow()
+{
+    DestroyWindow(ghwndTopMain);
+    ghwndTopMain = NULL;
+    UnregisterClass(gszClassName, globalInst);
+}
+
+void FAR PASCAL
+IncreaseProgramMemory()
+{
+#ifdef UNDER_CE
+    DWORD   dwStorePages,
+            dwRamPages,
+            dwPageSize;
+    DWORD   dwTmp;
+
+    if (!GetSystemMemoryDivision(&dwStorePages, &dwRamPages, &dwPageSize))
+    {
+        info(FAIL, TEXT("gdit: GetSystemMemoryDivision(): FAIL: err=%ld\n"), GetLastError());
+        return;
+    }
+
+    // leave 5% of the total pages for system store, take the rest for ram
+    dwTmp = SetSystemMemoryDivision((unsigned int) (.05 * (dwStorePages + dwRamPages)));
+
+    if (dwTmp == SYSMEM_FAILED)
+    {
+        info(FAIL, TEXT("SetSystemMemoryDivision(%u pages) return %d: err=%ld: Failed!!!\r\n"), (unsigned int) (.05 * (dwStorePages + dwRamPages)), dwTmp, GetLastError());
+        return;
+    }
+
+    GetSystemMemoryDivision(&dwStorePages, &dwRamPages, &dwPageSize);
+    info(DETAIL, TEXT("System Info: After increasing: dwStorePage=%lu  dwRamPages=%lu dwPageSize=%lu\r\n"), dwStorePages, dwRamPages, dwPageSize);
+#endif
+}
+
+void FAR PASCAL
+RestoreProgramMemory()
+{
+#ifdef UNDER_CE
+    DWORD   dwStorePages,
+            dwRamPages,
+            dwPageSize;
+    DWORD   dwTmp;
+
+    if (!GetSystemMemoryDivision(&dwStorePages, &dwRamPages, &dwPageSize))
+    {
+        info(FAIL, TEXT("gdit: GetSystemMemoryDivision(): FAIL: err=%ld\n"), GetLastError());
+        return;
+    }
+
+    // set the division at the center now
+    dwTmp = SetSystemMemoryDivision((dwStorePages + dwRamPages)/2);
+
+    if (dwTmp == SYSMEM_FAILED)
+    {
+        info(FAIL, TEXT("SetSystemMemoryDivision(%u pages) return %d: err=%ld: Failed!!!\r\n"), (dwStorePages + dwRamPages)/2, dwTmp, GetLastError());
+        return;
+    }
+
+    GetSystemMemoryDivision(&dwStorePages, &dwRamPages, &dwPageSize);
+    info(DETAIL, TEXT("System Info: After restoring: dwStorePage=%lu  dwRamPages=%lu dwPageSize=%lu\r\n"), dwStorePages, dwRamPages, dwPageSize);
+#endif
+}
+
+void FAR PASCAL
+InitFunctionPointers()
+{
+    gpfnGradientFill = NULL;
+    ghinstCoreDLL = NULL;
+    gpfnStartDoc = NULL;
+    gpfnEndDoc = NULL;
+    gpfnStartPage = NULL;
+    gpfnEndPage = NULL;
+    
+#ifdef UNDER_CE
+
+    ghinstCoreDLL = LoadLibrary(TEXT("coredll.dll"));
+
+    if(ghinstCoreDLL)
+    {
+    gpfnGradientFill = (PFNGRADIENTFILL) GetProcAddress(ghinstCoreDLL, TEXT("GradientFill"));
+    gpfnStartDoc = (PFNSTARTDOC) GetProcAddress(ghinstCoreDLL, TEXT("StartDocW"));
+    gpfnEndDoc = (PFNENDDOC) GetProcAddress(ghinstCoreDLL, TEXT("EndDoc"));
+    gpfnStartPage = (PFNSTARTPAGE) GetProcAddress(ghinstCoreDLL, TEXT("StartPage"));
+    gpfnEndPage = (PFNENDPAGE) GetProcAddress(ghinstCoreDLL, TEXT("EndPage"));
+    }
+#else
+    // set the function pointer to be the desktop gradient fill function
+    gpfnGradientFill = &GradientFill;
+    gpfnStartDoc = &StartDoc;
+    gpfnEndDoc = &EndDoc;
+    gpfnStartPage = &StartPage;
+    gpfnEndPage = &EndPage;
+#endif
+}
+
+void FAR PASCAL
+FreeFunctionPointers()
+{
+#ifdef UNDER_CE
+    if(ghinstCoreDLL)
+        FreeLibrary(ghinstCoreDLL);
+#endif
+}
+
+BOOL CheckRotation( )
+{
+    BOOL bRet=FALSE;    // Rotation isn't supported.
+#ifdef UNDER_CE
+    DEVMODE devMode;
+
+    memset(&devMode,0x00,sizeof(devMode));
+    devMode.dmSize=sizeof(devMode);
+
+    devMode.dmFields = DM_DISPLAYQUERYORIENTATION;    
+    if (ChangeDisplaySettingsEx(NULL,&devMode,NULL,CDS_TEST,NULL) == DISP_CHANGE_SUCCESSFUL) {
+        if (devMode.dmDisplayOrientation != 0)
+            bRet=TRUE;
+        else
+            bRet=FALSE;
+    }
+#endif
+    return bRet;
+}
+
+void FAR PASCAL
+InitDevice()
+{
+#ifdef UNDER_CE
+
+    HKEY hKey;
+    TCHAR szBuffer[256] = {NULL};
+    TCHAR szBufferPM[256] = {NULL};
+    ULONG nDriverName = countof(szBuffer);
+
+    ghPowerManagement = NULL;
+    
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                        TEXT("System\\GDI\\Drivers"), 
+                        0, // Reseved. Must == 0.
+                        0, // Must == 0.
+                        &hKey) == ERROR_SUCCESS) 
+    {
+        if (RegQueryValueEx(hKey,
+                            TEXT("MainDisplay"),
+                            NULL,  // Reserved. Must == NULL.
+                            NULL,  // Do not need type info.
+                            (BYTE *)szBuffer,
+                            &nDriverName) == ERROR_SUCCESS) 
+        {
+            // the guid and device name has to be separated by a '\' and also there has to be the leading
+            // '\' in front of windows, so the name is {GUID}\\Windows\ddi_xxx.dll
+            _sntprintf(szBufferPM, countof(szBufferPM) - 1, TEXT("%s\\\\Windows\\%s"), PMCLASS_DISPLAY, szBuffer);
+            info(DETAIL, TEXT("Driver is use is %s"), szBufferPM);
+            ghPowerManagement = SetPowerRequirement(szBufferPM, D0, POWER_NAME, NULL, 0);
+        }
+        RegCloseKey(hKey);
+    }
+    gRotateAvail = CheckRotation();
+    if(gRotateAvail)
+        info(DETAIL, TEXT("Display rotation available"));
+    else info(DETAIL, TEXT("Display rotation unavailable"));
+#endif
+}
+
+void FAR PASCAL
+FreeDevice()
+{
+#ifdef UNDER_CE
+    if(ghPowerManagement)
+        ReleasePowerRequirement(ghPowerManagement);
+#endif
+    InvalidateRect(NULL, NULL, TRUE);
+}

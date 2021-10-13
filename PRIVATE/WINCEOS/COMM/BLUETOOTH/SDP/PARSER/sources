@@ -1,0 +1,30 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=sdpparse
+RELEASETYPE=OAK
+WINCEOEM=1
+
+TARGETTYPE=LIBRARY
+
+!INCLUDE ..\..\bth.inc
+
+INCLUDES=..\inc;  \
+         ..\..\inc ;
+
+SOURCES=node.cpp   \
+        mem.cpp 	      \
+        Stream.cpp \
+        stack.cpp  \
+        AttributeSearch.cpp  \
+        Walk.cpp  \
+        parseutil.cpp  \
+        verify.cpp
+
+#xref VIGUID {82ebedb2-1535-4f2e-b86e-f7c874cc5802}
+#xref VSGUID {c588c826-05f3-482a-9888-754874c91678}

@@ -1,0 +1,27 @@
+TARGETNAME=kbdtest
+TARGETTYPE=DYNLINK
+
+SOURCES=keyspt.cpp \
+	keypress.cpp \
+	keyseq.cpp \
+	global.cpp \
+	main.cpp \
+	chording.cpp \
+	edittest.cpp \
+	ratdelay.cpp \
+	asyncKey.cpp
+
+INCLUDES= $(_PROJECTSDKROOT)\inc;$(_COMMONOAKROOT)\inc
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+TARGETLIBS= $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+!ELSE
+
+DLLENTRY=DllMain
+
+TARGETLIBS= $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+!ENDIF

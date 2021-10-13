@@ -1,0 +1,8 @@
+DIRS= \
+configtest \
+excltest \
+intrtest \
+masktest \
+tpltest \
+wintest \
+dummydr \

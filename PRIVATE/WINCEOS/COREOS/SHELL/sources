@@ -1,0 +1,18 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=Shell
+TARGETTYPE=LIBRARY
+CONDITIONAL_INCLUDES=shx\shx.h
+INCLUDES=..\nk\inc
+SOURCES=shell.c shellapi.cpp mapfile.c
+
+#xref ModuleMembership shell.exe
+#xref VIGUID {b9873768-5aa5-47aa-a64e-c24a98c1a3cf}
+#xref VSGUID {9975f4c4-1cc0-4fd2-be00-8b7939bacaea}

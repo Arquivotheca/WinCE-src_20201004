@@ -1,0 +1,68 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//Microsoft Developer Studio generated resource script.
+//
+#include "windows.h"
+#include "resource.h"
+#include "asprc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+// IDR_REQUEST             REGISTRY DISCARDABLE    "Request.rgs"
+// IDR_RESPONSE            REGISTRY DISCARDABLE    "Response.rgs"
+// IDR_SERVER              REGISTRY DISCARDABLE    "Server.rgs"
+
+1 TYPELIB "asp.tlb"
+
+
+STRINGTABLE DISCARDABLE
+BEGIN
+	IDS_E_PARSER					"Parse error in script"
+	IDS_E_MULTIPLE_INC_LINE			"#include directive must not have other #include directives or script commands on the same line"
+	IDS_E_NOMEM						"The Web Server has run out of memory"
+	IDS_E_SENT_HEADERS				"The HTTP headers are already written to the client. HTTP header modifications must be made before writing page content"
+	IDS_E_HTTPD						"An internal error has occurred within the web server"
+
+	IDS_E_BUFFER_ON					"Buffering must be turned on to complete that action"
+	IDS_E_FILE_OPEN					"An error occurred while attempting to open file: "
+	IDS_E_BAD_INDEX					"An array index is out of range"
+	IDS_E_READ_ONLY					"The collection object specified is read-only"
+	IDS_E_EXPECTED_STRING			"Expecting string as index argument"
+
+	IDS_E_NO_SCRIPT_TERMINATOR		"No terminating %> in script command"
+	IDS_E_BAD_INCLUDE				"Include file parse error.  Must be of form #include file | virtual = file"
+	IDS_E_MAX_INCLUDE				"Maximum number of include files reached.  The limit is currently set to 16"
+	IDS_E_COMMENT_UNTERMINATED		"The HTML comment lacks a closing (--&gt;) tag"
+	IDS_E_NO_VIRTUAL_DIR			"The virtual directory was not found"
+
+	IDS_E_BAD_SCRIPT_LANG			"Scripting language specified not supported: "
+	IDS_E_NO_ATTRIB					"Missing attribute in ASP prepoc directive assignment for: "
+	IDS_E_UNKNOWN_ATTRIB			"Unknown ASP preproc directive: "
+	IDS_E_SCRIPT_INIT				"Error in initialization of scripting engine:<br>The ASP or JScript or VBScript libraries were not properly installed on this device"
+	IDS_E_NOT_IMPL					"The action requested is not implemented on the Windows CE ASP"
+
+	IDS_E_BAD_SUBINDEX				"Collection objects cannot be sub-indexed with strings on Windows CE ASP Engine"
+	IDS_E_BAD_CODEPAGE				"Unsupported code page specified in ASP Preproc directive"
+	IDS_E_BAD_LCID					"Unsupported LCID value specified in ASP Preproc directive"
+	IDS_E_UNKNOWN					"Unknown error"
+
+
+	IDS_LINE_FILE_ERROR       		"<p>In file:  %s\r\n<br>On line:  %d\r\n"
+	IDS_DESCRIPTION					"%s:  '%08x'\r\n<p>Description:  %s"
+	IDS_PARSE_ERROR_FROM_IACTIVE	"Error parsing script.  Error = '%08x'"
+	IDS_ASP_ERROR_FROM_IACTIVE		"ASP scripting compilation error"
+	IDS_ERROR_CODE					"%s   Error = 0x%08x"
+
+	IDS_FALSE						"False"
+	IDS_TRUE						"True"
+END
+

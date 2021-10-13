@@ -1,0 +1,26 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY         HTTPD
+
+EXPORTS
+	HttpInitialize      PRIVATE
+	HttpdStart          PRIVATE
+	HttpdStop           PRIVATE
+	HttpdStopAndRestart
+	HTP_Init            PRIVATE
+	HTP_Deinit          PRIVATE
+	HTP_Open            PRIVATE
+	HTP_Close           PRIVATE
+	HTP_Read            PRIVATE
+	HTP_Write           PRIVATE
+	HTP_Seek            PRIVATE
+	HTP_IOControl       PRIVATE
+	HTP_PowerUp         PRIVATE
+	HTP_PowerDown       PRIVATE
+	HttpInitializeFromExe PRIVATE	

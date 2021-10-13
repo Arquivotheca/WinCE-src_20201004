@@ -1,0 +1,10 @@
+DIRS_CE=\
+	util \
+	tests \
+	client \
+	server
+
+
+
+
+

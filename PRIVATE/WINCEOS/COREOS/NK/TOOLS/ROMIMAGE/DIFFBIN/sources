@@ -1,0 +1,19 @@
+TARGETNAME=diffbin
+TARGETTYPE=PROGRAM
+RELEASETYPE=OAK
+
+CDEFINES=$(CDEFINES) -DVERBOSE -DROMIMAGE -GX
+INCLUDES=$(_PROJECTOAKROOT)\inc; $(_PUBLICROOT)\Common\oak\inc    
+
+SOURCES=\
+    diffbin.cpp \
+    mapfile.cpp \
+    reloc.cpp	\
+    hashtbl.cpp	\
+    imgdata.cpp	\
+    runlist.cpp	\
+    utils.cpp	\
+    tt.cpp		\
+
+TARGETLIBS=$(_SDKROOT)\$(_TGTOS)\lib\$(_TGTCPUFAMILY)\libcp.lib \
+           $(_SDKROOT)\$(_TGTOS)\lib\$(_TGTCPUFAMILY)\libcd.lib 

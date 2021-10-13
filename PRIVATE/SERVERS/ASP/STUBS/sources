@@ -1,0 +1,19 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!include ..\asp.src
+
+
+TARGETNAME=ASPSTUBS
+TARGETTYPE=LIBRARY
+SYNCHRONIZE_DRAIN=1
+SYNCHRONIZE_BLOCK=1
+
+SOURCES=collstub.cpp parsstub.cpp
+#xref VIGUID {1f8e6ff8-6c71-45be-9873-304c776da9fa}
+#xref VSGUID {09beb3e8-f991-47a0-8f19-21c99eed3a1f}

@@ -1,0 +1,23 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=bttdi
+TARGETTYPE=LIBRARY
+
+!INCLUDE ..\bth.inc
+
+INCLUDES= \
+	..\inc;			\
+	..\..\inc;      \
+	..\sdp\inc
+
+SOURCES= tdi.cxx
+
+
+#xref VIGUID {9a6379d5-328f-4227-a0b5-4923b4ceafa7}
+#xref VSGUID {1de822b3-07ba-4d49-8091-0535ea8bd493}

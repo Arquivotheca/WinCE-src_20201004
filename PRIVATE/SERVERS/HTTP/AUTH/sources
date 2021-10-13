@@ -1,0 +1,18 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!include ..\http.src
+
+TARGETNAME=HTTPAUTH
+TARGETTYPE=LIBRARY
+SOURCES=auth.cpp \
+        ssl.cpp
+
+
+#xref VIGUID {b65c86d6-b886-4995-9caa-220c77fbba15}
+#xref VSGUID {6ee53872-7f13-4385-a261-8edc5186b299}

@@ -1,0 +1,123 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+
+#include <windows.h>
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 2,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "msft\0"
+            VALUE "FileDescription", "s2_dlg\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "s2_dlg\0"
+            VALUE "LegalCopyright", "Copyright (c) Microsoft Corporation.  All rights reserved.\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "s2_dlg.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "s2_dlg\0"
+            VALUE "ProductVersion", "2, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+// Dialog: DIALOG_APP0
+
+DIALOG_APP0 DIALOG DISCARDABLE  0, 0, 290, 120
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "TOP LEVEL DLG"
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,2,4,38,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,50,4,80,14
+    EDITTEXT        IDC_EDIT1,2,34,140,66,ES_AUTOVSCROLL | ES_MULTILINE |
+    				WS_TABSTOP | ES_WANTRETURN | ES_UPPERCASE
+    LTEXT           "&Edit Box",IDC_STATIC,2,20,60,12
+    LTEXT           "List &Box",IDC_STATIC, 90, 20, 50,8
+    LISTBOX         IDC_LIST1,146, 10, 140, 100, LBS_SORT | WS_VSCROLL |
+    				WS_TABSTOP |LBS_HASSTRINGS | LBS_MULTIPLESEL | WS_BORDER
+END
+
+// Dialog: DIALOG_APP1
+
+DIALOG_APP1 DIALOG DISCARDABLE  0, 0, 285, 130
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog 1"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "&Check Box",IDC_CHECK1,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,3,6,49,10
+    LTEXT           "Co&mbo Box",IDC_STATIC,55,6,40,8
+    COMBOBOX        IDC_COMBO1, 96, 6, 120, 900, CBS_DROPDOWNLIST|CBS_SORT |
+                    WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,220,0,50,12
+    PUSHBUTTON      "Cancel",IDCANCEL,220,16,50,12
+    LTEXT           "List &Box",IDC_STATIC,3,18,60,8
+    LISTBOX         IDC_LIST1,2,28,50, 60,LBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Radio&1",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON |
+                    WS_GROUP | WS_TABSTOP,65,40,40,10
+    CONTROL         "Radio&2",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON |
+                    WS_TABSTOP,65,52,40,10
+    CONTROL         "Radio&3",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON |
+                    WS_TABSTOP,65,64,40,10
+    GROUPBOX        "&Radio Buttons",IDC_STATIC,60,30,62,50
+    SCROLLBAR       IDC_SCROLLBAR1,140,30,25,65,SBS_VERT | WS_TABSTOP
+    SCROLLBAR       IDC_SCROLLBAR2,183,34,95,14,WS_TABSTOP
+    LTEXT           "&Edit Box",IDC_STATIC,4,85,50,8
+    EDITTEXT        IDC_EDIT1,2,95,160,32,ES_AUTOVSCROLL|WS_TABSTOP |ES_MULTILINE
+    ICON            "",IDC_ICON1,174,60,21,20,SS_CENTERIMAGE
+    CONTROL         "",IDC_BMP1,"Static",SS_BITMAP | SS_CENTERIMAGE,200,62,72,58
+    GROUPBOX        "Rectangle",IDC_STATIC,169,50,109,77,
+END
+
+
+// Bimaps  and ICON
+//
+/////////////////////////////////////////////////////////////////////////////
+
+// Icons
+
+ICON_SMALL_1BPP		ICON	"res\\16x16x2.ico"
+ICON_SMALL_4BPP		ICON	"res\\16x16x16.ico"
+ICON_SMALL_8BPP		ICON	"res\\16x16x256.ico"
+
+ICON_NORMAL_1BPP	ICON	"res\\32x32x2.ico"
+ICON_NORMAL_4BPP	ICON	"res\\32x32x16.ico"
+ICON_NORMAL_8BPP	ICON	"res\\32x32x256.ico"
+
+// Bitmaps
+
+BMP_0				BITMAP	"res\\spider_256.bmp"
+BMP_1				BITMAP	"res\\watermelon_256.bmp"
+BMP_2				BITMAP	"res\\plane_256.bmp"

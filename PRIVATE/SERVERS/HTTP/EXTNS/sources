@@ -1,0 +1,17 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!include ..\http.src
+
+TARGETNAME=HTTPEXTN
+TARGETTYPE=LIBRARY
+SOURCES=extns.cpp
+
+
+#xref VIGUID {47d377fa-a815-4176-894e-f11d433fe385}
+#xref VSGUID {16dd2527-b550-4ff7-82dc-3deb658f0162}

@@ -1,0 +1,20 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=rfcomm
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+!INCLUDE ..\bth.inc
+
+INCLUDES=..\sdp\inc
+
+SOURCES=rfcomm.cxx portemu.cxx
+
+#xref VIGUID {ac217d20-3adb-4be2-9a03-e21d52801054}
+#xref VSGUID {56e27e23-9e07-48bb-91bd-0a0312b230bd}

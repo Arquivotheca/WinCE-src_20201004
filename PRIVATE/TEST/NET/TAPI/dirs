@@ -1,0 +1,10 @@
+DIRS= \
+	api     \
+	Trapper
+
+DIRS_CE= \
+	ESP32 \
+	CETK40
+
+
+

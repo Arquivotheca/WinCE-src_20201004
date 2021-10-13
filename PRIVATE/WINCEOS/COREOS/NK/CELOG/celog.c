@@ -1,0 +1,973 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//------------------------------------------------------------------------------
+//
+//  THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
+//  ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+//  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+//  PARTICULAR PURPOSE.
+//  
+//------------------------------------------------------------------------------
+//
+//  Module Name:  
+//  
+//      celog.c
+//  
+//  Abstract:  
+//
+//      Implements the event logging functions.
+//      
+//------------------------------------------------------------------------------
+#include <kernel.h>
+
+#ifdef DEBUG
+DBGPARAM dpCurSettings = { TEXT("CeLog"), {
+        TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>"),
+        TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>"),
+        TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>"),
+        TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>"), TEXT("<unused>") },
+    0x00000000};
+#endif
+
+#define ZONE_VERBOSE 0
+
+
+//------------------------------------------------------------------------------
+// BUFFERS
+
+typedef struct _RINGBUFFER {
+    HANDLE hMap;        // Used for RingBuf memory mapping
+    PMAPHEADER pHeader; // Pointer to RingBuf map header
+    LPBYTE pBuffer;
+    LPBYTE pRead;
+    LPBYTE pWrite;
+    LPBYTE pWrap;
+    DWORD  dwSize;
+    DWORD  dwBytesLeft; // Calculated during flush for RingBuf, always valid for IntBuf
+} RINGBUFFER, *PRINGBUFFER;
+
+RINGBUFFER RingBuf;
+RINGBUFFER IntBuf;
+PCEL_BUFFER pCelBuf;
+
+
+//------------------------------------------------------------------------------
+// EXPORTED GLOBAL VARIABLES
+
+#define CELOG_BUFFER_MAX     4096*1024 // Maximum size an OEM can boost the large buffer to
+#define PAGES_IN_MAX_BUFFER  CELOG_BUFFER_MAX/PAGE_SIZE
+#define CELOG_FLUSH_TIMEOUT  10000     // Default timeout when buffer is not full (10 seconds)
+#define CELOG_THREAD_PRIO    248       // Default flush thread prio (Lowest realtime prio)
+#define RINGBUF_SIZE         128*1024  // Default size of large buffer
+
+#ifndef CELOG_SIZE
+#define CELOG_SIZE 4*1024              // Default size of small buffer
+#endif                                                 
+
+
+//------------------------------------------------------------------------------
+// MISC
+
+#define MAX_ROLLOVER_MINUTES    30
+#define MAX_ROLLOVER_COUNT      (0xFFFFFFFF / (MAX_ROLLOVER_MINUTES * 60))
+
+HANDLE g_hFillEvent;  // Used to indicate the secondary buffer is getting full
+BOOL   g_fInit;
+DWORD  g_dwDiscardedInterrupts;
+DWORD  g_dwPerfTimerShift;
+
+// Inputs from kernel
+CeLogImportTable g_Imports;
+
+
+//------------------------------------------------------------------------------
+// Somewhat more abstracted input interface (yuck)
+
+#undef KCall
+#undef Phys2Virt
+#undef InSysCall
+
+#define WIN32CALL(Api, Args)     ((g_Imports.pWin32Methods[W32_ ## Api]) Args)
+#define EVENTCALL(Action, Args)  ((g_Imports.pEventMethods[ID_EVENT_ ## Action]) Args)
+#define EVENTMODIFY(hEvent, Mod) ((g_Imports.pEventMethods[ID_EVENT_MODIFY]) (hEvent, EVENT_ ## Mod)) // SetEvent, ResetEvent, PulseEvent
+#define MAPCALL(Action, Args)    ((g_Imports.pMapMethods[ID_FSMAP_ ## Action]) Args)
+#define KCALL                    (g_Imports.KCall)
+#define PHYS2VIRT                (g_Imports.Phys2Virt)
+#define INSYSCALL                (g_Imports.InSysCall)
+
+#undef KData
+#define KData                    (*(g_Imports.pKData))
+
+#undef INTERRUPTS_ENABLE
+#define INTERRUPTS_ENABLE(fEnable)  (g_Imports.INTERRUPTS_ENABLE(fEnable))
+
+#ifndef SHIP_BUILD
+#undef RETAILMSG
+#define RETAILMSG(cond, printf_exp) ((cond)?(g_Imports.NKDbgPrintfW printf_exp),1:0)
+#endif // SHIP_BUILD
+
+#ifdef DEBUG
+#undef DEBUGMSG
+#define DEBUGMSG                 RETAILMSG
+#endif // DEBUG
+
+#ifdef DEBUG
+#undef DBGCHK
+#undef DEBUGCHK
+#define DBGCHK(module,exp)                                                     \
+   ((void)((exp)?1                                                             \
+                :(g_Imports.NKDbgPrintfW(TEXT("%s: DEBUGCHK failed in file %s at line %d\r\n"), \
+                                              (LPWSTR)module, TEXT(__FILE__), __LINE__), \
+                  DebugBreak(),                                                \
+	              0                                                            \
+                 )))
+#define DEBUGCHK(exp) DBGCHK(dpCurSettings.lpszName, exp)
+#endif // DEBUG
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+static void
+WriteRingBuffer(
+    PRINGBUFFER pRingBuf,
+    LPBYTE  lpbData,        // NULL = just move pointers/counters
+    DWORD   dwBytes,
+    LPDWORD lpdwBytesLeft1,
+    LPDWORD lpdwBytesLeft2
+    )
+{
+    DWORD dwSrcLen1, dwSrcLen2;
+
+    dwSrcLen1 = min(dwBytes, *lpdwBytesLeft1);
+    dwSrcLen2 = dwBytes - dwSrcLen1;
+    
+    // Write to middle or end of buffer
+    if (dwSrcLen1) {
+        if (lpbData) {
+            memcpy(pRingBuf->pWrite, lpbData, dwSrcLen1);
+            lpbData += dwSrcLen1;
+        }
+        pRingBuf->pWrite += dwSrcLen1;
+        pRingBuf->dwBytesLeft -= dwSrcLen1;
+        *lpdwBytesLeft1 -= dwSrcLen1;
+        if (pRingBuf->pWrite >= pRingBuf->pWrap) {
+            pRingBuf->pWrite = pRingBuf->pBuffer;
+        }
+    }
+    
+    // Write to front of buffer in case of wrap
+    if (dwSrcLen2) {
+        if (lpbData) {
+            memcpy(pRingBuf->pWrite, lpbData, dwSrcLen2);
+        }
+        pRingBuf->pWrite += dwSrcLen2;
+        pRingBuf->dwBytesLeft -= dwSrcLen2;
+        *lpdwBytesLeft2 -= dwSrcLen2;
+    }
+}
+
+
+//------------------------------------------------------------------------------
+// FlushBuffer is interruptable but non-preemptible
+//------------------------------------------------------------------------------
+static void
+CeLogFlushBuffer()
+{
+    DWORD     dwSrcLen1, dwSrcLen2, dwSrcTotal;
+    DWORD     dwDestLen1, dwDestLen2; // Locals instead of ringbuf members because temp.
+    LPBYTE    pReadCopy, pWriteCopy;
+    DWORD     dwBytesLeftCopy;
+    ACCESSKEY akyOld;
+     
+    SWITCHKEY(akyOld, 0x00000001); // Guarantee access to NK
+    
+    pReadCopy = RingBuf.pHeader->pRead;
+    RingBuf.dwBytesLeft = (DWORD) pReadCopy - (DWORD) RingBuf.pWrite + RingBuf.dwSize;
+    if (RingBuf.dwBytesLeft > RingBuf.dwSize) {
+        // wrapped.
+        RingBuf.dwBytesLeft -= RingBuf.dwSize;
+    }
+    
+    if ((RingBuf.dwBytesLeft < RingBuf.dwSize / 4) && RingBuf.pHeader->fSetEvent) {
+       // Signal that the secondary buffer is getting full
+       RingBuf.pHeader->fSetEvent = FALSE;  // Block any more SetEvent calls
+       EVENTMODIFY(g_hFillEvent, SET);
+    }
+    
+    dwSrcTotal = (DWORD) pCelBuf->pWrite - (DWORD) pCelBuf->pBuffer;
+    if (RingBuf.dwBytesLeft <= dwSrcTotal) {
+        RETAILMSG(ZONE_VERBOSE, (TEXT("ERROR : CeLog Secondary Buffer Overrun. Dropping %d bytes (%d available)\r\n"),
+                                 dwSrcTotal, RingBuf.dwBytesLeft));
+        RingBuf.pHeader->dwLostBytes += dwSrcTotal;
+
+        // Reset primary buffer to the beginning
+        pCelBuf->pWrite = pCelBuf->pBuffer;
+        pCelBuf->dwBytesLeft = pCelBuf->dwSize;
+        
+        SETCURKEY(akyOld);
+        return;
+    }
+
+    //
+    // Determine where we can write into the large buffer
+    //
+
+    if (RingBuf.pWrite >= pReadCopy) {
+        //          pRead            pWrap
+        //          v                v
+        //  +-----------------------+ 
+        //  |   2  |XXXXXX|    1    | 
+        //  +-----------------------+ 
+        //  ^             ^
+        //  pBuffer       pWrite
+        dwDestLen1 = (DWORD) RingBuf.pWrap - (DWORD) RingBuf.pWrite;
+        dwDestLen2 = (DWORD) pReadCopy - (DWORD) RingBuf.pBuffer;
+
+    } else {
+        //  pBuffer          pRead
+        //  v                v
+        //  +-----------------------+  
+        //  |XXXXX|         |XXXXXXX|
+        //  +-----------------------+  
+        //        ^                 ^
+        //        pWrite            pWrap
+        dwDestLen1 = (DWORD) pReadCopy - (DWORD) RingBuf.pWrite;
+        dwDestLen2 = 0;
+    }
+    
+    
+    // Copy the data
+    WriteRingBuffer(&RingBuf, (LPBYTE)pCelBuf->pBuffer, dwSrcTotal, &dwDestLen1, &dwDestLen2);
+    RingBuf.pHeader->pWrite = RingBuf.pWrite; // Update map header
+    pCelBuf->pWrite = pCelBuf->pBuffer;
+    pCelBuf->dwBytesLeft = pCelBuf->dwSize;
+    
+
+    //--------------------------------------------------------------
+    // Now copy in the interrupts that happened during this quantum
+    //
+    
+    // Copy the counters because interrupts are still on (retry if interrupted)
+    do {
+        pWriteCopy = (volatile LPBYTE)IntBuf.pWrite;
+        dwBytesLeftCopy = (volatile DWORD)IntBuf.dwBytesLeft;
+    } while ((pWriteCopy != (volatile LPBYTE)IntBuf.pWrite)
+             || (dwBytesLeftCopy != (volatile DWORD)IntBuf.dwBytesLeft));
+
+    dwSrcTotal = IntBuf.dwSize - dwBytesLeftCopy;
+    
+    if (dwSrcTotal) {
+        
+        if (RingBuf.dwBytesLeft < (dwSrcTotal + 8)) {
+            RETAILMSG(ZONE_VERBOSE, (TEXT("ERROR : CeLog Secondary Buffer Overrun. Dropping %d bytes (interrupts) (%d available)\r\n"), dwSrcTotal, RingBuf.dwBytesLeft));
+            RingBuf.pHeader->dwLostBytes += dwSrcTotal + 8;
+
+            // Reset interrupt buffer to the beginning
+            IntBuf.pRead = pWriteCopy;
+            IntBuf.dwBytesLeft += dwSrcTotal;
+            
+            SETCURKEY(akyOld);
+            return;
+        }
+        
+        // Write in the interrupt header
+        *((PDWORD) RingBuf.pWrite) = CELID_INTERRUPTS << 16 | (WORD) (dwSrcTotal + 4);
+        WriteRingBuffer(&RingBuf, NULL, sizeof(DWORD), &dwDestLen1, &dwDestLen2);
+        *((PDWORD) RingBuf.pWrite) = g_dwDiscardedInterrupts;
+        WriteRingBuffer(&RingBuf, NULL, sizeof(DWORD), &dwDestLen1, &dwDestLen2);
+
+        // Determine where to copy from in the interrupt buffer
+        if (pWriteCopy > IntBuf.pRead) {
+            //         pRead            pWrap
+            //         v                v
+            //  +-----------------------+ 
+            //  |      |XX 1 X|         | 
+            //  +-----------------------+ 
+            //  ^             ^
+            //  pBuffer       pWrite
+            dwSrcLen1 = (DWORD) pWriteCopy - (DWORD) IntBuf.pRead;
+            dwSrcLen2 = 0;
+    
+        } else {
+            //  pBuffer         pRead
+            //  v               v
+            //  +-----------------------+  
+            //  |X 2 X|         |XX 1 XX|
+            //  +-----------------------+  
+            //        ^                 ^
+            //        pWrite            pWrap
+            dwSrcLen1 = (DWORD) IntBuf.pWrap  - (DWORD) IntBuf.pRead;
+            dwSrcLen2 = (DWORD) pWriteCopy - (DWORD) IntBuf.pBuffer;
+        }
+    
+        // Copy the data
+        if (dwSrcLen1) {
+            WriteRingBuffer(&RingBuf, IntBuf.pRead, dwSrcLen1, &dwDestLen1, &dwDestLen2);
+        }
+        if (dwSrcLen2) {
+            WriteRingBuffer(&RingBuf, IntBuf.pBuffer, dwSrcLen2, &dwDestLen1, &dwDestLen2);
+        }
+        RingBuf.pHeader->pWrite = RingBuf.pWrite; // Update map header
+        IntBuf.pRead = pWriteCopy;
+        IntBuf.dwBytesLeft += dwSrcLen1 + dwSrcLen2;
+        g_dwDiscardedInterrupts = 0;
+    }
+
+
+    //--------------------------------------------------------------
+    // Now copy in the TLB Misses that happened in this quantum
+    //
+    if (g_Imports.pdwCeLogTLBMiss && *g_Imports.pdwCeLogTLBMiss
+        && (pCelBuf->dwMaskCE & CELZONE_TLB)) {
+        
+        if (RingBuf.dwBytesLeft < 8) {
+            RETAILMSG(ZONE_VERBOSE, (TEXT("ERROR : CeLog Secondary Buffer Overrun. Dropping TLB Miss Data\r\n")));
+            RingBuf.pHeader->dwLostBytes += 8;
+
+            *g_Imports.pdwCeLogTLBMiss = 0;
+            
+            SETCURKEY(akyOld);
+            return;
+        }
+        
+        // Write in the TLB miss header
+        *((PDWORD) RingBuf.pWrite) = CELID_SYSTEM_TLB << 16 | sizeof(CEL_SYSTEM_TLB);
+        WriteRingBuffer(&RingBuf, NULL, sizeof(DWORD), &dwDestLen1, &dwDestLen2);
+        *((PDWORD) RingBuf.pWrite) = *g_Imports.pdwCeLogTLBMiss;
+        WriteRingBuffer(&RingBuf, NULL, sizeof(DWORD), &dwDestLen1, &dwDestLen2);
+        RingBuf.pHeader->pWrite = RingBuf.pWrite; // Update map header
+        
+        *g_Imports.pdwCeLogTLBMiss = 0;
+    }
+
+    SETCURKEY(akyOld);
+}
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+static PBYTE
+CeLogAllocBuffer(
+    DWORD dwReqSize,    // Requested size
+    DWORD* dwAllocSize  // Actual size allocated
+    )
+{
+    DWORD  dwBufNumPages;
+    LPBYTE pBuffer = NULL;
+    BOOL   fRet;
+    DWORD  i;
+    DWORD  dwEntries[PAGES_IN_MAX_BUFFER];
+
+    // Enforce min and max size
+    if ((dwReqSize == 0) || (dwReqSize > CELOG_BUFFER_MAX)) {
+       DEBUGMSG(1, (TEXT("CeLog: Requested buffer size too large.  Setting to %d\r\n"),
+                    CELOG_BUFFER_MAX));
+       *dwAllocSize = CELOG_BUFFER_MAX;
+    } else {
+       *dwAllocSize = dwReqSize;
+    }
+
+    //
+    // Allocate the buffer.
+    //
+    pBuffer = (LPBYTE) WIN32CALL(VirtualAlloc, (NULL, *dwAllocSize, MEM_COMMIT, PAGE_READWRITE));
+    if (pBuffer == NULL) {
+        DEBUGMSG(1, (TEXT("CeLog: Failed buffer VirtualAlloc\r\n")));
+        *dwAllocSize = 0;
+        return NULL;
+    }
+    
+    //
+    // Lock the pages and get the physical addresses.
+    //
+    fRet = (BOOL) WIN32CALL(LockPages, (pBuffer, *dwAllocSize, dwEntries, LOCKFLAG_WRITE | LOCKFLAG_READ));
+    if (fRet == FALSE) {
+        DEBUGMSG(1, (TEXT("CeLog: LockPages failed\r\n")));
+    }
+
+    //
+    // Convert the physical addresses to statically-mapped virtual addresses
+    //
+    dwBufNumPages = (*dwAllocSize / PAGE_SIZE) + (*dwAllocSize % PAGE_SIZE ? 1 : 0);
+    DEBUGCHK(dwBufNumPages);
+    for (i = 0; i < dwBufNumPages; i++) {
+        dwEntries[i] = (DWORD) PHYS2VIRT(dwEntries[i]);
+    }
+
+    //
+    // Make sure the virtual addresses are on contiguous pages
+    //
+    for (i = 0; i < dwBufNumPages - 1; i++) {
+        if (dwEntries[i] != dwEntries[i+1] - PAGE_SIZE) {
+           
+           // The pages need to be together, so force a single-page buffer
+           DEBUGMSG(1, (TEXT("CeLog: Non-contiguous pages.  Forcing single-page buffer.\r\n")));
+
+           WIN32CALL(VirtualFree, (pBuffer, 0, MEM_RELEASE));
+           
+           // Allocate a new, single-page buffer
+           *dwAllocSize = PAGE_SIZE;
+           dwBufNumPages = 1;
+           pBuffer = (LPBYTE) WIN32CALL(VirtualAlloc, (NULL, PAGE_SIZE, MEM_COMMIT, PAGE_READWRITE));
+           if (pBuffer == NULL) {
+               DEBUGMSG(1, (TEXT("CeLog: Failed buffer VirtualAlloc\r\n")));
+               *dwAllocSize = 0;
+               return NULL;
+           }
+           
+           // Lock the page and get the physical address.
+           fRet = (BOOL) WIN32CALL(LockPages, (pBuffer, PAGE_SIZE, dwEntries, LOCKFLAG_WRITE | LOCKFLAG_READ));
+           if (fRet == FALSE) {
+               DEBUGMSG(1, (TEXT("CeLog: LockPages failed\r\n")));
+           }
+           
+           // Convert the physical address to a statically-mapped virtual address
+           dwEntries[0] = (DWORD) PHYS2VIRT(dwEntries[0]);
+
+           break;
+        }
+    }
+
+    if (dwBufNumPages) {
+       pBuffer = (LPBYTE) dwEntries[0];
+    }
+
+    DEBUGMSG(ZONE_VERBOSE, (TEXT("CeLogAllocBuffer() : Allocated %d kB for Buffer (0x%08X)\r\n"), 
+                            (*dwAllocSize) >> 10, pBuffer));
+    return pBuffer;
+}
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+static BOOL
+CeLogInit()
+{
+    BOOL  fRet;
+    DWORD dwSize;
+    SYSTEM_INFO sysinfo;
+    DWORD dwBufSize;
+
+    DEBUGMSG(1, (TEXT("CeLogInit\r\n")));
+    
+    RingBuf.pBuffer = NULL;
+    IntBuf.pBuffer = NULL;
+    
+
+    //
+    // Check the values of the exported variables before using them.
+    //
+    
+    WIN32CALL(GetSystemInfo, (&sysinfo));
+    
+    if (g_Imports.dwCeLogLargeBuf == 0) {
+       DEBUGMSG(1, (TEXT("CeLog: Large buffer size unspecified, using default size\r\n")));
+       g_Imports.dwCeLogLargeBuf = RINGBUF_SIZE;
+    } else if (g_Imports.dwCeLogLargeBuf & (sysinfo.dwPageSize-1)) {
+       DEBUGMSG(1, (TEXT("CeLog: Large buffer size not page-aligned, rounding up.\r\n")));
+       g_Imports.dwCeLogLargeBuf = g_Imports.dwCeLogLargeBuf & ~(sysinfo.dwPageSize-1) + 1;
+    }
+
+    if ((g_Imports.dwCeLogSmallBuf > g_Imports.dwCeLogLargeBuf / 2)
+        || (g_Imports.dwCeLogSmallBuf > CELOG_BUFFER_MAX)
+        || (g_Imports.dwCeLogSmallBuf == 0)) {
+       DEBUGMSG(1, (TEXT("CeLog: Small buffer size invalid or unspecified, using default size\r\n")));
+       g_Imports.dwCeLogSmallBuf = CELOG_SIZE;
+    }
+    
+        
+    DEBUGMSG(1, (TEXT("CeLog: Large buffer size = %u\r\n"), g_Imports.dwCeLogLargeBuf));
+    DEBUGMSG(1, (TEXT("CeLog: Small buffer size = %u\r\n"), g_Imports.dwCeLogSmallBuf));
+    
+    
+    //
+    // Allocate the ring buffer that will hold the logging data.
+    //
+    
+    RingBuf.hMap = (HANDLE)WIN32CALL(CreateFileMapping, (INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, g_Imports.dwCeLogLargeBuf, CELOG_DATAMAP_NAME));
+    if (!RingBuf.hMap) {
+        DEBUGMSG(1, (TEXT("CeLogInit: Ring buffer CreateFileMapping failed\r\n")));
+        goto error;
+    }
+
+    RingBuf.pHeader = (PMAPHEADER)MAPCALL(MAPVIEWOFFILE, (RingBuf.hMap, FILE_MAP_ALL_ACCESS, 0, 0, g_Imports.dwCeLogLargeBuf));
+    if (RingBuf.pHeader == NULL) {
+        DEBUGMSG(1, (TEXT("CeLogInit: Ring buffer MapViewOfFile failed\r\n")));
+        goto error;
+    }
+    
+    // We can't take page faults during the logging so lock the pages.
+    fRet = (BOOL) WIN32CALL(LockPages, (RingBuf.pHeader, g_Imports.dwCeLogLargeBuf, NULL, LOCKFLAG_WRITE | LOCKFLAG_READ));
+    if (fRet == FALSE) {
+        DEBUGMSG(1, (TEXT("CeLogInit: Ring buffer LockPages failed\r\n")));
+    }
+
+    // Explicitly map the pointer to the kernel. Kernel isn't always the current
+    // process during the logging, but will have permissions.
+    RingBuf.pHeader = (PMAPHEADER)WIN32CALL(MapPtrToProcess, ((PVOID) RingBuf.pHeader, GetCurrentProcess()));
+    DEBUGMSG(ZONE_VERBOSE, (TEXT("CELOG : RingBuf (VA) 0x%08X\r\n"), RingBuf.pHeader));
+    
+    RingBuf.dwSize  = g_Imports.dwCeLogLargeBuf - sizeof(MAPHEADER);
+    RingBuf.pBuffer = RingBuf.pWrite = RingBuf.pRead
+                    = (LPBYTE)RingBuf.pHeader + sizeof(MAPHEADER);
+    RingBuf.pWrap   = (LPBYTE)RingBuf.pBuffer + RingBuf.dwSize;
+    RingBuf.dwBytesLeft = 0; // not used
+    
+    // Initialize the header on the map
+    RingBuf.pHeader->dwBufSize = RingBuf.dwSize;
+    RingBuf.pHeader->pWrite = RingBuf.pWrite;
+    RingBuf.pHeader->pRead = RingBuf.pRead;
+    RingBuf.pHeader->fSetEvent = TRUE;
+    RingBuf.pHeader->dwLostBytes = 0;
+
+    //
+    // Initialize the immediate buffer (small).  All zones and processes are
+    // enabled at boot.
+    //
+            
+    // Allocate the struct that points to the buffer
+    pCelBuf = (PCEL_BUFFER)CeLogAllocBuffer(sizeof(CEL_BUFFER), &dwSize);
+    if ((pCelBuf == NULL) || (dwSize < sizeof(CEL_BUFFER))) {
+        DEBUGMSG(1, (TEXT("CeLogInit: Small buffer struct alloc failed\r\n")));
+        goto error;
+    }
+
+    // Allocate the buffer
+    pCelBuf->pBuffer = (PDWORD)CeLogAllocBuffer(g_Imports.dwCeLogSmallBuf, &dwBufSize);
+    if ((pCelBuf->pBuffer == NULL) || (dwBufSize < g_Imports.dwCeLogSmallBuf)) {
+        DEBUGMSG(1, (TEXT("CeLogInit: Small buffer alloc failed\r\n")));
+        goto error;
+    }
+
+    pCelBuf->pWrite      = pCelBuf->pBuffer;
+	pCelBuf->dwSize      = dwBufSize;
+    pCelBuf->dwBytesLeft = pCelBuf->dwSize;
+
+    // Initialize the masks
+    pCelBuf->dwMaskProcess  = CELOG_PROCESS_MASK;   
+    pCelBuf->dwMaskUser     = CELOG_USER_MASK;
+    pCelBuf->dwMaskCE       = CELOG_CE_MASK;
+    
+
+    //
+    // Interrupts have a separate buffer. 
+    //
+    
+    // Allocate the buffer.
+    IntBuf.pBuffer = CeLogAllocBuffer(g_Imports.dwCeLogSmallBuf, &dwBufSize);
+    if ((IntBuf.pBuffer == NULL) || (dwBufSize < g_Imports.dwCeLogSmallBuf)) {
+        DEBUGMSG(1, (TEXT("CeLogInit: Interrupt buffer alloc failed\r\n")));
+        goto error;
+    }
+    
+    IntBuf.pRead  = (LPBYTE) IntBuf.pBuffer;
+    IntBuf.pWrite = (LPBYTE) IntBuf.pBuffer;
+    IntBuf.pWrap  = (LPBYTE) ((DWORD) IntBuf.pBuffer + dwBufSize);
+    IntBuf.dwSize = dwBufSize;
+    IntBuf.dwBytesLeft = dwBufSize;
+    
+
+    //
+    // Final init stuff
+    //
+        
+    // Create the event to flag when the buffer is getting full
+    // (Must be auto-reset so we can call SetEvent during a flush!)
+    g_hFillEvent = (HANDLE)WIN32CALL(CreateEvent, (NULL, FALSE, FALSE, CELOG_FILLEVENT_NAME));
+    if (g_hFillEvent == NULL) {
+        DEBUGMSG(1, (TEXT("CeLogInit: CeLog fill event creation failed\r\n")));
+        goto error;
+    }
+    
+    DEBUGMSG(1, (TEXT("-CeLogInit\r\n")));
+    
+    return TRUE;
+
+error:
+    // Dealloc buffers
+    if (RingBuf.pBuffer) {
+        WIN32CALL(VirtualFree, (RingBuf.pBuffer, 0, MEM_DECOMMIT));
+    }
+    if (pCelBuf) {
+        if (pCelBuf->pBuffer) {
+            WIN32CALL(VirtualFree, (pCelBuf->pBuffer, 0, MEM_DECOMMIT));
+        }
+        WIN32CALL(VirtualFree, (pCelBuf, 0, MEM_DECOMMIT));
+    }
+    if (IntBuf.pBuffer) {
+        WIN32CALL(VirtualFree, (IntBuf.pBuffer, 0, MEM_DECOMMIT));
+    }
+
+    return FALSE;
+}
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+void 
+CeLogSetZones( 
+    DWORD dwZoneUser,
+    DWORD dwZoneCE,
+    DWORD dwZoneProcess
+    )
+{
+    if (!g_fInit) {
+        //
+        // we either failed the init, or haven't been initialized yet!
+        //
+        return;
+    }
+    
+    // CELZONE_ALWAYSON cannot be turned off
+    pCelBuf->dwMaskUser    = dwZoneUser    | CELZONE_ALWAYSON;
+    pCelBuf->dwMaskCE      = dwZoneCE      | CELZONE_ALWAYSON;
+    pCelBuf->dwMaskProcess = dwZoneProcess;
+}
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// Called by CeLogGetZones to retrieve the current zone settings.
+BOOL
+CeLogQueryZones( 
+    LPDWORD lpdwZoneUser,
+    LPDWORD lpdwZoneCE,
+    LPDWORD lpdwZoneProcess
+    )
+{
+    if (!g_fInit) {
+        //
+        // we either failed the init, or haven't been initialized yet!
+        //
+        return FALSE;
+    }
+    
+    if (lpdwZoneUser)
+        *lpdwZoneUser = pCelBuf->dwMaskUser;
+    if (lpdwZoneCE)
+        *lpdwZoneCE = pCelBuf->dwMaskCE;
+    if (lpdwZoneProcess)
+        *lpdwZoneProcess = pCelBuf->dwMaskProcess;
+
+    return TRUE;
+}
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+void 
+CeLogData( 
+    BOOL fTimeStamp,
+    WORD wID,
+    VOID *pData,
+    WORD wLen,
+    DWORD dwZoneUser,
+    DWORD dwZoneCE,
+    WORD wFlag,
+    BOOL fFlagged
+    )
+{
+    LARGE_INTEGER liPerfCount;
+    DWORD dwLen, dwHeaderLen;
+    WORD wFlagID = 0;
+    BOOL fWasIntEnabled;
+
+    if (!g_fInit) {
+        //
+        // we either failed the init, or haven't been initialized yet!
+        //
+        return;
+    }
+
+    // Better provide data if wLen > 0
+    if ((pData == NULL) && (wLen != 0)) {
+        DEBUGCHK(0);
+        return;
+    }
+    
+    DEBUGCHK(wID < CELID_MAX);                // Out of range
+    DEBUGCHK(dwZoneCE || dwZoneUser);         // Need to provide some zone.
+
+    
+
+//    if (!(pCelBuf->dwMaskProcess & (pCurThread->pOwnerProc->aky))) {
+//        //
+//        // Logging is disabled for all threads of this process
+//        //
+//        return;
+//    }
+
+    fWasIntEnabled = INTERRUPTS_ENABLE(FALSE);
+    if (wID == CELID_THREAD_SWITCH) {
+        //
+        // We handle thread switches specially. Flush the immediate buffer.
+        //
+        if (INSYSCALL()) {
+            CeLogFlushBuffer();
+        } else {
+            KCALL((PKFN)CeLogFlushBuffer);
+        }
+    }
+
+    if (!(pCelBuf->dwMaskUser & dwZoneUser) && !(pCelBuf->dwMaskCE & dwZoneCE)) {
+        //
+        // This zone(s) is disabled.
+        //
+        INTERRUPTS_ENABLE(fWasIntEnabled);
+        return;
+    }
+       
+    //
+    // DWORD-aligned length
+    //
+    dwLen = (wLen + 3) & ~3;
+    dwHeaderLen = 8 + (fFlagged ? 4 : 0);
+    
+    if (pCelBuf->dwBytesLeft < (dwLen + dwHeaderLen)) {
+        if (INSYSCALL()) {
+            CeLogFlushBuffer();
+        } else {
+            KCALL((PKFN)CeLogFlushBuffer);
+        }
+    }
+    
+    // Must get timestamp AFTER the flushbuffer call, because CeLog calls can
+    // be generated by the flush itself, and appear out-of-order.
+    if (fTimeStamp) {
+        if (WIN32CALL(QueryPerformanceCounter, (&liPerfCount))) {
+            liPerfCount.QuadPart >>= g_dwPerfTimerShift;
+        } else {
+            // Call failed; caller is probably not trusted
+            fTimeStamp = FALSE;
+        }
+    }
+
+    
+
+
+    
+    // Header for unflagged data:
+    
+    //   <---------------- 1 DWORD ----------------->
+    //  |T|R|       ID        |          Len         |
+    //  |                 Timestamp                  | (if T=1)
+    //  |                   Data...                  | (etc)
+
+    // Header for flagged data:
+    
+    //   <---------------- 1 DWORD ----------------->
+    //  |T|R|  CELID_FLAGGED  |          Len         |
+    //  |                 Timestamp                  | (if T=1)
+    //  |         ID          |         Flag         |
+    //  |                   Data...                  | (etc)
+        
+    
+    // If the data has a flag, use the ID CELID_FLAGGED and move the real ID
+    // inside the data.
+    if (fFlagged) {
+        wFlagID = wID;
+        wID = CELID_FLAGGED;
+    }
+
+
+    *pCelBuf->pWrite++ = fTimeStamp << 31 | wID << 16 | wLen;
+    pCelBuf->dwBytesLeft -= sizeof(DWORD);
+
+    if (fTimeStamp) {
+        *pCelBuf->pWrite++ = liPerfCount.LowPart;
+        pCelBuf->dwBytesLeft -= sizeof(DWORD);
+    }
+
+    if (fFlagged) {
+        *pCelBuf->pWrite++ = wFlagID << 16 | wFlag;
+        pCelBuf->dwBytesLeft -= sizeof(DWORD);
+    }
+
+    memcpy(pCelBuf->pWrite, pData, wLen);
+    pCelBuf->pWrite += (dwLen >> 2);
+    pCelBuf->dwBytesLeft -= dwLen;
+    
+    INTERRUPTS_ENABLE(fWasIntEnabled);
+}
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+void 
+CeLogInterrupt( 
+    DWORD dwLogValue
+    )
+{
+    LARGE_INTEGER liPerfCount;
+
+    if (!g_fInit) {
+        //
+        // we either failed the init, or haven't been initialized yet!
+        //
+        return;
+    }
+
+    if (!(pCelBuf->dwMaskCE & CELZONE_INTERRUPT)) {
+        //
+        // This zone(s) is disabled.
+        //
+        return;
+    }
+
+    if (WIN32CALL(QueryPerformanceCounter, (&liPerfCount))) {
+        liPerfCount.QuadPart >>= g_dwPerfTimerShift;
+    } else {
+        // Call failed; caller is probably not trusted
+        liPerfCount.QuadPart = 0;
+    }
+    
+    if (!IntBuf.dwBytesLeft) {
+        //
+        // The interrupt buffer is full! Just have to drop some from the 
+        // beginning (keep most recent)
+        //
+        g_dwDiscardedInterrupts++;
+
+        IntBuf.dwBytesLeft = 2*sizeof(DWORD);
+        IntBuf.pRead += 2*sizeof(DWORD);
+        if (IntBuf.pRead >= IntBuf.pWrap) {
+            IntBuf.pRead = IntBuf.pBuffer;
+        }
+    }
+
+    //
+    // Write the data to the interrupt buffer.
+    //
+    *((PDWORD) (IntBuf.pWrite)) = liPerfCount.LowPart;
+    *((PDWORD) (IntBuf.pWrite + sizeof(DWORD))) = dwLogValue;
+
+    
+
+
+
+    IntBuf.pWrite += 2*sizeof(DWORD);
+     
+    if (IntBuf.pWrite >= IntBuf.pWrap) {
+        IntBuf.pWrite = IntBuf.pBuffer;
+    }
+    IntBuf.dwBytesLeft -= 2*sizeof(DWORD);
+}
+
+
+//------------------------------------------------------------------------------
+// Hook up function pointers and initialize logging
+//------------------------------------------------------------------------------
+BOOL static
+InitLibrary(
+    FARPROC pfnKernelLibIoControl
+    )
+{
+    CeLogExportTable exports;
+    LARGE_INTEGER liPerfFreq;
+
+    //
+    // KernelLibIoControl provides the back doors we need to obtain kernel
+    // function pointers and register logging functions.
+    //
+    
+    // Get imports from kernel
+    g_Imports.dwVersion = CELOG_IMPORT_VERSION;
+    if (!pfnKernelLibIoControl((HANDLE)KMOD_CELOG, IOCTL_CELOG_IMPORT, &g_Imports,
+                               sizeof(CeLogImportTable), NULL, 0, NULL)) {
+        // Can't DEBUGMSG or anything here b/c we need the import table to do that
+        return FALSE;
+    }
+
+    // CeLog requires MapViewOfFile
+    if (g_Imports.pMapMethods[2] == NULL) {
+        DEBUGMSG(1, (TEXT("CeLog: Error, cannot run because this kernel does not support memory-mapped files\r\n")));
+        WIN32CALL(SetLastError, (ERROR_NOT_SUPPORTED));
+        return FALSE;
+    }
+    
+    // Now initialize logging
+    if (!CeLogInit()) {
+        return FALSE;
+    }
+
+    // Get the high-performance timer's frequency
+    WIN32CALL(QueryPerformanceFrequency, (&liPerfFreq));
+
+    // scale the frequency down so that the 32 bits of the high-performance
+    // timer we associate with log events doesn't wrap too quickly.
+    g_dwPerfTimerShift = 0;
+    while(liPerfFreq.QuadPart > MAX_ROLLOVER_COUNT) {
+        g_dwPerfTimerShift++;
+        liPerfFreq.QuadPart >>= 1;
+    }
+
+    //
+    // Check preset zones in the desktop PC's registry
+    //
+
+    pfnKernelLibIoControl((HANDLE)KMOD_CELOG, IOCTL_CELOG_GETDESKTOPZONE,
+                          TEXT("CeLogZoneUser"), 13*sizeof(WCHAR),
+                          &(pCelBuf->dwMaskUser), sizeof(DWORD), NULL);
+    pCelBuf->dwMaskUser |= CELZONE_ALWAYSON;
+    pfnKernelLibIoControl((HANDLE)KMOD_CELOG, IOCTL_CELOG_GETDESKTOPZONE,
+                          TEXT("CeLogZoneCE"), 11*sizeof(WCHAR),
+                          &(pCelBuf->dwMaskCE), sizeof(DWORD), NULL);
+    pCelBuf->dwMaskCE |= CELZONE_ALWAYSON;
+    pfnKernelLibIoControl((HANDLE)KMOD_CELOG, IOCTL_CELOG_GETDESKTOPZONE,
+                          TEXT("CeLogZoneProcess"), 16*sizeof(WCHAR),
+                          &(pCelBuf->dwMaskProcess), sizeof(DWORD), NULL);
+
+    RETAILMSG(1, (TEXT("CeLog Zones : CE = 0x%08X, User = 0x%08X, Proc = 0x%08X\r\n"),
+                  pCelBuf->dwMaskCE, pCelBuf->dwMaskUser, pCelBuf->dwMaskProcess));
+    
+    // Register logging functions with the kernel
+    exports.dwVersion          = CELOG_EXPORT_VERSION;
+    exports.pfnCeLogData       = CeLogData;
+    exports.pfnCeLogInterrupt  = CeLogInterrupt;
+    exports.pfnCeLogSetZones   = CeLogSetZones;
+    exports.pfnCeLogQueryZones = CeLogQueryZones;
+    exports.dwCeLogTimerFrequency = liPerfFreq.LowPart;
+    if (!pfnKernelLibIoControl((HANDLE)KMOD_CELOG, IOCTL_CELOG_REGISTER, &exports,
+                               sizeof(CeLogExportTable), NULL, 0, NULL)) {
+        DEBUGMSG(1, (TEXT("CeLog: Unable to register logging functions with kernel\r\n")));
+        WIN32CALL(SetLastError, (ERROR_ALREADY_EXISTS));
+        return FALSE;
+    }
+
+    g_fInit = TRUE;
+    
+    // Now that logging functions are registered, requeset a resync
+    DEBUGMSG(ZONE_VERBOSE, (TEXT("CeLog resync\r\n")));
+    WIN32CALL(CeLogReSync, ());
+    
+    return TRUE;
+}
+
+
+//------------------------------------------------------------------------------
+// DLL entry
+//------------------------------------------------------------------------------
+BOOL WINAPI
+CeLogDLLEntry(HINSTANCE DllInstance, INT Reason, LPVOID Reserved)
+{
+    switch (Reason) {
+    case DLL_PROCESS_ATTACH:
+        if (!g_fInit) {
+            // Reserved parameter is a pointer to KernelLibIoControl function
+            return InitLibrary((FARPROC)Reserved);
+        }
+        break;
+
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    
+    return TRUE;
+}
+

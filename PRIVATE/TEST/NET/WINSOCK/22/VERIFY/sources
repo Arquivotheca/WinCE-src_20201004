@@ -1,0 +1,20 @@
+TARGETNAME=Ws2Bvt
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+	presence.cpp \
+	transfer.cpp \
+	tuxstuff.cpp
+
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETLIBS=\
+   $(_SDKROOT)\nt\lib\x86\ws2_32.lib \
+   $(_SDKROOT)\nt\lib\x86\libcd.lib\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+!ELSE
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+!ENDIF

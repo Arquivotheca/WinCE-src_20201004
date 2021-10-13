@@ -1,0 +1,45 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//+----------------------------------------------------------------------------
+//
+//
+// File:
+//      isaresponse.idl
+//
+// Contents:
+//
+//      ISAPI response interface type library
+//
+//-----------------------------------------------------------------------------
+
+
+import "oaidl.idl";
+
+#include "isarespguid.h"
+#include "IdlUtils.h"
+#include "SoapVer.h"
+
+// UUID_SOAPISAPIRESPONSE = 714C6C40-4531-442E-A498-3AC614200295
+LOCAL_INTERFACE(UUID_SOAPISAPIRESPONSE, SOAP_SDK_VERSION, "Soap Isapi Response Interface")
+interface ISOAPIsapiResponse : IUnknown
+{
+		[propget, helpstring("Gets the status property on the HTTP Response stream")] 
+			HRESULT HTTPStatus(BSTR *pbstrStatus);
+
+		[propput, helpstring("Sets the status property on the HTTP Response stream")] 
+			HRESULT HTTPStatus(BSTR bstrStatus);
+
+		[propget, helpstring("Gets the charset property on the HTTP Response stream")] 
+			HRESULT HTTPCharset(BSTR *pbstrCharset);
+
+		[propput, helpstring("Sets the charset property on the HTTP Response stream")] 
+			HRESULT HTTPCharset(BSTR bstrCharset);
+
+}
+

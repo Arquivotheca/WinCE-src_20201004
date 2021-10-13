@@ -1,0 +1,26 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+PROJDIR=..
+
+TARGETNAME=upnploader
+TARGETTYPE=LIBRARY
+
+
+INCLUDES=\
+    $(PROJDIR)\inc; \
+
+SOURCES=\
+        upnploader.cpp \
+        
+
+TARGETDEFNAME=$(TARGETNAME)
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+#xref VIGUID {e341ccc5-0a1d-4ce4-8105-9dea7bf04d67}
+#xref VSGUID {02f9b8d3-16c0-4448-9d87-1a12a90d11a9}

@@ -1,0 +1,44 @@
+!IF 0
+--------------------------------------------------------------------------------
+
+    Copyright (c) 1998, Microsoft Corporation
+
+Module Name:
+    sources.
+
+Abstract:
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+--------------------------------------------------------------------------------
+!ENDIF
+
+TARGETNAME=mousetest
+TARGETTYPE=DYNLINK
+
+!IF "$(_PUBLICROOT)\qa\sdk\inc" == "1"
+QAROOT=$(_PUBLICROOT)\qa\sdk
+!ELSE
+QAROOT=$(_PUBLICROOT)\blddtk\oak
+!ENDIF
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+INCLUDES=$(QAROOT)\inc;$(_PUBLICROOT)\common\oak\inc \
+
+!IF "$(_TGTPLAT)" == "ODO"
+CDEFINES=$(CDEFINES) -DUNDER_ODO
+!ENDIF
+
+!IF "$(_TGTPLAT)" == "CEPC"
+CDEFINES=$(CDEFINES) -DUNDER_CEPC
+!ENDIF
+
+SOURCES=				\
+	main.cpp                        \
+	global.cpp			\
+	touch.cpp       

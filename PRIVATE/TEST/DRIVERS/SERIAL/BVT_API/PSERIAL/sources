@@ -1,0 +1,28 @@
+TARGETNAME=PSERIAL
+TARGETTYPE=DYNLINK
+
+SOURCES=tuxmain.cpp \
+        PSerial.cpp \
+        PStests.cpp \
+        TstPurge.cpp \
+        TstWait.cpp \
+        TstTmOut.cpp \
+        TstModem.cpp \
+        TstFlow.cpp \
+        DTTests.cpp \
+        btreg.cpp
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+TARGETLIBS= $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+!ELSE
+
+INCLUDES=$(_PROJECTSDKROOT)\inc;
+
+DLLENTRY=DllMain
+
+TARGETLIBS= $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+!ENDIF

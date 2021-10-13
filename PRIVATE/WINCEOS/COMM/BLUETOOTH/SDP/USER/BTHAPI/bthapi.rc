@@ -1,0 +1,29 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//
+// Main resources, from VC++
+//
+#include "res.rc"
+
+
+//
+// Version resources
+//
+#ifndef UNDER_CE
+#include <ntverp.h>
+#endif
+#define VER_FILETYPE                VFT_DLL
+#define VER_FILESUBTYPE             VFT2_UNKNOWN
+#define VER_FILEDESCRIPTION_STR     "Bluetooth COM API"
+#define VER_INTERNALNAME_STR        "bthapi.DLL"
+#define VER_ORIGINALFILENAME_STR    "bthapi.DLL"
+
+#ifndef UNDER_CE
+#include <common.ver>
+#endif

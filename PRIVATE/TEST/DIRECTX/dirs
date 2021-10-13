@@ -1,0 +1,18 @@
+DIRS=\
+    libs \
+    ddraw \
+
+DIRS_NT=\
+    CetkMon \
+
+DIRS_CE=\    
+    dsound \
+    d3d \
+    ddvd \
+    wmp  \
+    wmt \
+    dshow \
+    messenger \
+    tools \
+    winmedia \
+	

@@ -1,0 +1,17 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!include ..\http.src
+
+TARGETNAME=HTTPPARSE
+TARGETTYPE=LIBRARY
+SOURCES=buffio.cpp parser.cpp
+
+
+#xref VIGUID {5a1e4958-8c11-4c32-8d31-459b6f61f5ac}
+#xref VSGUID {28b53d60-9578-474c-937a-1ce1ad94d0df}

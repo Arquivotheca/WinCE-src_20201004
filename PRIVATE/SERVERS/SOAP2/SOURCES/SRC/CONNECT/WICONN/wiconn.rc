@@ -1,0 +1,71 @@
+//-----------------------------------------------------------------------------
+// File:            WIConn.rc
+//
+// Copyright:       Copyright (c) Microsoft Corporation
+//
+// Contents:        Main resource file
+//
+// Comments:
+//
+//-----------------------------------------------------------------------------
+
+// Includes ------------------------------------------------------------------
+#include <windows.h>
+#include "soapver.h"
+
+// Version -------------------------------------------------------------------
+//  Add the appropriate entries to the following tables for a new language
+#define USENGLISH_ANSI      "040904E4"  // String of 0x0409 and 1252
+#define USENGLISH_TRANS     0x0409, 1252  // 0x0409 and 1252
+
+//  Replace the USENGLISH with the correct language
+#define LANGUAGE_ANSI   USENGLISH_ANSI
+#define LANGUAGE_TRANS  USENGLISH_TRANS
+
+#ifdef  VER_PRODUCTNAME_STR
+#undef  VER_PRODUCTNAME_STR
+#define VER_PRODUCTNAME_STR "Microsoft Soap SDK\0"
+#endif
+
+// Localize: file description
+#define VER_FILEDESC_STR    "WinInet Soap Connector Library"
+#define VER_NAME_STR        "WiSC10\0"
+#define VER_FILENAME_STR    "WiSC10.dll"
+
+
+// Version -------------------------------------------------------------------
+//
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     VER_FILEVERSION
+PRODUCTVERSION  VER_PRODUCTVERSION
+FILEFLAGSMASK   VER_FILEFLAGSMASK
+FILEFLAGS       VER_FILEFLAGS
+FILEOS          VER_FILEOS
+FILETYPE        VFT_DLL
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK LANGUAGE_ANSI
+        BEGIN
+        VALUE "CompanyName",            VER_COMPANYNAME_STR
+        VALUE "FileDescription",        VER_FILEDESC_STR
+        VALUE "FileVersion",            VER_FILEVERSION_STR
+        VALUE "InternalName",           VER_NAME_STR
+        VALUE "LegalCopyright",         VER_LEGALCOPYRIGHT_STR
+        VALUE "LegalTrademarks",        VER_LEGALTRADEMARKS_STR
+        VALUE "OriginalFilename",       VER_FILENAME_STR
+        VALUE "ProductName",            VER_PRODUCTNAME_STR
+        VALUE "ProductVersion",         VER_PRODUCTVERSION_STR 
+        VALUE "OLESelfRegister",        "\0"
+        END
+    END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation",  LANGUAGE_TRANS
+  END
+END
+
+1 TYPELIB "..\..\Idl\WISC.tlb"

@@ -1,0 +1,45 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+#------------------------------------------------------------------------------
+#
+#
+#  File: dirs
+#
+#  Description:
+#  This file contains the DIRS macro that defines all the built directories in
+#  the OLE DB Core project.
+#
+#------------------------------------------------------------------------------
+
+DIRS =	idl \
+	SoapUtil \
+	Connect \
+	soapmsg \
+	soapreader \
+	soapser \
+	wsdl \
+	mssoap \
+	mssoapres \
+	isapi \
+	prxystub \
+
+#DIRS =	SoapUtil \
+#	Idl \
+#	Connect \
+#	soapmsg \
+#	soapreader \
+#	soapser \
+#	wsdl \
+#	soaptest \
+#	mssoap \
+#	mssoapres \
+#	wsdlwiz \
+#	sertst \
+#	isapi	\
+#	MsSoapT

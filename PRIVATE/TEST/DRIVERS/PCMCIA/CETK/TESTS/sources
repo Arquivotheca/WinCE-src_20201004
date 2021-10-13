@@ -1,0 +1,72 @@
+!IF 0
+
+Copyright (c) 2000  Microsoft Corporation
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+
+
+!ENDIF
+
+
+########################################################################
+#        COMMON SETTINGS                                               #
+########################################################################
+DLLENTRY=DllMain
+TARGETNAME=PCMCETsts
+TARGETTYPE=DYNLINK
+WINCEOEM=1
+WINCEMACRO=1
+
+!IF "$(_TGTCPU)" == "SH4"
+PCMCIADRIVER=$(_TARGETPLATROOT)\lib\$(_CPUINDPATH)\pcmcia.lib
+!ELSE
+PCMCIADRIVER=$(_SYSGENOAKROOT)\lib\$(_CPUINDPATH)\i82365.lib
+!ENDIF
+
+CDEFINES=$(CDEFINES) -DPCMCIA_TEST 
+
+SOURCES=\
+	shellproc.cpp\
+	ConfigTest.cpp \
+	ExclTest.cpp \
+	IntrTest.cpp \
+	MaskTest.cpp \
+	TplTest.cpp \
+	scardtpl.cpp \
+	WinTest.cpp \
+	common.cpp \
+	miniThread.cpp \
+	Testmanager.cpp \
+	TestMain.cpp \
+	ddlxioct.cpp \
+	dialogboxes.rc \
+
+CDEFINES=$(COMMON_CDEFINES) $(DEP_DEFINES)
+
+INCLUDES=$(_COMMONOAKROOT)\inc; \
+	 $(_COMMONDDKROOT)\inc; \
+	 $(_PRIVATEROOT)\test\inc;\
+	 $(_PRIVATEROOT)\test\inc\old; \
+	 ..\common \
+
+
+TARGETLIBS=						\
+      $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib		\
+      $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\ceddk.lib		\
+      $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib		\
+      $(PCMCIADRIVER)
+
+
+
+

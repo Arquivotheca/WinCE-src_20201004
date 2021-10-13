@@ -1,0 +1,126 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// soapreader.idl : IDL source for wsdlread.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (soapreader.tlb) and marshalling code.
+
+#include "soapreaderguid.h"
+
+import "msxml2.idl";
+
+#ifdef SOAP_INTERFACES	
+
+	DUAL_INTERFACE_LOCAL(UUID_ISOAPREADER, SOAP_SDK_VERSION, "ISoapReader Interface")
+	interface ISoapReader : IDispatch
+	{
+	    [id(DISPID_SOAPREADER_LOAD), helpstring("load document into the SoapReader DOM from the specified XML source")] 
+	    		HRESULT load(
+				      	[in] VARIANT xmlSource,
+				      	[in, defaultvalue("")] BSTR bstrSoapAction,
+				      	[out, retval] VARIANT_BOOL * isSuccessful);
+
+	    [id(DISPID_SOAPREADER_LOADXML), helpstring("load a document into the SoapReader DOM from a string")] 
+				HRESULT loadXML( 
+				        [in] BSTR bstrXML,
+				        [out, retval] VARIANT_BOOL * isSuccessful);
+
+		[propget, helpstring("Get the SoapReader DOM")] 
+				HRESULT DOM(
+						[out, retval] IXMLDOMDocument **pIXMLDOMDocument);
+
+
+		[propget, helpstring("The SOAP Envelope element")]
+				HRESULT Envelope(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The SOAP Body element")] 
+				HRESULT Body(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The SOAP Header element")] 
+				HRESULT Header(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The SOAP Fault element")]
+				HRESULT Fault(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The SOAP Fault/faultstring element")]
+				HRESULT FaultString(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The SOAP Fault/faultcode element")]
+				HRESULT FaultCode(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The SOAP Fault/faultactor element")]
+				HRESULT FaultActor(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The SOAP Fault/detail element")]
+				HRESULT FaultDetail(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The first header entry element with the specified local name and namespace URI")]
+				HRESULT HeaderEntry(
+						[in] BSTR LocalName, 
+		                [in, defaultvalue("")] BSTR NamespaceURI, 
+		                [out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("All SOAP header elements with a mustUnderstand attribute equal to 1")]
+				HRESULT MustUnderstandHeaderEntries(
+						[out, retval] IXMLDOMNodeList** ppNodeList);
+
+		[propget, helpstring("All SOAP header elements")]
+				HRESULT HeaderEntries(
+						[out, retval] IXMLDOMNodeList** ppNodeList);
+
+		[propget, helpstring("All SOAP body elements")]
+				HRESULT BodyEntries(
+						[out, retval] IXMLDOMNodeList** ppNodeList);
+
+		[propget, helpstring("The first SOAP body element with the specified local name and namespace URI")]
+				HRESULT BodyEntry(
+						[in] BSTR LocalName, 
+		                [in, defaultvalue("")] BSTR NamespaceURI, 
+		                [out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The first SOAP body element")]
+				HRESULT RPCStruct(
+						[out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The first child element of the first SOAP body element with the specified local name and namespace URI")]
+				HRESULT RPCParameter(
+						[in] BSTR LocalName, 
+		                [in, defaultvalue("")] BSTR NamespaceURI, 
+		                [out, retval] IXMLDOMElement** ppElement);
+
+		[propget, helpstring("The first child element of the first SOAP body entry element")]
+				HRESULT RPCResult(
+						[out, retval] IXMLDOMElement** ppElement);						
+
+		[propget, helpstring("The soapAction HTTP header if the passed in input was a Requestobject")]
+				HRESULT soapAction(
+						[out, retval] BSTR *pbstrSoapAction);						
+
+	};
+
+#endif
+
+#ifdef SOAP_COCLASSES 
+	
+    LOCAL_COCLASS(CLSID_SOAPREADER, SOAP_SDK_VERSION, "SoapReader Class")
+    coclass SoapReader
+    {
+        [default] interface ISoapReader;
+    };
+#endif
+

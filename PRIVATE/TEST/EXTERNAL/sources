@@ -1,0 +1,6 @@
+TARGETNAME=tst_extern
+TARGETTYPE=LIBRARY
+
+SOURCES=dummy.cpp
+
+WINCETARGETFILE0=copylibs
