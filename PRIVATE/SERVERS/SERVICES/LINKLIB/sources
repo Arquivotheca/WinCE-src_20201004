@@ -1,0 +1,22 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+INCLUDES=..\..\inc
+TARGETNAME=servlink
+TARGETTYPE=LIBRARY
+TARGETLIBS=$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib
+DEFFILE=$(TARGETNAME).def
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+SOURCES = \
+   servlink.cpp
+
+INCLUDES=..\lib;
+#xref VIGUID {5fab6528-81d2-4153-a4a9-e73dcaa5ff2a}
+#xref VSGUID {ec273b50-6a31-45b8-a9a1-ad62609c8409}

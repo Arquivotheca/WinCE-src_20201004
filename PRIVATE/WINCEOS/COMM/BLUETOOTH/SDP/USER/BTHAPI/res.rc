@@ -1,0 +1,105 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+
+#ifndef UNDER_CE
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+// LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if ! defined (UNDER_CE)
+#pragma code_page(1252)
+#endif // UNDER_CE
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "1 TYPELIB ""..\lib\BthAPI.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef UNDER_CE
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_SDPNODECONTAINER    REGISTRY DISCARDABLE    "SdpNodeContainer.rgs"
+IDR_SDPSEARCH           REGISTRY DISCARDABLE    "SdpSearch.rgs"
+IDR_SDPWALK             REGISTRY DISCARDABLE    "SdpWalk.rgs"
+IDR_SDPSTREAM           REGISTRY DISCARDABLE    "SdpStream.rgs"
+IDR_SDPRECORD           REGISTRY DISCARDABLE    "SdpRecord.rgs"
+#endif // UNDER_CE
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROJNAME            "BthAPI"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+1 TYPELIB "BthAPI.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

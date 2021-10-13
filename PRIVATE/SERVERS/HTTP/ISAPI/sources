@@ -1,0 +1,17 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!include ..\http.src
+
+TARGETNAME=HTTPISAPI
+TARGETTYPE=LIBRARY
+SOURCES=isapi.cpp 
+
+
+#xref VIGUID {4ff10027-d5fd-4354-aa05-c4b3831157e6}
+#xref VSGUID {68ebf28d-7f4b-40f7-a29c-1d6c1a1f4314}

@@ -1,0 +1,168 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+#include "RasServerTest.h"
+extern BOOL bExpectedFail;
+
+TESTPROCAPI RasServerDisable(UINT uMsg, 
+						 TPPARAM tpParam, 
+						 LPFUNCTION_TABLE_ENTRY lpFTE) 
+{	
+	HANDLE						hHandle=NULL;
+	RASCNTL_SERVERSTATUS 		*pStatus = NULL;
+	RASCNTL_SERVERLINE   		*pLine	= NULL;
+	DWORD						cbStatus = 0,
+								dwResult = 0,
+								dwSize	 = 0,
+								dwExpectedResult = ERROR_SUCCESS,
+								dwResultTemp = 0;
+
+	PBYTE				 		pBufIn=NULL;	
+	PBYTE				 		pBufOut=NULL;
+
+	DWORD						dwStatus = TPR_PASS;
+	DWORD						dwLenIn = 0;	
+	DWORD						dwLenOut = 0;
+
+    // Check our message value to see why we have been called
+    if (uMsg == TPM_QUERY_THREAD_COUNT) 
+	{
+		((LPTPS_QUERY_THREAD_COUNT)tpParam)->dwThreadCount = 0;
+		return TPR_HANDLED;
+    } 
+	else if (uMsg != TPM_EXECUTE) 
+	{
+		return TPR_NOT_HANDLED;
+    }
+
+	if(bExpectedFail)
+	{
+		//
+		// Try the IOCTL here. This should fail with ERROR_NOT_SUPPORTED
+		//
+		dwResult = RasIOControl(NULL, RASCNTL_SERVER_DISABLE, NULL, 0, NULL, 0, &cbStatus);
+		RasPrint(TEXT("RasIOControl() FAIL'ed (%d) AS EXPECTED "), dwResult);
+		return (dwResult==ERROR_NOT_SUPPORTED? TPR_PASS: TPR_FAIL);
+	}
+
+	//
+	// Enable the server before starting this test
+	//
+	dwResult = RasIOControl(NULL, RASCNTL_SERVER_ENABLE, NULL, 0, NULL, 0, &cbStatus);
+	if (dwResult != ERROR_SUCCESS)
+	{
+		RasPrint(TEXT("FAIL'ed to enable the server (%d)"), dwResult);
+		return TPR_SKIP;
+	}
+	else 
+	{
+		RasPrint(TEXT("Enabled RAS server"));
+	}
+
+	//
+	// What is the test doing?
+	//
+	switch(LOWORD(lpFTE->dwUserData))
+	{
+		case RASSERVER_ALREADY_DISABLED:
+			//
+			// Disable the server here
+			//
+
+			dwResult = RasIOControl(NULL, RASCNTL_SERVER_DISABLE, NULL, 0, NULL, 0, &cbStatus);
+			if (dwResult != ERROR_SUCCESS)
+			{
+				RasPrint(TEXT("Disable already Disabled server test failed (%i)"), dwResult);
+				return TPR_SKIP;
+			}	
+			break;
+			
+		case RASSERVER_ENABLED_SERVER:
+			break;
+	}	
+
+	//
+	// Call the IOCTL
+	//
+	dwResult = RasIOControl(
+							hHandle, 
+							RASCNTL_SERVER_DISABLE, 
+							pBufIn, dwLenIn, 
+							pBufOut, dwLenOut, 
+							&cbStatus
+							);
+	RasPrint(TEXT("dwResult = %d\tdwExpectedResult = %d"), dwResult, dwExpectedResult);	
+
+	//
+	//  Verify the server is disabled by checking the bEnable flag
+	//
+	//	First pass is to get the size
+	//
+	dwResultTemp = RasIOControl(NULL, RASCNTL_SERVER_GET_STATUS, NULL, 0, NULL, 0, &dwSize);
+	if (dwResultTemp != ERROR_BUFFER_TOO_SMALL)
+	{
+		RasPrint(TEXT("RasIOControl failed when pBufOut = NULL. Error code = %i"), dwResultTemp);
+		return TPR_FAIL;
+	}
+	else
+	{
+		pStatus = (RASCNTL_SERVERSTATUS *)LocalAlloc(LPTR, dwSize);
+		if (pStatus == NULL)
+		{
+			RasPrint(TEXT("LocalAlloc(pStatus) FAILed"));
+			return TPR_SKIP;
+		}
+	}
+	
+	dwResultTemp = RasIOControl(NULL, RASCNTL_SERVER_GET_STATUS, NULL, 0, (PUCHAR)pStatus, dwSize, &dwSize);
+	if (dwResultTemp != 0)
+	{
+		RasPrint(TEXT("RASCNTL_SERVER_GET_STATUS FAILed (%i)"), dwResultTemp);
+		return TPR_FAIL;
+	}
+	else
+	{
+		//
+		// Did we expect this case to be a pass?
+		// 
+		if (dwResult != dwExpectedResult)
+		{
+			//
+			// FAILed
+			// 
+			dwStatus = TPR_FAIL;
+		}
+		else
+		{
+			//
+			// This should have passed
+			//
+			if(!pStatus->bEnable)
+			{
+				dwStatus = TPR_PASS;
+			}
+			else
+			{
+				dwStatus = TPR_FAIL;
+				RasPrint(TEXT("pStatus->bEnable = 1"));
+			}			
+		}
+	}
+
+	if(pBufIn)	
+		LocalFree(pBufIn);
+	
+	if(pBufOut) 
+		LocalFree(pBufOut);
+
+	if(pStatus)
+		LocalFree(pStatus);
+
+	CleanupServer();
+	return dwStatus;
+}

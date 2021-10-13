@@ -1,0 +1,63 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+#####################################################
+##
+##
+#####################################################
+
+TARGETNAME=s2_domxpathxqlxslt
+TARGETTYPE=PROGRAM
+
+WINCEOEM=1
+MSC_WARNING_LEVEL=/W3 /WX
+
+!IF "$(_TGTCPUFAMILY)" == ""
+_TGTCPUFAMILY=$(_TGTCPUTYPE)
+!ENDIF
+
+CDEFINES=$(CDEFINES) -D_TGTPLAT="\"$(_TGTPLAT)\"" -DTARGET_CPU="\"$(_TGTCPU)\""
+
+INCLUDES=$(_COMMONOAKROOT)\inc;..\..\inc;$(_PRIVATEROOT)\test\inc;$(_PRIVATEROOT)\test\stress\stress\inc
+
+WINCETARGETFILES=\
+	$(_FLATRELEASEDIR)\s2_domxpathxqlxslt.xml\
+	$(_RELEASEDIR)\s2_domxpathxqlxslt.xml
+
+SOURCES=\
+	domxpathxqlxslt.cpp \
+	domxpathxqlxslt.rc
+
+
+!IF ("$(_TGTOS)" == "CE")
+#=========================================================
+
+EXEENTRY=mainWCRTStartup  
+
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ole32.lib\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\oleaut32.lib\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib 
+
+#=========================================================
+!ELSE
+#=========================================================
+
+TARGETLIBS=\
+	$(_SDKROOT)\nt\lib\$(_TGTCPUFAMILY)\ole32.lib\
+	$(_SDKROOT)\nt\lib\$(_TGTCPUFAMILY)\oleaut32.lib\
+	$(_SDKROOT)\nt\lib\$(_TGTCPUFAMILY)\uuid.lib\
+	$(_SDKROOT)\nt\lib\$(_TGTCPUFAMILY)\msxml2.lib\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib 
+
+#=========================================================
+!ENDIF
+ 
+RELEASETYPE=CETK 

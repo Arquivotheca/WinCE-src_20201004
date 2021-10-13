@@ -1,0 +1,2182 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+/*****************************************************************************
+* 
+*
+*   @doc EX_RAS
+*
+*   Date: 11/18/95
+*
+*   @topic RasPhoneBook |
+*       This file implments the ras functions used to access the
+*       registry based Ras PhoneBook.
+*
+*       Functions Included are :
+*
+*       <f RasEnumEntries>
+*       <f RasGetEntryDevConfig>
+*       <f RasGetEntryDialParams>
+*       <f RasGetEntryProperties>
+*       <f RasRenameEntry>
+*       <f RasSetEntryDevConfig>
+*       <f RasSetEntryDialParams>
+*       <f RasSetEntryProperties>
+*       <f RasValidateEntryName>
+*       <f RasDeleteEntry>
+*
+*/
+
+/* ----------------------------------------------------------------
+*
+*   Things to be done.
+*
+*   1)  Create a numeric based key value, then store the name
+*       as the default value.  This makes the rename function
+*       trivial (and safe).
+*   2)  Update Autodoc for all functions
+*   3)  Add Device Info
+*
+*
+*
+---------------------------------------------------------------- */
+
+
+
+//  Include Files
+
+#include "windows.h"
+#include "tchar.h"
+#include "memory.h"
+
+#include "rasxport.h"
+#include "raserror.h"
+#include "unimodem.h"
+#include "netui.h"
+
+#include "cxport.h"
+#include "protocol.h"
+#include "ppp.h"
+#include "mac.h"
+#include "md5.h"
+#include "crypt.h"
+#include "wincrypt.h"
+#include "cred.h"
+
+
+static BOOL
+ValidateStringLength(
+	IN PCWSTR wstr,
+	IN DWORD  ccMin,
+	IN DWORD  ccMax)
+//
+//  Return TRUE if wstr contains between ccMin and ccMax characters, inclusive.
+//  Return FALSE if wstr contains fewer than ccMin or more than ccMax characters.
+//
+{
+	DWORD ccStr = 0;
+
+	while (TRUE)
+	{
+		if (*wstr++ == L'\0')
+			break;
+		ccStr++;
+		if (ccStr > ccMax)
+			break;
+	}
+
+	return ccMin <= ccStr && ccStr <= ccMax;
+}
+
+TCHAR szDummyPassword[] = TEXT("****************");
+
+
+static void
+RasCredentialsMakeKey(
+	IN  LPRASDIALPARAMS pRasDialParams,
+	OUT PWSTR           wszKeyName)
+//
+//  Form the key name string "PPP_<szEntryName>".
+//
+{
+	ASSERT(wcslen(pRasDialParams->szEntryName) <= RAS_MaxEntryName);
+
+	wcscpy(wszKeyName, L"PPP_");
+	wcscat(wszKeyName, pRasDialParams->szEntryName);
+}
+
+static void
+RasCredentialsMakeUser(
+	IN  LPRASDIALPARAMS pRasDialParams,
+	OUT PWSTR           wszUserName)
+//
+//  Form the username string "[<domain>\]<user>".
+//
+{
+	ASSERT(wcslen(pRasDialParams->szDomain) <= DNLEN);
+	ASSERT(wcslen(pRasDialParams->szUserName) <= UNLEN);
+
+	wszUserName[0] = 0;
+
+	if (pRasDialParams->szDomain[0])
+	{
+		wsprintf(wszUserName, L"%s\\", pRasDialParams->szDomain);
+	}
+	wcscat(wszUserName, pRasDialParams->szUserName);
+
+	ASSERT(wcslen(wszUserName) <= UNLEN + 1 + DNLEN + 1);
+}
+
+static DWORD
+RasCredentialsWrite(
+	IN  LPRASDIALPARAMS pRasDialParams,
+	IN  BOOL            bDeletePassword)
+//
+// Save the domain/username/password in the credentials database using
+// the keyname PPP_<szRasEntryName>.
+//
+{
+	CRED  cred;
+	WCHAR wszKeyName[4 + RAS_MaxEntryName + 1];
+	WCHAR wszUserName[DNLEN + 1 + UNLEN + 1];
+	DWORD dwResult;
+	BOOL  bUpdateExistingCredentials = FALSE;
+	DWORD dwFlags = CRED_FLAG_UPDATE_USER | CRED_FLAG_UPDATE_BLOB | CRED_FLAG_UPDATE_FLAGS;
+
+	RasCredentialsMakeKey(pRasDialParams, wszKeyName);
+	RasCredentialsMakeUser(pRasDialParams, wszUserName);
+
+	// Set up the credential
+	// We want credentials to be persisted across soft reset and cold (assuming registry persistence) resets.
+	cred.dwVersion = CRED_VER_1;
+	cred.dwType = CRED_TYPE_PLAINTEXT_PASSWORD;
+	cred.wszTarget = wszKeyName;
+	cred.dwTargetLen = wcslen(wszKeyName) + 1;
+	cred.dwFlags = CRED_FLAG_PERSIST;
+	cred.wszUser = wszUserName;
+	cred.dwUserLen = wcslen(wszUserName) + 1;
+	if (bDeletePassword)
+	{
+		cred.pBlob = NULL;
+		cred.dwBlobSize = 0;
+	}
+	else if (0 == _tcscmp(pRasDialParams->szPassword, szDummyPassword))
+	{
+		// The password is the dummy password ("********"), returned by a prior
+		// call to RasGetEntryDialParams.
+		// This means that we want to leave the existing password as-is.
+		bUpdateExistingCredentials = TRUE;
+		dwFlags &= ~CRED_FLAG_UPDATE_BLOB;
+	}
+	else
+	{
+		// A real password has been specified.
+		cred.pBlob = (PBYTE)(pRasDialParams->szPassword);
+		cred.dwBlobSize = sizeof(WCHAR) * (wcslen(pRasDialParams->szPassword) + 1);
+	}
+
+	if (bUpdateExistingCredentials)
+	{
+		dwResult = CredUpdate(wszKeyName, wcslen(wszKeyName) + 1, CRED_TYPE_PLAINTEXT_PASSWORD, &cred, dwFlags);
+	}
+	else
+	{
+		// Write the credential
+		dwResult = CredWrite(&cred, 0);
+	}
+
+	return dwResult;
+}
+
+static DWORD
+RasCredentialsRead(
+	IN OUT  LPRASDIALPARAMS pRasDialParams,
+	IN      BOOL            bOnlyRetrievePassword,
+	   OUT  PBOOL           pbRetrievedPassword)
+//
+// Read the domain/username/password from the credentials database using
+// the keyname PPP_<szRasEntryName>.
+//
+{
+	PCRED pCred = NULL;
+	WCHAR wszKeyName[4 + RAS_MaxEntryName + 1];
+	PWSTR pwszUserName,
+		  pwszSeparator;
+	DWORD dwResult;
+
+	if (pbRetrievedPassword)
+		*pbRetrievedPassword = FALSE;
+	RasCredentialsMakeKey(pRasDialParams, wszKeyName);
+
+	// Read the credential matching the requested target
+	// If there is no exact target match, then we dont want default/implicit default creds to be returned
+	dwResult = CredRead(wszKeyName, wcslen(wszKeyName) + 1, CRED_TYPE_PLAINTEXT_PASSWORD, CRED_FLAG_NO_DEFAULT|CRED_FLAG_NO_IMPLICIT_DEFAULT, &pCred);
+
+	if (ERROR_SUCCESS != dwResult)
+	{
+	}
+	else if (NULL == pCred)
+	{
+		dwResult = ERROR_NOT_FOUND;
+	}
+	else
+	{
+		if (FALSE == bOnlyRetrievePassword)
+		{
+			// Convert pCred at wszUser into domain and username.
+
+			memset(pRasDialParams->szDomain, 0, sizeof(pRasDialParams->szDomain));
+
+			pwszUserName = pCred->wszUser;
+			pwszSeparator = wcschr(pCred->wszUser, L'\\');
+			if (pwszSeparator)
+			{
+				// Extract the domain
+				if (pwszSeparator - pwszUserName > DNLEN)
+				{
+					dwResult = ERROR_INSUFFICIENT_BUFFER;
+				}
+				else
+				{
+					memcpy(pRasDialParams->szDomain, pwszUserName, sizeof(WCHAR) * (pwszSeparator - pwszUserName));
+				}
+
+				// Username follows the separator
+				pwszUserName = pwszSeparator + 1;
+			}
+
+			if (wcslen(pwszUserName) > UNLEN)
+			{
+				dwResult = ERROR_INSUFFICIENT_BUFFER;
+			}
+			else
+			{
+				wcscpy(pRasDialParams->szUserName, pwszUserName);
+			}
+		}
+
+		SecureZeroMemory(pRasDialParams->szPassword, sizeof(pRasDialParams->szPassword));
+
+		if (NULL == pCred->pBlob || 0 == pCred->dwBlobSize)
+		{
+			// No password stored in the blob.
+		}
+		else if ((pCred->dwBlobSize / sizeof(WCHAR)) > PWLEN)
+		{
+			dwResult = ERROR_INSUFFICIENT_BUFFER;
+		}
+		else
+		{
+			if (pbRetrievedPassword)
+				*pbRetrievedPassword = TRUE;
+
+			wcsncpy(pRasDialParams->szPassword, (PWSTR)pCred->pBlob, PWLEN + 1);
+			pRasDialParams->szPassword[PWLEN] = 0;
+		}
+		CredFree((PBYTE)pCred);
+	}
+	return dwResult;
+}
+
+static DWORD
+RasCredentialsDelete(
+	IN LPRASDIALPARAMS pRasDialParams)
+{
+	WCHAR wszKeyName[RAS_MaxEntryName + 10];
+	DWORD dwResult;
+
+	RasCredentialsMakeKey(pRasDialParams, wszKeyName);
+	dwResult = CredDelete(wszKeyName, wcslen(wszKeyName) + 1, CRED_TYPE_PLAINTEXT_PASSWORD, 0);
+
+	return dwResult;
+}
+
+#define COUNTOF(array) (sizeof(array) / sizeof(array[0]))
+
+DWORD
+OpenRasEntryKey(
+    IN  LPCTSTR  szPhonebook,
+    IN  LPCTSTR  szEntry,
+    OUT PHKEY    phKey)
+{
+    WCHAR   KeyName[128];
+    DWORD   dwResult;
+
+    DEBUGMSG(ZONE_FUNCTION, (TEXT("+OpenRasEntryKey %s\n"), szEntry ? szEntry : TEXT("NULL")));
+
+    if (NULL != szPhonebook)
+    {
+        // We only support the system/registry phonebook.
+        DEBUGMSG (ZONE_RAS, (TEXT(" OpenRasEntryKey: ERROR-Phonebook is NOT NULL\n")));
+        dwResult = ERROR_CANNOT_OPEN_PHONEBOOK;
+    }
+    else 
+    {
+        dwResult = RaspCheckEntryName(szEntry);
+        if (dwResult == ERROR_SUCCESS)
+        {
+            StringCchPrintfW(KeyName, COUNTOF(KeyName), L"%s\\%s", RASBOOK_KEY, szEntry);
+            DEBUGMSG(ZONE_RAS, (TEXT(" OpenRasEntryKey '%s'\n"), KeyName));
+            dwResult = RegOpenKeyEx (HKEY_CURRENT_USER, KeyName, 0, KEY_ALL_ACCESS, phKey);
+            if (dwResult != ERROR_SUCCESS)
+                dwResult = ERROR_CANNOT_FIND_PHONEBOOK_ENTRY;
+        }
+    }
+
+    DEBUGMSG(ZONE_FUNCTION, (TEXT("-OpenRasEntryKey result=%d\n"), dwResult));
+
+    return dwResult;
+}
+
+DWORD
+CreateRasEntryKey(
+    IN  LPCTSTR  szPhonebook,
+    IN  LPCTSTR  szEntry,
+    OUT PHKEY    phKey)
+{
+    WCHAR   KeyName[128];
+    DWORD   dwResult,
+            dwDisp;
+
+    DEBUGMSG(ZONE_FUNCTION, (TEXT("+CreateRasEntryKey %s\n"), szEntry ? szEntry : TEXT("NULL")));
+
+    if (NULL != szPhonebook)
+    {
+        // We only support the system/registry phonebook.
+        DEBUGMSG (ZONE_RAS, (TEXT(" CreateRasEntryKey: ERROR-Phonebook is NOT NULL\n")));
+        dwResult = ERROR_CANNOT_OPEN_PHONEBOOK;
+    }
+    else 
+    {
+        dwResult = RaspCheckEntryName(szEntry);
+        if (dwResult == ERROR_SUCCESS)
+        {
+            StringCchPrintfW(KeyName, COUNTOF(KeyName), L"%s\\%s", RASBOOK_KEY, szEntry);
+            DEBUGMSG(ZONE_RAS, (TEXT(" CreateRasEntryKey '%s'\n"), KeyName));
+
+            dwResult = RegCreateKeyEx(HKEY_CURRENT_USER, KeyName, 0, NULL,
+                              REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
+                              phKey, &dwDisp);
+
+            if (dwResult != ERROR_SUCCESS)
+                dwResult = ERROR_CANNOT_FIND_PHONEBOOK_ENTRY;
+        }
+    }
+
+    DEBUGMSG(ZONE_FUNCTION, (TEXT("-CreateRasEntryKey result=%d\n"), dwResult));
+
+    return dwResult;
+}
+
+DWORD
+CopyRegEntryValues(
+    HKEY    hkeyDst,
+    HKEY    hkeySrc)
+//
+//  Copy all the values from the source key to the destination.
+//
+{
+    DWORD   dwResult, iValue;
+    LPTSTR  ValueName;              // The name of the value read in
+    DWORD   dwValueLen;             // Length of the name
+    LPBYTE  pData;                  // Pointer to the data of the value
+    DWORD   dwDataLen;              // Length of the data
+    DWORD   dwType;                 // Type of the data 
+    DWORD   cValues, cchMaxValueName;
+    DWORD   cbMaxValueData;
+
+    // Find out how many values are in the source key, and the max sizes
+    dwResult = RegQueryInfoKey (hkeySrc, NULL, NULL, NULL, NULL, NULL, NULL,
+                            &cValues, &cchMaxValueName, &cbMaxValueData,
+                            NULL, NULL);
+
+    if (ERROR_SUCCESS != dwResult)
+    {
+        // What should I return for this.
+        DEBUGMSG( ZONE_RAS | ZONE_ERROR, (TEXT(" CopyRegEntryValues: ERROR %d from QueryInfo\n"), dwResult));
+    }
+    else
+    {
+        // Allocate the space for value names and data
+        ValueName = (LPTSTR)LocalAlloc (LPTR, (cchMaxValueName+1)*sizeof(TCHAR));
+        pData = (LPBYTE)LocalAlloc (LPTR, cbMaxValueData+1);
+
+        DEBUGMSG (ZONE_RAS, (TEXT("ValueName=0x%X (Len=%d) pData=0x%X (Len=%d)\r\n"),
+               ValueName, (cchMaxValueName+1)*(sizeof(TCHAR)),
+               pData, cbMaxValueData));
+
+        if ((NULL == ValueName) || (NULL == pData))
+        {
+            DEBUGMSG(ZONE_RAS | ZONE_ERROR, (TEXT(" CopyRegEntryValues: ERROR: Out of memory\n")));
+            dwResult = ERROR_CANNOT_FIND_PHONEBOOK_ENTRY;
+        }
+        else
+        {
+            // Iterate over the values.
+
+            for (iValue = 0; iValue != cValues; iValue++)
+            {
+                dwValueLen = cchMaxValueName+1;
+                dwDataLen = cbMaxValueData;
+
+                // Read the source value
+                dwResult = RegEnumValue (hkeySrc, iValue, ValueName,
+                                     &dwValueLen, NULL, &dwType,
+                                     pData, &dwDataLen);
+
+                if (ERROR_SUCCESS != dwResult)
+                    break;
+
+                DEBUGMSG (ZONE_RAS, (TEXT("Read Entry '%s' Len=%d\n"), ValueName, dwDataLen));
+
+                // Write the dest value.
+                dwResult = RegSetValueEx (hkeyDst, ValueName, 0, dwType, pData, dwDataLen);
+
+                if (ERROR_SUCCESS != dwResult)
+                    break;
+            }
+        }
+        LocalFree(ValueName);
+        LocalFree(pData);
+    }
+
+    return dwResult;
+}
+
+DWORD
+RegCreateNewKey(
+	IN  HKEY    hKey, 
+	IN  LPCWSTR lpSubKey, 
+	OUT PHKEY   phkResult)
+//
+//  Create a new registry key.
+//  Fail and return ERROR_ALREADY_EXISTS if the key is already present.
+//
+{
+	DWORD dwDisposition,
+		  dwResult;
+
+	dwResult = RegCreateKeyEx(hKey, lpSubKey, 0, NULL, 0, 0, NULL, phkResult, &dwDisposition);
+	if (dwResult == NO_ERROR)
+	{
+		if (dwDisposition == REG_OPENED_EXISTING_KEY)
+		{
+			// Can't rename to a key that already exists
+			dwResult = ERROR_ALREADY_EXISTS;
+			RegCloseKey(*phkResult);
+			*phkResult = NULL;
+		}
+	}
+	return dwResult;
+}
+
+BOOL
+GetTempRegKey(
+	IN	HKEY	hKeyBase,
+	OUT PWSTR   wszTempKeyName,
+	OUT PHKEY   phTempKey)
+{
+	DWORD triesLeft,
+		  dwRandom,
+		  dwResult;
+
+	for (triesLeft = 25; triesLeft; triesLeft--)
+	{
+		CeGenRandom(sizeof(dwRandom), (PBYTE)&dwRandom);
+		swprintf(wszTempKeyName, L"$tmp%d", dwRandom);
+
+		dwResult = RegCreateNewKey(hKeyBase, wszTempKeyName, phTempKey);
+		if (dwResult == NO_ERROR)
+		{
+			// Successfully created new temp key
+			break;
+		}
+	}
+
+	return triesLeft > 0;
+}
+
+DWORD
+RegMoveKey(
+	IN      HKEY   hKeyBase,
+	IN	OUT PHKEY  phKeyDst,
+	IN      PWSTR  wszNameDst,
+	IN  OUT PHKEY  phKeySrc,
+	IN      PWSTR  wszNameSrc)
+//
+//  Move the contents of the source key to the destination key.
+//  If successful, the source key and its contents will be deleted.
+//  If unsuccessful, the source key and its contents will be unaffected, and no new registry entries will be created.
+//
+//
+{
+	DWORD dwResult;
+
+	dwResult = CopyRegEntryValues(*phKeyDst, *phKeySrc);
+	if (dwResult == NO_ERROR)
+	{
+		// Successfully copied src to dst, can delete src
+		RegCloseKey(*phKeySrc);
+		*phKeySrc = NULL;
+		dwResult = RegDeleteKey(hKeyBase, wszNameSrc);
+	}
+	else
+	{
+		// Unsuccessful attempt to copy src to dst.
+		// Cleanup the partially created dst key
+		RegCloseKey(*phKeyDst);
+		*phKeyDst = NULL;
+		(void)RegDeleteKey(hKeyBase, wszNameDst);
+	}
+
+	return dwResult;
+}
+
+DWORD
+RegRenameKey(
+	IN	HKEY	hKeyBase,
+	IN  PWSTR   wszOldKeyName,
+	IN  PWSTR   wszNewKeyName)
+//
+//  Rename hKeyBase\OldKey to hKeyBase\NewKey.
+//
+//  If OldKey and NewKey are identical, this is a no-op.
+//
+//  If OldKey and NewKey are different, then we need to copy all of
+//  OldKey to NewKey, then delete OldKey.
+//
+//  If OldKey and NewKey are only different in upper/lower case characters,
+//  then we must copy OldKey to a temporary key, delete OldKey, then
+//  copy the temporary key to NewKey. Yuck. Would be nice if the OS would
+//  support a RenameKey API...
+//
+{
+	DWORD dwResult;
+	HKEY  hKeyOld = NULL,
+		  hKeyNew = NULL,
+		  hKeyTemp = NULL;
+	WCHAR wszTempKeyName[64];
+
+	dwResult = RegOpenKeyEx(hKeyBase, wszOldKeyName, 0, 0, &hKeyOld);
+	if (dwResult == NO_ERROR)
+	{
+		if (0 == wcscmp(wszOldKeyName, wszNewKeyName))
+		{
+			// Nothing to do, identical names.
+		}
+		else if (0 == wcsicmp(wszOldKeyName, wszNewKeyName))
+		{
+			//
+			// Changing the case of the key
+			//
+
+			// Create a  temporary key to copy old to
+			if (FALSE == GetTempRegKey(hKeyBase, &wszTempKeyName[0], &hKeyTemp))
+			{
+				dwResult = ERROR_OUTOFMEMORY;
+			}
+			else
+			{
+				// Copy old to temp (note this deletes the old if successful)
+				dwResult = RegMoveKey(hKeyBase, &hKeyTemp, &wszTempKeyName[0], &hKeyOld, wszOldKeyName);
+				if (dwResult == NO_ERROR)
+				{
+					// Create the new key
+					dwResult = RegCreateNewKey(hKeyBase, wszNewKeyName, &hKeyNew);
+					if (dwResult == NO_ERROR)
+					{
+						// Copy temporary to new
+						dwResult = RegMoveKey(hKeyBase, &hKeyNew, wszNewKeyName, &hKeyTemp, wszTempKeyName);
+					}
+				}
+			}
+		}
+		else
+		{
+			//
+			// Renaming to a new key value
+			//
+			dwResult = RegCreateNewKey(hKeyBase, wszNewKeyName, &hKeyNew);
+			if (dwResult == NO_ERROR)
+			{
+				// Move the old to the new
+				dwResult = RegMoveKey(hKeyBase, &hKeyNew, wszNewKeyName, &hKeyOld, wszOldKeyName);
+			}
+		}
+
+	}
+
+	if (hKeyTemp)
+		RegCloseKey(hKeyTemp);
+
+	if (hKeyNew)
+		RegCloseKey(hKeyNew);
+
+	if (hKeyOld)
+		RegCloseKey(hKeyOld);
+
+	return dwResult;
+}
+
+/*****************************************************************************
+* 
+*   @func   DWORD | RasMakeDefault |  Make the default Ras Entries
+*
+*   @rdesc  If the function succeeds the value is zero. Else an error
+*           from raserror.h is returned.
+*   @ecode  ERROR_UNKNOWN | Required reserved parameter is not NULL.
+*   @ecode  ERROR_CANNOT_OPEN_PHONEBOOK | Invalid PhoneBookPath specified
+*   
+*   @parm   LPTSTR  | reserved          | reserved (must be null)
+*   @parm   LPTSTR  | lpszPhoneBookPath | 
+*       Points to a null terminated string that specifies the full path and
+*       filename of the phonebook file.  This parameter can be NULL, in which
+*       case the default phonebook file is used.  This parameter should always
+*       be NULL for Windows 95 and WinCE since the phonebook entries are
+*       stored in the registry.
+*
+*
+*/
+
+DWORD APIENTRY
+AfdRasMakeDefault (LPTSTR          reserved, 
+                   LPTSTR          lpszPhonebook )
+{
+    TCHAR       szEntry[128];
+    RASENTRY    RasEntry;
+    DWORD       dwSize;
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+              (TEXT("+AfdRasMakeDefault(0x%08X, 0x%08X(%s))\r\n"), 
+               reserved, lpszPhonebook,
+               (lpszPhonebook != NULL) ? lpszPhonebook : TEXT("NULL")));
+
+    RasEntry.dwSize = sizeof(RASENTRY);
+    RaspInitRasEntry(&RasEntry);
+
+    RasEntry.ipaddr.d = 192;
+    RasEntry.ipaddr.c = 168;
+    RasEntry.ipaddr.b = 55;
+    RasEntry.ipaddr.a = 100;
+
+    // _tcscat( KeyName, TEXT("`Desktop @ 19200`") );
+    // Get the string from the resource file
+    dwSize = (DWORD)CallGetNetString (NETUI_GETNETSTR_DIRECT_NAME,
+                                      szEntry, sizeof(szEntry)/sizeof(TCHAR));
+    if (!dwSize) {
+        HKEY        hKey;
+        DWORD       dwDisp;
+        LONG        hRes;
+        RETAILMSG (1, (TEXT("Unable to get default name, just creating key\r\n")));
+
+        hRes = RegCreateKeyEx(HKEY_CURRENT_USER, RASBOOK_KEY, 0, NULL,
+                              REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
+                              &hKey, &dwDisp);
+        if (hRes == ERROR_SUCCESS) {
+            RegCloseKey(hKey);
+        }
+        return 0;
+    }
+
+    AfdRasSetEntryProperties(lpszPhonebook, szEntry, (LPBYTE)&RasEntry, sizeof(RASENTRY),
+                             NULL,0);
+    return 0;
+}
+
+/*****************************************************************************
+* 
+*   @func   DWORD | RasEnumEntries |  Lists all entry names in a remote 
+*                                       access phone book.
+*
+*   @rdesc  If the function succeeds the value is zero. Else an error
+*           from raserror.h is returned.
+*   @ecode  ERROR_UNKNOWN | Required reserved parameter is not NULL.
+*   @ecode  ERROR_CANNOT_OPEN_PHONEBOOK | Invalid PhoneBookPath specified
+*   @ecode  ERROR_INVALID_SIZE | Invalid lpcb parameter
+*   
+*   @parm   LPTSTR  | reserved          | reserved
+*   @parm   LPTSTR  | lpszPhoneBookPath | path name of phone book
+*   @parm   LPRASENTRYNAME | lprasentryname |
+*       Points to a buffer that receives an array of <f RASENTRYNAME>
+*       structures, one for each phonebook entry. Before calling the
+*       function, an application must set the dwSize member of the first
+*       <f RASENTRYNAME> structure in the buffer to sizeof(<f RASENTRYNAME>)
+*       in order to identify the version of the structure being passed.
+*   @parm   LPDWORD | lpcb              |
+*       Points to a variable that contains the size, in bytes, of the buffer
+*       specified by lprasentryname. On return, the function sets this
+*       variable to the number of bytes required to successfully complete
+*       the call.
+*   @parm   LPDWORD | lpcEntries        |
+*       Points to a variable that the function, if successful, sets to
+*       the number of phonebook entries written to the buffer specified
+*       by lprasentryname.
+*
+*
+*/
+
+DWORD APIENTRY
+AfdRasEnumEntries (LPTSTR          reserved, 
+                   LPTSTR          lpszPhoneBookPath, 
+                   LPRASENTRYNAME  lpRasEntryName, 
+                   LPDWORD         lpcb, 
+                   LPDWORD         lpcEntries )
+{
+    HKEY        hKey;
+    LONG        hRes;
+    DWORD       Index;
+    DWORD       cbRequired = 0;
+    DWORD       RetVal = ERROR_SUCCESS;
+    TCHAR       ValueString[RAS_MaxEntryName + 1];
+    DWORD       ValueLen;
+    DWORD       cEntries;   // Number of entries found.
+    FILETIME    LastWrite;
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+              (TEXT("+AfdRasEnumEntries( %08X, %08X, %08X, %08X, %08X )\r\n"), 
+               reserved, lpszPhoneBookPath, lpRasEntryName, lpcb, lpcEntries));
+
+    // Check the required parameters.
+    if (NULL != reserved) {
+        RetVal = ERROR_UNKNOWN;     
+    }
+    if (NULL != lpszPhoneBookPath) {
+        // We only support the system/registry phonebook.
+        RetVal = ERROR_CANNOT_OPEN_PHONEBOOK;
+    }
+    if (NULL == lpcb) {
+        // Invalid argument
+        RetVal = ERROR_INVALID_SIZE;
+    }
+
+    if (ERROR_SUCCESS != RetVal) {
+        DEBUGMSG( ZONE_RAS | ZONE_FUNCTION, (TEXT("-AfdRasEnumEntries() returning %d\r\n"), RetVal));
+        return RetVal;
+    }
+    
+    // Initialize the return count information.
+    if (NULL != lpcEntries) {
+        *lpcEntries = 0;
+    }
+    
+    hRes = RegOpenKeyEx( HKEY_CURRENT_USER, RASBOOK_KEY, 0, KEY_READ, &hKey );
+
+    if (ERROR_SUCCESS != hRes) {
+        DEBUGMSG( ZONE_WARN|ZONE_RAS,
+                  (TEXT("AfdRasEnumEntries() unable to open Registry Key '%s' Error %d\r\n"),
+                   RASBOOK_KEY, hRes));
+        AfdRasMakeDefault(reserved, lpszPhoneBookPath);
+
+        // Now try to open the key.
+        hRes = RegOpenKeyEx(HKEY_CURRENT_USER,RASBOOK_KEY,0,
+                            KEY_READ,&hKey);
+    }
+
+    cEntries = 0;
+
+    if (ERROR_SUCCESS == hRes ) {
+        // Now loop over the sub-keys getting the names of each.
+
+        for (Index = 0; hRes == ERROR_SUCCESS; Index++) {
+            ValueLen = sizeof(ValueString) / sizeof(ValueString[0]);
+            hRes = RegEnumKeyEx (hKey, Index, ValueString, &ValueLen, NULL, NULL, NULL, &LastWrite);
+            if (hRes == ERROR_SUCCESS) {
+                DEBUGMSG(ZONE_RAS | ZONE_FUNCTION, (TEXT("AfdRasEnumEntries: Found entry %s\r\n"), ValueString));
+                cbRequired += sizeof(RASENTRYNAME);
+                if ((cbRequired <= *lpcb) && (NULL != lpRasEntryName)) {
+                    // Stuff the data in.
+                    lpRasEntryName[cEntries].dwSize = sizeof(RASENTRYNAME);
+                    _tcscpy(lpRasEntryName[cEntries].szEntryName, ValueString);
+
+                    // Tell them how many we wrote.
+                    if (NULL != lpcEntries) {
+                        (*lpcEntries)++;
+                    }
+                }
+                // Keep track of how many we found?
+                cEntries++;
+            }
+        }
+        RegCloseKey (hKey);
+    }
+
+    // If no other error then 
+    if ((ERROR_SUCCESS == RetVal) && (cbRequired > *lpcb)) {
+        RetVal = ERROR_BUFFER_TOO_SMALL;
+    }       
+
+    // Number of bytes required/returned.
+    *lpcb = cbRequired;
+
+    DEBUGMSG(ZONE_RAS | ZONE_FUNCTION, (TEXT("-AfdRasEnumEntries() returning %d\r\n"), RetVal));
+    return RetVal;
+}
+
+/*****************************************************************************
+* 
+*   @func   DWORD | RasGetEntryDialParams |  The <f RasGetEntryDialParams>
+*           function retrieves the connection information saved by the
+*           last successful call to the <f RasDial> or
+*           <f RasGetEntryDialParams> function for a specified phonebook entry.
+*
+*   @rdesc  If the function succeeds, the return value is zero.
+*           If the function fails, the return value can be one of the
+*           following error codes.
+*   @ecode  ERROR_CANNOT_OPEN_PHONEBOOK | Invalid szPhonebook
+*   @ecode  ERROR_CANNOT_FIND_PHONEBOOK_ENTRY | Invalid szEntry
+*   @ecode  ERROR_INVALID_PARAMETER     | lpRasDialParams or lpfPassword is NULL,
+*                                       | or lpRasDialParams->dwSize is not correct
+*   
+*   @parm   LPTSTR          | lpszPhoneBook     | pointer to the full path
+*               and filename of the phonebook file
+*   @parm   LPRASDIALPARAMS | lprasdialparams   | pointer to a structure that
+*               receives the connection properties
+*   @parm   LPBOOL          | lpfPassword       | Indicates whether the user's
+*               password was retrieved.
+*               
+*
+*/
+
+DWORD APIENTRY
+AfdRasGetEntryDialParams(
+	LPTSTR          lpszPhonebook, 
+	LPRASDIALPARAMS lpRasDialParams, 
+	LPBOOL          lpfPassword)
+{
+    DWORD   dwResult;
+
+    DEBUGMSG( ZONE_FUNCTION,
+             ( TEXT( "+RasGetEntryDialParams( %s, %s)\n"), 
+			 lpszPhonebook ? lpszPhonebook : TEXT("NULL"),
+			 lpRasDialParams && lpRasDialParams->szEntryName ?  lpRasDialParams->szEntryName : TEXT("NULL")) );
+
+    if ((NULL == lpRasDialParams)
+    ||  (NULL == lpfPassword)
+    ||  (sizeof(RASDIALPARAMS) != lpRasDialParams->dwSize)
+	||  !ValidateStringLength(lpRasDialParams->szEntryName,   1, RAS_MaxEntryName))
+    {
+        dwResult = ERROR_INVALID_PARAMETER;
+    }
+    else
+    {
+		// Get username/domain/password for szEntryName from CredMan
+		dwResult = RasCredentialsRead(lpRasDialParams, FALSE, lpfPassword);
+
+		// For security reasons do not expose the password. The user should not need to know it.
+		SecureZeroMemory(lpRasDialParams->szPassword, sizeof(lpRasDialParams->szPassword));
+
+		if (*lpfPassword)
+			memcpy(lpRasDialParams->szPassword, szDummyPassword, sizeof(szDummyPassword));
+    }
+
+    DEBUGMSG (ZONE_FUNCTION, (TEXT("-RasGetEntryDialParams Result=%u (%s,%s)\r\n"),
+                  dwResult,
+				  lpRasDialParams && lpRasDialParams->szUserName ? lpRasDialParams->szUserName : TEXT("(NULL)"),   
+				  lpRasDialParams && lpRasDialParams->szDomain   ? lpRasDialParams->szDomain   : TEXT("(NULL)")));
+    return dwResult;
+}
+
+//
+// Replace the placeholder password with the real one from the registry
+//
+BOOL 
+FixRasPassword(
+	IN OUT LPRASDIALPARAMS lpRasDialParams)
+{
+	DWORD dwResult = ERROR_SUCCESS;
+
+    if (_tcscmp(lpRasDialParams->szPassword, szDummyPassword) == 0)
+    {
+        // need to replace the dummy password with the real one.
+        // Look in the system phone book
+
+		dwResult = RasCredentialsRead(lpRasDialParams, TRUE, NULL);
+    }
+	return dwResult == ERROR_SUCCESS;
+}
+
+
+
+/*****************************************************************************
+* 
+*   @func   DWORD | RasSetEntryDialParams |  The <f RasSetEntryDialParams>
+*           function changes the connection information saved by the
+*           last successful call to the <f RasDial> or
+*           <f RasGetEntryDialParams> function for a specified phonebook entry.
+*
+*   @rdesc  If the function succeeds, the return value is zero.
+*           If the function fails, the return value can be one of the
+*           following error codes.
+*       @ecode  ERROR_BUFFER_INVALID                |
+*           The address or buffer specified by lpRasDialParams is invalid.
+*       @ecode  ERROR_CANNOT_OPEN_PHONEBOOK         |
+*           The phonebook is corrupted or missing components.
+*       @ecode  ERROR_CANNOT_FIND_PHONEBOOK_ENTRY   |
+*           The phonebook entry does not exist.
+*   
+*   @parm   LPTSTR          | lpszPhoneBook     | pointer to the full path
+*               and filename of the phonebook file
+*   @parm   LPRASDIALPARAMS | lprasdialparams   | pointer to a structure that
+*               receives the connection properties
+*   @parm   BOOL            | fRemovePassword   | Indicates whether the user's
+*               password should be saved.
+*               
+*
+*/
+
+DWORD APIENTRY
+AfdRasSetEntryDialParams(
+	IN  LPTSTR          lpszPhonebook, 
+    IN  LPRASDIALPARAMS lpRasDialParams, 
+    IN  BOOL            fRemovePassword)
+{
+    DWORD   dwResult;
+
+	DEBUGMSG (ZONE_FUNCTION, (TEXT("RAS: +RasSetEntryDialParams %s %s\n"),
+                    lpRasDialParams->szUserName,
+                    lpRasDialParams->szDomain));
+
+    if ((NULL == lpRasDialParams)
+    ||  (sizeof(RASDIALPARAMS) != lpRasDialParams->dwSize)
+	||  !ValidateStringLength(lpRasDialParams->szEntryName,   1, RAS_MaxEntryName)
+	||  !ValidateStringLength(lpRasDialParams->szPhoneNumber, 0, RAS_MaxPhoneNumber)
+	||  !ValidateStringLength(lpRasDialParams->szUserName,    0, UNLEN)
+	||  !ValidateStringLength(lpRasDialParams->szPassword,    0, PWLEN)
+	||  !ValidateStringLength(lpRasDialParams->szDomain,      0, DNLEN))
+    {
+        dwResult = ERROR_BUFFER_INVALID;
+    }
+    else
+    {
+		dwResult = RasCredentialsWrite(lpRasDialParams, fRemovePassword);
+    }
+
+    DEBUGMSG (ZONE_RAS | ZONE_FUNCTION, (TEXT("-AfdRasSetEntryDialParams : Result=%d\r"), dwResult));
+    return dwResult;
+}
+
+//
+//  Conversion support for CE 3.0 and earlier RASENTRY structures to CE 4.0.
+//  That is, for apps that have not been recompiled for 4.0, we translate the
+//  old format RASENTRY that they use to the new 4.0 format.
+//
+
+#define RAS_MaxDeviceName_V3    32
+
+typedef struct tagRASENTRYW_V3
+{
+    DWORD       dwSize;
+    DWORD       dwfOptions;
+    DWORD       dwCountryID;
+    DWORD       dwCountryCode;
+    WCHAR       szAreaCode[ RAS_MaxAreaCode + 1 ];
+    WCHAR       szLocalPhoneNumber[ RAS_MaxPhoneNumber + 1 ];
+    DWORD       dwAlternateOffset;
+    RASIPADDR   ipaddr;
+    RASIPADDR   ipaddrDns;
+    RASIPADDR   ipaddrDnsAlt;
+    RASIPADDR   ipaddrWins;
+    RASIPADDR   ipaddrWinsAlt;
+    DWORD       dwFrameSize;
+    DWORD       dwfNetProtocols;
+    DWORD       dwFramingProtocol;
+    WCHAR       szScript[ MAX_PATH ];
+    WCHAR       szAutodialDll[ MAX_PATH ];
+    WCHAR       szAutodialFunc[ MAX_PATH ];
+    WCHAR       szDeviceType[ RAS_MaxDeviceType + 1 ];
+    WCHAR       szDeviceName[ RAS_MaxDeviceName_V3 + 1 ];
+    WCHAR       szX25PadType[ RAS_MaxPadType + 1 ];
+    WCHAR       szX25Address[ RAS_MaxX25Address + 1 ];
+    WCHAR       szX25Facilities[ RAS_MaxFacilities + 1 ];
+    WCHAR       szX25UserData[ RAS_MaxUserData + 1 ];
+    DWORD       dwChannels;
+    DWORD       dwReserved1;
+    DWORD       dwReserved2;
+} RASENTRY_V3, *LPRASENTRY_V3;
+
+
+/*****************************************************************************
+*
+*
+*   @func   DWORD   |   RasSetEntryProperties | Comment on function.
+*
+*   @rdesc
+*       If the function succeeds, the return value is zero.
+*       <nl>If the function fails, the return value can be one of the
+*       following error codes: <nl>
+*       @ecode  ERROR_INVALID_PARAMETER             |
+*           The function is called with an invalid parameter.
+*       @ecode  ERROR_BUFFER_INVALID                |
+*           The address or buffer specified by lpbEntryInfo is invalid.
+*       @ecode  ERROR_BUFFER_TOO_SMALL              |
+*           The buffer size indicated in lpdwEntryInfoSize is too small.
+*       @ecode  ERROR_CANNOT_OPEN_PHONEBOOK         |
+*           The phonebook is corrupted or missing components.
+*
+*
+*   @parm   LPTSTR  |   lpszPhonebook   |
+*       Points to a null terminated string that specifies the full path and
+*       filename of the phonebook file.  This parameter can be NULL, in which
+*       case the default phonebook file is used.  This parameter should always
+*       be NULL for Windows 95 and WinCE since the phonebook entries are
+*       stored in the registry.
+*   @parm   LPTSTR  |   szEntry         |
+*       Points to a null terminated string containing an existing entry name.
+*       If a "" entry name is specified, structures containing default
+*       values are returned.
+*   @parm   LPBYTE  |   lpbEntry        |
+*       Points to a RASENTRY structure that receives the connection data
+*       associated with the phonebook entry specified by the lpszEntry member
+*       followed by any additional bytes needed for the alternate phone number
+*       list if any.  On entry, the dwSize member of this structure must
+*       specify the size of the structure.
+*   @parm   DWORD |   dwEntrySize   |
+*       The size, in bytes, of the buffer specified by lpEntryInfo.
+*   @parm   LPBYTE  |   lpb             |
+*       Points to buffer of device-specific configuration information.
+*       This parameter may be NULL if the data is not required.
+*   @parm   DWORD |   dwSize        |
+*       Points to a variable that contains the size, in bytes, of the buffer
+*       specified by lpb. 
+*
+*   @ex     An example of how to use this function follows |
+*           No Example
+*
+*/
+DWORD APIENTRY
+AfdRasSetEntryProperties(
+    LPTSTR lpszPhonebook,
+    LPTSTR szEntry,
+    LPBYTE lpbEntry,
+    DWORD  dwEntrySize,
+    LPBYTE lpb,
+    DWORD  dwSize)
+{
+    HKEY    hKey;
+    LONG    hRes;
+    DWORD   RetVal;
+    RASPENTRY   RaspEntry;  // Private version of structure
+    
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+             (TEXT("+AfdRasSetEntryProperties(0x%08X(%s), 0x%08X(%s), ")
+              TEXT("0x%X, %d, 0x%X, %d)\r\n"), 
+              lpszPhonebook,
+              (lpszPhonebook != NULL) ? lpszPhonebook : TEXT("NULL"),
+              szEntry,
+              (szEntry != NULL) ? szEntry : TEXT("NULL"),
+              lpbEntry, dwEntrySize, lpb, dwSize) );
+
+
+    if (NULL == lpbEntry)
+        RetVal = ERROR_BUFFER_INVALID;
+    else if (dwEntrySize < sizeof(RASENTRY_V3)
+         ||  (dwEntrySize > sizeof(RASENTRY_V3) && dwEntrySize < sizeof(RASENTRY)))
+        RetVal = ERROR_BUFFER_TOO_SMALL;
+    else
+    {
+        RetVal = CreateRasEntryKey(lpszPhonebook, szEntry, &hKey);
+        if (ERROR_SUCCESS == RetVal)
+        {
+            // Convert the value.
+            RaspConvPublicPriv ((LPRASENTRY)lpbEntry, &RaspEntry);
+
+            // Use the private structure size.
+            dwEntrySize = sizeof(RASPENTRY);
+
+            // Create The value.
+            hRes = RegSetValueEx (hKey, RASBOOK_ENTRY_VALUE, 0, REG_BINARY,
+                                  (LPBYTE)&RaspEntry,  dwEntrySize);
+
+            if (ERROR_SUCCESS != hRes)
+            {
+                DEBUGMSG (ZONE_RAS | ZONE_ERROR,
+                          (TEXT(" AfdRasSetEntryProperties: ERROR %d from RegSetValueEx\n"), hRes));
+                RetVal = ERROR_CANNOT_OPEN_PHONEBOOK;
+            }
+            else if (lpb)
+            {
+                BOOL fRet;
+                DATA_BLOB dataIn, dataOut = {0};
+                if (!_tcscmp (RaspEntry.szDeviceType, RASDT_Vpn))
+                {
+                    // encrypt the device config struct for VPN (mainly so that L2TP secrets are encrypted in the registry)
+                    // Note that the secrets are still accessible via RasGetEntryProperties, which has to return the
+                    // decrypted version.
+                    // Would be more secure  if this work was done by L2TP itself. This would make it possible for the 
+                    // secrets to be hidden from the API. However that requires some rearchitecting. 
+                    dataIn.cbData = dwSize;
+                    dataIn.pbData = lpb;
+                    fRet = CryptProtectData(&dataIn, RaspEntry.szDeviceName, NULL, NULL, NULL, CRYPTPROTECT_SYSTEM, &dataOut);
+                    if (fRet)
+                    {
+                        lpb = dataOut.pbData;
+                        dwSize = dataOut.cbData;
+                    }
+                    else
+                    {
+                        hRes = GetLastError();
+                        ASSERT(hRes != ERROR_SUCCESS);
+                        DEBUGMSG (ZONE_RAS | ZONE_ERROR,
+                          (TEXT(" AfdRasSetEntryProperties: ERROR %d from CryptProtectData\n"), hRes));
+                    }
+                }
+                if (ERROR_SUCCESS == hRes)
+                    hRes = RegSetValueEx(hKey, RASBOOK_DEVCFG_VALUE, 0, REG_BINARY, lpb, dwSize);
+                if (ERROR_SUCCESS != hRes)
+                {
+                    DEBUGMSG (ZONE_RAS | ZONE_ERROR,
+                              (TEXT(" AfdRasSetEntryProperties: ERROR %d from RegSetValueEx\n"), hRes));
+                    RetVal = ERROR_CANNOT_OPEN_PHONEBOOK;
+                }
+                // CryptProtectData allocates a buffer
+                if (dataOut.pbData)
+                    LocalFree(dataOut.pbData);
+            }
+
+            RegCloseKey (hKey);
+        }
+    }
+                       
+    DEBUGMSG (ZONE_RAS | (ZONE_ERROR && RetVal != ERROR_SUCCESS),
+              (TEXT("-AfdRasSetEntryProperties Result=%d\n"), RetVal));
+    return RetVal;
+}
+
+
+/*****************************************************************************
+*
+*
+*   @func   DWORD   |   RasGetEntryProperties |
+*       The RasGetEntryProperties function retrieves the properties
+*       of a phonebook entry.
+*
+*   @rdesc
+*       If the function succeeds, the return value is zero.
+*       <nl>If the function fails, the return value can be one of the
+*       following error codes: <nl>
+*       @ecode  ERROR_INVALID_PARAMETER             |
+*           The function is called with an invalid parameter.
+*       @ecode  ERROR_BUFFER_INVALID                |
+*           The address or buffer specified by lpbEntryInfo is invalid.
+*       @ecode  ERROR_BUFFER_TOO_SMALL              |
+*           The buffer size indicated in lpdwEntryInfoSize is too small.
+*       @ecode  ERROR_CANNOT_OPEN_PHONEBOOK         |
+*           The phonebook is corrupted or missing components.
+*       @ecode  ERROR_CANNOT_FIND_PHONEBOOK_ENTRY   |
+*           The phonebook entry does not exist.
+*
+*   @parm   LPTSTR  |   lpszPhonebook   |
+*       Points to a null terminated string that specifies the full path and
+*       filename of the phonebook file.  This parameter can be NULL, in which
+*       case the default phonebook file is used.  This parameter should always
+*       be NULL for Windows 95 and WinCE since the phonebook entries are
+*       stored in the registry.
+*   @parm   LPTSTR  |   szEntry         |
+*       Points to a null terminated string containing an existing entry name.
+*       If a "" entry name is specified, structures containing default
+*       values are returned.
+*   @parm   LPBYTE  |   lpbEntry        |
+*       Points to a RASENTRY structure that receives the connection data
+*       associated with the phonebook entry specified by the lpszEntry member
+*       followed by any additional bytes needed for the alternate phone number
+*       list if any.  On entry, the dwSize member of this structure must
+*       specify the size of the structure.
+*   @parm   LPDWORD |   lpdwEntrySize   |
+*       Points to a variable that contains the size, in bytes, of the buffer
+*       specified by lpEntryInfo.  On return, the function sets this variable
+*       to the number of bytes required.  This parameter can be NULL if the
+*       information is not required.  The recommended method for determining
+*       the required buffer size is to call RasGetEntryProperties with the
+*       lpbEntryInfo set to null and the DWORD pointed to by lpdwEntryInfoSize
+*       set to zero. The function will return the required buffer size in the
+*       DWORD.
+*   @parm   LPBYTE  |   lpb             |
+*       Points to buffer to receive device-specific configuration information.
+*       This parameter may be NULL if the data is not required.  The
+*       recommended method for determining the required buffer size is to call
+*       RasGetEntryProperties with the lpbDeviceInfo set to null and the DWORD
+*       pointed to by lpdwDeviceInfoSize set to zero. The function will return
+*       the required buffer size in the DWORD.
+*   @parm   LPDWORD |   lpdwSize        |
+*       Points to a variable that contains the size, in bytes, of the buffer
+*       specified by lpb. On return, the function sets this variable to the
+*       number of bytes required. This parameter can be NULL if the
+*       information is not required.
+*
+*   @ex     An example of how to use this function follows |
+*           No Example
+*
+*/
+DWORD APIENTRY
+AfdRasGetEntryProperties(
+    LPTSTR  lpszPhonebook,
+    LPTSTR  szEntry,
+    LPBYTE  lpbEntry,
+    LPDWORD lpdwEntrySize,
+    LPBYTE  lpb,
+    LPDWORD lpdwSize)
+{
+    HKEY    hKey;
+    LONG    hRes;
+    DWORD   RetVal = 0;
+    DWORD   dwType;
+    DWORD   dwSize;
+    LPRASENTRY  pEntry;
+    RASPENTRY   RaspEntry;  // Private version of structure.
+    
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+             (TEXT("+AfdRasGetEntryProperties(0x%08X(%s), 0x%0X(%s), ")
+              TEXT("0x%X, 0x%X, 0x%X, 0x%X)\r\n"), 
+              lpszPhonebook,
+              (lpszPhonebook != NULL) ? lpszPhonebook : TEXT("NULL"),
+              szEntry,
+              (szEntry != NULL) ? szEntry : TEXT("NULL"),
+              lpbEntry, lpdwEntrySize, lpb,
+              lpdwSize) );
+
+	// If a RASENTRY structure is specified then the size of it must also be specified.
+	if (lpbEntry != NULL && lpdwEntrySize == NULL)
+		return ERROR_INVALID_PARAMETER;
+
+    if (NULL == lpdwEntrySize)
+        RetVal = ERROR_INVALID_PARAMETER;
+    else if (szEntry == NULL)
+        RetVal = ERROR_INVALID_NAME;
+    else if (szEntry[0] != TEXT('\0')) {
+        // It's ok to pass in a null string
+        // you then get an initialized entry.
+        RetVal = RaspCheckEntryName(szEntry);
+    }
+
+    // Did they just want the size of a RasEntry?
+    if ((0 == RetVal) && (NULL == lpbEntry) && (*lpdwEntrySize == 0))
+    {
+        *lpdwEntrySize = sizeof(RASENTRY);
+
+        DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+                 (TEXT("-AfdRasGetEntryProperties Returning sizeof(RASENTRY)\r\n"), 
+                  RetVal) );
+        
+        return ERROR_BUFFER_TOO_SMALL;
+    }
+
+    // Check entry and size
+    if (NULL == lpbEntry)
+    {
+        RetVal = ERROR_BUFFER_INVALID;
+    }
+    else if (((LPRASENTRY)lpbEntry)->dwSize != sizeof(RASENTRY_V3)
+         &&  ((LPRASENTRY)lpbEntry)->dwSize != sizeof(RASENTRY))
+    {
+        // Not one of the two supported versions
+        RetVal = ERROR_INVALID_SIZE;
+    }
+    else if (*lpdwEntrySize < ((LPRASENTRY)lpbEntry)->dwSize)
+    {
+        // Request that they provide a buffer sufficiently
+        // big to store the data.
+        *lpdwEntrySize = ((LPRASENTRY)lpbEntry)->dwSize;
+        RetVal = ERROR_BUFFER_TOO_SMALL;
+    }
+
+    
+
+    // Any parm errors?
+    if (0 != RetVal) {
+        DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+                 (TEXT("-AfdRasGetEntryProperties ParmError %d\r\n"), 
+                  RetVal) );
+        return RetVal;
+    }
+
+    // Shortcut to the return buffer
+    pEntry = (LPRASENTRY)lpbEntry;
+
+    if (TEXT('\0') == szEntry[0]) {
+        // Return an initialized RasEntry structure.
+        RaspInitRasEntry (pEntry);
+        DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+                 (TEXT("-AfdRasGetEntryProperties Returning Default Entry\r\n"), 
+                  RetVal) );
+        return 0;
+    }
+
+    RetVal = OpenRasEntryKey(lpszPhonebook, szEntry, &hKey);
+    if (ERROR_SUCCESS == RetVal)
+    {
+        // Get the Entry data.
+        dwSize = sizeof(RASPENTRY);
+        hRes = RegQueryValueEx (hKey, RASBOOK_ENTRY_VALUE, 0, &dwType,
+                                (LPBYTE)&RaspEntry,
+                                &dwSize);
+        // What could have possibly happened?
+        if ((ERROR_SUCCESS != hRes) || (dwType != REG_BINARY) ||
+            (sizeof(RASPENTRY) != dwSize)) {
+            // What's the proper return code when the value is bad?
+            RetVal = ERROR_CANNOT_FIND_PHONEBOOK_ENTRY;
+        } else {
+            // Convert the private struct to the public one.
+            RaspConvPrivPublic (&RaspEntry, pEntry);
+        }
+
+        // Did they want the DevConfig?
+        if (lpdwSize != NULL) {
+            hRes = RegQueryValueEx (hKey, RASBOOK_DEVCFG_VALUE, 0, &dwType, NULL, &dwSize);
+            if (ERROR_SUCCESS == hRes) {
+                // Do they just want the size?
+                if ((lpb == NULL) || (*lpdwSize < dwSize)) {
+                    RetVal = ERROR_BUFFER_TOO_SMALL;
+                } else {
+                    // Must have passed in a buffer, and it's big enough
+                    hRes = RegQueryValueEx(hKey, RASBOOK_DEVCFG_VALUE, 0, &dwType, lpb, &dwSize);
+                    if (hRes == ERROR_SUCCESS && !_tcscmp (RaspEntry.szDeviceType, RASDT_Vpn))
+                    {
+                        // For VPN type, the data is stored encrypted, so we have to decrypt it now.
+                        BOOL fRet;
+                        DATA_BLOB dataIn, dataOut;
+
+						dataIn.cbData = dwSize;
+						dataIn.pbData = lpb;
+						dataOut.cbData = 0;
+						dataOut.pbData = NULL;
+                        fRet = CryptUnprotectData(&dataIn, NULL, NULL, NULL, NULL, CRYPTPROTECT_SYSTEM, &dataOut);
+                        if (fRet)
+                        {
+                            ASSERT(dataOut.cbData <= dwSize);
+                            if (dataOut.cbData <= dwSize)
+                            {
+                                memcpy(lpb, dataOut.pbData, dataOut.cbData);
+                            }
+                            else
+                                RetVal = ERROR_BUFFER_TOO_SMALL;        // this should never happen
+                            dwSize = dataOut.cbData;
+                            LocalFree(dataOut.pbData);
+                        }
+                        else
+                        {
+                            RetVal = ERROR_CORRUPT_PHONEBOOK;
+                            hRes = GetLastError();
+                        }
+                    }
+
+                }
+                
+                // Return the correct size.
+                *lpdwSize = dwSize;
+            } else {
+                // No dev config for this entry, Let's try to ask the miniport
+                PNDISWAN_ADAPTER    pAdapter;
+                DWORD               dwDeviceID;
+                LPBYTE              pDeviceConfig;
+                DWORD               dwDevCfgSize;
+
+                if (SUCCESS == FindAdapter (pEntry->szDeviceName, pEntry->szDeviceType, &pAdapter,
+                                            &dwDeviceID)) {
+                    if (SUCCESS == NdisTapiGetDevConfig (pAdapter, dwDeviceID, &pDeviceConfig, &dwDevCfgSize)) {
+                        // Ok it worked.  Now what?
+                        if ((NULL != lpb) && (*lpdwSize >= dwDevCfgSize)) {
+                            memcpy ((LPBYTE)lpb, pDeviceConfig, dwDevCfgSize);
+                        }
+                        // Tell them how big it is
+                        *lpdwSize = dwDevCfgSize;
+                        LocalFree (pDeviceConfig);
+                    } else {
+                        // Initialize to none
+                        *lpdwSize = 0;
+                    }
+                    AdapterDelRef (pAdapter);
+                    
+                } else {
+                    // Initialize to none
+                    *lpdwSize = 0;
+                }
+                
+            }
+        }
+        RegCloseKey (hKey);
+    } else {
+        // Could not open the key
+        RetVal = ERROR_CANNOT_FIND_PHONEBOOK_ENTRY;
+    }
+
+    DEBUGMSG (ZONE_RAS || (RetVal && ZONE_ERROR),
+              (TEXT("-AfdRasGetEntryProperties Return Code %d\r\n"), RetVal));
+    return RetVal;
+}
+
+/*****************************************************************************
+*
+*
+*   @func   DWORD   |   RasValidateEntryName    |
+*       The RasValidateEntryName function validates the format of
+*       a connection entry name.  It must contain at least one
+*       non-white-space alpha-numeric character.
+*
+*   @rdesc
+*       ERROR_SUCCESS - name is valid and not in use in phonebook
+*       ERROR_ALREADY_EXISTS - name is valid and already in phonebook
+*       ERROR_INVALID_NAME - name is invalid
+*       ERROR_CANNOT_OPEN_PHONEBOOK - (CE) lpszPhonebook is non-NULL
+*
+*   @parm   LPTSTR  |   lpszPhonebook   |
+*       Points to a null terminated string that specifies the full
+*       path and filename of the phonebook file.  This parameter
+*       can be NULL in which case the default phonebook file is
+*       used.  This parameter should always be NULL for Windows 95 and
+*       WinCE since the phonebook entries are stored in the registry.
+*   @parm   LPTSTR  |   lpszEntry   |
+*       Points to a null terminated string containing a entry name. For
+*       WinCE the Entry name must include at least one alpha-numeric
+*       character and be a valid registry key name.
+*
+*/
+DWORD APIENTRY
+AfdRasValidateEntryName(LPCTSTR lpszPhonebook,
+                        LPCTSTR lpszEntry)
+{
+    HKEY    hKey;
+    DWORD   RetVal;
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+             (TEXT("+AfdRasValidateEntryName (0x%08X, 0x%08X(%s))\r\n"), 
+              lpszPhonebook, lpszEntry,
+              (lpszEntry != 0) ? lpszEntry : TEXT("Null")) );
+
+    RetVal = OpenRasEntryKey((LPTSTR)lpszPhonebook, (LPTSTR)lpszEntry, &hKey);
+    if (ERROR_SUCCESS == RetVal)
+    {
+        RetVal = ERROR_ALREADY_EXISTS;
+        RegCloseKey (hKey);
+    }
+    else if (ERROR_CANNOT_FIND_PHONEBOOK_ENTRY == RetVal)
+    {
+        RetVal = ERROR_SUCCESS;
+    }
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+             (TEXT("-AfdRasValidateName Returning %d\r\n"), 
+              RetVal) );
+    return RetVal;
+}
+
+/*****************************************************************************
+*
+*
+*   @func   DWORD   |   RasDeleteEntry |
+*       The RasDeleteEntry function deletes an entry from the phone book.
+*
+*   @rdesc  
+*       If the function succeeds, the return value is zero.
+*       If the function fails, the return value is one of the following:
+*       @ecode  ERROR_CANNOT_OPEN_PHONEBOOK |
+*           Invalid phonebook entry specified.  For Win95 and WinCE the
+*           lpszPhonebook parameter must be NULL.   
+*       @ecode  ERROR_INVALID_NAME |
+*           Invalid name specified in lpszEntry parameter.
+*       @ecode  Others |
+*           Errors returned from RegDeleteKey()
+*
+*   @parm   LPTSTR  |   lpszPhonebook   |
+*       Points to a null terminated string that specifies the
+*       full path and filename of the phonebook file.  This
+*       parameter can be NULL, in which case the default
+*       phonebook file is used.  This parameter should always
+*       be NULL for Windows 95 and WinCE since the phonebook
+*       entries are stored in the registry.
+*   @PARM   LPTSTR  |   lpszEntry       |
+*       Points to a null terminated string containing an
+*       existing entry name that will be deleted.
+*
+*/
+DWORD WINAPI 
+AfdRasDeleteEntry(LPTSTR lpszPhonebook, LPTSTR lpszEntry)
+{
+    TCHAR   KeyName[128];
+    DWORD   RetVal = 0;
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+             (TEXT("+AfdRasDeleteEntry (0x%08X, 0x%08X(%s))\r\n"), 
+              lpszPhonebook, lpszEntry,
+              (lpszEntry != 0) ? lpszEntry : TEXT("Null")) );
+
+    if (NULL != lpszPhonebook) 
+	{
+        // We only support the system/registry phonebook.
+        RetVal = ERROR_CANNOT_OPEN_PHONEBOOK;
+    } 
+	else if (!(RetVal = RaspCheckEntryName(lpszEntry))) 
+	{
+        // Build the key name.
+        StringCchPrintfW(KeyName, COUNTOF(KeyName), L"%s\\%s", RASBOOK_KEY, lpszEntry);
+ 
+        // Now try to delete the key and all of it's values.
+        RetVal = RegDeleteKey (HKEY_CURRENT_USER, KeyName);
+    }
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+             (TEXT("-AfdRasDeleteEntry Returning %d\r\n"), 
+              RetVal));
+    return RetVal;
+}
+
+/*****************************************************************************
+*
+*
+*   @func   DWORD   |   RasRenameEntry  |
+*       The RasRenameEntry function changes the name of an entry in
+*       the phonebook.
+*
+*   @rdesc
+*       If the function succeeds, the return value is zero.
+*       If the function fails, the return value is
+*       ERROR_INVALID_NAME, ERROR_ALREADY_EXISTS, or
+*       ERROR_CANNOT_FIND_PHONEBOOK_ENTRY.
+*
+*   @parm   LPTSTR    |   szPhonebook   | PhoneBook name.  Must be NULL.
+*   @parm   LPTSTR    |   szOldEntry    | Old entry name.
+*   @parm   LPTSTR    |   szNewEntry    | New entry name.
+*
+*
+*/
+DWORD  WINAPI
+AfdRasRenameEntry(
+	IN LPTSTR lpszPhonebook,
+	IN LPTSTR lpszOldEntry,
+    IN LPTSTR lpszNewEntry)
+{
+    HKEY           hKeyRasBook;
+    DWORD          RetVal;
+    pppSession_t * pSession;
+	RASDIALPARAMS  dialParams;
+	BOOL           bMoveCredentials;
+
+    PPP_CONTEXT     *pppCntxt_p = NULL;
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION,
+             (TEXT("+AfdRasRenameEntry (0x%08X, 0x%08X(%s), 0x%08X(%s))\r\n"), 
+              lpszPhonebook, lpszOldEntry,
+              (lpszOldEntry != 0) ? lpszOldEntry : TEXT("Null"),
+              lpszNewEntry,
+              (lpszNewEntry != 0) ? lpszNewEntry : TEXT("Null")) );
+
+	RetVal = RaspCheckEntryName(lpszOldEntry);
+    if (RetVal == ERROR_SUCCESS)
+	{
+		RetVal = RaspCheckEntryName(lpszNewEntry);
+		if (RetVal == ERROR_SUCCESS)
+		{
+			RetVal = RegOpenKeyEx(HKEY_CURRENT_USER, RASBOOK_KEY, 0, 0, &hKeyRasBook);
+			if (RetVal == ERROR_SUCCESS)
+			{
+				//
+				// We only need to move the credman credentials for the entry
+				// if the szEntryName is changing, and credman ignores case?
+				//
+				bMoveCredentials = (0 != wcsicmp(lpszOldEntry, lpszNewEntry));
+				if (bMoveCredentials)
+				{
+					wcscpy(dialParams.szEntryName, lpszOldEntry);
+					RetVal = RasCredentialsRead(&dialParams, FALSE, NULL);
+					if (ERROR_NOT_FOUND == RetVal)
+					{
+						// No credentials are associated with this connectoid currently
+						RetVal = ERROR_SUCCESS;
+						bMoveCredentials = FALSE;
+					}
+				}
+				if (ERROR_SUCCESS == RetVal)
+				{
+					// Copy the credman credentials to the new name
+					if (bMoveCredentials)
+					{
+						wcscpy(dialParams.szEntryName, lpszNewEntry);
+						RetVal = RasCredentialsWrite(&dialParams, FALSE);
+					}
+					if (ERROR_SUCCESS == RetVal)
+					{
+						RetVal = RegRenameKey(hKeyRasBook, lpszOldEntry, lpszNewEntry);
+						if (ERROR_SUCCESS == RetVal)
+						{
+							wcscpy(dialParams.szEntryName, lpszOldEntry);
+						}
+						if (bMoveCredentials)
+						{
+							// Delete the old (or new if RegRenameKeyFailed) credman created credentials
+							if (ERROR_SUCCESS != RasCredentialsDelete(&dialParams))
+							{
+								RetVal = ERROR_INTERNAL_ERROR;
+							}
+						}
+					}
+				}
+				SecureZeroMemory(&dialParams, sizeof(dialParams));
+				RegCloseKey(hKeyRasBook);
+			}
+		}
+	}
+
+    if( ERROR_SUCCESS == RetVal )
+    {
+        EnterCriticalSection (&v_ListCS);
+
+        // Loop through the currently active contexts to update the dynamic linked list with the new name.
+        for( pppCntxt_p = pppContextList; 
+             pppCntxt_p; 
+             pppCntxt_p = pppCntxt_p->Next )
+        {
+            DEBUGMSG( ZONE_RAS, ( TEXT( " Data\r\n" ) ) );
+
+            //
+            //  Do not count null sessions (is this possible?) or server sessions
+            //
+            pSession = pppCntxt_p->Session;
+            if( pSession && PPPADDREF(pSession, REF_RAS_RENAME) )
+            {
+                if( !pSession->bIsServer )
+                {            
+					//Check for the old entry whose name is to be replaced.
+					if( lpszOldEntry && !_tcsnicmp(
+						pSession->rasDialParams.szEntryName, 
+						lpszOldEntry, 
+						RAS_MaxEntryName)
+					 )
+					{
+						_tcsncpy( 
+							pSession->rasDialParams.szEntryName,
+							lpszNewEntry,
+							RAS_MaxEntryName);
+						pSession->rasDialParams.szEntryName[RAS_MaxEntryName] = _T('\0');
+
+						PPPDELREF( pSession, REF_RAS_RENAME);
+						break;
+					}
+				}
+
+				PPPDELREF( pSession, REF_RAS_RENAME);
+			}
+        }
+
+        LeaveCriticalSection (&v_ListCS);
+    }
+
+    DEBUGMSG( ZONE_RAS | ZONE_FUNCTION | (ZONE_ERROR && RetVal),
+             (TEXT("-AfdRasRenameEntry Returning %d\n"), RetVal));
+    return RetVal;
+}
+
+static BOOL
+IsEncryptedRasEntry(
+	IN  HKEY hKey)
+{
+    // VPN dev configs are currently encrypted. See AfdRasGetEntryProperties.
+    // Get the Entry data.
+    RASPENTRY RaspEntry;
+    DWORD dwSize, dwType;
+    LONG hRes;
+    dwSize = sizeof(RASPENTRY);
+    hRes = RegQueryValueEx (hKey, RASBOOK_ENTRY_VALUE, 0, &dwType,
+                            (LPBYTE)&RaspEntry,
+                            &dwSize);
+    if (ERROR_SUCCESS == hRes
+        && dwSize == sizeof(RaspEntry)
+        && (!_tcscmp (RaspEntry.szDeviceType, RASDT_Vpn)))
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/*****************************************************************************
+* 
+*   @func   DWORD | RasGetEntryDevConfig |  
+*       This function retrieves the device information saved by the last
+*       successful call to the <f RasSetEntryDevConfig>
+*
+*   @rdesc  If the function succeeds, the return value is zero.
+*           If the function fails, the return value will be set to the
+*           error code.
+*   @ecode  ERROR_CANNOT_OPEN_PHONEBOOK | Invalid szPhonebook
+*   @ecode  ERROR_CANNOT_FIND_PHONEBOOK_ENTRY | Invalid szEntry
+*   @ecode  ERROR_INVALID_NAME | Invalid szEntry
+*   @ecode  ERROR_INVALID_PARAMETER | Invalid pdwDeviceID or
+*               pdwSize parameter.
+*   @ecode  ERROR_BUFFER_TOO_SMALL | Specified buffer was too small.
+
+*   @parm   LPCTSTR | lpszPhoneBook     |
+*       Points to a null terminated string that specifies the full path and
+*       filename of the phonebook file.  This parameter can be NULL, in which
+*       case the default phonebook file is used.  This parameter should always
+*       be NULL for Windows 95 and WinCE since the phonebook entries are
+*       stored in the registry.
+*   @parm   LPCTSTR |   szEntry         |
+*       Points to a null terminated string containing an existing entry name.
+*   @parm   LPDWORD |   pdwDeviceID     |
+*       Returns the saved dwDeviceID.
+*   @parm   LPDWORD |   pdwSize         |
+*       Size of the pDeviceConfig structure returned.  This should be
+*       filled with the size required.
+*   @parm   LPVARSTRING | pDeviceConfig |
+*       Specifies a pointer to the memory location of the type <f VARSTRING>
+*       where the device configuration structure is returned.  If NULL then
+*       only the correct size is returned.
+*               
+*   @ex An example of how to use this function follows |
+*
+*       DWORD   dwDeviceID;
+*       LPVARSTRING pDeviceConfig;
+*       DWORD   dwSize;
+*
+*       dwSize = 0;
+*       if (RasGetEntryDeviceConfig (NULL, EntryName, &dwDeviceID,
+*               &dwSize, NULL)) {
+*           DEBUGMSG (1, (TEXT("Error getting device info size\r\n")));
+*           return;
+*       }
+*       pDeviceConfig = LocalAlloc (LPTR, dwSize);
+*       if (RasGetEntryDeviceConfig (NULL, EntryName, &dwDeviceID,
+*               &dwSize, pdwDeviceConfig)) {
+*           DEBUGMSG (1, (TEXT("Error getting device info\r\n")));
+*           return;
+*       } else {
+*           DEBUGMSG (1, (TEXT("dwDeviceID=%d\r\n"), dwDeviceID));
+*           if (pDeviceConfig) {
+*               DEBUGMSG (1, (TEXT("Have a device config @ 0x%X\r\n"),
+*                   pDeviceConfig));
+*               LocalFree(pDeviceConfig);
+*           }
+*       }
+*
+*/
+
+DWORD APIENTRY
+AfdRasGetEntryDevConfig (LPCTSTR szPhonebook, LPCTSTR szEntry,
+                         LPDWORD pdwDeviceID, LPDWORD pdwSize,
+                         LPVARSTRING pDeviceConfig)
+{
+    HKEY    hKey;
+    LONG    hRes;
+    DWORD   RetVal;
+    DWORD   dwType;
+    DWORD   dwSize;
+
+    DEBUGMSG(ZONE_RAS | ZONE_FUNCTION,
+             (TEXT( "+RasGetEntryDevConfig( 0x%08X(%s), 0x%08X(%s), ")
+              TEXT("0x%08X, 0x%X(%d), 0x%08X)\r\n"), 
+              szPhonebook, (szPhonebook != NULL) ? szPhonebook : TEXT("NULL"),
+              szEntry, (szEntry != NULL) ? szEntry : TEXT("NULL"),
+              pdwDeviceID, pdwSize, (pdwSize != NULL) ? *pdwSize : 0,
+              pDeviceConfig) );
+
+    DEBUGMSG (1, (TEXT("RasGetEntryDevConfig is obsolete, use RasGetEntryProperties instead\r\n")));
+    
+    if (NULL == pdwSize)
+    {
+        DEBUGMSG (ZONE_RAS|ZONE_ERROR, (TEXT("-RasGetEntryDevConfig Invalid Parameter\n")));
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    if (pdwDeviceID)
+    {
+        // We no longer use this
+        *pdwDeviceID = 0;
+    }
+        
+     
+    RetVal = OpenRasEntryKey(szPhonebook, szEntry, &hKey);
+
+    if (ERROR_SUCCESS == RetVal)
+    {
+        if (IsEncryptedRasEntry(hKey))
+        {
+            // Rather than duplicate the encryption/decryption code in this deprecated API
+            // just  error out if the device type is VPN
+            RetVal = ERROR_UNKNOWN_DEVICE_TYPE;
+        }
+        else
+        {
+            hRes = RegQueryValueEx (hKey, RASBOOK_DEVCFG_VALUE, 0, &dwType,
+                                    NULL, &dwSize);
+            if (ERROR_SUCCESS == hRes) {
+                DEBUGMSG (ZONE_RAS|ZONE_ERROR,
+                        (TEXT(" RasGetEntryDevConfig RasQuery Success Size=%d\r\n"),
+                        dwSize));
+                if (NULL == pDeviceConfig) {
+                    // They just want the length...
+                    *pdwSize = dwSize + sizeof(VARSTRING);
+                } else {
+                    if (*pdwSize >= (dwSize + sizeof(VARSTRING))) {
+                        // Set up their VARstring data.
+                        pDeviceConfig->dwTotalSize = *pdwSize;
+                        pDeviceConfig->dwNeededSize = dwSize + sizeof(VARSTRING);
+                        pDeviceConfig->dwUsedSize = dwSize + sizeof(VARSTRING);
+                        pDeviceConfig->dwStringFormat = 0;
+                        pDeviceConfig->dwStringSize = dwSize;
+                        pDeviceConfig->dwStringOffset = sizeof(VARSTRING);
+                        
+                        
+                        hRes = RegQueryValueEx (hKey, RASBOOK_DEVCFG_VALUE, 0,
+                                                &dwType,
+                                                (LPBYTE)pDeviceConfig + pDeviceConfig->dwStringOffset,
+                                                &dwSize);
+                    } else {
+                        RetVal = ERROR_BUFFER_TOO_SMALL;
+                    }
+                }
+            } else {
+                DEBUGMSG (ZONE_RAS|ZONE_ERROR,
+                        (TEXT(" RasGetEntryDevConfig Error from RegQuery %d\r\n"),
+                        hRes));
+                RetVal = ERROR_CANNOT_FIND_PHONEBOOK_ENTRY;
+            }
+        }
+        RegCloseKey (hKey);
+    }
+
+    DEBUGMSG (ZONE_RAS, (TEXT("-RasGetEntryDevConfig %d\r\n"), RetVal));
+    return RetVal;
+}
+
+/*****************************************************************************
+* 
+*   @func   DWORD | RasSetEntryDevConfig |  
+*       This function saves the device information used with a Ras Entry.
+*
+*   @rdesc  If the function succeeds, the return value is zero.
+*           If the function fails, the return value will be set to the
+*           error code.
+*   @ecode  ERROR_CANNOT_OPEN_PHONEBOOK | Invalid szPhonebook
+*   @ecode  ERROR_CANNOT_FIND_PHONEBOOK_ENTRY | Invalid szEntry
+*   @ecode  ERROR_INVALID_PARAMETER | Invalid pDeviceConfig parameter
+*   
+*   @parm   LPCTSTR | lpszPhoneBook     |
+*       Points to a null terminated string that specifies the full path and
+*       filename of the phonebook file.  This parameter can be NULL, in which
+*       case the default phonebook file is used.  This parameter should always
+*       be NULL for Windows 95 and WinCE since the phonebook entries are
+*       stored in the registry.
+*   @parm   LPCTSTR |   szEntry         |
+*       Points to a null terminated string containing an existing entry name.
+*   @parm   DWORD   |   dwDeviceID     |
+*       The TAPI device ID to save.
+*   @parm   LPVARSTRING | lpDeviceConfig |
+*       Specifies a pointer to the memory location of the type <f VARSTRING>
+*       of the device configuration structure.  Prior to calling the
+*       application should set the dwNeededSize field of this structure to
+*       indicate the amount of memory required for the information.
+*       This parameter can be null if the default device config for the device
+*       is to be used.
+*               
+*/
+
+DWORD APIENTRY
+AfdRasSetEntryDevConfig (LPCTSTR szPhonebook, LPCTSTR szEntry,
+                         DWORD dwDeviceID, LPVARSTRING pDeviceConfig)
+{
+    HKEY    hKey;
+    DWORD   RetVal;
+
+    DEBUGMSG(ZONE_RAS | ZONE_FUNCTION,
+             (TEXT( "+RasSetEntryDevConfig( 0x%08X(%s), 0x%08X(%s), ")
+              TEXT("%d, 0x%08X)\r\n"), 
+              szPhonebook, (szPhonebook != NULL) ? szPhonebook : TEXT("NULL"),
+              szEntry, (szEntry != NULL) ? szEntry : TEXT("NULL"),
+              dwDeviceID,  pDeviceConfig));
+
+    DEBUGMSG (1, (TEXT("RasSetEntryDevConfig is obsolete, use RasSetEntryProperties instead\r\n")));
+
+    if (pDeviceConfig && pDeviceConfig->dwNeededSize < sizeof(VARSTRING))
+    {
+        DEBUGMSG(ZONE_RAS, (TEXT("-RasSetEntryDevConfig DeviceConfig too small\n")));
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    // We require the key to be created already
+    RetVal = OpenRasEntryKey(szPhonebook, szEntry, &hKey);
+    if (ERROR_SUCCESS == RetVal)
+    {
+        if (IsEncryptedRasEntry(hKey))
+        {
+            // Rather than duplicate the encryption/decryption code in this deprecated API
+            // just  error out if the device type is VPN
+            RetVal = ERROR_UNKNOWN_DEVICE_TYPE;
+        }
+        else
+        {
+            if (pDeviceConfig)
+            {
+                RetVal = RegSetValueEx(hKey, RASBOOK_DEVCFG_VALUE, 0, REG_BINARY,
+                                    (LPBYTE)pDeviceConfig + pDeviceConfig->dwStringOffset,
+                                    pDeviceConfig->dwStringSize);
+            }
+            else
+            {
+                // If the delete fails because the value is not present,
+                // that's not an error.
+                (void) RegDeleteValue (hKey, RASBOOK_DEVCFG_VALUE);
+            }
+        }
+        RegCloseKey (hKey);
+    }
+    DEBUGMSG (ZONE_RAS, (TEXT("-RasSetEntryDevConfig Returning %d\n"), RetVal));
+    return RetVal;
+}
+
+// ----------------------------------------------------------------
+//
+// Private Functions
+//
+// @doc INTERNAL
+//
+// ----------------------------------------------------------------
+
+
+/*****************************************************************************
+*
+*
+*   DWORD   RaspCheckEntryName(LPTSTR lpszEntry)
+*
+*   Parameters:
+*       lpszEntry   :   Entry name to check
+*       
+*   Returns:
+*       ERROR_SUCCESS if OK, else ERROR_INVALID_NAME.
+*
+*   Description:
+*       To be valid the entry name:
+*           1. Must not be NULL
+*           2. Must not be length 0
+*           3. Must not be too long (> RAS_MaxEntryName characters)
+*           3. Must not contain any 'control' characters (< 0x20)
+*           4. Must not contain any ASCII punctuation character
+*           5. Must contain at least one alphanumeric character
+*
+*/
+DWORD
+RaspCheckEntryName(LPCTSTR lpszEntry)
+{
+    DWORD   dwResult = ERROR_INVALID_NAME;
+
+    DEBUGMSG(ZONE_FUNCTION, (TEXT("+RaspCheckEntryName( %s )\n"), lpszEntry ? lpszEntry : TEXT("NULL")));
+    if (lpszEntry != NULL)
+    {
+		if (ValidateStringLength(lpszEntry, 1, RAS_MaxEntryName))
+		{
+            // Scan the characters in the name
+            for (; TRUE; lpszEntry++)
+            {
+                if (*lpszEntry == TEXT('\0'))
+                {
+                    // Reached the end with no bad characters
+                    break;
+                }
+                if (*lpszEntry < 0x20 || _tcschr(TEXT("*\\/?><:\"|"), *lpszEntry))
+                {
+                    // Bad character
+                    dwResult = ERROR_INVALID_NAME;
+                    DEBUGMSG(ZONE_ERROR, (TEXT(" RaspCheckEntryName: ERROR - bad char %x\n"), *lpszEntry));
+                    break;
+                }
+                if (IsCharAlphaNumeric(*lpszEntry))
+                {
+                    // Barring a bad character, this is an ok name
+                    dwResult = ERROR_SUCCESS;
+                }
+            }
+        }
+    }
+    DEBUGMSG(ZONE_FUNCTION | (ZONE_ERROR && dwResult), (TEXT("-RaspCheckEntryName(%s) result=%u\n"), lpszEntry, dwResult));
+    return dwResult;
+}
+
+/*****************************************************************************
+*
+*
+*   VOID    RaspInitRasEntry(LPRASENTRY pRasEntry)
+*
+*   Parameters:
+*       pRasEntry   :   Pointer to RASENTRY struct to initialize
+*       
+*   Returns:
+*       None.
+*
+*/
+
+VOID  
+
+RaspInitRasEntry( LPRASENTRY pEntry )
+{
+    RASDEVINFO  RasDevInfo;
+    DWORD       cBytes;
+    DWORD       cNumDev=0;
+    DWORD       dwRetVal;
+
+    DEBUGMSG(ZONE_FUNCTION, (TEXT("+RaspInitRasEntry( %x )\n"), pEntry));
+#ifdef TODO
+    Review these changes.  There should probably be a better way to determine
+    the default device name/type.  Perhaps it should be based on the last one
+    used?
+#endif
+    
+    ASSERT(pEntry->dwSize == sizeof(RASENTRY_V3) || pEntry->dwSize == sizeof(RASENTRY));
+    memset( (char *)&pEntry->dwfOptions, 0, pEntry->dwSize - sizeof(DWORD) );
+
+    pEntry->dwfOptions = RASEO_IpHeaderCompression  |
+                         RASEO_SwCompression |
+                         RASEO_ProhibitEAP
+                         ;
+
+    pEntry->dwfNetProtocols   = RASNP_Ip;
+    pEntry->dwFramingProtocol = RASFP_Ppp;
+    _tcscpy( pEntry->szDeviceType, RASDT_Direct );
+
+    RasDevInfo.dwSize = sizeof(RASDEVINFO);
+    cBytes = sizeof(RasDevInfo);
+
+    // Look for first device of type NULL_MODEM
+    dwRetVal = pppMac_EnumDevices (&RasDevInfo, TRUE, &cBytes, &cNumDev);
+
+    if ((dwRetVal == SUCCESS) && (cNumDev > 0)) {
+        ASSERT(!_tcscmp (RasDevInfo.szDeviceType, RASDT_Direct));
+        _tcscpy (pEntry->szDeviceName, RasDevInfo.szDeviceName);
+    }
+    
+    if (pEntry->szDeviceName[0] == '\0') {
+        DEBUGMSG (ZONE_ERROR,
+                  (TEXT("Unable to set default device name\r\n")));
+    }
+
+    DEBUGMSG(ZONE_FUNCTION, (TEXT("-RaspInitRasEntry\n")));
+}
+
+/*****************************************************************************
+*
+*
+*   VOID    RaspConvPrivPublic(LPRASPENTRY pRaspEntry, LPRASENTRY pRasEntry)
+*
+*   Parameters:
+*       pRaspEntry  :   Pointer to RASPENTRY struct source
+*       pRasEntry   :   Pointer to RASENTRY struct destination
+*       
+*   Returns:
+*       None.
+*
+*/
+
+VOID  
+RaspConvPrivPublic(
+    IN  LPRASPENTRY pRaspEntry,
+    OUT LPRASENTRY pRasEntry)
+{
+    DEBUGMSG (ZONE_FUNCTION, (TEXT("+RaspConvPrivPublic %x %x\n"), pRaspEntry, pRasEntry));
+
+    // First initialize the pRasEntry.
+
+    RaspInitRasEntry (pRasEntry);
+
+    // Move the data over.
+
+    pRasEntry->dwfOptions = pRaspEntry->dwfOptions;
+    pRasEntry->dwCountryID = pRaspEntry->dwCountryID;
+    pRasEntry->dwCountryCode = pRaspEntry->dwCountryCode;
+    pRasEntry->dwfNetProtocols = RASNP_Ip;
+    pRasEntry->dwFramingProtocol = RASFP_Ppp;
+    _tcscpy (pRasEntry->szAreaCode, pRaspEntry->szAreaCode);
+    _tcscpy (pRasEntry->szLocalPhoneNumber, pRaspEntry->szLocalPhoneNumber);
+    memcpy ((char *)&(pRasEntry->ipaddr), (char *)&(pRaspEntry->ipaddr),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRasEntry->ipaddrDns),
+            (char *)&(pRaspEntry->ipaddrDns),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRasEntry->ipaddrDnsAlt),
+            (char *)&(pRaspEntry->ipaddrDnsAlt),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRasEntry->ipaddrWins), 
+            (char *)&(pRaspEntry->ipaddrWins),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRasEntry->ipaddrWinsAlt), 
+            (char *)&(pRaspEntry->ipaddrWinsAlt),
+            sizeof(RASIPADDR));
+    pRasEntry->dwFrameSize = pRaspEntry->dwFrameSize;
+    pRasEntry->dwFramingProtocol = pRaspEntry->dwFramingProtocol;
+    _tcscpy (pRasEntry->szDeviceType, pRaspEntry->szDeviceType);
+
+    if (pRasEntry->dwSize == sizeof(RASENTRY_V3))
+    {
+        LPRASENTRY_V3 pRasEntryV3 = (LPRASENTRY_V3)pRasEntry;
+
+        _tcsncpy (pRasEntryV3->szDeviceName, pRaspEntry->szDeviceName, RAS_MaxDeviceName_V3);
+        pRasEntryV3->szDeviceName[RAS_MaxDeviceName_V3] = 0;
+        _tcscpy (pRasEntryV3->szScript, pRaspEntry->szScript);
+    }
+    else
+    {
+        ASSERT(pRasEntry->dwSize >= sizeof(RASENTRY));
+        _tcscpy (pRasEntry->szDeviceName, pRaspEntry->szDeviceName);
+        _tcscpy (pRasEntry->szScript, pRaspEntry->szScript);
+        pRasEntry->dwCustomAuthKey = pRaspEntry->dwCustomAuthKey;
+    }
+
+    DEBUGMSG (ZONE_FUNCTION, (TEXT("-RaspConvPrivPublic \n")));
+}
+/*****************************************************************************
+*
+*
+*   VOID    RaspConvPublicPriv(LPRASENTRY pRasEntry, LPRASPENTRY pRaspEntry)
+*
+*   Parameters:
+*       pRasEntry   :   Pointer to RASENTRY struct source
+*       pRaspEntry  :   Pointer to RASPENTRY struct destination
+*       
+*   Returns:
+*       None.
+*
+*/
+VOID  RaspConvPublicPriv(
+    IN  LPRASENTRY pRasEntry,
+    OUT LPRASPENTRY pRaspEntry)
+{
+    // Move the data over.
+
+    pRaspEntry->dwfOptions = pRasEntry->dwfOptions;
+    pRaspEntry->dwCountryID = pRasEntry->dwCountryID;
+    pRaspEntry->dwCountryCode = pRasEntry->dwCountryCode;
+    _tcscpy (pRaspEntry->szAreaCode, pRasEntry->szAreaCode);
+    _tcscpy (pRaspEntry->szLocalPhoneNumber, pRasEntry->szLocalPhoneNumber);
+    memcpy ((char *)&(pRaspEntry->ipaddr), (char *)&(pRasEntry->ipaddr),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRaspEntry->ipaddrDns),
+            (char *)&(pRasEntry->ipaddrDns),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRaspEntry->ipaddrDnsAlt),
+            (char *)&(pRasEntry->ipaddrDnsAlt),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRaspEntry->ipaddrWins), 
+            (char *)&(pRasEntry->ipaddrWins),
+            sizeof(RASIPADDR));
+    memcpy ((char *)&(pRaspEntry->ipaddrWinsAlt),
+            (char *)&(pRasEntry->ipaddrWinsAlt),
+            sizeof(RASIPADDR));
+    pRaspEntry->dwFrameSize = pRasEntry->dwFrameSize;
+    pRaspEntry->dwFramingProtocol = pRasEntry->dwFramingProtocol;
+    _tcscpy (pRaspEntry->szDeviceType, pRasEntry->szDeviceType);
+    _tcscpy (pRaspEntry->szDeviceName, pRasEntry->szDeviceName);
+
+    if (pRasEntry->dwSize == sizeof(RASENTRY_V3))
+    {
+        LPRASENTRY_V3 pRasEntryV3 = (LPRASENTRY_V3)pRasEntry;
+
+        _tcscpy(pRaspEntry->szScript, pRasEntryV3->szScript);
+    }
+    else
+    {
+        ASSERT(pRasEntry->dwSize >= sizeof(RASENTRY));
+
+        _tcscpy(pRaspEntry->szScript, pRasEntry->szScript);
+        pRaspEntry->dwCustomAuthKey = pRasEntry->dwCustomAuthKey;
+    }
+}

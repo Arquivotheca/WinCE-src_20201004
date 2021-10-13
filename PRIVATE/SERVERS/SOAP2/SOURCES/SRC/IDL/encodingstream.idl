@@ -1,0 +1,43 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// encodingstream.idl : IDL source for wsdlserializer.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (soapserializer.tlb) and marshalling code.
+
+#include "encstreamguid.h"
+
+	DUAL_INTERFACE(UUID_IENCODINGSTREAM, SOAP_SDK_VERSION, "IEncodingStream Interface")
+	interface IEncodingStream : IDispatch
+	{
+		[id(DISPID_ENCSTREAM_INIT), helpstring("Initialize the Encoding Stream")] 
+	    		HRESULT Init(
+				      	[in] VARIANT vDestination);
+
+		[id(DISPID_ENCSTREAM_SETENC), helpstring("Set the encoding to UTF-8 or UTF-16")] 
+				HRESULT setEncoding(
+						[in] BSTR bstrEncoding);
+
+		[id(DISPID_ENCSTREAM_WRITE), helpstring("Encode the stream and write to the destination")] 
+				HRESULT write(
+						[in] BSTR bstr);
+
+		[id(DISPID_ENCSTREAM_WRITETHROUGH), helpstring("Write to destination without encoding")] 
+				HRESULT writeThrough(
+						[in] byte * buffer,
+						[in] long lenBuffer);
+						
+		[id(DISPID_ENCSTREAM_FLUSH), helpstring("Flush the stream output")] 
+				HRESULT flush(void);
+	};
+
+	
+
+	

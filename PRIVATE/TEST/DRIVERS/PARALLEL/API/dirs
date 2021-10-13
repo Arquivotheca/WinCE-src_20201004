@@ -1,0 +1,4 @@
+DIRS_CE= partest \
+	 parserv
+
+DIRS_NT= parserv

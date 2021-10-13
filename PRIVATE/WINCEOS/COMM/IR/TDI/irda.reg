@@ -1,0 +1,106 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+; ***************************************************************************
+; Registry settings for setting up IrDA.
+; ***************************************************************************
+
+[HKEY_LOCAL_MACHINE\Comm\<miniport instance>\Parms\IrDA]
+;
+; i.e. for Irsir, the key would be [HKEY_LOCAL_MACHINE\Comm\Irsir1\Parms\IrDA]
+;
+
+; *** Number of discovery slots. ***
+; Default - IRLAP_DEFAULT_SLOTS (6).
+; Slot = 1, 6, 8, 16 are valid.
+
+"Slots"=dword:6
+
+; *** Discovery slot backoff timeout. ***
+; Default - IRLAP_SLOT_TIMEOUT (50 ms [0x32]).
+
+"SlotTimeout"=dword:32
+
+; *** Discovery slot sense timeout. ***
+; Default - IRLAP_DSCV_SENSE_TIMEOUT (50 ms [0x32]).
+
+"DscvTimeout"=dword:41
+
+; *** Hints. ***
+; NOTE: The upper bit of the byte indicates a following hint byte. The IrDA
+;       stack does not check for proper hint bits construction.
+; Default = 0x8204
+
+"Hints"=dword:8204
+
+; *** Unicode. ***
+; Flag indicating the char set to use in discovery responses
+; Default = 0 (ANSI).  Non-zero is treated as Unicode.
+
+"Unicode"=dword:0
+
+; **************************************************************************
+; Negotiation parameters. These are all configurable in the registry. I have
+; indicated the defaults. The sample entries also show how to configure 
+; defaults. (Min turn around time and baud rate are configured by the 
+; miniport).
+; **************************************************************************
+
+; *** Maximum turn around time. ***
+; Default = IRLAP_DEFAULT_MAXTAT. (500 ms)
+; bit 0 = 500 ms,   bit 1 = 250 ms,   bit 2 = 100 ms,   bit 3 = 50  ms,
+; bit 4 - reserved, bit 5 - reserved, bit 6 - reserved, bit 7 - reserved.
+
+"MaxTurnTime"=dword:1
+
+; *** Data size. ***
+; Default = IRLAP_DEFAULT_DATA_SIZE (DATA_SIZE_64   | DATA_SIZE_128 |
+;           DATA_SIZE_256  | DATA_SIZE_512 | DATA_SIZE_1024 | DATA_SIZE_2048)
+; bit 0 = 64 bytes,   bit 1 = 128 bytes,  bit 2 = 256 bytes, bit 3 = 512 bytes
+; bit 4 = 1024 bytes, bit 5 = 2048 bytes, bit 6 - reserved,  bit 7 - reserved
+
+"DataSize"=dword:3F
+
+; *** Window size. ***
+; bit 0 = 1 frame window,  bit 1 = 2 frame windows, bit 2 = 3 frame windows,
+; bit 3 = 4 frame windows, bit 4 = 5 frame windows, bit 5 = 6 frame windows,
+; bit 6 = 7 frame windows, bit 7 - reserved.
+; NOTE: This registry setting will only override the default IFF the miniport
+;       does not support the Query:OID_IRDA_MAX_RECEIVE_WINDOW_SIZE.
+
+"WindowSize"=dword:7F
+
+; *** Additional BOFs at 115200 bps. ***
+; Default = BOFS_0 (0).
+; bit 0 = 48 BOFs, bit 1 = 24 BOFs, bit 2 = 12 BOFs, bit 3 = 5 BOFs,
+; bit 4 = 3  BOFs, bit 5 = 2  BOFs, bit 6 = 1  BOFs, bit 7 = 0 BOFs.
+
+"BOFs"=dword:80
+
+; *** Link disconnect [threshold] time. ***
+; Default = IRLAP_DEFAULT_DISCONNECTTIME (DISC_TIME_12|DISC_TIME_8|DISC_TIME_3).
+; bit 0 = 3 [0] seconds,  bit 1 = 8 [3] seconds,  bit 2 = 12 [3] seconds,
+; bit 3 = 16 [3] seconds, bit 4 = 20 [3] seconds, bit 5 = 25 [3] seconds,
+; bit 6 = 30 [3] seconds, bit 7 = 40 [3] seconds.
+
+"DisconnectTime"=dword:7
+
+; **************************************************************************
+; Miniport for irda stack to bind to. This value is multi_sz for the 
+; future (to allow support for multiple adapters). However, currently
+; we only allow one adapter (by only loading the first in the bind list).
+; **************************************************************************
+
+[HKEY_LOCAL_MACHINE\Comm\IrDA\Linkage]
+
+; Bind value. NDIS miniport (IrDA MAC) to bind to. Default - None. 
+; This is a required registry value. For example to bind to Irsir1.
+
+"Bind"=multi_sz:"Irsir1"
+
+

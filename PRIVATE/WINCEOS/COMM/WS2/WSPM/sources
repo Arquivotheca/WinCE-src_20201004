@@ -1,0 +1,46 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!if 0
+!endif
+
+
+!IF ("$(_TGTOS)" == "CE")
+TARGETNAME=wspm
+TARGETDEFNAME=wspm
+DEFFILE=wspm.def
+TARGETTYPE=LIBRARY
+PREPROCESSDEFFILE=1
+
+TARGETLIBS= \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+
+
+!ENDIF
+CDEFINES=-DWINCEAFDMACRO -DWIN32_NO_OLE
+NOMIPS16CODE=1
+
+EXEENTRY=main
+DLLENTRY=dllentry
+
+CONDITIONAL_INCLUDES=issper16.h secpkg.h kerberos.h ntlmsp.h wchar.h
+
+INCLUDES=..\..\inc;..\..\winsock\secure\sslinc
+
+SOURCES= \
+	select.c \
+	init.c	\
+	calls.c	\
+
+
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+!IF 0
+WINCETARGETFILE0=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\wspm.def
+!ENDIF
+#xref VIGUID {1a5cc614-5e1c-4838-b0b1-71797e6ac987}
+#xref VSGUID {c75df0dc-105c-42f8-9e73-0a814d13526c}

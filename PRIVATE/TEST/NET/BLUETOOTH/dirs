@@ -1,0 +1,16 @@
+DIRS_CE=\
+	winsock \
+	hci \
+	samples \
+	btq \
+	pserial \
+	cetk \
+	bthapi \
+	celt \
+	HIDSend
+
+
+
+
+
+

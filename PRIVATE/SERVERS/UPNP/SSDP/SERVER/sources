@@ -1,0 +1,53 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+# The developer defines the TARGETNAME variable. It is the name of
+# the target (component) that is being built by this makefile.
+# It should not include any path or filename extension.
+#
+TARGETNAME=ssdpsrv
+#
+# The developer defines the TARGETPATH and TARGETTYPE variables.
+
+TARGETTYPE=LIBRARY
+
+MSC_WARNING_LEVEL=/W3 /WX
+
+!IF "$(WINCEDEBUG)" == "debug"
+CDEFINES=$(CDEFINES) -DENABLETRACE -DDBG
+!ENDIF
+
+
+#
+# The INCLUDES variable specifies any include paths that are specific to
+# this source directory. Separate multiple paths with single
+# semicolons. Relative path specifications are okay.
+#
+INCLUDES=.;..\httpsrv;..\core;..\inc;..\..\inc;..\..\util;$(_PUBLICROOT)\ie\sdk\inc;$(_PUBLICROOT)\servers\sdk\inc
+#
+# The developer defines the SOURCES macro. It contains a list of all the
+# source files for this component. Specify each source file on a separate
+
+# line using the line-continuation character. This minimizes merge
+# conflicts if two developers are adding source files to the same component.
+#
+
+SOURCES= \
+        announce.cpp    \
+        evtsrc.cpp      \
+        notify.cpp      \
+        search.cpp      \
+        submit.cpp      \
+        server.cpp      \
+        ssdpmain.cpp    \
+        isapievt.cpp    \
+        subs.cpp
+
+
+#xref VIGUID {48a1e6cf-8048-4c69-9f2e-4d076913864d}
+#xref VSGUID {574cd149-36b7-4024-813a-1a09470659ac}

@@ -1,0 +1,14 @@
+DIRS = \
+    transport\
+    encrypt\    
+    dialects\
+    fileServer\
+    utils\
+    protocol\
+    shareInfo\
+    connectionManager\
+    printqueue\
+    driver \
+        ioctlClient \
+        serveradmin
+

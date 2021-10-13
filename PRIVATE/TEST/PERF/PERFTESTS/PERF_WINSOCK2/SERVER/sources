@@ -1,0 +1,74 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of your Microsoft Windows CE
+Source Alliance Program license form.  If you did not accept the terms of
+such a license, you are not authorized to use this source code.
+!endif
+# --------------------------------------------------------------------
+#                                                                     
+# THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+# ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+# PARTICULAR PURPOSE.                                                 
+#                                                                     
+# --------------------------------------------------------------------
+
+WINCEOEM=1
+SYNCHRONIZE_DRAIN=1
+
+TARGETNAME=perf_winsockd2
+TARGETTYPE=PROGRAM
+
+!INCLUDE .\sources_nt.inc
+!IF DEFINED(_TGTOS)
+!INCLUDE .\sources_$(_TGTOS).inc
+!ENDIF
+
+SOURCES=$(MY_SOURCES)
+
+# --------------------------------------------------------------------
+# Always support IPv6 / Winsock2 when running the server
+# --------------------------------------------------------------------
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+
+!IF "$(ENABLE_DEBUGGING_OUTPUT)" == "1"
+CDEFINES=$(CDEFINES) -DENABLE_DEBUGGING_OUTPUT
+!ENDIF
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+TARGETTHREADMODEL=MT
+
+INCLUDES=\
+    ..\lib\inc;
+
+TARGETLIBS=\
+    $(_SDKROOT)\nt\lib\x86\ws2_32.lib \
+    $(_SDKROOT)\nt\lib\x86\shell32.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perf_winsock_lib.lib
+
+!IF "$(SUPPORT_KATO)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ENDIF
+
+!ELSE
+
+INCLUDES=\
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    ..\lib\inc;
+
+TARGETLIBS=\
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\iphlpapi.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perf_winsock_lib.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+EXEENTRY=mainWCRTStartup
+
+!ENDIF

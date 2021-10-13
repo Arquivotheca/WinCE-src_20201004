@@ -1,0 +1,149 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY         BTD
+
+EXPORTS
+; @CESYSGEN IF BTD_SYS
+    BTD_Init
+    BTD_Deinit
+    BTD_Open
+    BTD_Close
+    BTD_Read
+    BTD_Write
+    BTD_Seek
+    BTD_IOControl
+;	BTD_PowerUp
+;	BTD_PowerDown
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_PORTEMU
+    COM_Init
+    COM_Deinit
+    COM_Open
+    COM_Close
+    COM_Read
+    COM_Write
+    COM_Seek
+    COM_IOControl
+;	COM_PowerUp
+;	COM_PowerDown
+
+    BSP_Init
+    BSP_Deinit
+    BSP_Open
+    BSP_Close
+    BSP_Read
+    BSP_Write
+    BSP_Seek
+    BSP_IOControl
+;	BSP_PowerUp
+;	BSP_PowerDown
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_TDI
+    Register
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_SDP
+    SdpRetrieveVariableSize
+    SdpRetrieveVariableSize
+    SdpRetrieveVariableSize
+    SdpIsStreamRecord
+    WriteVariableSizeToStream
+    WriteVariableSizeToStream
+    GetContainerHeaderSize
+    GetContainerHeaderSize
+    SdpAddAttributeToNodeHeader
+    Sdp_InitializeListHead
+    Sdp_RemoveHeadList
+    WriteLeafToStream
+    WriteLeafToStream
+    ComputeNodeListSize
+    ComputeNodeListSize
+    ValidateStream
+    ValidateStream
+    SdpWalkStream
+    SdpRetrieveUuid128
+    SdpRetrieveUint16
+    SdpRetrieveUint32
+    SdpRetrieveUint64
+    SdpRetrieveUint128
+    SdpByteSwapUuid128
+    SdpByteSwapUint128
+    SdpByteSwapUint64
+    SdpByteSwapUint32
+    SdpByteSwapUint16
+    SdpVerifySequenceOf
+    SdpFreeOrphanedNode
+    Sdp_InsertEntryList
+    Sdp_RemoveEntryList
+    Sdp_InsertTailList
+    SdpInitializeNodeHeader
+    SdpTreeFromStream
+    SdpFreeNode
+    Sdp_IsListEmpty
+    SdpCreateNode
+    SdpCreateNodeUrl
+    SdpCreateNodeString
+    SdpCreateNodeUUID16
+    SdpCreateNodeUUID32
+    SdpCreateNodeUUID128
+    SdpCreateNodeInt128
+    SdpCreateNodeInt64
+    SdpCreateNodeInt32
+    SdpCreateNodeInt16
+    SdpCreateNodeInt8
+    SdpCreateNodeUInt128
+    SdpCreateNodeUInt64
+    SdpCreateNodeUInt32
+    SdpCreateNodeUInt16
+    SdpCreateNodeUInt8
+    SdpCreateNodeBoolean
+    SdpCreateNodeNil
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_HCI
+    HCI_EstablishDeviceContext
+    HCI_EstablishDeviceContextEx
+    HCI_CloseDeviceContext
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_L2CAP
+    L2CAP_EstablishDeviceContext
+    L2CAP_CloseDeviceContext
+
+
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_SDP
+    SDP_EstablishDeviceContext
+    SDP_CloseDeviceContext
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_RFCOMM
+    RFCOMM_EstablishDeviceContext
+    RFCOMM_CloseDeviceContext
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_BTPAN
+    DriverEntry
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_AVDTP
+    AVDTP_EstablishDeviceContext
+    AVDTP_CloseDeviceContext
+; @CESYSGEN ENDIF
+
+; @CESYSGEN IF BTD_AVCTP
+    AVCT_EstablishDeviceContext
+    AVCT_CloseDeviceContext
+; @CESYSGEN ENDIF
+
+    DebugOut		PRIVATE
+    DumpBuff		PRIVATE

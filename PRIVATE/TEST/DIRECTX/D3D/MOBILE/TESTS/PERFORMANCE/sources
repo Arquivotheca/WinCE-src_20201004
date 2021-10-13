@@ -1,0 +1,47 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!if "$(D3DM_PERFAPP)"==""
+TARGETTYPE=DYNLINK
+TARGETNAME=D3DM_PerfTest
+CDEFINES= \
+	-DTUXDLL    \
+	$(CDEFINES) \
+
+!else
+TARGETTYPE=PROGRAM
+TARGETNAME=D3DM_PerfApp
+!endif
+
+D3D_TST_ROOT=$(_PRIVATEROOT)\test\directx\d3d
+TEST_ROOT=$(_PRIVATEROOT)\test
+
+INCLUDES=                                 \
+	$(INCLUDES)                       \
+	$(D3D_TST_ROOT)\mobile\includes;  \
+	$(_PUBLICROOT)\COMMON\oak\inc;    \
+	$(_PUBLICROOT)\COMMON\sdk\inc;    \
+	$(TEST_ROOT)\common\inc           \
+
+SOURCES= \
+    d3dutil.cpp     \
+    error.cpp       \
+    optimal.cpp     \
+    tracker.cpp     \
+    txtrutil.cpp    \
+    optimal.rc      \
+
+TARGETLIBS=$(TARGETLIBS) \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib                 \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib                    \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\d3dm.lib                    \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTextureTools.lib       \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMColorConv.lib          \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMatrixManip.lib        \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\DeltaBMP.lib               \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib                   \

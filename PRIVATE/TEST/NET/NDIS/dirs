@@ -1,0 +1,9 @@
+DIRS=\
+	NDP
+
+DIRS_CE = \
+	NDT \
+	NUIO \
+	LongTerm \
+	misc \
+	MBT

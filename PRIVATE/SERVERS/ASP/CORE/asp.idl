@@ -1,0 +1,204 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// asp.idl : IDL source for asp.dll
+ 
+// This file will be processed by the MIDL tool to
+// produce the type library (asp.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+
+	[
+	  odl,
+	  uuid(D97A6DA0-A85F-11DF-83AE-00A0C90C2BD8),
+	  helpstring("Dictionary for Request collections"),
+	  hidden,
+	  dual,
+	  oleautomation,
+	  pointer_default(unique)
+	]
+	interface IRequestDictionary : IDispatch 
+	{
+    	[id(0), propget] HRESULT Item([in, optional] VARIANT Var, [out, retval] VARIANT* pVariantReturn);
+		[id(0), propput] HRESULT Item([in, optional] VARIANT Var, [in] BSTR bstrValue);    	
+    	[id(-4), propget, restricted]  HRESULT _NewEnum([out, retval] IUnknown** ppEnumReturn);
+        [propget, helpstring("Count")] HRESULT Count([out, retval] int* cStrRet);
+    	[propget]     HRESULT Key([in] VARIANT VarKey, [out, retval] VARIANT* pvar);
+	};
+
+
+	[
+	  odl,
+	  uuid(1C724F9A-FE6B-11D2-9C54-00C04F681EE7),
+	  helpstring("IRequestStrList Interface"),
+	  dual,
+	  hidden,
+	  oleautomation,
+	  pointer_default(unique)
+	]
+	interface IRequestStrList : IDispatch
+	{
+   		[id(0), propget] HRESULT Item([in, optional] VARIANT Var, [out, retval] VARIANT* pVariantReturn);
+		[id(0), propput] HRESULT Item([in, optional] VARIANT Var, [in] BSTR bstrValue);    	
+    	[id(-4), propget, restricted]  HRESULT _NewEnum([out, retval] IUnknown** ppEnumReturn);
+        [propget, helpstring("Count")] HRESULT Count([out, retval] int* cStrRet);
+    	[propget]     HRESULT Key([in] VARIANT VarKey, [out, retval] VARIANT* pvar);
+
+		// Expires (w/o)
+		[propput, helpstring("Expires the cookie at the specified date and time.")]
+			HRESULT Expires([in] DATE dtExpires);
+
+		// Domain (w/o)
+		[propput, helpstring("Limits the cookie to the specified Domain.")]
+			HRESULT Domain([in] BSTR bstrDomain);
+
+		// Path (w/o)
+		[propput, helpstring("Limits the cookie to the specified Path (defaults to Application path).")]
+			HRESULT Path([in] BSTR bstrPath);
+
+		// HasKeys (r/o)
+		[propget, helpstring("Indicates whether the cookie has keys (is a cookie dictionary).")]
+			HRESULT HasKeys([out, retval] VARIANT_BOOL *pfHasKeys);
+
+	};
+
+
+	[
+		object,
+		uuid(D97A6DA0-A861-11CF-93AE-00A0C90C2BD8),
+		dual,
+		helpstring("IRequest Interface"),
+		pointer_default(unique)
+	]
+	interface IRequest : IDispatch
+	{
+		[propget, helpstring("property TotalBytes")] HRESULT TotalBytes([out, retval] long *pVal);
+		[propget, helpstring("property ServerVariables")] HRESULT ServerVariables([out, retval] IRequestDictionary** ppDictReturn);
+    	[propget, helpstring("property QueryString (read only)")] 	HRESULT QueryString([out, retval] IRequestDictionary** ppDictReturn);		
+    	[propget, helpstring("property Form (read only)")] 	HRESULT Form([out, retval] IRequestDictionary** ppDictReturn);		
+    	[propget, helpstring("property Cookies (read only)")] 	HRESULT Cookies([out, retval] IRequestDictionary** ppDictReturn);		
+
+
+		[helpstring("Reads data returned by the client in a POST request")]
+			HRESULT BinaryRead([in, out] VARIANT *pvarCountToRead, [out, retval] VARIANT *pvarReturn);
+
+	};
+
+
+	
+	[
+		object,
+		uuid(D97A6DA0-A864-11CF-83BE-00A0C90C2BD8),
+		dual,
+		helpstring("IResponse Interface"),
+		pointer_default(unique)
+	]
+	interface IResponse : IDispatch
+	{
+		[propget, helpstring("property Buffer")] HRESULT Buffer([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpstring("property Buffer")] HRESULT Buffer([in] VARIANT_BOOL newVal);
+		[helpstring("method Write")] HRESULT Write(VARIANT varData);	
+		[propget, helpstring("property expires")] HRESULT Expires([out, retval] VARIANT *pvarExpiresMinutesRet);
+		[propput, helpstring("property expires")] HRESULT Expires([in] long lExpiresMinutes);
+		[propget, helpstring("property ExpiresAbsolute")] HRESULT ExpiresAbsolute([out, retval] VARIANT *pvarExpiresRet);
+		[propput, helpstring("property ExpiresAbsolute")] HRESULT ExpiresAbsolute([in] DATE dtExpires);
+		[propget, helpstring("property Cookies (read only)")] 	HRESULT Cookies([out, retval] IRequestDictionary** ppDictReturn);		
+		[propget, helpstring("property Status")] HRESULT Status([out, retval] BSTR *pVal);
+		[propput, helpstring("property Status")] HRESULT Status([in] BSTR newVal);
+		[propget, helpstring("property Content-type")] HRESULT ContentType([out, retval] BSTR *pVal);
+		[propput, helpstring("property Content-type")] HRESULT ContentType([in] BSTR newVal);
+		[propget, helpstring("property Charset")] HRESULT Charset([out, retval] BSTR *pVal);
+		[propput, helpstring("property Charset")] HRESULT Charset([in] BSTR newVal);
+		[helpstring("method AddHeader")] HRESULT AddHeader(BSTR pszName, BSTR pszValue);
+		[helpstring("method AppendToLog")] HRESULT AppendToLog(BSTR pszLogData);
+		[helpstring("method Clear")] HRESULT Clear();
+		[helpstring("method End")] HRESULT End();
+		[helpstring("method Flush")] HRESULT Flush();
+		[helpstring("method Redirect")] HRESULT Redirect(BSTR pszURL);
+		[helpstring("method BinaryWrite")] HRESULT BinaryWrite([in] VARIANT varData);
+
+		
+	};
+
+
+	[
+		object,
+		uuid(D97A6DA0-A867-11CF-83AE-01A0C90C2BD8),
+		dual,
+		helpstring("IServer Interface"),
+		pointer_default(unique)
+	]
+	interface IServer : IDispatch
+	{
+		[propget, helpstring("property URLEncode")] HRESULT URLEncode([in] BSTR pszName, [out, retval] BSTR *pVal);
+		[propget, helpstring("property MapPath")] HRESULT MapPath([in] BSTR pszName, [out, retval] BSTR *pVal);	
+	};
+
+
+[
+	uuid(D97A6DA0-A85C-11CF-83AE-00A0C90C2BD8),
+	version(1.0),
+	helpstring("asp 1.0 Type Library")
+]
+library ASPLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(920C25D0-25D9-11D0-A55F-00A0C90C2091),
+		helpstring("Request Class")
+	]
+	coclass Request
+	{
+		[default] interface IRequest;
+	};
+
+
+	[
+		uuid(46E19BA0-25DD-11D0-A55F-00A0C90C2091),
+		helpstring("Response Class")
+	]
+	coclass Response
+	{
+		[default] interface IResponse;
+	};
+
+
+	[
+		uuid(A506D160-25E0-11D0-A55F-00A0C90C2091),
+		helpstring("Server Class")
+	]
+	coclass Server
+	{
+		[default] interface IServer;
+	};
+
+
+	[
+		  uuid(38999595-F9B2-11D2-9C53-00C04F681EE7),
+		  helpstring("Request Dictionary class")
+	]
+	coclass RequestDictionary
+	{
+		[default] interface IRequestDictionary;
+	};
+
+	[
+		uuid(1C724F9B-FE6B-11D2-9C54-00C04F681EE7),
+		helpstring("CRequestStrList Class")
+	]
+	coclass RequestStrList
+	{
+		[default] interface IRequestStrList;
+	};
+
+
+};

@@ -1,0 +1,43 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+#include "windows.h"
+#include "bldver.h"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION CE_BUILD_VER,0,0,1
+ PRODUCTVERSION CE_MAJOR_VER,CE_MINOR_VER,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef DEBUG 
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "Point to Point Protocol\0"
+            VALUE "FileVersion", "1, 0, 0, 3\0"
+            VALUE "InternalName", "PPP\0"
+            VALUE "LegalCopyright", "Copyright (C) 2000\0"
+            VALUE "OriginalFilename", "PPP.DLL\0"
+            VALUE "ProductName", "Windows CE\0"
+            VALUE "ProductVersion", "4, 0, 0, 0\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

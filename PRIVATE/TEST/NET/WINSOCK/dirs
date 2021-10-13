@@ -1,0 +1,5 @@
+DIRS=\
+   22\
+   11
+
+# I don't know why, but 22 must be before 11 or linking problems occur when building at this level

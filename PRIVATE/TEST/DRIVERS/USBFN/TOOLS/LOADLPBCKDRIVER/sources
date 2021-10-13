@@ -1,0 +1,38 @@
+!IF 0
+
+Copyright (c) 1996  Microsoft Corporation
+
+Module Name:
+    sources.
+
+Abstract:
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+
+
+
+!ENDIF
+
+
+TARGETNAME=lufldrv
+TARGETPATH=.
+TARGETTYPE=PROGRAM
+WINCEOEM=1
+WINCEMACRO=1
+
+TARGETLIBS= \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib  \
+
+EXEENTRY=WinMain
+
+
+SOURCES= \
+	loadlpbkdriver.cpp	\
+
+INCLUDES=$(_COMMONSDKROOT)\inc; \
+         $(_COMMONOAKROOT)\inc;  \
+         $(_PRIVATEROOT)\test\common\inc;
+

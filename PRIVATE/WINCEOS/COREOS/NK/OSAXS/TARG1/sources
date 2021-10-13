@@ -1,0 +1,39 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=osaxst1
+DEFFILE=osaxst1.def
+TARGETTYPE=DYNLINK
+DLLENTRY=OsaxsT1DLLEntry
+TARGETLIBS=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\fulllibc.lib
+
+WINCEOEM=1
+WINCEPROJ=COMMON
+
+# WARNING: Dont include -DWINCEMACRO, since
+# we dont want to allow the use of PSL calls in OsAxs.
+CDEFINES=$(CDEFINES) -DTARGET_BUILD -DOSAXST1_BUILD -DBUILDING_OSAXS
+INCLUDES=.;..;..\..\inc;..\..\kernel\sh
+
+LDEFINES=-subsystem:native /DEBUG /DEBUGTYPE:FIXUP
+
+!IF "$(_TGTCPUFAMILY)" == "MIPS"
+AFPUDEFINES=-DMIPS_HAS_FPU $(AFPUDEFINES)
+CFPUDEFINES=-DMIPS_HAS_FPU $(CFPUDEFINES)
+!ENDIF
+
+SOURCES=            \
+    initt1.cpp        \
+    ..\ExceptCommon.cpp \
+    ..\mem.cpp        \
+    ..\memcommon.cpp  \
+    ..\packdata.cpp   \
+    ..\strings.cpp    \
+    ..\targdbg.cpp    \
+    ..\targexcept.cpp \
+    ..\vm.cpp

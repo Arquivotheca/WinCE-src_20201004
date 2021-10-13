@@ -1,0 +1,20 @@
+;******************************************************************************
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;******************************************************************************
+
+LIBRARY		PCMCETsts
+EXPORTS
+   gen_Init
+   gen_Deinit
+   gen_Open
+   gen_Close
+   gen_Read
+   gen_Write
+   gen_Seek
+   gen_IOControl
+   gen_PowerUp
+   gen_PowerDown

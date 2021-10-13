@@ -1,0 +1,49 @@
+# --------------------------------------------------------------------
+#                                                                     
+# THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+# ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+# PARTICULAR PURPOSE.                                                 
+# Copyright (c) 1996-2000 Microsoft Corporation.  All rights reserved.
+#                                                                     
+# --------------------------------------------------------------------
+# 
+# TBD replace tuxdllname by actual test name
+# TBD add to SOURCES, INCLUDES and TARGETLIBS as required
+# 
+
+WINCEOEM=1
+
+TARGETNAME=perf_ndis
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+	tuxmain.cpp \
+	perfndis.cpp \
+        ndp_send.cxx  \
+        ndp_recv.cxx   \
+
+
+CDEFINES=$(CDEFINES) -D_WIN32_WINNT
+
+INCLUDES= \
+	$(_PROJECTSDKROOT)\inc; \
+	$(_PROJECTOAKROOT)\inc; \
+	$(_PRIVATEROOT)\test\net\ndis\NDP\inc;\
+	$(_PRIVATEROOT)\test\inc;
+
+TARGETTHREADMODEL=MT
+TARGETLIBS=\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\cmdline.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\ndp_lib.lib \
+	$(_SDKROOT)\NT\lib\x86\ole32.lib \
+	$(_SDKROOT)\NT\lib\x86\oleaut32.lib \
+	$(_SDKROOT)\NT\lib\x86\comctl32.lib \
+	$(_SDKROOT)\NT\lib\x86\comdlg32.lib \
+	$(_SDKROOT)\NT\lib\x86\setupapi.lib \
+	$(_SDKROOT)\NT\lib\x86\user32.lib \
+	$(_SDKROOT)\NT\lib\x86\kernel32.lib \
+	$(_SDKROOT)\NT\lib\x86\uuid.lib
+          
+RELEASETYPE=CETK

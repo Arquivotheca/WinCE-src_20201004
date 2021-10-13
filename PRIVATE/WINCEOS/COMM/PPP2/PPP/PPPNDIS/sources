@@ -1,0 +1,36 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+!IFDEF SP_REF_VERBOSE
+CDEFINES=$(CDEFINES) -DSP_REF_VERBOSE
+!ENDIF
+
+TARGETNAME=ppp2ndis
+TARGETTYPE=LIBRARY
+TARGETLIBS= 
+
+
+INCLUDES= \
+	..\inc; \
+	..\..\..\inc
+
+
+
+SOURCES= \
+	mac.c \
+	ndisprot.c \
+	adptlst.c \
+	ndistapi.c \
+	memory.c \
+	snddata.c
+
+
+
+#xref VIGUID {37e7be0f-15fe-4fcd-b9bf-6e9ce1a30821}
+#xref VSGUID {1b847523-ec20-4586-88a0-fdcb2fd8dd45}

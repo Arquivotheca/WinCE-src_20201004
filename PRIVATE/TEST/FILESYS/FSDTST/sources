@@ -1,0 +1,45 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=fsdtst
+TARGETTYPE=DYNLINK
+
+
+
+SOURCES=\
+   tuxmain.cpp \
+   storeutil.cpp\
+   legacy.cpp \
+   mfs.cpp \
+   multivoltests.cpp \
+   multithrdtests.cpp \
+   bvttests.cpp \
+   testproc.cpp
+
+
+UTILS_INCLUDE=$(_PRIVATEROOT)\test\filesys\utility
+
+
+INCLUDES=$(UTILS_INCLUDE)
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETLIBS=\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\reg_util.lib
+!ELSE
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)\storeapi.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\reg_util.lib
+!ENDIF
+ 
+RELEASETYPE=CETK 

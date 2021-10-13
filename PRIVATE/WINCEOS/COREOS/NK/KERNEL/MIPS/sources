@@ -1,0 +1,31 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+# Machine dependent defines
+EXEENTRY=StartUp
+LDEFINES=-subsystem:native -align:32 /DEBUG /DEBUGTYPE:BOTH,FIXUP
+EXEBASE=0x8C040000
+CDEFINES=$(CDEFINES) -Gd -Zi
+!IF $(R3000)
+CDEFINES=$(CDEFINES) -DIDT -DR3000
+!ENDIF
+
+MIPS_SOURCES= \
+    ..\mips\ValidateStructures.c \
+    ..\mips\except.s   \
+    ..\mips\tlbmiss.s  \
+    ..\mips\startup.s  \
+    ..\mips\mdsched.c  \
+    ..\mips\mipsuwnd.c \
+    ..\mips\intrlock.s \
+    ..\mips\memmisc.s  \
+    ..\mips\xxcaptur.s \
+    ..\mips\float.c    \
+    ..\mips\x4sqrt.s   
+
+

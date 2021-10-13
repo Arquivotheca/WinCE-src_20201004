@@ -1,0 +1,30 @@
+# --------------------------------------------------------------------------------
+# 
+#     Windows CE TUXTEST TUX DLL
+#     Copyright (c) Microsoft Corporation
+# 
+# --------------------------------------------------------------------------------
+
+TARGETNAME=genfile
+TARGETTYPE=DYNLINK
+DLLENTRY=_DllMainCRTStartup
+
+FILESYS_TESTROOT=..
+
+UTILS_INCLUDE=$(_PRIVATEROOT)\test\filesys\utility
+
+INCLUDES=\
+	$(_WINCEROOT)\public\common\sdk\inc;\
+	$(FILESYS_TESTROOT)\common\inc;\
+	$(UTILS_INCLUDE);
+
+TARGETLIBS=\
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib    \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+		$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\reg_util.lib
+
+
+SOURCES=\
+    test.cpp \
+    tuxtest.cpp \
+    globals.cpp

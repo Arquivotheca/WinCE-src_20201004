@@ -1,0 +1,38 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+;
+;         File: upnpapi.def
+;
+
+LIBRARY UPNPCAPI        ; Application's module name
+
+EXPORTS
+    UpnpAddDevice
+    UpnpRemoveDevice
+    UpnpPublishDevice
+    UpnpUnpublishDevice
+    UpnpSubmitPropertyEvent
+    UpnpSetRawControlResponse
+    UpnpSetControlResponse
+    UpnpSetErrorResponse
+    UpnpGetSCPDPath
+    UpnpGetUDN
+    UpnpUpdateEventedVariables
+    RegisterNotification
+    DeregisterNotification
+    FindServicesCallback
+    FindServices
+    GetFirstService
+    GetNextService
+    FindServicesClose
+    RegisterService
+    DeregisterService
+    SsdpStartup=ClientStart
+    SsdpCleanup=ClientStop
+    FindServicesCancel=FindServicesClose

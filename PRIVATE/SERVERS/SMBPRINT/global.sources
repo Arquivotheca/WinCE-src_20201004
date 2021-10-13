@@ -1,0 +1,13 @@
+!IFDEF ICECAP
+!IF "$(WINCEDEBUG)" != "debug"
+!ERROR Unable to build CECap instrumented retail builds!
+!ENDIF
+!IF "$(_TGTCPU)" == "x86"
+CDEFINES=$(CDEFINES) -Gh
+!ELSE
+CDEFINES=$(CDEFINES) -callcap
+!ENDIF
+
+TARGETLIBS=$(TARGETLIBS) $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\cecap.lib
+!ENDIF
+

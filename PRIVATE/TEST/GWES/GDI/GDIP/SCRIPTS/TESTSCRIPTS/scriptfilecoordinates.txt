@@ -1,0 +1,64 @@
+#sample script file
+[BitBlt]
+
+#Width=smallest width - largest width
+#Height=smallest height - largest height
+#WidthStep=how big of an increment from one width to the next
+#HeightStep=how big of an increment from one height to the next
+[BitBlt]
+Width=1
+
+[BitBlt]
+Height=1
+
+[BitBlt]
+Width=1
+Height=1
+
+[BitBlt]
+Width=1
+Height=1
+WidthStep=10
+
+[BitBlt]
+Width=1
+Height=1
+HeightStep=10
+
+[BitBlt]
+Width=1-2-4
+Height=1
+HeightStep=10
+WidthStep=10
+
+[BitBlt]
+Width=1
+Height=1-2-4
+HeightStep=10
+WidthStep=10
+
+[BitBlt]
+Width=1-10
+Height=1-10
+HeightStep=5
+WidthStep=5
+
+#Coordinates=dest left, dest top, width, height, source left, source top
+[BitBlt]
+Coordinates=1
+
+[BitBlt]
+Coordinates=1,2
+
+[BitBlt]
+Coordinates=1, 2,3
+
+[BitBlt]
+Coordinates=1,2,3,4
+
+[BitBlt]
+Coordinates=1,2,3,4,5
+
+[BitBlt]
+Coordinates=1,2,3,4,5,6
+

@@ -1,0 +1,878 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+#include "pppauth.h"
+#include "l2tpcfg.h"
+#include "common.h"
+
+CmdLineParams cmdParameters;
+RASConnection eRasConnection;
+
+//
+// This entry will need to be created as the first step. Later on,
+// this entry will be used to connect and disconnect.
+//
+bool CreatePhoneBookEntry(DWORD dwAuthOptions, DWORD dwEAPExtension)
+{
+//	BYTE RasEntryBuf[ENTRYBUFSIZE];
+	DWORD dwRasBufSize = sizeof(RASENTRY)*ENTRYBUFSIZE;
+	LPRASENTRY lpRasEntry;
+	RASDIALPARAMS DialParams;
+	DWORD dwErr;
+	BYTE DevConfigBuf[DEVBUFSIZE];
+	DWORD dwDevConfigSize;
+	LPBYTE lpDevConfig = DevConfigBuf + DEVCONFIGOFFSET;
+	LPVARSTRING lpVarString = (LPVARSTRING)&DevConfigBuf;
+
+	PL2TP_CONFIG_DATA pl2tpDevConfig;
+	PBYTE lpbL2TPConfig;
+	DWORD cbDevConfig;
+	DWORD cbKey=(wcslen(cmdParameters.strPresharedKey))*sizeof(WCHAR);
+
+	lpRasEntry = (LPRASENTRY)LocalAlloc(LPTR, ENTRYBUFSIZE);
+	if(lpRasEntry == NULL)
+	{
+		RASPrint(TEXT("LocalAlloc() failed with %d"), GetLastError());
+		return false;
+	}
+
+	if (eRasConnection == RAS_VPN_L2TP)
+	{
+		pl2tpDevConfig = (PL2TP_CONFIG_DATA)LocalAlloc(LPTR, sizeof(L2TP_CONFIG_DATA)+cbKey+1);
+		if(pl2tpDevConfig == NULL)
+		{
+				RASPrint(TEXT("Unable to allocate space for L2TP Preshared key"));
+				LocalFree(lpRasEntry);
+				return FALSE;
+		}
+
+		pl2tpDevConfig->dwVersion = 1;
+		pl2tpDevConfig->dwAuthType = L2TP_IPSEC_AUTH_PRESHAREDKEY;
+		pl2tpDevConfig->cbKey = cbKey;
+		pl2tpDevConfig->dwOffsetKey = sizeof(L2TP_CONFIG_DATA);
+		if (pl2tpDevConfig->cbKey)
+		{
+			memcpy((PBYTE)pl2tpDevConfig+pl2tpDevConfig->dwOffsetKey, cmdParameters.strPresharedKey, cbKey);
+		}
+		lpbL2TPConfig = (PBYTE)pl2tpDevConfig;
+		cbDevConfig = sizeof(L2TP_CONFIG_DATA) + cbKey;
+	}
+//	lpRasEntry = (LPRASENTRY)RasEntryBuf;
+	lpRasEntry->dwSize = sizeof(RASENTRY);
+	DialParams.dwSize = sizeof(RASDIALPARAMS);
+
+	lpRasEntry->dwSize = sizeof(RASENTRY);
+	if (dwErr = RasGetEntryProperties(NULL, TEXT(""), lpRasEntry, &dwRasBufSize,
+									  NULL, NULL))
+	{
+		RASPrint(TEXT("Unable to create default RASENTRY structure: %d"), dwErr);
+		LocalFree(lpRasEntry);
+		return false;
+	}
+
+	// Fill in default parameters:
+	if (eRasConnection == RAS_DCC_MODEM)
+	{
+		COPY_STRINGS(DialParams.szUserName, cmdParameters.strDCCUserName, UNLEN+1);
+		COPY_STRINGS(DialParams.szPassword, cmdParameters.strDCCPassword, PWLEN+1);
+		COPY_STRINGS(DialParams.szDomain, cmdParameters.strDCCDomain, DNLEN+1);
+	}
+	else
+	{
+		COPY_STRINGS(DialParams.szUserName, cmdParameters.strUserName, UNLEN+1);
+		COPY_STRINGS(DialParams.szPassword, cmdParameters.strPassword, PWLEN+1);
+		COPY_STRINGS(DialParams.szDomain, cmdParameters.strDomain, DNLEN+1);
+	}
+
+	DialParams.szPhoneNumber[0] = TEXT('\0');
+	DialParams.szCallbackNumber[0] = TEXT('\0');
+
+	lpRasEntry->dwfOptions =  dwAuthOptions;
+	lpRasEntry->dwCountryCode = 1;
+	lpRasEntry->szAreaCode[0] = TEXT('\0');
+	COPY_STRINGS(lpRasEntry->szLocalPhoneNumber, cmdParameters.strServerName, RAS_MaxPhoneNumber+1);
+	lpRasEntry->dwfNetProtocols = RASNP_Ip;
+	lpRasEntry->dwFramingProtocol = RASFP_Ppp;
+	lpRasEntry->dwCustomAuthKey = dwEAPExtension;
+
+	GetRasDeviceName(lpRasEntry->szDeviceName, cmdParameters.dwDeviceID);
+	GetRasDeviceType(lpRasEntry->szDeviceType, cmdParameters.dwDeviceID);
+
+	// Check for old entry with same name and delete it if found:
+	if (dwErr = RasValidateEntryName(NULL, cmdParameters.strEntryName))
+	{
+		if (dwErr != ERROR_ALREADY_EXISTS)
+		{
+			RASPrint(TEXT("Entry \"%s\" name validation failed: %d"),
+									cmdParameters.strEntryName, dwErr);
+			LocalFree(lpRasEntry);
+			return false;
+		}
+
+		if (dwErr = RasDeleteEntry(NULL, cmdParameters.strEntryName))
+		{
+			RASPrint(TEXT("Unable to delete old entry: %d"),dwErr);
+			LocalFree(lpRasEntry);
+			return false;
+		}
+	}
+
+	COPY_STRINGS(DialParams.szEntryName, cmdParameters.strEntryName, RAS_MaxEntryName+1);
+
+	dwDevConfigSize = DEVCONFIGSIZE;
+	if (GetUnimodemDevConfig(lpRasEntry->szDeviceName, lpVarString) == 0xFFFFFFFF)
+	{
+		// could be VPN connectoid
+		lpDevConfig = NULL;
+		dwDevConfigSize = 0;
+
+		// VPN or PPPoE does not support custom-scripting DLL
+		COPY_STRINGS(lpRasEntry->szScript, TEXT(""), MAX_PATH);
+		lpRasEntry->dwfOptions &= (~RASEO_CustomScript);
+	}
+
+	// Save default entry configuration
+	if (eRasConnection == RAS_VPN_L2TP)
+	{
+		if (dwErr = RasSetEntryProperties(NULL, cmdParameters.strEntryName, lpRasEntry, dwRasBufSize,
+		  lpbL2TPConfig, cbDevConfig))
+		{
+			RASPrint(TEXT("\"RasSetEntryProperties\" failed: %s"), dwErr);
+			LocalFree(lpRasEntry);
+			return false;
+		}
+	}
+	else
+	{
+		if (dwErr = RasSetEntryProperties(NULL, cmdParameters.strEntryName, lpRasEntry, dwRasBufSize,
+		  NULL, 0))
+		{
+			RASPrint(TEXT("\"RasSetEntryProperties\" failed: %s"), dwErr);
+			LocalFree(lpRasEntry);
+			return false;
+		}
+	}
+
+	if (dwErr = RasSetEntryDialParams(NULL, &DialParams, FALSE))
+	{
+		RASPrint(TEXT("\"RasSetEntryDialParams\" failed: %s"),dwErr);
+		LocalFree(lpRasEntry);
+		return false;
+	}
+
+	//
+	// Set baudrate for DCC or modem connections only
+	//
+	if (eRasConnection == RAS_DCC_MODEM || eRasConnection == RAS_PPP_MODEM)
+	{
+		if (dwErr = RasLinkSetBaudrate(cmdParameters.strEntryName, DEFAULT_BAUDRATE, 'N', 8, 1))
+		{
+			LocalFree(lpRasEntry);
+			return false;
+		}
+	}
+
+	if (eRasConnection == RAS_VPN_L2TP)
+	{
+		LocalFree(pl2tpDevConfig);
+	}
+
+	//
+	// If still here, then everything else passed
+	//
+	LocalFree(lpRasEntry);
+	return true;
+}
+
+//
+// Connect
+//
+bool ConnectRasConnection()
+{
+	RASDIALPARAMS DialParams;
+	BOOL bPasswordSaved;
+	HRASCONN hRasConn=NULL;
+	DWORD dwRet;
+
+	DialParams.dwSize = sizeof(RASDIALPARAMS);
+	COPY_STRINGS(DialParams.szEntryName, cmdParameters.strEntryName, RAS_MaxEntryName+1);
+	if (dwRet = RasGetEntryDialParams(NULL, &DialParams, &bPasswordSaved))
+	{
+		RASPrint(TEXT("Error reading dialing parameters: %d"), dwRet);
+	}
+
+	//
+	// We will be using the synchronous version of RasDial
+	// In this case, RasDial will only return after connection either passed or
+	// failed.
+	//
+	if (dwRet = RasDial(NULL, NULL, &DialParams, 0, NULL, &hRasConn))
+	{
+		RASPrint(TEXT("\"RasDial\" failed: %d"), dwRet);
+
+		RasHangUp(hRasConn);
+		return false;
+	}
+
+	return true;
+}
+
+//
+// Disconnect
+//
+bool DisconnectRasConnection()
+{
+	RASCONN RasConnBuf[10];		// Allowing 10 max RAS connections
+	DWORD dwRasConnBufSize;
+	DWORD dwConnections;
+	DWORD dwErr;
+	DWORD i;
+
+	RasConnBuf[0].dwSize = sizeof(RASCONN);
+	dwRasConnBufSize = sizeof(RasConnBuf);
+
+	if (dwErr = RasEnumConnections(RasConnBuf, &dwRasConnBufSize, &dwConnections))
+	{
+		RASPrint(TEXT("\"RasEnumConnections\" error: %d"), dwErr);
+
+		return false;
+	}
+
+	//
+	// Any open RAS connections?
+	//
+	if (!dwConnections)
+	{
+		RASPrint(TEXT("No open RAS connections"));
+
+		return true;
+	}
+
+	//RASPrint(TEXT("%lu open RAS connection(s)"), dwConnections);
+
+	//
+	// Disconnect all the active RAS connections
+	//
+	for (i = 0; i < dwConnections; ++i)
+	{
+		if ((cmdParameters.strEntryName == NULL) ||
+			(CMP_STRINGS(cmdParameters.strEntryName, RasConnBuf[i].szEntryName, RAS_MaxEntryName+1)))
+		{
+			if (dwErr = RasHangUp(RasConnBuf[i].hrasconn))
+			{
+				RASPrint(TEXT("Error hanging up connection #%lu: %d"),i+1, dwErr);
+
+				//
+				// At least kill the rest of the RAS connections
+				//
+				continue;
+			}
+		}
+	}
+
+	RASPrint(TEXT("All RAS connections dropped"));
+
+	return true;
+}
+
+//
+//
+//
+DWORD RasLinkSetBaudrate(LPTSTR lpszEntryName, DWORD dwBaudrate, BYTE bParity,
+  BYTE bWordLength, float fStopBits)
+{
+//	BYTE RasEntryBuf[ENTRYBUFSIZE];
+	DWORD dwRasBufSize = ENTRYBUFSIZE;
+	LPRASENTRY lpRasEntry;
+	DWORD dwErr;
+	BYTE DevConfigBuf[DEVBUFSIZE];
+	DWORD dwDevConfigSize = DEVCONFIGSIZE;
+	LPBYTE lpDevConfig = DevConfigBuf + DEVCONFIGOFFSET;
+	LPVARSTRING lpVarString = (LPVARSTRING)&DevConfigBuf;
+	HLINEAPP hLineApp;
+	HLINE hLine;
+	LINEEXTENSIONID ExtensionID;
+	DWORD dwDeviceNum, dwAPIVersion, dwNumDevs;
+    UNIMDM_CHG_DEVCFG UCD;
+	long lRet = 0;
+	TCHAR szErr[80];
+//	lpRasEntry = (LPRASENTRY)RasEntryBuf;
+
+	lpRasEntry = (LPRASENTRY)LocalAlloc(LPTR, ENTRYBUFSIZE);
+	if(lpRasEntry == NULL)
+	{
+		RASPrint(TEXT("LocalAlloc() failed with %d"), GetLastError());
+		return false;
+	}
+	lpRasEntry->dwSize = sizeof(RASENTRY);
+
+	// Retrieve device configuration:
+	if (dwErr = RasGetEntryProperties(NULL, lpszEntryName, lpRasEntry, &dwRasBufSize,
+	  lpDevConfig, &dwDevConfigSize))
+	{
+		RASPrint(TEXT("Unable to read properties of entry \"%s\": %d"),
+		  				lpszEntryName, dwErr);
+		LocalFree(lpRasEntry);		
+		return dwErr;
+	}
+
+	if (dwDevConfigSize) // If device configuration already exists, use it
+	{
+		lpDevConfig = NULL;
+		lpVarString->dwTotalSize = DEVBUFSIZE; // Fill in rest of VARSTRING structure
+		lpVarString->dwNeededSize = DEVBUFSIZE;
+		lpVarString->dwUsedSize = DEVBUFSIZE;
+		lpVarString->dwStringFormat = STRINGFORMAT_BINARY;
+		lpVarString->dwStringSize = DEVCONFIGSIZE;
+		lpVarString->dwStringOffset = DEVCONFIGOFFSET;
+	}
+
+	if (dwDeviceNum = GetUnimodemDevConfig(lpRasEntry->szDeviceName, lpVarString)
+	  == 0xFFFFFFFF)
+	{
+		RASPrint(TEXT("Couldn't get default device configuration"));
+
+		return ERROR_CANNOT_SET_PORT_INFO;
+	}
+	lpDevConfig = DevConfigBuf + DEVCONFIGOFFSET;
+
+	if (lRet = lineInitialize(&hLineApp, NULL, lineCallbackFunc, TEXT("OEMRasClient"),
+	  &dwNumDevs))
+	{
+		RASPrint(TEXT("Can't initialize TAPI: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+		LocalFree(lpRasEntry);
+		return ERROR_CANNOT_SET_PORT_INFO;
+    }
+
+	if (lRet = lineNegotiateAPIVersion(hLineApp, 0, 0x00010000, 0x00020001,
+		  &dwAPIVersion, &ExtensionID))
+	{
+		RASPrint(
+		  TEXT("TAPI version negotiation failed: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+		lineShutdown(hLineApp);
+		LocalFree(lpRasEntry);
+		return ERROR_CANNOT_SET_PORT_INFO;
+	}
+
+	if (lRet = lineOpen(hLineApp, dwDeviceNum, &hLine, dwAPIVersion, 0, 0,
+	  LINECALLPRIVILEGE_NONE, LINEMEDIAMODE_DATAMODEM, NULL))
+	{
+		RASPrint(
+		  TEXT("Couldn't open TAPI device %lu: error %.8x (%s)"),
+		  dwDeviceNum, lRet, FormatLineError(lRet, szErr));
+		lineShutdown(hLineApp);
+
+		return ERROR_CANNOT_SET_PORT_INFO;
+	}
+
+	// Set up the lineDevSpecific data block:
+	UCD.dwCommand = UNIMDM_CMD_CHG_DEVCFG;
+	UCD.lpszDeviceClass = TEXT("comm/datamodem");
+	UCD.lpDevConfig = lpVarString;
+	dwErr = 0;
+
+	// Set the baudrate:
+	UCD.dwOption = UNIMDM_OPT_BAUDRATE;
+	UCD.dwValue = DEFAULT_BAUDRATE;
+
+	// lineDevSpecific is an asynchronous function; however, there is no need to
+	//   wait for the LINE_REPLY callback
+	if ((lRet = lineDevSpecific(hLine, 0, NULL, &UCD, sizeof(UCD))) < 0)
+	{
+		RASPrint(TEXT("Couldn't reset baudrate: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+		dwErr = ERROR_CANNOT_SET_PORT_INFO;
+	}
+
+	// Set the parity:
+	UCD.dwOption = UNIMDM_OPT_PARITY;
+	switch (bParity)
+	{
+		case 'o':
+		case 'O':
+			UCD.dwValue = ODDPARITY;
+			break;
+		case 'e':
+		case 'E':
+			UCD.dwValue = EVENPARITY;
+			break;
+		case 'm':
+		case 'M':
+			UCD.dwValue = MARKPARITY;
+			break;
+		case 's':
+		case 'S':
+			UCD.dwValue = SPACEPARITY;
+			break;
+		case 'n':
+		case 'N':
+		default:
+			UCD.dwValue = NOPARITY;
+			break;
+	}
+	if ((lRet = lineDevSpecific(hLine, 0, NULL, &UCD, sizeof(UCD))) < 0)
+	{
+		RASPrint(TEXT("Couldn't reset parity: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+		dwErr = ERROR_CANNOT_SET_PORT_INFO;
+	}
+
+	// Set the wordlength:
+	UCD.dwOption = UNIMDM_OPT_BYTESIZE;
+	UCD.dwValue = (DWORD)bWordLength;
+
+	if ((lRet = lineDevSpecific(hLine, 0, NULL, &UCD, sizeof(UCD))) < 0)
+	{
+		RASPrint(TEXT("Couldn't reset wordlength: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+
+		dwErr = ERROR_CANNOT_SET_PORT_INFO;
+	}
+
+	// Set the stopbits:
+	UCD.dwOption = UNIMDM_OPT_STOPBITS;
+	if (fStopBits == 1.5)
+		UCD.dwValue = ONE5STOPBITS;
+	else if (fStopBits == 2)
+		UCD.dwValue = TWOSTOPBITS;
+	else
+		UCD.dwValue = ONESTOPBIT;
+
+	if ((lRet = lineDevSpecific(hLine, 0, NULL, &UCD, sizeof(UCD))) < 0)
+	{
+		RASPrint(TEXT("Couldn't reset stopbits: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+	}
+
+	if (lRet = lineClose(hLine))
+		RASPrint(TEXT("lineClose: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+
+	if (lRet = lineShutdown(hLineApp))
+		RASPrint(TEXT("lineShutdown: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szErr));
+	lRet = (long)dwErr;
+
+	if (dwErr = RasSetEntryProperties(NULL, lpszEntryName, lpRasEntry, dwRasBufSize,
+	  lpDevConfig, dwDevConfigSize))
+	{
+		RASPrint(TEXT("\"RasSetEntryProperties\" failed: %d"), dwErr);
+		LocalFree(lpRasEntry);
+		return dwErr;
+	}
+
+	LocalFree(lpRasEntry);
+	return (DWORD)lRet;
+}
+//
+//
+//
+DWORD GetRasDeviceName(LPTSTR lpszDeviceName, DWORD dwDeviceNum)
+{
+	LPRASDEVINFO lpRasDevInfo = NULL;
+	DWORD dwBufSize = 0;
+	DWORD dwNumDevices = 0;
+
+	DWORD dwErr;
+
+	if (lpszDeviceName == NULL)
+	{
+		RASPrint(TEXT("\"RasEnumDevices\": buffer error"));
+
+		return ERROR_READING_DEVICENAME;
+	}
+	lpszDeviceName[0] = TEXT('\0');
+
+	// find the buffer size needed
+	dwErr = RasEnumDevices(NULL, &dwBufSize, &dwNumDevices);
+	if (!dwBufSize)
+	{
+		RASPrint(TEXT("Unable to find \"RasEnumDevices\" buffer size: %s"), dwErr);
+		return dwErr;
+	}
+
+	lpRasDevInfo = (LPRASDEVINFO)LocalAlloc(LPTR, dwBufSize);
+	if (!lpRasDevInfo)
+	{
+		RASPrint(TEXT("Couldn't allocate memory for \"RasEnumDevices\""));
+
+		return ERROR_READING_DEVICENAME;
+	}
+	lpRasDevInfo->dwSize = sizeof(RASDEVINFO);
+
+	if (dwErr = RasEnumDevices(lpRasDevInfo, &dwBufSize, &dwNumDevices))
+	{
+		RASPrint(TEXT("\"RasEnumDevices\" failed: %s"), dwErr);
+
+		LocalFree(lpRasDevInfo);
+		return dwErr;
+	}
+
+	if (dwDeviceNum >= dwNumDevices)
+	{
+		RASPrint(TEXT("%lu devices available; device %lu not in list"),
+		  dwNumDevices, dwDeviceNum);
+
+		LocalFree(lpRasDevInfo);
+		return ERROR_READING_DEVICENAME;
+	}
+
+	COPY_STRINGS(lpszDeviceName, (lpRasDevInfo + dwDeviceNum)->szDeviceName,
+	  RAS_MaxDeviceName);
+	lpszDeviceName[RAS_MaxDeviceName] = TEXT('\0');
+
+	LocalFree(lpRasDevInfo);
+	return 0;
+}
+
+//
+//
+//
+DWORD GetRasDeviceType(LPTSTR lpszDeviceType, DWORD dwDeviceNum)
+{
+	LPRASDEVINFO lpRasDevInfo = NULL;
+	DWORD dwBufSize = 0;
+	DWORD dwNumDevices = 0;
+	DWORD dwErr;
+
+	if (lpszDeviceType == NULL)
+	{
+		RASPrint(TEXT("\"RasEnumDevices\": buffer error"));
+
+		return ERROR_READING_DEVICENAME;
+	}
+	lpszDeviceType[0] = TEXT('\0');
+
+    // find the buffer size needed
+	dwErr = RasEnumDevices(NULL, &dwBufSize, &dwNumDevices);
+	if (!dwBufSize)
+	{
+		RASPrint(TEXT("Unable to find \"RasEnumDevices\" buffer size: %s"), dwErr);
+
+		return dwErr;
+	}
+
+	lpRasDevInfo = (LPRASDEVINFO)LocalAlloc(LPTR, dwBufSize);
+	if (!lpRasDevInfo)
+	{
+		RASPrint(TEXT("Couldn't allocate memory for \"RasEnumDevices\""));
+
+		return ERROR_READING_DEVICENAME;
+	}
+	lpRasDevInfo->dwSize = sizeof(RASDEVINFO);
+
+	if (dwErr = RasEnumDevices(lpRasDevInfo, &dwBufSize, &dwNumDevices))
+	{
+		RASPrint(TEXT("\"RasEnumDevices\" failed: %s"), dwErr);
+
+		LocalFree(lpRasDevInfo);
+		return dwErr;
+	}
+
+	if (dwDeviceNum >= dwNumDevices)
+	{
+		RASPrint(TEXT("%lu devices available; device %lu not in list"),
+		  											dwNumDevices, dwDeviceNum);
+
+		LocalFree(lpRasDevInfo);
+		return ERROR_READING_DEVICENAME;
+	}
+
+	COPY_STRINGS(lpszDeviceType, (lpRasDevInfo + dwDeviceNum)->szDeviceType, RAS_MaxDeviceType);
+	lpszDeviceType[RAS_MaxDeviceType] = TEXT('\0');
+
+	LocalFree(lpRasDevInfo);
+	return 0;
+}
+
+//
+//
+//
+
+
+DWORD GetUnimodemDeviceName(LPTSTR lpszDeviceName, LPTSTR lpszDeviceType)
+{
+	BYTE bDevCapsBuf[DEVCAPSSIZE];
+	LPLINEDEVCAPS lpDevCaps = (LPLINEDEVCAPS)bDevCapsBuf;
+	HLINEAPP hLineApp;
+	LINEEXTENSIONID ExtensionID;
+	BYTE bDeviceType = 0xFF;
+	DWORD dwDeviceNum, dwAPIVersion, dwNumDevs;
+	TCHAR szBuff[120];
+	long lRet = 0;
+
+	if (_tcsicmp(lpszDeviceType, TEXT("serial")) == 0)
+	{
+		_tcscpy(lpszDeviceType, TEXT("direct"));
+		bDeviceType = UNIMODEM_SERIAL_DEVICE;
+	}
+	else if (_tcsicmp(lpszDeviceType, TEXT("direct")) == 0)
+		bDeviceType = UNIMODEM_SERIAL_DEVICE;
+
+	else if (_tcsicmp(lpszDeviceType, TEXT("external")) == 0)
+	{
+		_tcscpy(lpszDeviceType, TEXT("modem"));
+		bDeviceType = UNIMODEM_HAYES_DEVICE;
+	}
+	else if (_tcsicmp(lpszDeviceType, TEXT("modem")) == 0)
+		bDeviceType = UNIMODEM_HAYES_DEVICE;
+
+	else if (_tcsicmp(lpszDeviceType, TEXT("PCMCIA")) == 0)
+	{
+		_tcscpy(lpszDeviceType, TEXT("modem"));
+		bDeviceType = UNIMODEM_PCMCIA_DEVICE;
+	}
+
+	else if (_tcsicmp(lpszDeviceType, TEXT("infrared")) == 0)
+	{
+		_tcscpy(lpszDeviceType, TEXT("direct"));
+		bDeviceType = UNIMODEM_IR_DEVICE;
+	}
+
+	if (bDeviceType == 0xFF)
+	{
+		RASPrint(TEXT("Device type %s not recognized"), lRet);
+		return FALSE;
+    }
+
+	if (lRet = lineInitialize(&hLineApp, NULL, lineCallbackFunc, TEXT("OEMRasClient"),
+	  &dwNumDevs))
+	{
+		RASPrint(TEXT("Can't initialize TAPI: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szBuff));
+		return 0xFFFFFFFF;
+    }
+
+	for (dwDeviceNum = 0; dwDeviceNum < dwNumDevs; dwDeviceNum++)
+	{
+		if (lRet = lineNegotiateAPIVersion(hLineApp, dwDeviceNum, 0x00010000,
+		  0x00020001, &dwAPIVersion, &ExtensionID))
+		{
+			RASPrint(
+			  TEXT("TAPI version negotiation failed for device %lu: error %.8x (%s)"),
+			  dwDeviceNum, lRet, FormatLineError(lRet, szBuff));
+			continue;
+		}
+
+		lpDevCaps->dwTotalSize = DEVCAPSSIZE;
+		if (lRet = lineGetDevCaps(hLineApp, dwDeviceNum, dwAPIVersion, 0,
+		  lpDevCaps))
+			RASPrint(
+			  TEXT("Couldn't read TAPI device %lu capabilities: error %.8x (%s)"),
+			  dwDeviceNum, lRet, FormatLineError(lRet, szBuff));
+
+		else
+		{
+			_tcsncpy(lpszDeviceName, (LPTSTR)(bDevCapsBuf + lpDevCaps->dwLineNameOffset),
+			  RAS_MaxDeviceName);
+			lpszDeviceName[RAS_MaxDeviceName] = TEXT('\0');
+
+			// check device name if intended to make a null modem connection
+			if (bDeviceType == UNIMODEM_SERIAL_DEVICE)
+			{
+				if (CMP_STRINGS(lpszDeviceName, TEXT("Serial Cable on COM1"), 20) == 0)
+					break;
+			}
+			else
+				break;
+		}
+	}
+
+	if (dwDeviceNum == dwNumDevs)
+	{
+		RASPrint(TEXT("No matching Unimodem device found"));
+		dwDeviceNum = 0xFFFFFFFF;
+	}
+
+	if (lRet = lineShutdown(hLineApp))
+		RASPrint(TEXT("lineShutdown: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szBuff));
+	return dwDeviceNum;
+}
+
+//
+//
+//
+DWORD GetUnimodemDevConfig(LPTSTR lpszDeviceName, LPVARSTRING lpDevConfig)
+{
+	BYTE bDevCapsBuf[1024];
+	LPLINEDEVCAPS lpDevCaps = (LPLINEDEVCAPS)bDevCapsBuf;
+	HLINEAPP hLineApp;
+	LINEEXTENSIONID ExtensionID;
+	DWORD dwDeviceNum, dwAPIVersion, dwNumDevs;
+	TCHAR szBuff[120];
+	long lRet = 0;
+
+	if (lRet = lineInitialize(&hLineApp, NULL, lineCallbackFunc, TEXT("OEMRasClient"),
+	  &dwNumDevs))
+	{
+		RASPrint(TEXT("Can't initialize TAPI: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szBuff));
+		return 0xFFFFFFFF;
+    }
+
+	for (dwDeviceNum = 0; dwDeviceNum < dwNumDevs; dwDeviceNum++)
+	{
+		if (lRet = lineNegotiateAPIVersion(hLineApp, dwDeviceNum, 0x00010000,
+		  0x00020001, &dwAPIVersion, &ExtensionID))
+		{
+			RASPrint(
+			  TEXT("TAPI version negotiation failed for device %lu: error %.8x (%s)"),
+			  dwDeviceNum, lRet, FormatLineError(lRet, szBuff));
+			continue;
+		}
+
+		lpDevCaps->dwTotalSize = DEVCAPSSIZE;
+		if (lRet = lineGetDevCaps(hLineApp, dwDeviceNum, dwAPIVersion, 0,
+		  lpDevCaps))
+		{
+			RASPrint(
+			  TEXT("Couldn't read TAPI device %lu capabilities: error %.8x (%s)"),
+			  dwDeviceNum, lRet, FormatLineError(lRet, szBuff));
+			continue;
+		}
+
+		if ((lpszDeviceName == NULL) ||
+		  (_tcscmp((LPTSTR)(bDevCapsBuf + lpDevCaps->dwLineNameOffset), lpszDeviceName) == 0))
+		{
+			if (_tcsicmp((LPTSTR)(bDevCapsBuf + lpDevCaps->dwProviderInfoOffset),
+			  TEXT("UNIMODEM")) != 0)
+			{
+				RASPrint(TEXT("TAPI device %lu isn't Unimodem"),
+				  dwDeviceNum);
+				dwDeviceNum = 0xFFFFFFFF;
+			}
+			else if (lpDevConfig != NULL)
+			{
+				lpDevConfig->dwTotalSize = DEVBUFSIZE;
+
+				if (lRet = lineGetDevConfig(dwDeviceNum, lpDevConfig,
+				  TEXT("comm/datamodem")))
+				{
+					RASPrint(
+					  TEXT("Couldn't read TAPI device %lu configuration: error %.8x (%s)"),
+					  dwDeviceNum, lRet, FormatLineError(lRet, szBuff));
+					dwDeviceNum = 0xFFFFFFFF;
+				}
+			}
+			break;
+		}
+	}
+
+	if (lRet = lineShutdown(hLineApp))
+		RASPrint(TEXT("lineShutdown: error %.8x (%s)"),
+		  lRet, FormatLineError(lRet, szBuff));
+
+	if ((dwDeviceNum >= dwNumDevs) && (dwDeviceNum < 0xFFFFFFFF))
+	{
+		// RASPrint(TEXT("No match for device %s"), lpszDeviceName);
+		dwDeviceNum = 0xFFFFFFFF;
+	}
+
+	return dwDeviceNum;
+}
+
+//
+//
+//
+void CALLBACK lineCallbackFunc(DWORD dwDevice, DWORD dwMsg,
+  DWORD dwCallbackInstance, DWORD dwParam1, DWORD dwParam2, DWORD dwParam3)
+{
+	TCHAR szBuff[1024];
+
+	RASPrint(TEXT("TAPI callback function: %s"),
+	  FormatLineCallback(szBuff, dwDevice, dwMsg, dwCallbackInstance,
+	  dwParam1, dwParam2, dwParam3));
+}
+
+//
+//
+//
+DWORD GetRasDeviceNum(LPTSTR lpszDeviceType, DWORD& dwDeviceNum)
+{
+	LPRASDEVINFO lpRasDevInfo = NULL;
+	DWORD dwBufSize = 0;
+	DWORD dwNumDevices = 0;
+	DWORD i;
+	DWORD dwErr;
+
+	dwDeviceNum = -1;
+
+	// find the buffer size needed
+	dwErr = RasEnumDevices(NULL, &dwBufSize, &dwNumDevices);
+	if (!dwBufSize)
+	{
+		RASPrint(TEXT("Unable to find \"RasEnumDevices\" buffer size: %s"),dwErr);
+
+		return dwErr;
+	}
+
+	lpRasDevInfo = (LPRASDEVINFO)LocalAlloc(LPTR, dwBufSize);
+	if (!lpRasDevInfo)
+	{
+		RASPrint(TEXT("Couldn't allocate memory for \"RasEnumDevices\""));
+
+		return ERROR_READING_DEVICENAME;
+	}
+	lpRasDevInfo->dwSize = sizeof(RASDEVINFO);
+
+	if (dwErr = RasEnumDevices(lpRasDevInfo, &dwBufSize, &dwNumDevices))
+	{
+		RASPrint(TEXT("\"RasEnumDevices\" failed: %s"), dwErr);
+
+		LocalFree(lpRasDevInfo);
+		return dwErr;
+	}
+
+	//
+	// Find the device which matches and return that device number
+	//
+	for (i = 0; i < dwNumDevices; ++i)
+	{
+		if (CMP_STRINGS(lpszDeviceType, (lpRasDevInfo + i)->szDeviceType, RAS_MaxDeviceType + 1) == 0)
+		{
+			if (eRasConnection == RAS_VPN_L2TP)
+			{
+				if (_tcsstr((lpRasDevInfo + i)->szDeviceName, TEXT("L2TP")))
+				{
+					//
+					// The name of this line contains L2TP. This must be
+					// an L2TP line. Return this device number and break
+					//
+					dwDeviceNum = i;
+					break;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			else if (eRasConnection == RAS_VPN_PPTP)
+			{
+				dwDeviceNum = i;
+				break;
+			}
+		}
+	}
+
+	if (dwDeviceNum < 0)
+	{
+		RASPrint(TEXT("%lu devices available; no device of type %s in list"),
+													dwNumDevices, lpszDeviceType);
+
+		LocalFree(lpRasDevInfo);
+		return ERROR_READING_DEVICETYPE;
+	}
+
+	LocalFree(lpRasDevInfo);
+	return 0;
+}
+
+// END OF FILE

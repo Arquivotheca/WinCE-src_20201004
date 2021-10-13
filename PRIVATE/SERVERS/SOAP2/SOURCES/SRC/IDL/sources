@@ -1,0 +1,63 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=mssoapuuid
+TARGETTYPE=LIBRARY
+TARGETPATH=obj
+
+NOLTCG=1
+
+PASS0_HEADERDIR=..\..\Inc\Idl
+
+
+INCLUDES = \
+    ..\..\inc\Connect; \
+    ..\..\inc\SoapUtil; \
+    ..\..\inc\wsdl; \
+    ..\..\inc\soapmsg; \
+    ..\..\inc\soapreader; \
+    ..\..\inc\soapser; \
+    ..\..\inc\MSSoap; \
+    ..\..\inc\version; \
+    ..\..\..\..\..\..\public\ie\sdk\lib\$(_CPUINDPATH) 
+   
+
+SDK_INC_PATH=$(_PUBLICROOT)\$(WINCEPROJ)\sdk\inc
+
+WINCETARGETFILES=$(SDK_INC_PATH)\mssoap.h \
+		 $(SDK_INC_PATH)\mssoap.idl \
+		 $(SDK_INC_PATH)\WISC.h \
+		 $(SDK_INC_PATH)\WISC.idl \
+		 $(SDK_INC_PATH)\XHSC.h \
+		 $(SDK_INC_PATH)\XHSC.idl \
+		 $(SDK_INC_PATH)\isaresponse.h \
+		 $(SDK_INC_PATH)\isaresponse.idl \
+		 $(SDK_INC_PATH)\conn.idl \
+		 $(SDK_INC_PATH)\soapreader.idl \
+		 $(SDK_INC_PATH)\soapserializer.idl \
+		 $(SDK_INC_PATH)\soapmsg.idl \
+		 $(SDK_INC_PATH)\wsdl.idl \
+		 $(SDK_INC_PATH)\soaperr.idl \
+	         mssoapproxy_p \
+		 isaresponse_p \
+		 dlldata
+
+SOURCES=\
+    mssoap.idl \
+    mssoap_i.c \
+    WISC.idl \
+    WISC_i.c \
+    XHSC.idl \
+    XHSC_i.c \
+    isaresponse.idl \
+    isaresponse_i.c 
+   
+
+
+MISCFILES =\
+    $(PASS0_HEADERDIR)\mssoap.h 

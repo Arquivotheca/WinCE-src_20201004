@@ -1,0 +1,86 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY         BTDRT
+
+EXPORTS
+    BthWriteScanEnableMask
+    BthReadScanEnableMask
+    BthWritePageTimeout
+    BthReadPageTimeout
+    BthWriteCOD
+    BthReadCOD
+    BthWriteAuthenticationEnable
+    BthReadAuthenticationEnable
+    BthWriteLinkPolicySettings
+    BthReadLinkPolicySettings
+    BthEnterHoldMode
+    BthEnterSniffMode
+    BthExitSniffMode
+    BthEnterParkMode
+    BthExitParkMode
+    BthGetCurrentMode
+    BthGetBasebandHandles
+    BthGetBasebandConnections
+    BthReadLocalVersion
+    BthReadRemoteVersion
+    BthPerformInquiry
+    BthCancelInquiry
+    BthRemoteNameQuery
+    BthReadLocalAddr
+    BthGetHardwareStatus
+    BthTerminateIdleConnections
+    BthSetPIN
+    BthRevokePIN
+    BthSetLinkKey
+    BthGetLinkKey
+    BthRevokeLinkKey
+    BthAuthenticate
+    BthSetEncryption
+    BthSetSecurityUI
+    BthGetPINRequest
+    BthRefusePINRequest
+    BthNsSetService
+    BthNsLookupServiceBegin
+    BthNsLookupServiceNext
+    BthNsLookupServiceEnd
+    BthGetAddress
+    BthSetInquiryFilter
+    BthClearInquiryFilter
+    BthCreateACLConnection
+    BthCreateSCOConnection
+    BthCloseConnection
+    BthAcceptSCOConnections
+    BthGetRemoteCOD
+    BthAnswerPairRequest
+    BthPairRequest
+    BthSwitchRole
+    BthGetRole
+    BthReadRSSI
+    BthActivatePAN
+    BthSetCODInquiryFilter
+    BthWritePageScanActivity
+    BthWriteInquiryScanActivity
+    BthReadPageScanActivity
+    BthReadInquiryScanActivity
+    BthWritePageScanType
+    BthWriteInquiryScanType
+    BthReadPageScanType
+    BthReadInquiryScanType
+    BthCreateSynchronousConnection
+    BthAcceptSynchronousConnections
+    BthGetBasebandConnectionsEx
+    DllMain
+    DllCanUnloadNow             PRIVATE
+    DllGetClassObject           PRIVATE
+    DllRegisterServer           PRIVATE
+    DllUnregisterServer         PRIVATE
+
+; @CESYSGEN IF BTDRT_BTHNS
+    NSPStartup
+; @CESYSGEN ENDIF

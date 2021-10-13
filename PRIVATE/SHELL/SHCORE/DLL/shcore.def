@@ -1,0 +1,54 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY	shcore
+
+EXPORTS
+
+; Clipboard
+; @CESYSGEN IF SHCORE_CLIPBOARD
+; @CESYSGEN ENDIF
+
+; Daylight Savings Time
+; @CESYSGEN IF SHCORE_DST
+; @CESYSGEN ENDIF
+
+; Path Helpers
+; @CESYSGEN IF SHCORE_PATH
+	PathCompactPathW
+	PathCompactSlashes
+	PathFileExistsW
+	PathFindExtensionW
+	PathFindFileNameW
+	PathFindRootDevice
+	PathGetArgsW
+	PathGetAssociation
+	PathIsDatabase
+	PathIsDirectoryW
+	PathIsExe
+	PathIsExtension
+	PathIsGUID
+	PathIsLink
+	PathIsRemovableDevice
+	PathIsSameDevice
+        PathIsURLW
+	PathIsValidFileName
+	PathIsValidPath
+	PathMakePrettyW
+	PathMakeUniqueName
+	PathMakeUniqueNameEx
+	PathMatchSpecW
+	PathRemoveArgsW
+	PathRemoveBlanksW
+	PathRemoveExtensionW
+	PathRemoveFileSpecW
+	PathRemoveQuotes
+	PathRemoveQuotesAndArgs
+	PathRemoveTrailingSlashes
+	PathStripPathW
+; @CESYSGEN ENDIF

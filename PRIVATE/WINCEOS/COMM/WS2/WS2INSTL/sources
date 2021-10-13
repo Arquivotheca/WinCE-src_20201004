@@ -1,0 +1,50 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!if 0
+!endif
+
+!IF ("$(_TGTOS)" == "CE")
+PREPROCESSDEFFILE=1
+DEFFILE=ws2instl.def
+TARGETDEFNAME=ws2instl
+TARGETNAME=ws2instl
+TARGETTYPE=LIBRARY
+
+TARGETLIBS= \
+	$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ws2.lib
+
+!ENDIF
+
+
+!IFDEF MEMTRACKING
+!IF $(MEMTRACKING)
+CDEFINES=$(CDEFINES) -DMEMTRACKING
+!ENDIF
+!ENDIF
+
+!IF "$(CELOGNET)"=="1"
+CDEFINES=$(CDEFINES) -DCELOG
+!ENDIF
+
+
+INCLUDES= \
+	..\..\inc;
+
+
+SOURCES= \
+		ws2install.c\
+		install_lsp.cpp\
+
+
+
+WINCETARGETFILE0=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\ws2instl.def
+
+
+#xref VIGUID {39bb937b-fcda-43ea-a5f6-611ac04ea88f}
+#xref VSGUID {25f13175-3507-474b-9527-ebe95167a704}

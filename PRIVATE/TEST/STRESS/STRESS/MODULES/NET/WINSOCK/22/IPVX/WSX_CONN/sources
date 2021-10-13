@@ -1,0 +1,51 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+#####################################################
+##
+##
+#####################################################
+
+TARGETNAME=wsx_conn
+TARGETTYPE=PROGRAM
+
+SYNCHRONIZE_DRAIN=1
+
+MSC_WARNING_LEVEL=/W3 /WX
+
+INCLUDES=..\..\..\..\..\..\inc;..\echothread
+
+SOURCES=\
+	wsx_conn.cpp \
+	wsx_conn.rc
+
+
+!IF ("$(_TGTOS)" == "CE")
+#=========================================================
+
+EXEENTRY=mainWCRTStartup  
+
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\echothread.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib
+
+#=========================================================
+!ELSE
+#=========================================================
+
+TARGETLIBS=\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\echothread.lib \
+	$(_SDKROOT)\nt\lib\x86\ws2_32.lib
+
+#=========================================================
+!ENDIF
+ 
+RELEASETYPE=CETK 

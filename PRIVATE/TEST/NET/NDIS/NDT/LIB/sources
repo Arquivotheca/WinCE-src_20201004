@@ -1,0 +1,38 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=NDTLib
+TARGETTYPE=LIBRARY
+
+CDEFINES= \
+    -DUNICODE \
+    -D_UNICODE
+
+SOURCES= \
+    NDTLib.cpp \
+    NDTLibEx.cpp \
+    Driver.cpp \
+    LocalDriver.cpp \
+    RemoteDriver.cpp \
+    Adapter.cpp \
+    Request.cpp \
+    Object.cpp \
+    ObjectList.cpp \
+    Marshal.cpp \
+    Utils.cpp \
+    Utils_CE.cpp \
+    NDTLog.cpp \
+    Messages.cpp \
+    StdAfx.cpp
+
+INCLUDES= \
+    ..\inc ; \
+    ..\common; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc;

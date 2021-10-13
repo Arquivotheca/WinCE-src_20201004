@@ -1,0 +1,26 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+WINCEPROJ=servers
+WINCETREE=servers
+WARNISERROR=1
+RELEASETYPE=OAK
+WINCEOEM=1
+DOSYSGEN=1
+
+# OS projects during compile always get the full unfiltered headers & build into their own public tree.
+_COMMONPUBROOT=$(_PUBLICROOT)\common
+__PROJROOT = $(_PUBLICROOT)\$(WINCEPROJ)
+
+
+_ISVINCPATH=$(_WINCEROOT)\public\common\sdk\inc;
+_OEMINCPATH=$(_WINCEROOT)\public\common\sdk\inc;$(_WINCEROOT)\public\common\oak\inc;$(_WINCEROOT)\public\ie\sdk\inc;$(_WINCEROOT)\public\servers\sdk\inc;$(_WINCEROOT)\public\common\ddk\inc;$(_WINCEROOT)\public\servers\oak\inc;$(_WINCEROOT)\public\dcom\sdk\inc;$(_WINCEROOT)\private\winceos\inc;
+
+
+
+

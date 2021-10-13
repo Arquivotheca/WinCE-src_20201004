@@ -1,0 +1,134 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//+---------------------------------------------------------------------------
+//
+//  Microsoft Windows
+//
+//  File:       H O S T P . I D L
+//
+//  Contents:   Private objects for the UPnP Device Host
+//
+//  Notes:
+//
+//  Author:     danielwe   7 Aug 2000
+//
+//----------------------------------------------------------------------------
+
+
+cpp_quote("//+-------------------------------------------------------------------------")
+cpp_quote("//")
+cpp_quote("//  Microsoft Windows")
+cpp_quote("//  Copyright (C) Microsoft Corporation, 1992-2000.")
+cpp_quote("//")
+cpp_quote("//--------------------------------------------------------------------------")
+
+cpp_quote("#if ( _MSC_VER >= 800 )")
+cpp_quote("#pragma warning(disable:4201)")
+cpp_quote("#endif")
+
+#ifndef DO_NO_IMPORTS
+import "oaidl.idl";
+#endif
+
+////////////////////////////////////////
+// Interface forward declarations
+
+interface IUPnPAutomationProxy;
+interface IUPnPServiceDescriptionInfo;
+
+////////////////////////////////////////
+// Interface definitions
+
+
+typedef struct tagUPNP_CONTROL_REQUEST
+{
+   BSTR     bstrActionName;
+   DWORD        cInputArgs;
+   [size_is(cInputArgs)] VARIANT    * rgvarInputArgs;
+} UPNP_CONTROL_REQUEST;
+
+
+typedef [switch_type(BOOL)] union tagUPNP_CONTROL_RESPONSE_DATA
+{
+   [case(TRUE)] struct
+   {
+      DWORD     cOutputArgs;
+      [size_is(cOutputArgs)] VARIANT    * rgvarOutputArgs;
+   } Success;
+
+   [case(FALSE)] struct
+   {
+      BSTR      bstrFaultCode;
+      BSTR      bstrFaultString;
+      BSTR      bstrUPnPErrorCode;
+      BSTR      bstrUPnPErrorString;
+   } Fault;
+
+   [default];
+} UPNP_CONTROL_RESPONSE_DATA;
+
+typedef struct tagUPNP_CONTROL_RESPONSE
+{
+   BSTR      bstrActionName;
+   BOOL    fSucceeded;
+   [switch_is(fSucceeded)] UPNP_CONTROL_RESPONSE_DATA ucrData;
+} UPNP_CONTROL_RESPONSE;
+
+
+// this private interface is has the same name but is differetn than the desktop version
+// so the IID was changed
+[
+    uuid(BF457373-8085-4A9E-9DE4-4D4F445128BA),
+    helpstring("IUPnPAutomationProxy Interface"),
+    pointer_default(unique)
+]
+interface IUPnPAutomationProxy : IUnknown
+{
+   [helpstring("method Initialize")]
+   HRESULT Initialize(
+      [in] IUnknown    * punkSvcObject,
+      [in] LPWSTR      pszSvcDescription);
+
+    [helpstring("method QueryStateVariablesByDispId")]
+    HRESULT QueryStateVariablesByDispIds(
+        [in]                            DWORD    cDispIds,
+        [in, size_is(cDispIds)]         DISPID   * rgDispIds,
+        [out]                           DWORD    * pcVariables,
+        [out, size_is(, *pcVariables)]  LPWSTR   ** prgszVariableNames,
+        [out, size_is(, *pcVariables)]  VARIANT  ** prgvarVariableValues,
+        [out, size_is(, *pcVariables)]  LPWSTR   ** prgszVariableDataTypes);
+
+    [helpstring("method ExecuteRequest")]
+    HRESULT ExecuteRequest(
+        [in] UPNP_CONTROL_REQUEST * pucreq,
+        [out] UPNP_CONTROL_RESPONSE * pucresp);
+};
+
+
+// this private interface is has the same name but is differetn than the desktop version
+// so the IID was changed
+[
+    uuid(865613EE-89A5-4F8D-8310-FDCB41D29675),
+    helpstring("IUPnPServiceDescriptionInfo Interface"),
+    pointer_default(unique)
+]
+interface IUPnPServiceDescriptionInfo : IUnknown
+{
+    [helpstring("method GetVariableType")]
+    HRESULT GetVariableType(
+        [in]  LPWSTR    pszVarName,
+     [out] BSTR      * pbstrType);
+
+    [helpstring("method GetOutputArgumentNamesAndTypes")]
+    HRESULT GetOutputArgumentNamesAndTypes(
+        [in]                              LPWSTR  pszActionName,
+        [out]                             DWORD   * pcOutArguments,
+        [out, size_is(, *pcOutArguments)] BSTR    ** prgbstrNames,
+        [out, size_is(, *pcOutArguments)] BSTR    ** prgbstrTypes);
+};

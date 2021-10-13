@@ -1,0 +1,46 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY    FATFSD
+
+EXPORTS
+    FSD_MountDisk
+    FSD_UnmountDisk
+    FSD_CreateDirectoryW=FAT_CreateDirectoryW
+    FSD_RemoveDirectoryW=FAT_RemoveDirectoryW
+    FSD_GetFileAttributesW=FAT_GetFileAttributesW
+    FSD_SetFileAttributesW=FAT_SetFileAttributesW
+    FSD_DeleteFileW=FAT_DeleteFileW
+    FSD_MoveFileW=FAT_MoveFileW
+    FSD_DeleteAndRenameFileW=FAT_PrestoChangoFileName
+    FSD_GetDiskFreeSpaceW=FAT_GetDiskFreeSpaceW
+    FSD_Notify=FAT_Notify
+    FSD_RegisterFileSystemFunction=FAT_RegisterFileSystemFunction
+    FSD_FindFirstFileW=FAT_FindFirstFileW
+    FSD_FindNextFileW=FAT_FindNextFileW
+    FSD_FindClose=FAT_FindClose
+    FSD_CreateFileW=FAT_CreateFileW
+    FSD_ReadFile=FAT_ReadFile
+    FSD_ReadFileWithSeek=FAT_ReadFileWithSeek
+    FSD_WriteFile=FAT_WriteFile
+    FSD_WriteFileWithSeek=FAT_WriteFileWithSeek
+    FSD_SetFilePointer=FAT_SetFilePointer
+    FSD_GetFileSize=FAT_GetFileSize
+    FSD_GetFileInformationByHandle=FAT_GetFileInformationByHandle
+    FSD_FlushFileBuffers=FAT_FlushFileBuffers
+    FSD_GetFileTime=FAT_GetFileTime
+    FSD_SetFileTime=FAT_SetFileTime
+    FSD_SetEndOfFile=FAT_SetEndOfFile
+    FSD_DeviceIoControl=FAT_DeviceIoControl
+    FSD_CloseFile=FAT_CloseFile
+    FSD_ReadFileScatter=FAT_ReadFileScatter
+    FSD_WriteFileGather=FAT_WriteFileGather
+    FSD_FormatVolume=FAT_FormatVolume
+    FSD_LockFileEx=FAT_LockFileEx
+    FSD_UnlockFileEx=FAT_UnlockFileEx
+    FSD_GetVolumeInfo=FAT_GetVolumeInfo

@@ -1,0 +1,200 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+import "wtypes.idl";
+import "objidl.idl";
+
+cpp_quote("#define EMPTY_ALLOC_SIZE	4")
+
+typedef struct tagSCPROPVAR
+{
+								DWORD           cProp;
+    [unique, size_is(cProp)]	PROPID			*aPropID;
+    [unique, size_is(cProp)]	PROPVARIANT		*aPropVar;
+    [unique, size_is(cProp)]	HRESULT			*aStatus;
+} SCPROPVAR;
+
+typedef unsigned long	SCHANDLE;
+
+typedef struct tagRECVPROPHELPER {
+										SCHANDLE		hQueue;
+										SCHANDLE		hCursor;
+										DWORD			dwTimeout;
+										DWORD			dwAction;
+										int				iAdminQueueNdx;
+										int				iBodyNdx;
+										int				iDestQueueNdx;
+										int				iExtNdx;
+										int				iLabelNdx;
+										int				iRespQueueNdx;
+										DWORD			ccAdminQueue;
+										DWORD			ccDestQueue;
+										DWORD			ccLabel;
+										DWORD			ccRespQueue;
+										DWORD			ccBody;
+										DWORD			ccExt;
+	[unique, size_is(ccAdminQueue)]		WCHAR			*lpszAdminQueue;
+	[unique, size_is(ccDestQueue)]		WCHAR			*lpszDestQueue;
+	[unique, size_is(ccLabel)]			WCHAR			*lpszLabel;
+	[unique, size_is(ccRespQueue)]		WCHAR			*lpszRespQueue;
+	[unique, size_is(ccBody)]			unsigned char	*pBody;
+	[unique, size_is(ccExt)]			unsigned char	*pExt;
+} RECVPROPHELPER;
+
+[
+	uuid(24080f20-3172-11d2-b234-0000f8040379), version(1.0),
+	implicit_handle (handle_t scmsmq_IfHandle)
+] interface scmsmq {
+
+HRESULT	scapi_MQCreateQueue2
+(
+[in]									DWORD			cProp,
+[in, size_is(cProp)]					PROPID			*aPropID,
+[in, size_is(cProp)]					PROPVARIANT		*aPropVar,
+
+[in, out, unique, size_is(cProp),
+length_is(*pdwStatusLen)]				HRESULT			*aStatus,
+[in, out]								DWORD			*pdwStatusLen,
+
+[out, string, size_is (ccInCount)]		WCHAR			*lpszFormatName,
+[in]									DWORD			ccInCount,
+[out]									DWORD			*pccOutCount
+);
+
+HRESULT	scapi_MQDeleteQueue
+(
+[in, string]							WCHAR			*lpszFormatName
+);
+
+HRESULT	scapi_MQGetQueueProperties2
+(
+[in, string]							WCHAR			*lpszFormatName,
+
+[in]									DWORD			cProp,
+[in, size_is(cProp)]					PROPID			*aPropID,
+[in, out, size_is(cProp)]				PROPVARIANT		*aPropVar,
+
+[in, out, unique, size_is(cProp),
+length_is(*pdwStatusLen)]				HRESULT			*aStatus,
+[in, out]								DWORD			*pdwStatusLen
+);
+
+HRESULT scapi_MQSetQueueProperties2
+(
+[in, string]							WCHAR			*lpszFormatName,
+
+[in]									DWORD			cProp,
+[in, size_is(cProp)]					PROPID			*aPropID,
+[in, size_is(cProp)]					PROPVARIANT		*aPropVar,
+
+[in, out, unique, size_is(cProp),
+length_is(*pdwStatusLen)]				HRESULT			*aStatus,
+[in, out]								DWORD			*pdwStatusLen
+);
+
+HRESULT	scapi_MQOpenQueue
+(
+[in, string]							WCHAR			*lpszFormatName,
+[in]									DWORD			dwAccess,
+[in]									DWORD			dwShareMode,
+[out]									SCHANDLE		*phQueue
+);
+
+HRESULT scapi_MQCloseQueue
+(
+[in]									SCHANDLE		hQueue
+);
+
+HRESULT scapi_MQCreateCursor
+(
+[in]									SCHANDLE		hQueue,
+[out]									SCHANDLE		*phCursor
+);
+
+HRESULT scapi_MQCloseCursor
+(
+[in]									SCHANDLE		hCursor
+);
+
+HRESULT scapi_MQHandleToFormatName2
+(
+[in]									SCHANDLE		hQueue,
+[out, size_is(ccInCount)]				WCHAR			*lpszFormatName,
+[in]									DWORD			ccInCount,
+[out]									DWORD			*pccOutCount
+);
+
+HRESULT scapi_MQPathNameToFormatName2
+(
+[in, string]							WCHAR			*lpszPathName,
+[out, size_is(ccInCount)]				WCHAR			*lpszFormatName,
+[in]									DWORD			ccInCount,
+[out]									DWORD			*pccOutCount
+);
+
+HRESULT scapi_MQSendMessage2
+(
+[in]									SCHANDLE		hQueue,
+
+[in]									DWORD			cProp,
+[in, size_is(cProp)]					PROPID			*aPropID,
+[in, size_is(cProp)]					PROPVARIANT		*aPropVar,
+
+[in, out, unique, size_is(cProp),
+length_is(*pdwStatusLen)]				HRESULT			*aStatus,
+[in, out]								DWORD			*pdwStatusLen,
+
+[in]									int				iTransaction,
+
+[out]									OBJECTID		*pMsgID
+);
+
+HRESULT scapi_MQReceiveMessage2
+(
+[in]									DWORD			cProp,
+[in, size_is(cProp)]					PROPID			*aPropID,
+[in, out, size_is(cProp)]				PROPVARIANT		*aPropVar,
+
+[in, out, unique, size_is(cProp),
+length_is(*pdwStatusLen)]				HRESULT			*aStatus,
+[in, out]								DWORD			*pdwStatusLen,
+
+[in, out]								RECVPROPHELPER	*prph
+);
+
+HRESULT scapi_MQGetMachineProperties2
+(
+[in, unique, string]					WCHAR			*lpszMachineName,
+[in, unique]							GUID			*pguidMachineID,
+
+[in]									DWORD			cProp,
+[in, size_is(cProp)]					PROPID			*aPropID,
+[in, size_is(cProp)]					PROPVARIANT		*aPropVar,
+
+[in, out, unique, size_is(cProp),
+length_is(*pdwStatusLen)]				HRESULT			*aStatus,
+[in, out]								DWORD			*pdwStatusLen
+);
+
+HRESULT scmgmt_MQMgmtGetInfo2
+(
+[in, string, unique]					LPCWSTR			pMachineName,
+[in, string]							LPCWSTR			pObjectName,
+[in]									DWORD			cp,
+[in, size_is (cp)]						PROPID			aPropID[],
+[in, out, size_is (cp)]					PROPVARIANT		aPropVar[]
+);
+
+HRESULT scmgmt_MQMgmtAction
+(
+[in, string, unique]					LPCWSTR			pMachineName,
+[in, string]							LPCWSTR			pObjectName,
+[in, string]							LPCWSTR			pAction
+);
+
+}

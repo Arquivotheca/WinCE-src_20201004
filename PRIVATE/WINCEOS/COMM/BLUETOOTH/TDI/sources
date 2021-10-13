@@ -1,0 +1,26 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+TARGETNAME=bttdi
+TARGETTYPE=LIBRARY
+
+!INCLUDE ..\bth.inc
+
+INCLUDES= \
+	..\..\inc;      \
+	..\sdp\inc
+
+SOURCES= tdi.cxx
+
+
+#xref VIGUID {9a6379d5-328f-4227-a0b5-4923b4ceafa7}
+#xref VSGUID {1de822b3-07ba-4d49-8091-0535ea8bd493}

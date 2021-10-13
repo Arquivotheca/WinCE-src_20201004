@@ -1,0 +1,359 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// BthAPI.idl : IDL source for BthAPI.dll
+//
+
+cpp_quote("//")
+cpp_quote("// Copyright (C) Microsoft Corporation, All rights reserved.")
+cpp_quote("//")
+
+// This file will be processed by the MIDL tool to
+// produce the type library (bthapi.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+cpp_quote("#ifndef __BTHSDPDEF_H__")
+#include "bthsdpdef.h"
+cpp_quote("#define __BTHSDPDEF_H__")
+cpp_quote("#endif")
+
+interface ISdpNodeContainer;
+interface ISdpRecord;
+
+#define CASE_FROM_TYPE(_type, _specifictype) (((_type) << 16) | (_specifictype))
+
+struct SdpString {
+   [size_is(length)] CHAR *val;
+   ULONG length;
+};
+
+typedef struct SdpString SdpString;
+
+typedef [switch_type(unsigned long)] union NodeDataUnion {
+    // the nil type contains no data, so no storage is necessary
+
+    // 16 byte integers
+    [case(CASE_FROM_TYPE(SDP_TYPE_INT, SDP_ST_INT128))] SDP_LARGE_INTEGER_16 int128;
+    [case(CASE_FROM_TYPE(SDP_TYPE_UINT, SDP_ST_UINT128))] SDP_ULARGE_INTEGER_16 uint128;
+
+    // UUID 
+    [case(CASE_FROM_TYPE(SDP_TYPE_UUID, SDP_ST_UUID128))] GUID uuid128;
+    [case(CASE_FROM_TYPE(SDP_TYPE_UUID, SDP_ST_UUID32))] ULONG uuid32;
+    [case(CASE_FROM_TYPE(SDP_TYPE_UUID, SDP_ST_UUID16))] USHORT uuid16;
+
+    // 8 byte integers
+    [case(CASE_FROM_TYPE(SDP_TYPE_INT, SDP_ST_INT64))] LONGLONG int64;
+    [case(CASE_FROM_TYPE(SDP_TYPE_UINT, SDP_ST_UINT64))] ULONGLONG uint64;
+
+    // 4 byte integers
+    [case(CASE_FROM_TYPE(SDP_TYPE_INT, SDP_ST_INT32))] LONG int32;
+    [case(CASE_FROM_TYPE(SDP_TYPE_UINT, SDP_ST_UINT32))] ULONG uint32;
+
+    // 2 byte integers
+    [case(CASE_FROM_TYPE(SDP_TYPE_INT, SDP_ST_INT16))] SHORT int16;
+    [case(CASE_FROM_TYPE(SDP_TYPE_UINT, SDP_ST_UINT16))] USHORT uint16;
+
+    // 1 bytes integers
+    [case(CASE_FROM_TYPE(SDP_TYPE_INT, SDP_ST_INT8))] CHAR int8;
+    [case(CASE_FROM_TYPE(SDP_TYPE_UINT, SDP_ST_UINT8))] UCHAR uint8;
+
+    // Boolean
+    [case(CASE_FROM_TYPE(SDP_TYPE_BOOLEAN, SDP_ST_NONE))] UCHAR booleanVal;
+
+    // string 
+    [case(CASE_FROM_TYPE(SDP_TYPE_STRING, SDP_ST_NONE))] SdpString str;
+
+    // URL
+    [case(CASE_FROM_TYPE(SDP_TYPE_URL, SDP_ST_NONE))] SdpString url;
+
+    // Sequence 
+    // Alt list
+    [case(CASE_FROM_TYPE(SDP_TYPE_CONTAINER, SDP_ST_NONE))] ISdpNodeContainer *container;
+
+    // Nil
+    [case(CASE_FROM_TYPE(SDP_TYPE_NIL, SDP_ST_NONE))] ;
+
+} NodeDataUnion;
+
+typedef struct NodeData {
+    USHORT type;
+    USHORT specificType;
+	[switch_is(CASE_FROM_TYPE(type, specificType))] NodeDataUnion u;
+} NodeData;
+
+enum BthDeviceStringType 
+{
+	BthDeviceStringTypeFriendlyName,
+	BthDeviceStringTypeDeviceName,
+   BthDeviceStringTypeDisplay,
+   BthDeviceStringTypeClass,
+   BthDeviceStringTypeAddress
+};
+
+cpp_quote("#ifndef __BTHDEVICEINFO_DEFINED__")
+cpp_quote("#define __BTHDEVICEINFO_DEFINED__")
+#include <PSHPACK1.H>
+typedef struct _BthDeviceInfo {
+    ULONGLONG  btAddress;                                  // bt_addr of remote device.
+    ULONG      cod;                                        // class of device.
+    ULONGLONG  lmpSupportedFeatures;
+    CHAR       name[248];
+} BthDeviceInfo;
+#include <POPPACK.H>
+cpp_quote("#endif // __BTHDEVICEINFO_DEFINED__")
+
+	[
+		object,
+		uuid(57134AE6-5D3C-462D-BF2F-810361FBD7E7),
+	
+		helpstring("ISdpWalk Interface"),
+		pointer_default(unique)
+	]
+	interface ISdpWalk : IUnknown
+	{
+		[helpstring("method WalkNode")] HRESULT WalkNode([in] NodeData *pData, [in] ULONG state);
+		[helpstring("method WalkStream")] HRESULT WalkStream([in] UCHAR elementType, [in] ULONG elementSize, [in, size_is(elementSize)] UCHAR *pStream);
+	};
+	[
+		object,
+		uuid(43F6ED49-6E22-4F81-A8EB-DCED40811A77),
+	
+		helpstring("ISdpNodeContainer Interface"),
+		pointer_default(unique)
+	]
+	interface ISdpNodeContainer : IUnknown
+	{
+		[helpstring("method CreateStream")] HRESULT CreateStream([out] UCHAR **ppStream, [out] ULONG *pSize);
+		[helpstring("method WriteStream")] HRESULT WriteStream([in] UCHAR *pStream, [out] ULONG *pNumBytesWritten);
+		[helpstring("method AppendNode")] HRESULT AppendNode([in] NodeData *pData);
+		[helpstring("method GetType")] HRESULT GetType([out] NodeContainerType *pType);
+		[helpstring("method SetType")] HRESULT SetType([in] NodeContainerType type);
+		[helpstring("method Walk")] HRESULT Walk([in] ISdpWalk *pWalk);
+		[helpstring("method SetNode")] HRESULT SetNode([in] ULONG nodeIndex, [in] NodeData *pData);
+		[helpstring("method GetNode")] HRESULT GetNode([in] ULONG nodeIndex, [out] NodeData *pData);
+		[helpstring("method LockContainer")] HRESULT LockContainer([in] UCHAR lock);
+		[helpstring("method GetNodeCount")] HRESULT GetNodeCount([out] ULONG *pNodeCount);
+		[helpstring("method CreateFromStream")] HRESULT CreateFromStream([in, size_is(size)] UCHAR *pStream, [in] ULONG size);
+		[helpstring("method GetNodeStringData")] HRESULT GetNodeStringData([in] ULONG nodeIndex, [in, out] NodeData *pData);
+		[helpstring("method GetStreamSize")] HRESULT GetStreamSize([out] ULONG *pSize);
+	};
+
+cpp_quote("//")
+cpp_quote("// flags for fConnect in SdpSearch::Connect")
+cpp_quote("//")
+cpp_quote("#define SDP_SEARCH_LOCAL    (0x00000001)")
+cpp_quote("#define SDP_SEARCH_CACHED   (0x00000002)")
+
+	[
+		object,
+		uuid(D93B6B2A-5EEF-4E1E-BECF-F5A4340C65F5),
+	
+		helpstring("ISdpSearch Interface"),
+		pointer_default(unique)
+	]
+	interface ISdpSearch : IUnknown
+	{
+		[helpstring("method Begin")] HRESULT Begin(ULONGLONG *pAddrss, ULONG fConnect);
+		[helpstring("method End")] HRESULT End();
+		[helpstring("method ServiceSearch")] HRESULT ServiceSearch([in, size_is(listSize)] SdpQueryUuid *pUuidList, 
+                                                                 [in] ULONG listSize, 
+                                                                 [out] ULONG *pHandles, 
+                                                                 [in, out] USHORT *pNumHandles);
+		[helpstring("method AttributeSearch")] HRESULT AttributeSearch([in] ULONG handle, 
+                                                                     [in, size_is(numRanges)] SdpAttributeRange *pRangeList, 
+                                                                     [in] ULONG numRanges, 
+                                                                     [out] ISdpRecord **ppSdpRecord);
+		[helpstring("method ServiceAndAttributeSearch")] HRESULT ServiceAndAttributeSearch([in, size_is(listSize)] SdpQueryUuid *pUuidList, 
+                                                                                         [in] ULONG listSize, 
+                                                                                         [in, size_is(numRanges)] SdpAttributeRange *pRangeList, 
+                                                                                         [in] ULONG numRanges, 
+                                                                                         [out] ISdpRecord ***pppSdpRecord,
+                                                                                         [out] ULONG *pNumRecords);
+	};
+	[
+		object,
+		uuid(A6ECD9FB-0C7A-41A3-9FF0-0B617E989357),
+	
+		helpstring("ISdpStream Interface"),
+		pointer_default(unique)
+	]
+	interface ISdpStream : IUnknown
+	{
+#if defined (UNDER_CE) || defined (WINCE_EMULATION)
+		[helpstring("method Validate")] HRESULT Validate([in, size_is(size)] UCHAR *pStream, [in] ULONG size, [out] ULONG *pErrorByte);
+#else
+		[helpstring("method Validate")] HRESULT Validate([in, size_is(size)] UCHAR *pStream, [in] ULONG size, [out] ULONG_PTR *pErrorByte);
+#endif
+		[helpstring("method Walk")] HRESULT Walk([in, size_is(size)] UCHAR *pStream, [in] ULONG size, [in] ISdpWalk *pWalk);
+
+		[helpstring("method RetrieveRecords")] HRESULT RetrieveRecords([in] UCHAR *pStream, [in] ULONG size, [in, out] ISdpRecord **ppSdpRecords, [in, out] ULONG *pNumRecords);
+
+		[helpstring("method RetrieveUuid128")] HRESULT RetrieveUuid128([in] UCHAR *pStream, [out] GUID* pUuid128);
+
+		[helpstring("method RetrieveUint16")] HRESULT RetrieveUint16([in] UCHAR *pStream, [out] USHORT *pUint16);
+		[helpstring("method RetrieveUint32")] HRESULT RetrieveUint32([in] UCHAR *pStream, [out] ULONG *pUint32);
+		[helpstring("method RetrieveUint64")] HRESULT RetrieveUint64([in] UCHAR *pStream, [out] ULONGLONG *pUint64);
+		[helpstring("method RetrieveUint128")] HRESULT RetrieveUint128([in] UCHAR *pStream, [out] PSDP_ULARGE_INTEGER_16 pUint128);
+
+		[helpstring("method RetrieveInt16")] HRESULT RetrieveInt16([in] UCHAR *pStream, [out] SHORT *pInt16);
+		[helpstring("method RetrieveInt32")] HRESULT RetrieveInt32([in] UCHAR *pStream, [out] LONG *pInt32);
+		[helpstring("method RetrieveInt64")] HRESULT RetrieveInt64([in] UCHAR *pStream, [out] LONGLONG *pInt64);
+		[helpstring("method RetrieveInt128")] HRESULT RetrieveInt128([in] UCHAR *pStream, [out] PSDP_LARGE_INTEGER_16 pInt128);
+		[helpstring("method ByteSwapUuid128")] HRESULT ByteSwapUuid128([in] GUID *pInUuid128, [out] GUID *pOutUuid128);
+		[helpstring("method ByteSwapUint128")] HRESULT ByteSwapUint128([in] PSDP_ULARGE_INTEGER_16 pInUint128, [out] PSDP_ULARGE_INTEGER_16 pOutUint128);
+		[helpstring("method ByteSwapUint64")] HRESULT ByteSwapUint64([in] ULONGLONG inUint64, [out] ULONGLONG* pOutUint64);
+		[helpstring("method ByteSwapUint32")] HRESULT ByteSwapUint32([in] ULONG uint32, [out] ULONG *pUint32);
+		[helpstring("method ByteSwapUint16")] HRESULT ByteSwapUint16([in] USHORT uint16, [out] USHORT *pUint16);
+		[helpstring("method ByteSwapInt128")] HRESULT ByteSwapInt128([in] PSDP_LARGE_INTEGER_16 pInInt128, [out] PSDP_LARGE_INTEGER_16 pOutInt128);
+		[helpstring("method ByteSwapInt64")] HRESULT ByteSwapInt64([in] LONGLONG inInt64, [out] LONGLONG *pOutInt64);
+		[helpstring("method ByteSwapInt32")] HRESULT ByteSwapInt32([in] LONG int32, [out] LONG *pInt32);
+		[helpstring("method ByteSwapInt16")] HRESULT ByteSwapInt16([in] SHORT int16, [out] SHORT *pInt16);
+ 
+                [helpstring("method NormalizeUuid")] HRESULT NormalizeUuid([in] NodeData *pDataUuid, [out] GUID* pNormalizeUuid);
+
+		[helpstring("method RetrieveElementInfo")] HRESULT RetrieveElementInfo([in] UCHAR *pStream, [out] SDP_TYPE *pElementType, [out] SDP_SPECIFICTYPE *pElementSpecificType, [out] ULONG *pElementSize, [out] ULONG *pStorageSize, [out] UCHAR **ppData);
+                [helpstring("method VerifySequenceOf")] HRESULT VerifySequenceOf([in] UCHAR *pStream, [in] ULONG size, [in] SDP_TYPE ofType, [in] UCHAR *pSpecificSizes, [out] ULONG *pNumFound);
+
+	};
+	[
+		object,
+		uuid(10276714-1456-46D7-B526-8B1E83D5116E),
+	
+		helpstring("ISdpRecord Interface"),
+		pointer_default(unique)
+	]
+	interface ISdpRecord : IUnknown
+	{
+		[helpstring("method CreateFromStream")] HRESULT CreateFromStream([in, size_is(size)] UCHAR *pStream, [in] ULONG size);
+		[helpstring("method WriteToStream")] HRESULT WriteToStream([out] UCHAR **ppStream, [out] ULONG *pStreamSize, ULONG preSize, ULONG postSize);
+		[helpstring("method SetAttribute")] HRESULT SetAttribute([in] USHORT attribute, [in] NodeData *pNode);
+		[helpstring("method SetAttributeFromStream")] HRESULT SetAttributeFromStream([in] USHORT attribute, [in, size_is(size)] UCHAR *pStream, [in] ULONG size);
+		[helpstring("method GetAttribute")] HRESULT GetAttribute([in] USHORT attribute, [in, out] NodeData *pNode);
+		[helpstring("method GetAttributeAsStream")] HRESULT GetAttributeAsStream([in] USHORT attribute, [out] UCHAR **ppStream, [out] ULONG *pSize);
+		[helpstring("method Walk")] HRESULT Walk([in] ISdpWalk *pWalk);
+		[helpstring("method GetAttributeList")] HRESULT GetAttributeList([out] USHORT **ppList, [out] ULONG *pListSize);
+		[helpstring("method GetString")] HRESULT GetString(USHORT offset, USHORT *pLangId, WCHAR **ppString);
+		[helpstring("method GetIcon")] HRESULT GetIcon(int cxRes, int cyRes, HICON *phIcon);
+      [helpstring("method GetServiceClass")] HRESULT GetServiceClass([out] LPGUID pServiceClass);
+	};
+	[
+		object,
+		uuid(5BD0418B-D705-4766-B215-183E4EADE341),
+	
+		helpstring("IBluetoothDevice Interface"),
+		pointer_default(unique)
+	]
+	interface IBluetoothDevice : IUnknown
+	{
+		[helpstring("method Initialize")] HRESULT Initialize(const BthDeviceInfo* pInfo);
+		[helpstring("method GetInfo")] HRESULT GetInfo(BthDeviceInfo *pInfo);
+		[helpstring("method GetString")] HRESULT GetString(enum BthDeviceStringType type, WCHAR **ppString);
+		[helpstring("method SetString")] HRESULT SetString(enum BthDeviceStringType type, WCHAR *ppString);
+		[helpstring("method GetIcon")] HRESULT GetIcon(int cxRes, int cyRes, HICON *phIcon);
+      [helpstring("method GetApprovedServices")] HRESULT GetApprovedServices(GUID *pServices, ULONG *pServiceCount);
+      [helpstring("method GetPassKey")] HRESULT GetPassKey(HWND hwndParent, UCHAR* pPassKey, UCHAR *pPassKeyLength);
+	};
+	[
+		object,
+		uuid(5F0FBA2B-8300-429D-99AD-96A2835D4901),
+	
+		helpstring("IBluetoothAuthenticate Interface"),
+		pointer_default(unique)
+	]
+	interface IBluetoothAuthenticate : IUnknown
+	{
+	};
+
+
+
+
+[
+	uuid(00BC26C8-0A87-41d0-82BA-61FF9E0B1BB5),
+	version(1.0),
+	helpstring("bthapi 1.0 Type Library")
+]
+library BTHAPILib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(D5CA76C5-0DEE-4453-96A1-E603C2401766),
+		helpstring("SdpNodeContainer Class")
+	]
+	coclass SdpNodeContainer
+	{
+		interface ISdpNodeContainer;
+	};
+	[
+		uuid(3B898402-857E-4e41-9145-BC35431B7B4D),
+		helpstring("SdpSearch Class")
+	]
+	coclass SdpSearch
+	{
+		interface ISdpSearch;
+	};
+	[
+		uuid(ED384010-59AE-44c7-8FCA-F3DF22CDCD28),
+		helpstring("SdpWalk Class")
+	]
+	coclass SdpWalk
+	{
+		interface ISdpWalk;
+	};
+	[
+		uuid(249797FA-19DB-4dda-94D4-E0BCD30EA65E),
+		helpstring("SdpStream Class")
+	]
+	coclass SdpStream
+	{
+		interface ISdpStream;
+	};
+	[
+		uuid(ACD02BA7-9667-4085-A100-CC6ACA9621D6),
+		helpstring("SdpRecord Class")
+	]
+	coclass SdpRecord
+	{
+		interface ISdpRecord;
+	};
+
+#if ! (defined (UNDER_CE) || defined (WINCE_EMULATION))
+	[
+		uuid(6fb95bcb-a682-4635-b07e-22435174b893),
+		helpstring("ShellPropSheetExt class")
+	]
+	coclass ShellPropSheetExt
+	{
+		interface IShellPropSheetExt;
+	};
+   
+	[
+		uuid(B25EDF40-5EBE-4590-A690-A42B13C9E8E1),
+		helpstring("BluetoothAuthenticate Class")
+	]
+	coclass BluetoothAuthenticate
+	{
+		[default] interface IBluetoothAuthenticate;
+	};
+	[
+		uuid(DA39B330-7F45-433A-A19D-33393017662C),
+		helpstring("BluetoothDevice Class")
+	]
+	coclass BluetoothDevice
+	{
+		[default] interface IBluetoothDevice;
+	};
+#endif // UNDER_CE
+};

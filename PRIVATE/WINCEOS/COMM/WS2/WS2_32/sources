@@ -1,0 +1,58 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!if 0
+!endif
+
+
+!IF ("$(_TGTOS)" == "CE")
+TARGETNAME=ws2
+TARGETDEFNAME=ws2
+DEFFILE=ws2.def
+TARGETTYPE=LIBRARY
+PREPROCESSDEFFILE=1
+
+TARGETLIBS= \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\cclib.lib
+
+!ENDIF
+CDEFINES=-DWINCEAFDMACRO -DWIN32_NO_OLE
+NOMIPS16CODE=1
+
+EXEENTRY=main
+DLLENTRY=dllentry
+
+CONDITIONAL_INCLUDES=issper16.h secpkg.h kerberos.h ntlmsp.h wchar.h
+
+INCLUDES=..\..\inc;..\..\winsock\secure\sslinc
+
+!IF ("$(WINCEPERF)" == "1")
+CDEFINES=$(CDEFINES) -DCEPERF_ENABLE -DPERFCOMM_WINSOCK
+INCLUDES=$(INCLUDES);$(_WINCEROOT)\private\winceos\inc
+!ENDIF
+
+SOURCES= \
+	select.c \
+	options.c \
+	gxy.c \
+	rnr.c \
+	install.c \
+	wceinit.c \
+	upcalls.c \
+	socket.c \
+	addr.c \
+	comm.c \
+	conn.c \
+	ipconst.c \
+	wsahwnd.c \
+
+WINCETARGETFILE0=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\ws2.def
+
+#xref VIGUID {e29dd3ce-c204-4c0d-9dcf-69f18ec9b90f}
+#xref VSGUID {0698369b-6592-425d-9481-1598f0cc2b02}

@@ -1,0 +1,15 @@
+#sample script file
+[BitBlt]
+
+[BitBlt]
+Source=bad
+
+[BitBlt]
+Source=bad,bad, bad
+
+[BitBlt]
+Source=Primary, bad, Primary
+
+[BitBlt]
+Source=Primary, System_Memory, Video_Memory
+

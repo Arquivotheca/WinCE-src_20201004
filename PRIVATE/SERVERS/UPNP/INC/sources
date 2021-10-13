@@ -1,0 +1,43 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!IF 0
+
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+NOLTCG=1
+TARGETNAME=upnpuuid
+TARGETTYPE=LIBRARY
+
+SYNCHRONIZE_BLOCK=1
+
+SDK_INC_PATH=$(_PUBLICROOT)\$(WINCEPROJ)\sdk\inc
+
+WINCETARGETFILES= \
+	$(SDK_INC_PATH)\upnp.idl \
+    $(SDK_INC_PATH)\upnphost.idl \
+	$(SDK_INC_PATH)\upnp.h \
+	$(SDK_INC_PATH)\upnphost.h \
+
+SOURCES= \
+    upnphost.idl \
+    upnp.idl \
+	upnp_i.c \
+	upnphost_i.c \

@@ -1,0 +1,48 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=D3DM_Interface
+TARGETTYPE=DYNLINK
+SYNCHRONIZE_DRAIN=1
+
+INCLUDES=                                                               \
+	..\..\includes;                                                     \
+	..\..\includes\TestCases;                                           \
+	..\..\..\..\inc;                                                    \
+	..\..\..\..\..\common\inc;                                          \
+	$(INCLUDES)                                                         \
+
+SOURCES=\
+    Test.cpp                                                            \
+    KatoUtils.cpp                                                       \
+    IDirect3DMobile.cpp                                                 \
+    IDirect3DMobileDevice.cpp                                           \
+    IDirect3DMobileIndexBuffer.cpp                                      \
+    IDirect3DMobileSurface.cpp                                          \
+    IDirect3DMobileTexture.cpp                                          \
+    IDirect3DMobileVertexBuffer.cpp                                     \
+
+SOURCELIBS=$(SOURCELIBS)                                                \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMatrixManip.lib        \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBadTLVertTestCases.lib \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMInitializer.lib        \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTestWindow.lib         \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBufferTools.lib        \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMSurfaceTools.lib       \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDataTypes.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTextureTools.lib       \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMColorConv.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMPSLRandomizer.lib      \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\DeltaBMP.lib               \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDebugOutput.lib        \
+
+TARGETLIBS=$(TARGETLIBS)                                                \
+       $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib                 \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib                   \
+
+

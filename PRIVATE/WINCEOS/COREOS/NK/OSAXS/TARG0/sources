@@ -1,0 +1,46 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=osaxst0
+DEFFILE=osaxst0.def
+TARGETTYPE=DYNLINK
+DLLENTRY=OsaxsT0DLLEntry
+TARGETLIBS=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\fulllibc.lib
+
+NOLTCG=1
+
+WINCEOEM=1
+WINCEPROJ=COMMON
+
+# Use static C runtime 
+CDEFINES=$(CDEFINES) -QRimplicit-import-
+
+# WARNING: Dont include -DWINCEMACRO, since
+# we dont want to allow the use of PSL calls in OsAxs.
+CDEFINES=$(CDEFINES) -DTARGET_BUILD -DBUILDING_OSAXS
+INCLUDES=.;..;..\..\inc;..\..\kernel\sh
+
+LDEFINES=-subsystem:native /DEBUG /DEBUGTYPE:FIXUP
+
+!IF "$(_TGTCPUFAMILY)" == "MIPS"
+AFPUDEFINES=-DMIPS_HAS_FPU $(AFPUDEFINES)
+CFPUDEFINES=-DMIPS_HAS_FPU $(CFPUDEFINES)
+!ENDIF
+
+SOURCES=            \
+    initt0.cpp          \
+    ..\DwDmpGen.cpp     \
+    ..\except.cpp       \
+    ..\ExceptCommon.cpp \
+    ..\flexptmi.cpp     \
+    ..\mem.cpp          \
+    ..\memcommon.cpp    \
+    ..\targdbg.cpp      \
+    ..\targexcept.cpp   \
+    ..\strings.cpp      \
+    ..\unwinder.cpp

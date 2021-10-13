@@ -1,0 +1,20 @@
+#
+# Sources file for the simplest possible DATK sample program
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+#
+# This source code is licensed under Microsoft Shared Source License
+# Version 1.0 for Windows CE.
+# For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+#
+# Author: Michael Rockhold (michrock), Microsoft Corp., 15 April 2004.
+#
+
+TARGETNAME=SimplestSample
+TARGETTYPE=MANAGED_EXE
+
+MANAGED_REFERENCES=$(_MANAGED_FRAMEWORK_DIR)\mscorlib.dll;$(_MANAGED_FRAMEWORK_DIR)\system.dll;$(_MANAGED_FRAMEWORK_DIR)\system.data.dll;$(_MANAGED_FRAMEWORK_DIR)\system.windows.forms.dll;$(_MANAGED_FRAMEWORK_DIR)\system.drawing.dll;$(_PROJECTOAKROOT)\target\$(_TGTCPU)\$(WINCEDEBUG)\Microsoft.WindowsCE.Win32API.dll;$(_PROJECTOAKROOT)\target\$(_TGTCPU)\$(WINCEDEBUG)\Microsoft.WindowsCE.DATK.DLL
+
+SOURCES=\
+	SimplestSample.cs \
+

@@ -1,0 +1,51 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+PREPROCESSDEFFILE=1
+
+DEFFILE=pcx500.def
+
+TARGETDEFNAME=pcx500
+
+TARGETNAME=pcx500
+
+TARGETTYPE=LIBRARY
+
+CDEFINES=$(CDEFINES) -DNDIS_MINIPORT_DRIVER -DRTFAST -DWIN_CE -DUNDER_CE -DNDISVER=5
+
+#
+# For platforms that don't support QueryPerformanceCounter()
+#
+!IFDEF QUERY_PERFORMANCE_COUNTER_NOT_SUPPORTED
+CDEFINES=$(CDEFINES) -DCE_FLAG_USE_NDISM_SLEEP
+!ENDIF
+
+INCLUDES= \
+	..\inc;
+
+SOURCES=\
+	aironet.cpp	\
+	card.cpp	\
+	driver.cpp	\
+	Support.cpp	\
+	CardX500.cpp	\
+	CmdX500.cpp	\
+	oidX500.cpp	\
+	flash.cpp	\
+	pci.cpp		\
+	debug.cpp	\
+	Send.cpp	\
+	Receive.cpp	\
+	pcx500.cpp	\
+	alloc.cpp	\
+	profile.cpp	\
+	wince.cpp	
+
+
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+

@@ -1,0 +1,33 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ndp
+TARGETTYPE=DYNLINK
+
+CDEFINES= \
+    -DNDIS51 \
+    -DUNICODE \
+    -D_UNICODE
+
+SOURCES= \
+    Ceddi.c\
+    ..\NDP.c
+    
+INCLUDES= \
+    ..\..\Sys; \
+    ..\..\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc;           
+
+TARGETLIBS= \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ndis.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ntcompat.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib
+
+RELEASETYPE=CETK

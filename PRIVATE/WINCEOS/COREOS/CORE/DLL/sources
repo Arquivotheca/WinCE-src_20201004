@@ -1,0 +1,70 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=coremain
+TARGETDEFNAME=coredll
+DEFFILE=coredll.def
+TARGETTYPE=LIBRARY
+PREPROCESSDEFFILE=1
+
+CDEFINES=-DWINCEMACRO -DCOREDLL
+NOMIPS16CODE=1
+INCLUDES=..\inc;..\..\inc;..\..\nk\inc
+
+CONDITIONAL_INCLUDES=shx\shx.h
+
+!IF "$(_TGTCPU)" == "SH4"
+ADEFINES=$(ADEFINES) -DSH_CPU=64
+!ENDIF
+!IF "$(_TGTCPU)" == "SH3"
+ADEFINES=$(ADEFINES) -DSH_CPU=48
+!ENDIF
+!IF "$(_TGTCPU)" == "SH3e"
+ADEFINES=$(ADEFINES) -DSH_CPU=62
+!ENDIF
+
+CFPUDEFINES=-DMIPS_HAS_FPU
+
+SOURCES= \
+    apis.c     \
+    coredll.cpp  \
+    time.c     \
+    random.c   \
+    strings.c  \
+    strsafew.c \
+    username.c \
+    coresecchk.c \
+    CePtrCoredll.cpp \
+    cnnclpth.c \
+
+MIPS_SOURCES= \
+    mips\intrlock.s \
+    mips\chandler.c
+
+SH_SOURCES= \
+    sh\intrlock.src \
+    sh\chandler.c
+
+PPC_SOURCES= \
+    ppc\chandler.c \
+    ppc\jmpuwind.s
+
+
+ARM_SOURCES= \
+    arm\intrlock.s \
+    arm\chandler.c
+
+x86_SOURCES= \
+    x86\exsup.c
+
+WINCETARGETFILE0=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\coredll.def
+
+#xref ModuleMembership coredll.dll
+#xref VIGUID {585d15c4-d7d4-4b30-a9c2-e1b70d420829}
+#xref VSGUID {c5ced50e-24f0-4134-b5f6-c185fc8fc930}

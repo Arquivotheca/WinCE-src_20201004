@@ -1,0 +1,50 @@
+XNIC
+
+XNIC is the simplest version NDIS miniport driver.
+This driver is designed for experimental purpose.
+
+
+
+Usage.
+
+Installing card
+
+s d ntapconfig -card-insert xnic
+    XNIC1 will come. Since there is no network (and DHCP server),
+    the IP address will be resolved to an auto-ip, 169.254.x.x
+
+s d ntapconfig -card-insert XX -dll xnic.dll
+    an adapter named XX1 will come.
+    You can create as many as NICs you want.
+
+s d ntapconfig -card-eject xnic1
+    ejecting XNIC1 (1st instance of XNIC inserted)
+    XNIC creates only 1 instance.
+    "Inserting couple of times" does not bring multiple NIC instances.
+
+s d ntapconfig -card-insert xnic -static 192.168.2.3
+    the NIC will get a static IP, 192.168.2.3.
+
+more options, check 's d ntapconfig -card-insert -?"
+
+
+
+
+
+Typical usage scenario
+
+s d ntapconfig -card-insert XNIC -static 192.168.1.2
+    XNIC1 adapter will come. its IP address will be 192.168.1.2
+    This will also create message queue, "X-OUT-XNIC1", and event "X-OUT-XNIC1-START"
+    When you give signal the "X-OUT-XNIC1-START" event (use SetEvent()),
+    all outgoing packets will be queued to the message queue "X-OUT-XNIC1".
+    Read this queue using ReadMsgQueue().
+    Currently, the queue can hold upto 8 packets.
+    If your application can read and de-queue messages fast enough,
+    this 8 buffer will give plenty enough size.
+
+The msgq and event names are constructed from the adapter names, so your apps
+can determine their names pretty easily.
+The XNIC also writes these names to the registry under HKLM\COMM\<name-of-the-NIC1>
+If there is a pre-existing entry in the above registry, XNIC simply sends
+the packets to the given msgq.

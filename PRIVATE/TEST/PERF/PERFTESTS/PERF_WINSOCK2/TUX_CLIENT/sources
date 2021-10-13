@@ -1,0 +1,108 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of your Microsoft Windows CE
+Source Alliance Program license form.  If you did not accept the terms of
+such a license, you are not authorized to use this source code.
+!endif
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+!ENDIF
+
+WINCEOEM=1
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+TARGETNAME=perf_winsock2_ipv4
+!ELSE
+TARGETNAME=perf_winsock2
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+!ENDIF
+TARGETTYPE=DYNLINK
+
+!IF "$(ENABLE_DEBUGGING_OUTPUT)" == "1"
+CDEFINES=$(CDEFINES) -DENABLE_DEBUGGING_OUTPUT
+!ENDIF
+
+!IF "$(SUPPORT_PERFLOGGER)" == "1"
+CDEFINES=$(CDEFINES) -DSUPPORT_PERFLOGGER
+!ENDIF
+
+SOURCES=\
+    tuxmain.cpp \
+    testproc.cpp \
+    resultlog.cpp \
+    version.rc
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+!IF 0
+--------------------------------------------------------------------
+Always Support IPv6 / Winsock2 when running on the desktop
+--------------------------------------------------------------------
+!ENDIF
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+!ENDIF
+
+INCLUDES=\
+    ..\lib\inc; \
+    ..\..\..\..\tools\perflog\inc; \
+    ..\..\..\..\common\inc
+
+TARGETLIBS=\
+    $(_SDKROOT)\nt\lib\x86\ws2_32.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perflog.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perf_winsock_lib.lib
+
+!ELSE
+
+!IF 0
+--------------------------------------------------------------------
+Always enable Kato when building for CE
+--------------------------------------------------------------------
+!ENDIF
+CDEFINES=$(CDEFINES) -DSUPPORT_KATO
+
+INCLUDES=\
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    ..\..\..\..\tools\perflog\inc; \
+    ..\..\..\..\common\inc; \
+    ..\lib\inc
+
+TARGETLIBS=\
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\iphlpapi.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perflog.lib \
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\winsock.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perf_winsock_lib_ipv4.lib
+!ELSE
+TARGETLIBS=$(TARGETLIBS) \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perf_winsock_lib.lib
+!ENDIF
+
+!IF "$(WINCEPERF)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)\ceperf.lib
+!ENDIF
+
+
+DLLENTRY=_DllMainCRTStartup
+
+!ENDIF
+

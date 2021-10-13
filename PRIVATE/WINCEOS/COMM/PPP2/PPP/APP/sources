@@ -1,0 +1,55 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!if 0
+!endif
+
+TARGETNAME=ppp2app
+TARGETTYPE=LIBRARY
+
+CDEFINES = $(CDEFINES) -DWINCEAFDMACRO -DWIN32_NO_OLE -DARPSENDAPI
+NOMIPS16CODE=1
+
+!IF ("$(MEMTRACKING)" == "1")
+CDEFINES = $(CDEFINES) -DMEMTRACKING
+!ENDIF
+
+
+INCLUDES= \
+	..\inc; \
+	..\..\..\inc; \
+	..\..\..\tcpipw\inc; \
+	..\..\..\security\inc;
+
+!IFDEF SP_REF_VERBOSE
+CDEFINES=$(CDEFINES) -DSP_REF_VERBOSE
+!ENDIF
+
+TARGETDEFNAME=ppp
+DEFFILE=ppp.def
+PREPROCESSDEFFILE=1
+COPYRES=1
+
+SOURCES=       \
+	dhcp.c		\
+	ip_intf.c  	\
+	layerfsm.c	\
+	option.c	\
+	ppp.c      	\
+        pppinit.c       \
+        ppp2app.rc	\
+	util.c     	\
+
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+WINCETARGETFILES=$(_RELEASELIBDIR)\$(TARGETNAME).res
+
+
+
+#xref VIGUID {7e24acfc-338f-4edb-8b26-ab5caa07f50b}
+#xref VSGUID {c04cd609-204c-4374-bf35-2860e1cc24ba}

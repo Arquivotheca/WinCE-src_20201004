@@ -1,0 +1,49 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+#define IDS_String_9962  100  // DrawTextClipRegion() use this
+
+STRINGTABLE
+BEGIN
+IDS_String_9962, "Directions to Carillon Point, Kirkland: From I-405, take exit #17: NE 70th Place.  Take a left at the first light and a left at the next light onto NE 70th.  Continue SW 1.5 miles to the intersection of Lake Washington Blvd, and the entrance to Carillon point.  Enter the development and follow the signs to hotel registration. The hotel is the second building on your right.From I-405, take exit #17:  NE 70th Place.  Take a left at the first light and a left at the next light onto NE 70th. Ann T. Wilson, Attorney at LawMs. Wilson concentrates her practice in estate planning, probate, and federal taxation. In her estate planning practice, Ms. Wilson assists clients"
+END
+
+PARIS0		BITMAP	"..\\..\\bitmaps\\paris0.bmp"
+UP		      BITMAP	"..\\..\\bitmaps\\up.bmp"
+GLOBE0		BITMAP   "..\\..\\bitmaps\\globe0.bmp"
+GLOBE1		BITMAP   "..\\..\\bitmaps\\globe1.bmp"
+GLOBE2		BITMAP   "..\\..\\bitmaps\\globe2.bmp"
+GLOBE3		BITMAP   "..\\..\\bitmaps\\globe3.bmp"
+GLOBE4		BITMAP   "..\\..\\bitmaps\\globe4.bmp"
+GLOBE5		BITMAP   "..\\..\\bitmaps\\globe5.bmp"
+GLOBE6		BITMAP   "..\\..\\bitmaps\\globe6.bmp"
+GLOBE7		BITMAP   "..\\..\\bitmaps\\globe7.bmp"
+GLOBE8		BITMAP   "..\\..\\bitmaps\\globe8.bmp"
+PARIS1		BITMAP	"..\\..\\bitmaps\\paris1.bmp"
+PARIS2		BITMAP	"..\\..\\bitmaps\\paris2.bmp"
+PARIS3		BITMAP	"..\\..\\bitmaps\\paris3.bmp"
+PARIS4		BITMAP	"..\\..\\bitmaps\\paris4.bmp"
+PARIS5		BITMAP	"..\\..\\bitmaps\\paris5.bmp"
+PARIS6		BITMAP	"..\\..\\bitmaps\\paris6.bmp"
+PARIS7		BITMAP	"..\\..\\bitmaps\\paris7.bmp"
+PARIS8		BITMAP	"..\\..\\bitmaps\\paris8.bmp"
+PARIS9		BITMAP	"..\\..\\bitmaps\\paris9.bmp"
+PARISZ		BITMAP	"..\\..\\bitmaps\\parisZ.bmp"
+BMP_GDI1    BITMAP   "..\\..\\bitmaps\\gdi_1.bmp"
+BMP_GDI4    BITMAP   "..\\..\\bitmaps\\gdi_4.bmp"
+BMP_GDI8    BITMAP   "..\\..\\bitmaps\\gdi_8.bmp"
+BMP_GDI24  BITMAP   "..\\..\\bitmaps\\gdi_24.bmp"
+JADE1    BITMAP   "..\\..\\bitmaps\\jade1.bmp"
+JADE4    BITMAP   "..\\..\\bitmaps\\jade4.bmp"
+JADE8    BITMAP   "..\\..\\bitmaps\\jade8.bmp"
+JADE24  BITMAP   "..\\..\\bitmaps\\jade24.bmp"
+JADE1_NEG    BITMAP   "..\\..\\bitmaps\\jade1_neg.bmp"
+JADE4_NEG    BITMAP   "..\\..\\bitmaps\\jade4_neg.bmp"
+JADE8_NEG    BITMAP   "..\\..\\bitmaps\\jade8_neg.bmp"
+JADE24_NEG  BITMAP   "..\\..\\bitmaps\\jade24_neg.bmp"
+

@@ -1,0 +1,58 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!IF 0
+
+
+Module Name:
+    sources.
+
+Abstract:
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+!IF 0
+Note on DOSYSGEN: the sysgen process runs "build" on this sources file to
+produce a LIB file, even though the end target will be a DLL or an EXE.  This
+is because COREDLL, which is linked implicitly to all such targets, can be
+componentized and we want to avoid invoking COREDLL APIs that may not be
+available after sysgen.  If you want to build and link this target AFTER the sysgen
+is complete, comment out the following line -- otherwise you will get a LIB
+file.
+!ENDIF
+
+DOSYSGEN = 0
+
+
+!IF 0
+ ##### NET2280 #####
+!ENDIF
+TARGETNAME=ufnlpbkmdd
+TARGETTYPE=LIBRARY
+
+
+TARGETLIBS = \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+
+
+INCLUDES   = \
+    $(_COMMONOAKROOT)\inc; \
+    $(_COMMONDDKROOT)\inc; \
+    ..\inc; \
+    
+
+SOURCES    = \
+    ufnloopback.cpp \
+    pipepair.cpp  \
+    config.cpp \
+
+

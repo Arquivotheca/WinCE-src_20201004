@@ -1,0 +1,86 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=kd
+DEFFILE=kd.def
+TARGETTYPE=DYNLINK
+DLLENTRY=KdDLLEntry
+TARGETLIBS=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\fulllibc.lib
+
+WINCEOEM=1
+WINCEPROJ=COMMON
+NOLTCG=1
+
+!IF "$(_TGTCPUFAMILY)"=="SH"
+CDEFINES=-DSPEED_HACK
+INCLUDES=shx
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+CDEFINES=-DSPEED_HACK
+INCLUDES=x86
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)"=="MIPS"
+INCLUDES=mips
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)"=="ARM"
+CDEFINES=-DSPEED_HACK
+INCLUDES=arm
+!ENDIF
+
+!IFDEF DBGOTHER
+CDEFINES=$(CDEFINES) -DDBGOTHER
+!ENDIF
+
+# Machine independent defines
+AFPUDEFINES=-DMIPS_HAS_FPU $(AFPUDEFINES)
+CFPUDEFINES=-DMIPS_HAS_FPU $(CFPUDEFINES)
+
+CDEFINES=$(CDEFINES) -DBUILDING_DEBUGGER
+INCLUDES=$(INCLUDES);..\inc;..\kernel\sh; ..\osaxs
+
+LDEFINES=-subsystem:native /DEBUG /DEBUGTYPE:FIXUP
+
+# Contrary to popular belief, THIS AFFECTS ARM AS WELL
+NOMIPS16CODE=1
+NOLIBC=1
+
+SOURCES=           \
+   dbg.c           \
+   kdapi.c         \
+   kdbreak.c       \
+   kdctrl.c        \
+   kddata.c        \
+   kdhandle.c      \
+   kdinit.c        \
+   kdmove.c        \
+   kdpacket.c      \
+   kdtrap.c        \
+   odebug.c        
+
+SH_SOURCES=        \
+   sh\kdkernel.c   \
+   sh\kdasm.src
+
+MIPS_SOURCES=      \
+   mips\kdkernel.c \
+   mips\kdasm.s
+
+x86_SOURCES=	   \
+   x86\kdkernel.c  \
+   x86\dbgasync.c
+
+ARM_SOURCES=       \
+   arm\kdkernel.c  \
+   arm\kdasm.s
+
+#xref ModuleMembership kd.dll
+#xref VIGUID {cdf8a1fd-9e76-4878-8381-bc4d47623e4d}
+#xref VSGUID {9a6eaceb-9f7a-4dbe-8a35-07bc24be9f99}

@@ -1,0 +1,37 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ccrtlowi
+TARGETTYPE=LIBRARY
+WINCEOEM=1
+
+# Machine independent ALL LIBC defines
+CDEFINES=$(CDEFINES)  -DWIN32 -DUNDER_CE -DCOREDLL
+NOMIPS16CODE=1
+NOLTCG=1
+
+INCLUDES=..\h;..\..\..\inc
+
+!IF "$(_TGTCPU)" == "SH4"
+CDEFINES=$(CDEFINES) -Qsh4 -DSTRICT 
+!ENDIF
+
+!IF "$(_TGTCPU)" == "SH3"
+CDEFINES=$(CDEFINES) -Qsh3r8 -DSTRICT
+!ENDIF
+
+!IF "$(_TGTCPU)" == "PPC"
+CDEFINES=$(CDEFINES) -DSTRICT
+!ENDIF
+
+CDEFINES=$(CDEFINES) -DWINCEMACRO
+
+SOURCES= \
+    lseek.c    \
+    read.c     \
+    write.c    \

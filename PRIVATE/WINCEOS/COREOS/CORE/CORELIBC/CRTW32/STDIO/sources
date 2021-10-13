@@ -1,0 +1,59 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ccrtstio
+TARGETTYPE=LIBRARY
+WINCEOEM=1
+
+# Machine independent ALL LIBC defines
+CDEFINES=$(CDEFINES) -DWIN32 -DUNDER_CE -DCOREDLL
+NOMIPS16CODE=1
+NOLTCG=1
+
+CDEFINES=$(CDEFINES) -DWINCEMACRO
+
+CONDITIONAL_INCLUDES=
+INCLUDES=..\h;..\..\..\inc
+# WINCE_NO_STD_INCLUDES=1
+
+!IF "$(_TGTCPU)" == "SH4"
+CDEFINES=$(CDEFINES) -Qsh4 -DSTRICT
+!ENDIF
+
+!IF "$(_TGTCPU)" == "SH3"
+CDEFINES=$(CDEFINES) -Qsh3r8 -DSTRICT
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)" == "PPC"
+CDEFINES=$(CDEFINES) -DSTRICT
+!ENDIF
+
+## shared code reqd by all
+SOURCES=crtlib.c lverify.c
+
+## CORESTRW
+SOURCES=$(SOURCES) swscanf.c vswprint.c  winput.c woutput.c fgetwc.c fputwc.c ungetwc.c _getbuf.c ungetc.c getwclk.c putwclk.c ungetclk.c ungetwclk.c
+
+## CORESTRA
+SOURCES=$(SOURCES) sscanf.c vsprintf.c input.c output.c
+
+## internal fns reqd by both CORESIOW and CORESIOA 
+SOURCES=$(SOURCES) stioinit.c _sftbuf.c  _filbuf.c clearerr.c stream.c
+
+## external fns exposed by both CORESIOW and CORESIOA
+SOURCES=$(SOURCES) fflush.c fgetpos.c fread.c fseek.c fseeki64.c fsetpos.c ftell.c ftelli64.c fwrite.c setvbuf.c
+
+## files containing shared code by both SIOW and SIOA
+SOURCES=$(SOURCES) fgets.c fputs.c fopen.c
+
+## CORESIOW (requires CORESTRW)
+SOURCES=$(SOURCES) wscanf.c vfwprint.c fwscanf.c
+
+## CORESIOA (requires CORESTRA)
+SOURCES=$(SOURCES) scanf.c vfprintf.c fgetc.c fputc.c fscanf.c
+

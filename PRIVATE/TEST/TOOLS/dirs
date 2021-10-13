@@ -1,0 +1,40 @@
+DIRS=\
+   cett \
+   CETKConnLib \
+   perflog \
+   showmem \
+   HostsDB \
+   apitc \
+   gth \
+   shim \
+   intl \
+   itlgen \
+   RDPPerfConfig \
+   visualverify \
+   ResourceConsumer \
+
+DIRS_CE=\
+   keepaliv \
+   debugmsg \
+   cecopy \
+   cescript \
+   screencap \
+   prt_scrn \
+   perfHarness \
+   ppshcopy \
+   batparser \
+   scrrot \
+   eatcpu \
+   bsp \
+   highmem \
+   cpumeter \
+   datk \
+   Logger \
+   coverage \
+
+
+
+DIRS_NT=\
+   starcmd \
+   csvparse \
+

@@ -1,0 +1,38 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+
+#include "servrc.h"
+
+STRINGTABLE DISCARDABLE
+BEGIN
+	IDS_HELP1                  "Commands:\n\thelp - print this text"
+	IDS_HELP2                  "\tlist - lists loaded services\n\tload <service name> - activates a service that is inactive"
+	IDS_HELP3                  "\tstop <service instance> stops/pauses a service (does not unload)"
+	IDS_HELP4                  "\tstart <service instance> - starts/resumes a service"
+	IDS_HELP5                  "\trefresh <service instance> - causes service to refresh its config"
+	IDS_HELP6                  "\tunload <service instance> - causes service to be unloaded and removed"
+	IDS_HELP7                  "\tregister <service name> - service will be automatically loaded on next reboot"
+	IDS_HELP8                  "\tunregister <service name> - service will not be automatically loaded on next reboot"
+	IDS_HELP9                  "\tcommand <service name> [arg1 arg2 ...] - send service-specific command to service"
+	IDS_HELP10                 "\thelp <service name> - get information on what service-specific commands are supported"
+	IDS_HELP50                 "\n\t<service name> - service's name in the registry (i.e. HTTPD)\n\t<service instance> - particular instantiation (i.e. HTP0:)"
+	IDS_HELP51                 "Flags:\n\t-f <file name>\n\t-s silent\n\t-d output to debugger"
+  	IDS_USAGE                  "Usage:\n\tservices <command> <parameters>\n\tservices help"
+	IDS_NO_MEMORY              "Error: low on memory"
+	IDS_OPERATION_FAILED       "Operation failed.  Error code 0x%08x"
+	IDS_INVALID_SERVICE        "%s is not a valid service"
+	IDS_STATE_OFF              "Off"
+	IDS_STATE_RUNNING          "Running"
+	IDS_STATE_STARTING_UP      "Starting up"
+	IDS_STATE_SHUTTING_DOWN    "Shutting down"
+	IDS_STATE_UNLOADING        "Unloading"
+	IDS_STATE_UNINITIALIZED    "Uninitialized"
+	IDS_STATE_UNKNOWN          "Unknown"
+	IDS_NO_HELP_AVAILABLE      "No help available for %s"
+END

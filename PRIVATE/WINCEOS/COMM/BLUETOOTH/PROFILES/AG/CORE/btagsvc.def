@@ -1,0 +1,29 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+
+LIBRARY         BTAGSVC
+
+EXPORTS
+	BAG_Init                               @1
+	BAG_Deinit                             @2
+	BAG_Open                               @3
+	BAG_Close                              @4
+	BAG_Read                               @5
+	BAG_Write                              @6
+	BAG_Seek                               @7
+	BAG_IOControl                          @8
+	BAG_PowerUp                            @9
+	BAG_PowerDown                          @10
+	OnBthDeviceAdded                       @11
+	OnBthDeviceRemoved                     @12
+	BthAGSetAsDefaultHandsfree             @13   NONAME
+	BthAGPromptToSetAsHandsfreeDevice      @14   NONAME
+	BthAGFindDeviceGUID                    @15   NONAME
+	
+

@@ -1,0 +1,45 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+
+#include "httpdrc.h"
+STRINGTABLE DISCARDABLE
+BEGIN
+	// HTTP bodies sent to client on error cases
+	IDS_LINKTOPARENTDIR         "[To Parent Directory]"
+	IDS_MOVED                   "<html><head><title>Object Moved</title></head><body><h1>Object Moved</h1>This object has moved to %s</body></html>"
+	IDS_BADREQ                  "The request was not understood"
+	IDS_UNAUTHORIZED            "<html><head><title>Access Denied</title></head><body><B>Access denied.</B><P>Client does not have access to the resource on the server.</body></html>"
+	IDS_FORBIDDEN               "<html><head><title>Access Denied</title></head><body><B>Access denied.</B><P>The action requested is forbidden.</body></html>"
+	IDS_NOTFOUND                "<html><head><title>Not Found</title></head><body>The requested URL was not found.</body></html>"
+	IDS_INTERNALERR             "The server encountered an error."
+	IDS_NOTIMPLEM               "This method is not implemented."
+	IDS_METHOD_NOTALLOWED       "The method is not allowed."
+	IDS_CONFLICT                "Conflict"
+	IDS_LENGTHREQUIRED          "The length is required."
+	IDS_PRECONDITION_FAILED     "Precondition Failed."
+	IDS_REQUESTTOOLARGE         "The request is too large."
+	IDS_UNSUPPORTEDMEDIA        "The request media type is not supported."
+	IDS_LOCKED                  "The resource is locked."
+	IDS_SERVER_BUSY             "<html><head><title>Server Busy</title></head><body>Windows CE Web Server is too busy, cannot handle any more connections.</body></html>"
+	IDS_INSUFFICIENT_STORAGE    "<html><head><title>Insufficient Storage</title></head><body>There is insufficient storage to perform the requested action.</body></html>"
+
+	// Log messages
+	IDS_HTTPD_STARTUP           "The web server is starting up.\r\n"
+	IDS_HTTPD_SHUTDOWN_START    "The web server has begun shutdown sequence.\r\n"
+	IDS_HTTPD_SHUTDOWN_COMPLETE "The web server has completed shutdown sequence.\r\n"
+	IDS_HTTPD_EXCEPTION         "An internal error in the Web Server has caused exception 0x%08x.  GetLastError returns 0x%08x.\r\n"
+	IDS_HTTPD_FILT_EXCEPTION    "The ISAPI Filter %s has caused exception 0x%08x while executing %s.  GetLastError returns 0x%08x.\r\n"
+	IDS_HTTPD_EXT_EXCEPTION     "The ISAPI Extension %s has caused exception 0x%08x while executing %s.  GetLastError returns 0x%08x.\r\n"
+	IDS_HTTPD_NO_REGKEY         "There is no base web server registry key, which should be in HKLM\COMM\HTTPD.  The web server will not start up.\r\n"
+	IDS_HTTPD_DISABLED          "The web server has been disabled through the registry because HKLM\COMM\HTTPD\IsEnabled is zero.  The web server will not start up.\r\n"    
+	IDS_HTTPD_NO_VROOTS         "Warning:  The virtual roots table is missing or invalid.  At least one valid subkey must be present in HKLM\COMM\HTTPD\VRoots.  The web server will not be able to send files without a valid virtual roots table.\r\n"
+	IDS_HTTPD_BIND_ERROR        "The web server is unable to bind/listen to port %d, no connections can be accepted.  Error code = 0x%08x\r\n"
+	IDS_HTTPD_AUTH_INIT_ERROR   "The web server cannot initialize security libraries.  No authentication will be performed.  Error code = 0x%08x\r\n"
+	IDS_HTTPD_SSL_INIT_ERROR    "The web server cannot initialize SSL, no SSL actions will be performed.  Error code = 0x%08x\r\n"
+END

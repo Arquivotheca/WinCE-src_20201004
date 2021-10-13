@@ -1,0 +1,33 @@
+DIRS_CE=			\
+        1394			\
+	DDLX			\
+	CtrlBox			\
+	SmartCard		\
+	Keyboard		\
+        Mouse			\
+	Multiple		\
+	Serial			\
+	PCMCIA			\
+	PowerMan		\
+	USB			\
+	USBFN			\
+	Parallel		\
+	Storage			\
+	Touch			\
+	FSDMgr			\
+	DrvLoad			\
+	PartitionMgr		\
+	RegEnum			\
+        LED			\
+	pccard			\
+	DeviceMgr		\
+	BusEnum			\
+
+DIRS_NT=			\
+	SmartCard		\
+	Serial			\
+	CtrlBox			\
+	Parallel		\
+	1394			
+
+OPTIONAL_DIRS=

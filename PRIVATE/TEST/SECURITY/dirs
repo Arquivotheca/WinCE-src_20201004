@@ -1,0 +1,15 @@
+DIRS= libs 	\ 
+	capi 	\
+	capi2 	\
+	sspi 	\
+	schannel\	
+	tools	
+	
+
+
+DIRS_CE= webcli \
+	DataProtect \
+	credman \
+	lasslap \
+	accountdb
+

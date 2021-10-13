@@ -1,0 +1,50 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// Soaperr.idl : IDL source for the ISoapError interface
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (soapmsg.tlb) and marshalling code.
+
+// {EDABBFA8-E126-402d-B65D-4EFAC1405F6E}
+//  IMPLEMENT_OLECREATE(<<class>>, <<external_name>>, 
+//  0xedabbfa8, 0xe126, 0x402d, 0xb6, 0x5d, 0x4e, 0xfa, 0xc1, 0x40, 0x5f, 0x6e);
+
+
+
+#include "SoapMsgIds.h"
+
+#ifdef SOAP_INTERFACES
+
+LOCAL_INTERFACE(UUID_ISOAPERROR, SOAP_SDK_VERSION, "ISOAPError Interface")
+interface ISOAPError : IUnknown
+{
+	[propget, id(DISPID_SOAPERROR_CODE), helpstring("SOAP defined fault code")] 
+		HRESULT faultcode(
+				[out, retval] BSTR * bstrFaultcode);
+				
+	[propget, id(DISPID_SOAPERROR_STRING), helpstring("Brief explanation of the SOAP fault")] 
+		HRESULT faultstring(
+				[out, retval] BSTR * bstrFaultstring);
+				
+	[propget, id(DISPID_SOAPERROR_ACTOR), helpstring("Information about the source of the fault")] 
+		HRESULT faultactor(
+				[out, retval] BSTR * bstrActor);
+				
+	[propget, id(DISPID_SOAPERROR_DETAIL), helpstring("Detailed fault information")] 
+		HRESULT detail(
+				[out, retval] BSTR * bstrDetail);
+				
+	[propget, id(DISPID_SOAPERROR_NAMESPACE), helpstring("Namespace for the SOAP fault")] 
+		HRESULT faultcodeNS(
+				[out, retval] BSTR * bstrNamespace);
+
+};
+
+#endif

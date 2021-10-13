@@ -1,0 +1,47 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!IF 0 
+
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+!INCLUDE "sources.inc"
+
+TARGETNAME=VOIPCETK
+TARGETTYPE=DYNLINK
+DEFFILE=tux.def
+
+SYNCHRONIZE_BLOCK=1
+
+
+INCLUDES=$(INCLUDES);$(_PUBLICROOT)\VOIP\OAK\PHONE\VAIL\VOIPMANAGER\CORE;\
+					 $(_PROJECTOAKROOT)\inc;\
+					 $(_PROJECTSDKROOT)\inc;
+
+SOURCES=globals.cpp \
+        TuxTests.cpp \
+        test.cpp \
+       
+
+
+
+TARGETLIBS= $(TARGETLIBS) \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+	$(_PUBLICROOT)\voip\oak\lib\$(_CPUINDPATH)\exchangeclientguid.lib \

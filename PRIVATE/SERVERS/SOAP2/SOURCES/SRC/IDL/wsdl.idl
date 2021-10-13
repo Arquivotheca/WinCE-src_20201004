@@ -1,0 +1,396 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// wsdl.idl : IDL source for wsdlread.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (wsdlread.tlb) and marshalling code.
+
+#include "wsdlguid.h"
+
+#ifdef SOAP_INTERFACES
+
+	typedef 
+	enum {
+		smInput = -1,
+		smOutput = 0, 
+		smInOut = 1
+	} smIsInputEnum; 
+
+
+	typedef 
+	enum {
+	    // at the start we have the "non = xsd" types as shortcuts to use
+	enXSDUndefined=-1,
+	enXSDDOM=0,		// this is our indicator to use a DOM mapper
+	enXSDstring,
+	enXSDboolean,
+	enXSDfloat,
+	enXSDDouble,
+	enXSDdecimal,
+	enXSDtimeDuration,
+	enXSDrecurringDuration,
+	enXSDbinary,
+	enXSDuriReference,
+	enXSDid,
+	enXSDidRef,
+	enXSDentity,
+	enXSDQName,
+	enXSDcdata,
+	enXSDtoken,
+	enXSDlanguage,
+	enXSDidRefs,																								
+	enXSDentities,
+	enXSDnmtoken,
+	enXSDnmtokens,
+	enXSDname,
+	enXSDncname,
+	enXSDnotation,
+	enXSDinteger,
+	enXSDnonpositiveInteger,
+	enXSDlong,
+	enXSDint,
+	enXSDshort,
+	enXSDbyte,
+	enXSDnonNegativeInteger,
+	enXSDnegativeInteger,
+	enXSDunsignedLong,
+	enXSDunsignedInt,
+	enXSDunsignedShort,
+	enXSDunsignedByte,
+	enXSDpositiveInteger,
+	enXSDtimeInstant,
+	enXSDtime,
+	enXSDtimePeriod,
+	enXSDdate,
+	enXSDmonth,
+	enXSDyear,
+	enXSDcentury,
+	enXSDrecurringDate,
+	enXSDrecurringDay,
+	enXSDarray,
+	enXSDanyType,
+	enTKempty,
+	enXSDEndOfBuildin
+	} enXSDType ; 
+
+	typedef 
+	enum {
+		enDocumentLiteral = 0,
+		enDocumentEncoded = 0x1, 
+		enRPCLiteral = 0x2,
+		enRPCEncoded = 0x4,
+	} enEncodingStyle ; 
+
+	
+	interface ISoapTypeMapperFactory;
+
+
+	DUAL_INTERFACE(UUID_IHEADERHANDLER, SOAP_SDK_VERSION, "IHeaderHandler")
+	interface IHeaderHandler: IDispatch
+	{
+		[id(DISPID_HEADERWILLWRITE), helpstring("indicates if a header will be written")] HRESULT willWriteHeaders(
+				[out, retval] VARIANT_BOOL *pbWillWriteHeaders);
+	
+		[id(DISPID_HEADERSWRITE), helpstring("writes a header")] HRESULT writeHeaders([in] ISoapSerializer *pSerializer, [in] IDispatch *pObject);
+				
+		[id(DISPID_HEADERSREAD), helpstring("reads one header")] HRESULT readHeader([in] IXMLDOMNode *pHeaderNode, 
+														[in] IDispatch *pObject,
+														[out, retval] VARIANT_BOOL *pUnderstood);
+	};
+	
+
+
+	DUAL_INTERFACE(UUID_ISOAPTYPEMAPPER, SOAP_SDK_VERSION, "ISoapTypeMapper")
+	interface ISoapTypeMapper: IDispatch
+	{
+		[id(DISPID_TYPEMAPPER_INIT), helpstring("Initializes the soap type mapper")] HRESULT init(
+				[in] ISoapTypeMapperFactory* pFactory, 
+				[in] IXMLDOMNode * pSchema, 
+				[in] enXSDType	xsdType
+				);
+	
+		[id(DISPID_TYPEMAPPER_READ), helpstring("Reads a variant to be encoded")] HRESULT read(
+				[in] IXMLDOMNode * pNode, 
+				[in] BSTR bstrEncoding,
+				[in] enEncodingStyle encodingMode,				
+				[in] long lFlags, 
+				[out, retval] VARIANT * pvar);
+				
+		[id(DISPID_TYPEMAPPER_WRITE), helpstring("Writes the type value to the serializer")] HRESULT write(				
+				[in] ISoapSerializer* pSoapSerializer, 
+				[in] BSTR bstrEncoding,
+				[in] enEncodingStyle encodingMode,				
+				[in] long lFlags, 
+				[in] VARIANT * pvar);
+
+		[id(DISPID_TYPEMAPPER_VARTYPE), helpstring("returns the variant type that is expected")] HRESULT varType(				
+				[out, retval] long *pvtType); 
+
+	};
+
+	DUAL_INTERFACE(UUID_ISOAPTYPEMAPPER2, SOAP_SDK_VERSION, "ISoapTypeMapper")
+	interface ISoapTypeMapper2: ISoapTypeMapper
+	{
+		[id(DISPID_TYPEMAPPER_IID), helpstring("returns the interface IID for custom objects")] HRESULT iid([out, retval] BSTR * bstrIIDAsString); 
+	}
+
+	
+	DUAL_INTERFACE(UUID_ISOAPTYPEFACTORY, SOAP_SDK_VERSION, "ITypeFactoryInterface")
+	interface ISoapTypeMapperFactory: IDispatch
+	{
+		[id(DISPID_TYPEFACT_ADDSCHEMA), helpstring("method addSchema")] HRESULT addSchema(
+ 					[in] IXMLDOMNode *pSchemaNode
+ 					);
+
+		[id(DISPID_TYPEFACT_GETELEMENTMAPPER), helpstring("Finds a type mapper for the specified element")] HRESULT getElementMapperbyName(
+					[in] BSTR bstrElementName,
+					[in] BSTR bstrElementNamespace,
+					[out, retval] ISoapTypeMapper **ppSoapTypeMapper
+					);
+
+		[id(DISPID_TYPEFACT_GETTYPEMAPPER), helpstring("Finds a typemapper for the supplied type")] HRESULT getTypeMapperbyName(
+					[in] BSTR bstrTypeName,
+					[in] BSTR bstrTypeNamespace,
+					[out, retval] ISoapTypeMapper **ppSoapTypeMapper
+				);
+
+
+		[id(DISPID_TYPEFACT_GETELEMENTFROMNODE), helpstring("method getElementMapper")] HRESULT getElementMapper(
+ 					[in] IXMLDOMNode *pElementNode, 
+					[out, retval] ISoapTypeMapper **ppSoapTypeMapper
+					);
+
+		[id(DISPID_TYPEFACT_GETTYPEFROMNODE), helpstring("method getTypeMapper")] HRESULT getTypeMapper(
+ 					[in] IXMLDOMNode *pTypeNode, 
+					[out, retval] ISoapTypeMapper **ppSoapTypeMapper
+				);
+
+		[id(DISPID_TYPEFACT_ADDTYPE), helpstring("Adds a new typemapper to the typemaper factory")] HRESULT addType(
+				[in] BSTR bstrTypeName, 
+				[in] BSTR bstrTypeNamespace, 
+				[in] BSTR bstrProgID
+				);
+
+		[id(DISPID_TYPEFACT_ADDELEMENT), helpstring("Adds a new element mapper to the typemaper factory")] HRESULT addElement(
+				[in] BSTR bstrElementName, 
+				[in] BSTR bstrElementNamespace, 
+				[in] BSTR bstrProgID
+				);
+
+		[id(DISPID_TYPEFACT_GETMAPPER), helpstring("Retrieves the typemapper specified by the mapperID")] HRESULT getMapper(
+				[in] enXSDType xsdType,
+				[in] IXMLDOMNode * pSchemaNode,
+				[out, retval] ISoapTypeMapper **ppSoapTypeMapper
+				);
+
+		[id(DISPID_TYPEFACT_ADDTYPEWITHIID), helpstring("Adds a new typemapper for custom objects to the typemaper factory")] HRESULT addTypeObjectMapper(
+				[in] BSTR bstrTypeName, 
+				[in] BSTR bstrTypeNamespace, 
+				[in] BSTR bstrProgID,
+				[in] BSTR bstrIID
+				);
+
+		[id(DISPID_TYPEFACT_ADDELEMENTWITHIID), helpstring("Adds a new element mapper for custom objects to the typemaper factory")] HRESULT addElementObjectMapper(
+				[in] BSTR bstrElementName, 
+				[in] BSTR bstrElementNamespace, 
+				[in] BSTR bstrProgID,
+				[in] BSTR bstrIID
+				);
+	};
+	
+	LOCAL_INTERFACE(UUID_ISOAPMAPPER, SOAP_SDK_VERSION, "ISoapMapper Interface")
+	interface ISoapMapper : IUnknown
+	{
+		[propget, helpstring("message name property")] HRESULT messageName([out, retval] BSTR * pbstrMessageName);
+		[propget, helpstring("elementname property")] HRESULT elementName([out, retval] BSTR * pbstrElementName);
+		[propget, helpstring("partName property")] HRESULT partName([out, retval] BSTR * pbstrpartName);
+		[propget, helpstring("elementtype property")] HRESULT elementType([out, retval] BSTR * pbstrElementType);
+		[propget, helpstring("isInput property")] HRESULT isInput([out, retval] smIsInputEnum * pbIsInput);
+		[propget, helpstring("encoding attribute")] HRESULT encoding([out, retval] BSTR * pbstrEncodingStyle);
+		[propget, helpstring("comValue property")] HRESULT comValue([out, retval] VARIANT *pVarOut);
+		[propput, helpstring("comValue property")] HRESULT comValue([in] VARIANT varIn);
+		[propget, helpstring("dispatch callindex property - serverside WSML information")] HRESULT callIndex([out, retval] LONG *plCallIndex);
+		[propget, helpstring("parameterOrder property")] HRESULT parameterOrder([out, retval] LONG *plparaOrder);		
+		[propget, helpstring("namespace property")] HRESULT xmlNameSpace([out, retval] BSTR * pbstrxmlNameSpace);
+		[propget, helpstring("variant type property")] HRESULT variantType([out, retval] long *pvtType);
+		[helpstring("method Save")] HRESULT Save([in] ISoapSerializer *pISoapSerializer, BSTR bstrEncoding, enEncodingStyle enSaveStyle, BSTR bstrMessageNamespace, long lFlags);
+		[helpstring("method Load")] HRESULT Load([in] IXMLDOMNode *pNode, BSTR bstrEncoding, enEncodingStyle enStyle, BSTR bstrMessageNamespace);		
+	};
+
+	
+	LOCAL_INTERFACE(UUID_IENUMSOAPMAPPERS, SOAP_SDK_VERSION, "IEnumSoapMappers Interface")
+	interface IEnumSoapMappers : IUnknown
+	{
+		[helpstring("Get the next mapper on the list")] HRESULT Next(long celt, [out] ISoapMapper **ppSoapMapper, [out] long *pulFetched);
+		[helpstring("Skip the specified number of mappers")] HRESULT Skip(long celt);
+		[helpstring("Go back to the begining of the list")] HRESULT Reset();
+		[helpstring("Clone the list")] HRESULT Clone([out]IEnumSoapMappers **ppenum);
+	};
+
+
+	LOCAL_INTERFACE(UUID_IWSDLOPERATION, SOAP_SDK_VERSION, "IWSDLOperation Interface")
+	interface IWSDLOperation : IUnknown
+	{
+		[propget, helpstring("operation documentation property")] HRESULT documentation([out, retval] BSTR * bstrDocumentation);			
+		[propget, helpstring("operation name property")] HRESULT name([out, retval] BSTR * pbstrOperationName);
+		[propget, helpstring("operation soapaction property")] HRESULT soapAction([out, retval] BSTR * pbstrSoapAction);
+		[propget, helpstring("Object ProgID property")] HRESULT objectProgID([out, retval] BSTR * pbstrobjectProgID);
+		[propget, helpstring("Object methodname property")] HRESULT objectMethod([out, retval] BSTR * pbstrobjectMethod);
+		[propget, helpstring("Has this a Header property")] HRESULT hasHeader([out, retval] VARIANT_BOOL *pbHeader);
+		[propget, helpstring("Style attribute")] HRESULT style([out, retval] BSTR * pbstrstyle);
+		[propget, helpstring("property preferredEncoding - indicates the XML encoding used by default for client and server")]
+				 HRESULT preferredEncoding([out, retval] BSTR * pbstrpreferredEncoding);
+
+		[helpstring("Get a list of operation parts")] HRESULT GetOperationParts([out] IEnumSoapMappers **ppIEnumSoapMappers);
+		[helpstring("Invoke this operation")] HRESULT ExecuteOperation([in] ISoapReader *pISoapReader, [in] ISoapSerializer *pISoapSerializer);
+		[helpstring("Write the Soap Mapper information to the SoapSerializer")] HRESULT Save([in] ISoapSerializer *pISoapSerializer, VARIANT_BOOL vbInput);
+		[helpstring("Write the Soap Header information to the SoapSerializer")] HRESULT SaveHeaders([in] ISoapSerializer *pISoapSerializer, VARIANT_BOOL vbOutput);
+		[helpstring("Loads an incoming Soap message")] HRESULT Load([in] ISoapReader *pISoapReader, VARIANT_BOOL vbInput);
+		[helpstring("operation name (reference)"), hidden, local] const WCHAR * getNameRef();
+	};
+
+	LOCAL_INTERFACE(UUID_IENUMWSDLOPERATIONS, SOAP_SDK_VERSION, "IEnumWSDLOperations Interface")
+	interface IEnumWSDLOperations : IUnknown
+	{
+		[helpstring("Get the next operation on the list")] HRESULT Next(long celt, [out] IWSDLOperation **ppWSDLOperation, [out] long *pulFetched);
+		[helpstring("Skip the specified number of operations")] HRESULT Skip(long celt);
+		[helpstring("Go back to the begining of the list")] HRESULT Reset();
+		[helpstring("Clone the list")] HRESULT Clone([out] IEnumWSDLOperations **ppenum);
+		[helpstring("Find the specified operation")] HRESULT Find(BSTR bstrOperationToFind, [out] IWSDLOperation **ppIWSDLOperation);
+		[helpstring("Return the number of entries in the list"), hidden] HRESULT Size([out] long * pSize);
+	};
+
+
+
+	NOT_LOCAL_INTERFACE(UUID_IWSDLPORT, SOAP_SDK_VERSION, "IWSDLPort Interface")
+	interface IWSDLPort : IUnknown
+	{
+		[propget, helpstring("The name of the port")] HRESULT name([out, retval] BSTR * pbstrPortName);
+		[propget, helpstring("The Port address field")] HRESULT address([out, retval] BSTR * pbstrPortAddress);
+		[propget, helpstring("The port bindingstyle")] HRESULT bindStyle([out, retval] BSTR * pbstrbindStyle);
+		[propget, helpstring("The port transport")] HRESULT transport([out, retval] BSTR * pbstrtransport);
+		[propget, helpstring("port documentation property")] HRESULT documentation([out, retval] BSTR * bstrDocumentation);		
+		[helpstring("method GetSoapOperations")] HRESULT GetSoapOperations([out] IEnumWSDLOperations **ppIWSDLOperations);
+	};
+
+
+
+	LOCAL_INTERFACE(UUID_IENUMWSDLPORTS, SOAP_SDK_VERSION, "IEnumWSDLPortss Interface")
+	interface IEnumWSDLPorts : IUnknown
+	{
+		[helpstring("Get the next port on the list")] HRESULT Next(long celt, [out] IWSDLPort **ppWSDLPort, long *pulFetched);
+		[helpstring("Skip the specified number of ports")] HRESULT Skip(long celt);
+		[helpstring("Go back to the begining of the list")] HRESULT Reset();
+		[helpstring("Clone the list")] HRESULT Clone([out] IEnumWSDLPorts **ppenum);
+		[helpstring("Find the specified port")] HRESULT Find(BSTR bstrPortToFind,[out] IWSDLPort **ppIWSDLPort);
+	};
+
+
+
+	LOCAL_INTERFACE(UUID_IWSDLSERVICE, SOAP_SDK_VERSION, "IWSDLService Interface")
+	interface IWSDLService : IUnknown
+	{
+		[propget, helpstring("service name property")] HRESULT name([out, retval] BSTR * bstrServiceName);
+		[propget, helpstring("service documentation property")] HRESULT documentation([out, retval] BSTR * bstrDocumentation);
+		[helpstring("method GetSoapPorts")] HRESULT GetSoapPorts([out] IEnumWSDLPorts **ppIWSDLPorts);
+
+	};
+
+	LOCAL_INTERFACE(UUID_IENUMWSDLSERVICE, SOAP_SDK_VERSION, "IEnumWSDLService Interface")
+	interface IEnumWSDLService : IUnknown
+	{
+		[helpstring("Get the next service on the list")] HRESULT Next(long celt, [out] IWSDLService **ppWSDLService, long *pulFetched);
+		[helpstring("Skip the specified number of services")] HRESULT Skip(long celt);
+		[helpstring("Go back to the begining of the list")] HRESULT Reset();
+		[helpstring("Clone the list")] HRESULT Clone([out] IEnumWSDLService **ppenum);
+		[helpstring("Find the specified service")] HRESULT Find(BSTR bstrServiceToFind, [out] IWSDLService **ppWSDLService);
+
+	};
+	LOCAL_INTERFACE(UUID_IWSDLREADER, SOAP_SDK_VERSION, "IWSDLReader Interface")
+	interface IWSDLReader : IUnknown
+	{
+		[helpstring("Load a WSDL (&WSML) file into the reader")] HRESULT Load(BSTR bstrWSDLFileSpec, BSTR bstrWSMLFileSpec);
+		[helpstring("Get the list of Services in the WSDL file")] HRESULT GetSoapServices([out] IEnumWSDLService **ppWSDLServiceEnum);
+		[helpstring("Parse a Soap message")] HRESULT ParseRequest([in] ISoapReader *pSoapReader, 
+											[out] IWSDLPort		**ppIWSDLPort,
+											[out] IWSDLOperation **ppIWSDLOperation);
+
+		[helpstring("setProperty -> set's internal properties of the WSDLReader")] HRESULT setProperty(
+				[in] BSTR bstrPropertyName,
+				[in] VARIANT varPropValue);
+
+	};
+
+#endif
+
+#ifdef SOAP_COCLASSES 
+
+    LOCAL_COCLASS(CLSID_WSDLREADER, SOAP_SDK_VERSION, "WSDLReader Class")
+    coclass WSDLReader
+    {
+        [default] interface IWSDLReader;
+    };
+
+    LOCAL_COCLASS(CLSID_TYPEMAPPERFACT, SOAP_SDK_VERSION, "Typemapperfactory Class")
+    coclass SoapTypeMapperFactory
+    {
+        [default] interface ISoapTypeMapperFactory;
+    };
+
+    LOCAL_COCLASS(CLSID_ENUMWSDLSERVICE, SOAP_SDK_VERSION, "EnumWSDLService Class")
+    coclass EnumWSDLService
+    {
+        [default] interface IEnumWSDLService;
+    };
+
+    LOCAL_COCLASS(CLSID_WSDLSERVICE, SOAP_SDK_VERSION, "WSDLService Class")
+    coclass WSDLService
+    {
+        [default] interface IWSDLService;
+    };
+
+    LOCAL_COCLASS(CLSID_ENUMWSDLOPERATIONS, SOAP_SDK_VERSION, "EnumWSDLOperations Class")
+    coclass EnumWSDLOperations
+    {
+        [default] interface IEnumWSDLOperations;
+    };
+
+    LOCAL_COCLASS(CLSID_WSDLOPERATION, SOAP_SDK_VERSION, "WSDLOperation Class")
+    coclass WSDLOperation
+    {
+        [default] interface IWSDLOperation;
+    };
+
+    LOCAL_COCLASS(CLSID_SOAPMAPPER, SOAP_SDK_VERSION, "SoapMapper Class")
+    coclass SoapMapper
+    {
+        [default] interface ISoapMapper;
+    };
+
+    LOCAL_COCLASS(CLSID_ENUMSOAPMAPPER, SOAP_SDK_VERSION, "EnumSoapMapper Class")
+    coclass EnumSoapMappers
+    {
+        [default] interface IEnumSoapMappers;
+    };
+
+    LOCAL_COCLASS(CLSID_ENUMWSDLPORTS, SOAP_SDK_VERSION, "EnumWSDLPorts Class")
+    coclass EnumWSDLPorts
+    {
+        [default] interface IEnumWSDLPorts;
+    };
+    LOCAL_COCLASS(CLSID_WSDLPORT, SOAP_SDK_VERSION, "WSDLPort Class")
+    coclass WSDLPort
+    {
+        [default] interface IWSDLPort;
+    };
+
+#endif
+
+

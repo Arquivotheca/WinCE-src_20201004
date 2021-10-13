@@ -1,0 +1,5 @@
+DIRS=cdromtest \
+     cddatest \
+     disktest \
+     cdplayer \
+     flshwear

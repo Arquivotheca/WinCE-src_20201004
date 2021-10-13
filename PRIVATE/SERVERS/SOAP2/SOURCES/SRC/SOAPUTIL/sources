@@ -1,0 +1,58 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=SoapUtil
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+!INCLUDE ..\user.mk
+
+!IF ("$(_TGTOS)" == "NT")
+CDEFINES=$(CDEFINES) -DUNDER_CE -DDESKTOP_BUILD -D_WIN32_WINNT=0x0400
+!ENDIF
+
+INCLUDES= \
+    ..\..\inc\Idl; \
+    ..\..\inc\soapmsg; \
+    ..\..\inc\version; \
+    ..\..\inc\soaputil; \
+    ..\..\WinCEUtils; \
+    $(INCLUDES)
+
+
+SOURCES= \
+	registry.cpp \
+	ComDll.cpp \
+	Globals.cpp \
+	ClassFactory.cpp \
+	Utility.cpp \
+	Dispatchimpl.cpp \
+	Debug.cpp \
+	Linkedlist.cpp	\
+	typeinfomap.cpp	\
+	FileStream.cpp \
+	CritSect.cpp \
+	DoubleList.cpp \
+	dynarray.cpp \
+	xmlbase64.cpp \
+	errcoll.cpp \
+	xpathutil.cpp \
+	spinlock.cpp \
+	soapassert.cpp \
+	stackwalk.cpp \
+	strhash.cpp \
+	objcache.cpp \
+	ErrHndlr.cpp \
+	xsdtypes.cpp \
+	cvariant.cpp \
+	soaphead.cpp \
+	HResultMap.cpp \
+	charencoder.cpp \
+	encstream.cpp \
+        rwlock.cpp \
+	urlutil.cpp 

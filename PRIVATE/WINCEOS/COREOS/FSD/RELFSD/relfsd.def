@@ -1,0 +1,51 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY 	RELFSD
+
+EXPORTS
+    FSD_MountDisk=RELFSD_MountDisk
+    FSD_UnmountDisk=RELFSD_UnmountDisk
+    FSD_CreateDirectoryW=RELFSD_CreateDirectoryW
+    FSD_RemoveDirectoryW=RELFSD_RemoveDirectoryW
+    FSD_GetFileAttributesW=RELFSD_GetFileAttributesW
+    FSD_SetFileAttributesW=RELFSD_SetFileAttributesW
+    FSD_DeleteFileW=RELFSD_DeleteFileW
+    FSD_MoveFileW=RELFSD_MoveFileW
+    FSD_DeleteAndRenameFileW=RELFSD_DeleteAndRenameFileW
+    FSD_GetDiskFreeSpaceW=RELFSD_GetDiskFreeSpaceW
+    FSD_Notify=RELFSD_Notify
+    FSD_RegisterFileSystemFunction=RELFSD_RegisterFileSystemFunction
+    FSD_FindFirstFileW=RELFSD_FindFirstFileW
+    FSD_FindNextFileW=RELFSD_FindNextFileW
+    FSD_FindClose=RELFSD_FindClose
+    FSD_CreateFileW=RELFSD_CreateFileW
+    FSD_ReadFile=RELFSD_ReadFile
+    FSD_ReadFileWithSeek=RELFSD_ReadFileWithSeek
+    FSD_WriteFile=RELFSD_WriteFile
+    FSD_WriteFileWithSeek=RELFSD_WriteFileWithSeek
+    FSD_SetFilePointer=RELFSD_SetFilePointer
+    FSD_GetFileSize=RELFSD_GetFileSize
+    FSD_GetFileInformationByHandle=RELFSD_GetFileInformationByHandle
+    FSD_FlushFileBuffers=RELFSD_FlushFileBuffers
+    FSD_GetFileTime=RELFSD_GetFileTime
+    FSD_SetFileTime=RELFSD_SetFileTime
+    FSD_SetEndOfFile=RELFSD_SetEndOfFile
+    FSD_DeviceIoControl=RELFSD_DeviceIoControl
+    FSD_CloseFile=RELFSD_CloseFile
+    FSD_GetVolumeInfo=RELFSD_GetVolumeInfo
+	DSK_Init
+	DSK_Deinit=DSK_DeinitClose
+	DSK_Open=DSK_Dud
+	DSK_Close=DSK_DeinitClose
+	DSK_Read=DSK_Dud
+	DSK_Write=DSK_Dud
+	DSK_Seek=DSK_Dud
+	DSK_IOControl
+	DSK_PowerDown=DSK_Power
+	DSK_PowerUp=DSK_Power

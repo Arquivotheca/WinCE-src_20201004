@@ -1,0 +1,58 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=D3DM_DriverVerif
+TARGETTYPE=DYNLINK
+SYNCHRONIZE_DRAIN=1
+
+INCLUDES=                                                                 \
+	..\..\..\includes;                                                    \
+	..\..\..\..\..\inc;                                                   \
+	..\..\..\..\..\..\common\inc;                                         \
+	$(INCLUDES)                                                           \
+
+SOURCES=\
+    Test.cpp                                                              \
+    DriverVerif.cpp                                                       \
+    KatoUtils.cpp                                                         \
+
+SOURCELIBS=$(SOURCELIBS)                                                  \
+#
+# D3DM Test Case Libraries
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBlendTestCases.lib       \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMResManTestCases.lib      \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMStencilTestCases.lib     \
+#
+#
+# D3DM Test Utility Libraries
+#
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBlendTools.lib           \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBufferTools.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMInitializer.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMatrixManip.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTestWindow.lib           \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\QAD3DMX.lib                  \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDebugOutput.lib          \
+#
+#
+# Test Utility Libraries
+#
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\CaptureBMP.lib               \
+
+
+
+TARGETLIBS=$(TARGETLIBS)                                                  \
+       $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib                   \
+       $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib                      \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib                     \
+
+
+

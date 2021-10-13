@@ -1,0 +1,25 @@
+DIRS_CE=\
+   common \
+   utility \
+   bufperf \
+   database \
+   ram \
+   drivers \
+   fatfs \
+   reg \
+   tools \
+   udf \
+   trust  \
+   multhred \
+   notification \
+   fsd \
+   fsdtst \
+   readonly \
+   fsdmgr \
+   genfile \
+   GetCanonicalPathName \
+   LockFileEx \
+   LockFileExMisc
+
+DIRS_NT=\
+   tools

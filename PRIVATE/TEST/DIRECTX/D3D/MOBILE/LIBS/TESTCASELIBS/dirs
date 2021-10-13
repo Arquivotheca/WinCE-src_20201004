@@ -1,0 +1,22 @@
+DIRS= \
+    AlphaTestTestCases  \
+    BadTLVertTestCases  \
+    ClippingTestCases   \
+    ColorFillTestCases  \
+    CopyRectsTestCases  \
+    CullingTestCases    \
+    DepthBiasTestCases  \
+    DepthBufferTestCases\ 
+    FogTestCases        \
+    FVFTestCases        \
+    LightTestCases      \
+    LastPixelTestCases  \
+    MipMapTestCases     \
+    OverDrawTestCases   \
+    PrimRastTestCases   \
+    StretchRectTestCases\
+    SwapChainTestCases  \
+    TransformTestCases  \
+    TexStageTestCases   \
+    TexWrapTestCases    \
+

@@ -1,0 +1,10 @@
+DIRS_CE=\
+    AudioUty \
+    mixer \
+    wave \
+    gainclasses \
+    suggestions \
+
+DIRS_NT=\
+    suggestions \
+    suggestions_test\

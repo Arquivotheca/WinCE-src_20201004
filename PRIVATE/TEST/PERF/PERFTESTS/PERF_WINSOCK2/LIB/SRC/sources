@@ -1,0 +1,77 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of your Microsoft Windows CE
+Source Alliance Program license form.  If you did not accept the terms of
+such a license, you are not authorized to use this source code.
+!endif
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+!ENDIF
+
+WINCEOEM=1
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1" && !("$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI")
+TARGETNAME=perf_winsock_lib_ipv4
+!ELSE
+TARGETNAME=perf_winsock_lib
+CDEFINES=$(CDEFINES) -DSUPPORT_IPV6
+!ENDIF
+TARGETTYPE=LIBRARY
+
+SOURCES=\
+    consetup.cpp \
+    loglib.cpp \
+    tests.cpp \
+    commprot.cpp \
+    conntrk.cpp
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+INCLUDES=\
+    ..\inc; \
+    ..\..\..\..\..\common\inc
+
+TARGETLIBS=\
+    $(_SDKROOT)\nt\lib\x86\ws2_32.lib \
+
+!IF "$(SUPPORT_KATO)" == "1"
+TARGETLIBS=$(TARGETLIBS) \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+!ENDIF
+
+!ELSE
+
+CDEFINES=$(CDEFINES) -DSUPPORT_KATO
+
+INCLUDES=\
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    ..\..\..\..\..\common\inc; \
+    ..\inc;
+
+!IF "$(SUPPORT_IPV4_ONLY)" == "1"
+TARGETLIBS=\
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\winsock.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\iphlpapi.lib \
+!ELSE
+TARGETLIBS=\
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\iphlpapi.lib \
+!ENDIF
+
+TARGETLIBS=$(TARGETLIBS) \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+!ENDIF

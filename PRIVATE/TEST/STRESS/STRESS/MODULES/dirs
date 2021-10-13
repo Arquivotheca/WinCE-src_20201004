@@ -1,0 +1,38 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+DIRS_CE= \
+	alpha \
+	audio \
+	d3d \
+	dc \
+	dcom \
+	ddraw \
+	dlg \
+	filesys \ 
+	gdi \
+	kernel \
+	drivers \
+	net \
+	rotate \
+	winmgr \
+	net \
+	gwes \
+	cursor\
+    	eudc \
+    	print \
+    	dib \
+	font \
+	notifications \
+	security \
+	spider \
+	xml \
+	soap \
+	shapi \
+	imejpn \
+	RTC

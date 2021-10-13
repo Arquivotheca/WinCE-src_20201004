@@ -1,0 +1,48 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY     FSDMGR
+
+EXPORTS
+	Init
+	Deinit
+	
+	FSDMGR_GetDiskInfo
+	FSDMGR_ReadDisk
+	FSDMGR_WriteDisk
+	FSDMGR_ReadDiskEx
+	FSDMGR_WriteDiskEx
+	FSDMGR_RegisterVolume
+	FSDMGR_GetVolumeName
+	FSDMGR_DeregisterVolume
+	FSDMGR_CreateFileHandle
+	FSDMGR_CreateSearchHandle
+	FSDMGR_DiskIoControl
+	FSDMGR_GetRegistryValue
+	FSDMGR_GetRegistryString
+	FSDMGR_GetRegistryFlag
+	FSDMGR_GetDiskName
+	FSDMGR_AdvertiseInterface
+	FSDMGR_FormatVolume
+	FSDMGR_ScanVolume
+	FSDMGR_CreateCache
+	FSDMGR_DeleteCache
+	FSDMGR_ResizeCache
+	FSDMGR_CachedRead
+	FSDMGR_CachedWrite
+	FSDMGR_FlushCache
+	FSDMGR_SyncCache
+	FSDMGR_InvalidateCache
+	FSDMGR_CacheIoControl
+	FSDMGR_DeviceHandleToHDSK
+	FSDMGR_InstallFileLock
+	FSDMGR_RemoveFileLock
+	FSDMGR_RemoveFileLockEx
+	FSDMGR_TestFileLock
+	FSDMGR_TestFileLockEx
+	FSDMGR_EmptyLockContainer

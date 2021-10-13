@@ -1,0 +1,28 @@
+NDUMMY
+
+NDUMMY is the simplest version NDIS miniport driver.
+
+Put following to the registry, then reboot (or run "ndisconfig adapter add ndummy ndummy1")
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY]
+    "DisplayName"="ndis dummy miniport driver"
+    "Group"="NDIS"
+    "ImagePath"="ndummy.dll"
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY\Linkage]
+    "Route"=multi_sz:"NDUMMY1"
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY1]
+    "DisplayName"="ndis dummy miniport driver"
+    "Group"="NDIS"
+    "ImagePath"="ndummy.dll"
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY1\Parms]
+    "BusNumber"=dword:0
+    "BusType"=dword:0
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY1\Parms\TCPIP]
+   "EnableDHCP"=dword:0
+   "AutoCfg"=dword:0
+   "IpAddress"="192.168.0.1"
+   "Subnetmask"="255.255.0.0"

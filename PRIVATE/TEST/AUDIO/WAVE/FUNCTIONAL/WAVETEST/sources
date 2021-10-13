@@ -1,0 +1,63 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+
+WINCEOEM=1
+
+TARGETNAME=wavetest
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   tuxmain.cpp \
+   errormap.cpp \
+   test_wavetest.cpp \
+   test_wavein.cpp
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+
+SDKINC=$(_SDKROOT)\$(_TGTOS)\inc
+OAKLIB=$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)
+SDKLIB=$(_SDKROOT)\$(_TGTOS)\lib\x86
+
+INCLUDES= $(SDKINC); \
+
+TARGETLIBS=\
+   $(OAKLIB)\kato.lib \
+   $(SDKLIB)\winmm.lib
+          
+!ELSE
+
+SDKINC=$(_PROJECTSDKROOT)\inc
+OAKINC=$(_PROJECTOAKROOT)\inc
+SDKLIB=$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)
+OAKLIB=$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)
+
+INCLUDES= $(SDKINC); \
+          $(OAKINC); \
+
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   $(SDKLIB)\coredll.lib \
+   $(OAKLIB)\kato.lib
+
+!ENDIF
+ 
+RELEASETYPE=CETK 

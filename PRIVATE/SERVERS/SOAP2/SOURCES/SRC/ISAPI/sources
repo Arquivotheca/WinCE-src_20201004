@@ -1,0 +1,56 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!INCLUDE ..\user.mk
+TARGETNAME=SOAPISAP
+TARGETTYPE=LIBRARY
+
+
+# Copy DEF file
+TARGETDEFNAME=$(TARGETNAME)
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def 
+
+
+INCLUDES=\
+    ..\..\WinCEUtils; \
+    ..\..\inc\isapi;       \
+    ..\..\inc\soaputil;	\
+    ..\..\inc\idl;		\
+    ..\..\inc\version;		\
+    ..\..\inc\soapmsg;$(INCLUDES)
+
+TARGETLIBS=	 \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\SoapUtil.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\MSSOAP.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\WinCEUtils.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ole32.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\oleaut32.lib \
+    $(TARGETLIBS)
+
+
+SOURCES=\
+	thrdpool.cpp	\
+	thdcache.cpp	\
+	workers.cpp	\
+	request.cpp	\
+	isapistrm.cpp	\
+	soapisap.cpp	\
+	soapisap.rc	\
+
+#SOURCES=\
+#	ceisapi.cpp \
+#	isapistrm.cpp \
+#	request.cpp \
+#	thdcache.cpp \
+
+DLLENTRY=_DllMainCRTStartup
+
+
+

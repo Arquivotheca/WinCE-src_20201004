@@ -1,0 +1,8 @@
+
+TARGETTHREADMODEL=MT
+
+TARGETLIBS=\
+   $(_SDKROOT)\$(_TGTOS)\lib\x86\ws2_32.lib \
+   $(_SDKROOT)\$(_TGTOS)\lib\x86\ole32.lib \
+
+

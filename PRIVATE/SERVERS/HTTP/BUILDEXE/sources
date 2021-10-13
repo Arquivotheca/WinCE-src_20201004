@@ -1,0 +1,15 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!include ..\http.src
+TARGETNAME=HTTPDEXE
+TARGETTYPE=LIBRARY
+SOURCES=httpexe.cpp
+
+#xref VIGUID {532f91bd-451b-4859-ac91-d233c16de3c8}
+#xref VSGUID {4424d478-9f75-4f01-8a46-069d4c883b36}

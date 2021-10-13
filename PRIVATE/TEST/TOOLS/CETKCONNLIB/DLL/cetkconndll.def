@@ -1,0 +1,35 @@
+
+EXPORTS
+	DestroyCetkConn
+	CreateCetkConn_Sockets
+	CreateCetkConn_Platman
+#ifdef UNDER_NT
+	CreateCetkConn_PlatmanPickDevice
+#endif
+	CreateCetkConn_CoreCon
+
+	CetkConn_IsConstructedOK
+	CetkConn_IsConnected
+	CetkConn_IsListening
+	
+	CetkConn_Send
+	CetkConn_Receive
+	
+	CetkConn_GetDWORD
+	CetkConn_SendDWORD
+	CetkConn_GetStringA
+	CetkConn_SendStringA
+	CetkConn_GetStringW
+	CetkConn_SendStringW
+
+	CetkConn_ListenForClient
+	CetkConn_ConnectToService
+	CetkConn_Disconnect
+
+#ifdef UNDER_NT
+	CetkConn_GetDeviceName
+	CetkConn_ConfigureDevice
+	CetkConn_InstallAndLaunchServer
+#endif
+
+

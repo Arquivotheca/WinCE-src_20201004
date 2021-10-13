@@ -1,0 +1,79 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ccrtmisc
+TARGETTYPE=LIBRARY
+
+CDEFINES=-DCOREDLL
+NOMIPS16CODE=1
+NOLTCG=1
+
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+INCLUDES=..\h;..\..\cpu_$(_TGTCPUFAMILY)\inc;..\..\..\inc;..\..\..\..\nk\inc;..\..\fpw32\cpu_x86
+CDEFINES=$(CDEFINES) -Dmem_S -DI386
+ADEFINES=$(ADEFINES) -Dmem_S -DI386
+!ELSE
+INCLUDES=..\h;..\..\cpu_$(_TGTCPUFAMILY)\inc;..\..\..\inc;..\..\..\..\nk\inc
+!ENDIF
+
+CDEFINES=$(CDEFINES) -DWINCEMACRO
+
+SOURCES= \
+	abs.c \
+	byteswap.c \
+	corecrt.c \
+	countlead.c \
+	countonebits.c \
+	countonebits64.c \
+	div.c \
+	labs.c \
+	ldiv.c \
+	mulhigh.c \
+	mulunsignedhigh.c \
+	purevirt.c \
+	rand.c \
+	rotl.c \
+	rotr.c \
+	a_map.c \
+	w_cmp.c \
+	w_map.c \
+	nlsdata1.c \
+	nlsdata2.c \
+	nlsdata3.c \
+	xcptfltr.c \
+
+SH_SOURCES= \
+	qsort.c \
+	sh\longjmp.src \
+	sh\setjmp.src \
+
+MIPS_SOURCES= \
+	qsort.c \
+	mips\longjmp.s \
+	mips\setjmp.s \
+	mips\chkstk.s \
+
+PPC_SOURCES= \
+	qsort.c \
+	ppc\longjmp.s \
+	ppc\setjmp.s \
+
+ARM_SOURCES= \
+	qsort.c \
+	arm\longjmp.s \
+	arm\setjmp.s \
+
+x86_SOURCES= \
+	qsort.c \
+	x86\longjmp.asm \
+	x86\setjmp.asm \
+	x86\chkstk.asm \
+	x86\sehprolg.asm \
+	x86\alloca16.asm \
+

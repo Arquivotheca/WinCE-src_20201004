@@ -1,0 +1,11 @@
+#sample script file
+[BitBlt]
+
+[BitBlt]
+Brush=None
+
+[BitBlt]
+Brush=Solid
+
+[BitBlt]
+Brush=Solid, Solid

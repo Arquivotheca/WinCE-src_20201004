@@ -1,0 +1,7 @@
+DIRS=\
+   lib
+
+DIRS_CE= \
+   sys \
+   send \
+   recv \

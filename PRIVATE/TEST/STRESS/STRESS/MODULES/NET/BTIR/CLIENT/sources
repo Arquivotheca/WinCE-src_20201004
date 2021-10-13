@@ -1,0 +1,57 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+#####################################################
+##
+##
+#####################################################
+
+TARGETNAME=btirclient
+TARGETTYPE=DYNLINK
+
+WINCEOEM=1
+MSC_WARNING_LEVEL=/W3 /WX
+
+!IF "$(_TGTCPUFAMILY)" == ""
+_TGTCPUFAMILY=$(_TGTCPUTYPE)
+!ENDIF
+
+CDEFINES=$(CDEFINES) -D_TGTPLAT="\"$(_TGTPLAT)\"" -DTARGET_CPU="\"$(_TGTCPU)\""
+
+INCLUDES=$(_COMMONOAKROOT)\inc;\
+	..\..\..\..\inc;\
+	..\util
+
+SOURCES= \
+	btirclient.cpp
+
+
+!IF ("$(_TGTOS)" == "CE")
+#=========================================================
+
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib\
+	$(_PROJECTROOT)\cesysgen\oak\lib\$(_CPUINDPATH)\btdrt.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\btirutil.lib
+
+#=========================================================
+!ELSE
+#=========================================================
+
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib\
+	$(_PROJECTROOT)\cesysgen\oak\$(_CPUINDPATH)\btdrt.lib \	
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\btirutil.lib
+
+#=========================================================
+!ENDIF
+ 
+RELEASETYPE=CETK 

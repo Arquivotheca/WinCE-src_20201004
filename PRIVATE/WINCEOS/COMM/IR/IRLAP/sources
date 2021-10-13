@@ -1,0 +1,37 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=irlap
+TARGETTYPE=LIBRARY
+TARGETLIBS=
+
+INCLUDES=..\inc;..\..\inc
+
+!IFDEF MEMTRACKING
+!IF $(MEMTRACKING)
+CDEFINES=$(CDEFINES) -DMEMTRACKING
+!ENDIF
+!ENDIF
+
+!IF ("$(IRDASTK_LOGDEV)" == "1")
+CDEFINES = $(CDEFINES) -DLOGDEV
+!ENDIF
+
+CONDITIONAL_INCLUDES=nt.h ntos.h filedbg.h stdio.h zwapi.h dbgmsg.h logdev.h irioctl.h
+CDEFINES=$(CDEFINES) -DIRDA
+
+SOURCES=	irlap.c 	\
+		irlaplog.c 	\
+		irlapio.c       \
+                irndis.c
+
+
+
+#xref VIGUID {223641bb-8495-479f-a9f0-784dd8078b32}
+#xref VSGUID {11ee7295-b6b7-4dbb-b5e0-dafac2564ba9}

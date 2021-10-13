@@ -1,0 +1,7 @@
+
+DLLENTRY=_DllMainCRTStartup
+
+   
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+

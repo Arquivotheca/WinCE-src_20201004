@@ -1,0 +1,44 @@
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+Copyright (c) 1996-2000 Microsoft Corporation.  All rights reserved.
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+
+TARGETNAME=RasServerTest
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+      	common.cpp \
+     	RasServerGetStatus.cpp\
+	RasServerDisable.cpp \
+	RasServerEnable.cpp \
+	RasServerGetParams.cpp \
+	RasServerLineAdd.cpp \
+	RasServerLineDisable.cpp \
+	RasServerLineEnable.cpp \
+	RasServerLineGetParams.cpp \
+	RasServerLineRemove.cpp \
+	RasServerLineSetParams.cpp \
+	RasServerSetParams.cpp \
+	RasServerUserDeleteCredentials.cpp \
+	RasServerUserSetCredentials.cpp \
+	RasServerLineGetConnInfo.cpp\
+	RasServerSetNetPrefix.cpp\
+	RasServerGetNetPrefix.cpp\
+	RasServerCommon.cpp\
+      	tuxstuff.cpp
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\iphlpapi.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\cmdline.lib \
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+
+RELEASETYPE=CETK

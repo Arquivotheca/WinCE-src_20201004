@@ -1,0 +1,21 @@
+TARGETNAME=cetkconndll
+TARGETTYPE=DYNLINK
+
+PREPROCESSDEFFILE=1
+
+CDEFINES=$(CDEFINES) -DUNDER_$(_TGTOS)
+
+SOURCES=\
+   cetkconndll.cpp \
+
+
+INCLUDES= $(_PROJECTSDKROOT)\inc; \
+          $(_PROJECTOAKROOT)\inc; \
+          ..\inc
+
+
+SOURCELIBS=\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\cetkconnlib.lib
+
+
+!include sources.$(_TGTOS)

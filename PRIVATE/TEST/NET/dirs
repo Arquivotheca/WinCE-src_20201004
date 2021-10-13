@@ -1,0 +1,55 @@
+DIRS= \
+	common \
+	celt \
+	ir \
+	ras \
+	servers \
+	snmp \
+	tapi \
+	utils \
+	winsock \
+	dhcp \
+	eap \
+	rtcclient \
+	pscan \
+	webproxy \
+	p2p \
+	ddns \
+	addiscover \
+	ndis \
+	dtpt
+
+DIRS_NT= \
+	redir \
+	tcpip \
+	nattrav \
+	genpkt
+
+DIRS_CE= \
+	msmq \
+	redir \
+	tcpip \
+	wininet \
+	ldap \
+	upnp \
+	bluetooth \
+	obex \
+	mediasense \
+	autoras \
+	nattrav \
+	autochkr \
+	wireless \
+	proxy \
+	ftset \
+	urlmon \
+	shdocvwauto \
+	firewall \
+	sntp \
+	bvt \
+	netui \
+	ics \
+	cellcore \
+	location \
+	ipsec 
+
+

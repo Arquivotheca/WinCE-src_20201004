@@ -1,0 +1,52 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY NETALL
+
+EXPORTS
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; NOTE: Please update the following comment as you add ordinals
+;
+; Last ordinal used:29
+;
+; NOTE: If you are adding an API here and in a previous OS, the ordinals must
+; be the same in both or apps linked with an older OS will have compatiblity problems
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; NetCmn functions
+	IsStringInt @1
+	SetOptionChars @2
+	WasOption @3
+	GetOption @4
+	GetOptionAsInt @5
+	GetOptionAsDWORD @26
+	StrictOptionsOnly @23
+	CommandLineToArgs @6
+	GetRandomNumber @21
+	GetRandomRange @25
+	GetLastErrorText @24
+	ErrorToText @27
+	RegisterWattFilter @28
+	PrintWattVar @29
+
+; NetLog functions
+	NetLogInitWrapper @7
+	NetLogCleanupWrapper @8
+	NetLogIsInitialized @9
+	NetLogSetInitialize @10
+	NetLogError @11
+	NetLogWarning @12
+	NetLogMessage @13
+	NetLogDebug @14
+	NetLogVerbose @15
+	NetLogGetErrorCount @16
+	NetLogGetWarningCount @17
+	NetLogGetThreadErrorCount @18
+	NetLogGetThreadWarningCount @19
+	NetLogSetWATTOutput @20

@@ -1,0 +1,24 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=ppp2ncp
+TARGETTYPE=LIBRARY
+TARGETLIBS= 
+
+INCLUDES= \
+	..\inc; \
+	..\..\..\inc; \
+	..\..\..\security\inc; \
+
+SOURCES= 	 	\
+	ncp.c		\
+	fsm.c
+
+#xref VIGUID {59cc52aa-23fc-4d83-91c2-9932d3c89d55}
+#xref VSGUID {a79c2b80-c90b-4b3d-9297-a3b18a9d4db3}

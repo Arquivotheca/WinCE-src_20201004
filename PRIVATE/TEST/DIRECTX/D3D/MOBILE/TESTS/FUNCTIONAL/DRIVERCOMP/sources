@@ -1,0 +1,77 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=D3DM_DriverComp
+TARGETTYPE=DYNLINK
+SYNCHRONIZE_DRAIN=1
+
+INCLUDES=                                                                  \
+       ..\..\..\includes;                                                  \
+       ..\..\..\includes\resources;                                        \
+       ..\..\..\..\..\inc;                                                 \
+       ..\..\..\..\..\..\common\inc;                                       \
+       $(INCLUDES)                                                         \
+
+SOURCES=\
+       FVFResources.rc                                                     \
+       DriverComp.cpp                                                      \
+       Test.cpp                                                            \
+       KatoUtils.cpp                                                       \
+
+SOURCELIBS=$(SOURCELIBS)                                                  \
+#
+# D3DM Test Case Libraries
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMAlphaTestTestCases.lib   \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMClippingTestCases.lib    \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMColorFillTestCases.lib   \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMCopyRectsTestCases.lib   \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMCullingTestCases.lib     \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDepthBiasTestCases.lib   \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDepthBufferTestCases.lib \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMFogTestCases.lib         \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMFVFTestCases.lib         \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMLastPixelTestCases.lib   \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMLightTestCases.lib       \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMipMapTestCases.lib      \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMOverDrawTestCases.lib    \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMPrimRastTestCases.lib    \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMStretchRectTestCases.lib \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMSwapChainTestCases.lib   \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTexStageTestCases.lib    \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTexWrapTestCases.lib     \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTransformTestCases.lib   \
+#
+#
+# D3DM Test Utility Libraries
+#
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTextureTools.lib         \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMColorConv.lib            \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMInitializer.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTestWindow.lib           \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBufferTools.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMatrixManip.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMSurfaceTools.lib         \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDebugOutput.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\QAD3DMX.lib                  \
+#
+#
+# Test Utility Libraries
+#
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\DeltaBMP.lib                 \
+
+
+TARGETLIBS=$(TARGETLIBS)                                                  \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMImageManagement.lib      \
+       $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib                   \
+       $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib                      \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib                     \
+
+

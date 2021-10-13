@@ -1,0 +1,16 @@
+DIRS= \
+	RasCheck \
+	RasStr \
+	StartRas \
+	StopRas \
+	RasXConn \
+	MakeVpn \
+
+DIRS_CE= \
+	rasscript \
+	rasscriptdll \
+	Raserrorcodes \
+	pppauth\
+
+
+

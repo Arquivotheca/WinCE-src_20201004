@@ -1,0 +1,38 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft end-user
+; license agreement (EULA) under which you licensed this SOFTWARE PRODUCT.
+; If you did not accept the terms of the EULA, you are not authorized to use
+; this source code. For a copy of the EULA, please see the LICENSE.RTF on your
+; install media.
+;
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY]
+    "DisplayName"="ndis dummy miniport driver"
+    "Group"="NDIS"
+    "ImagePath"="ndummy.dll"
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY\Linkage]
+    "Route"=multi_sz:"NDUMMY1"
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY1]
+    "DisplayName"="ndis dummy miniport driver"
+    "Group"="NDIS"
+    "ImagePath"="ndummy.dll"
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY1\Parms]
+    "BusNumber"=dword:0
+    "BusType"=dword:0
+
+[HKEY_LOCAL_MACHINE\Comm\NDUMMY1\Parms\TCPIP]
+   "EnableDHCP"=dword:0
+   "AutoCfg"=dword:0
+   "IpAddress"="192.168.0.1"
+   "Subnetmask"="255.255.0.0"

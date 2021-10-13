@@ -1,0 +1,32 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=av_upnp_uuid
+TARGETTYPE=LIBRARY
+
+!IF "$(WINCEDEBUG)"=="debug"
+CDEFINES=$(CDEFINES) -DENABLETRACE
+!ENDIF
+
+SYNCHRONIZE_BLOCK=1
+
+OAK_INC_PATH=$(_PUBLICROOT)\servers\oak\inc
+
+INCLUDES= \
+		.; \
+		..\inc; \
+		
+
+SOURCES= \
+		av_dcp.idl \
+		av_dcp_i.c \
+
+WINCETARGETFILES= \
+	$(OAK_INC_PATH)\av_dcp.idl \
+	$(OAK_INC_PATH)\av_dcp.h \
+	

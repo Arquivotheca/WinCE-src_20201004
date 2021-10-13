@@ -1,0 +1,42 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!IF 0
+
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+TARGETNAME=kitl
+TARGETTYPE=LIBRARY
+CDEFINES=$(CDEFINES) -DIN_KERNEL -DWINCEMACRO -DCOREDLL
+NOMIPS16CODE=1
+
+AFPUDEFINES=-DMIPS_HAS_FPU $(AFPUDEFINES)
+CFPUDEFINES=-DMIPS_HAS_FPU $(CFPUDEFINES)
+
+INCLUDES=..\inc
+
+SOURCES=		\
+	ethdbg.c	\
+	edbgprot.c      \
+	timer.c         \
+	debug.c
+
+#xref VIGUID {52e98690-f232-4209-9164-c7aad38e93c4}
+#xref VSGUID {03dcd137-64ce-4863-8525-2f92d6c4c670}

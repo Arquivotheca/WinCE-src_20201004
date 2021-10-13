@@ -1,0 +1,44 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ImgCodecTK
+TARGETTYPE=DYNLINK
+
+CDEFINES= \
+	$(CDEFINES) \
+	/EHsc
+
+INCLUDES= \
+	..\..\directx\inc; \
+	..\..\tools\perflog\inc; \
+
+SOURCES= \
+	main.cpp \
+	ImageProvider.cpp \
+	FileStream.cpp \
+	ImagingHelpers.cpp \
+	ImageDecoderTests.cpp \
+	ImageEncoderTests.cpp \
+	ImageSinkTests.cpp \
+	UnknownTests.cpp \
+	PerfTests.cpp \
+	ImgDecoders.cpp \
+	ImgEncoders.cpp \
+	Perf_Imaging.cpp \
+
+TARGETLIBS= \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ole32.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\imgverif.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\qatestuty.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\DebugStreamUty.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\hqahelp.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\perflog.lib \

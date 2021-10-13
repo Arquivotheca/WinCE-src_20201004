@@ -1,0 +1,23 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ssdpapi
+TARGETTYPE=LIBRARY
+
+!IF "$(WINCEDEBUG)"=="debug"
+CDEFINES=$(CDEFINES) -DENABLETRACE
+!ENDIF
+
+INCLUDES=.;..\inc;..\..\inc;..\..\util;..\core;$(_PUBLICROOT)\IE\SDK\INC
+
+SOURCES= \
+        searchc.cpp \
+        ssdpapi.cpp \
+
+#xref VIGUID {465c9da7-4e6c-457a-a670-0c8bcc347bb6}
+#xref VSGUID {1a04eb1c-0dc3-4525-bd08-b90a2595158c}

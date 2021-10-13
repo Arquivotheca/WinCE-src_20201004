@@ -1,0 +1,42 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+LIBRARY 	UDFS
+
+EXPORTS
+    FSD_MountDisk
+    FSD_UnmountDisk
+    FSD_CreateDirectoryW=ROFS_CreateDirectory
+    FSD_RemoveDirectoryW=ROFS_RemoveDirectory
+    FSD_GetFileAttributesW=ROFS_GetFileAttributes
+    FSD_SetFileAttributesW=ROFS_SetFileAttributes
+    FSD_DeleteFileW=ROFS_DeleteFile
+    FSD_MoveFileW=ROFS_MoveFile
+    FSD_DeleteAndRenameFileW=ROFS_DeleteAndRenameFile
+    FSD_GetDiskFreeSpaceW=ROFS_GetDiskFreeSpace
+    FSD_Notify=ROFS_Notify
+    FSD_RegisterFileSystemFunction=ROFS_RegisterFileSystemFunction
+    FSD_FindFirstFileW=ROFS_FindFirstFile
+    FSD_FindNextFileW=ROFS_FindNextFile
+    FSD_FindClose=ROFS_FindClose
+    FSD_CreateFileW=ROFS_CreateFile
+    FSD_ReadFile=ROFS_ReadFile
+    FSD_ReadFileWithSeek=ROFS_ReadFileWithSeek
+    FSD_WriteFile=ROFS_WriteFile
+    FSD_WriteFileWithSeek=ROFS_WriteFileWithSeek
+    FSD_SetFilePointer=ROFS_SetFilePointer
+    FSD_GetFileSize=ROFS_GetFileSize
+    FSD_GetFileInformationByHandle=ROFS_GetFileInformationByHandle
+    FSD_FlushFileBuffers=ROFS_FlushFileBuffers
+    FSD_GetFileTime=ROFS_GetFileTime
+    FSD_SetFileTime=ROFS_SetFileTime
+    FSD_SetEndOfFile=ROFS_SetEndOfFile
+    FSD_DeviceIoControl=ROFS_DeviceIoControl
+    FSD_CloseFile=ROFS_CloseFileHandle
+    FSD_GetVolumeInfo = ROFS_GetVolumeInfo;
+

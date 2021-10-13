@@ -1,0 +1,50 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+#####################################################
+##
+##
+#####################################################
+
+TARGETNAME=s2_file
+TARGETTYPE=DYNLINK
+
+WINCEOEM=1
+MSC_WARNING_LEVEL=/W3 /WX
+
+!IF "$(_TGTCPUFAMILY)" == ""
+_TGTCPUFAMILY=$(_TGTCPUTYPE)
+!ENDIF
+
+CDEFINES=$(CDEFINES) -D_TGTPLAT="\"$(_TGTPLAT)\"" -DTARGET_CPU="\"$(_TGTCPU)\""
+
+INCLUDES=$(_COMMONOAKROOT)\inc;..\..\..\inc
+
+SOURCES= \
+	s2_file.cpp \
+	s2_file.rc
+
+
+!IF ("$(_TGTOS)" == "CE")
+#=========================================================
+
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib 
+
+#=========================================================
+!ELSE
+#=========================================================
+
+TARGETLIBS=\
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\stressutils.lib 
+
+#=========================================================
+!ENDIF
+ 
+RELEASETYPE=CETK 

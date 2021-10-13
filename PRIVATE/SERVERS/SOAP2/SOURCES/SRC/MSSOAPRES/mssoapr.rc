@@ -1,0 +1,287 @@
+//+---------------------------------------------------------------------------------
+//
+// Copyright (c) Microsoft Corporation
+//
+// File:
+//      mssoapr.rc
+//
+// Contents:
+//
+//      Main resource file
+//
+//----------------------------------------------------------------------------------
+
+// Includes ------------------------------------------------------------------
+#include <windows.h>
+#include "soapver.h"
+
+// Version -------------------------------------------------------------------
+//  Add the appropriate entries to the following tables for a new language
+#define USENGLISH_ANSI      "040904E4"  // String of 0x0409 and 1252
+#define USENGLISH_TRANS     0x0409, 1252  // 0x0409 and 1252
+
+//  Replace the USENGLISH with the correct language
+#define LANGUAGE_ANSI   USENGLISH_ANSI
+#define LANGUAGE_TRANS  USENGLISH_TRANS
+
+#ifdef  VER_PRODUCTNAME_STR
+#undef  VER_PRODUCTNAME_STR
+#define VER_PRODUCTNAME_STR "Microsoft Soap "
+#endif
+
+// Localize: file description
+#define VER_FILEDESC_STR    "Microsoft Soap Resource DLL\0"
+#define VER_NAME_STR        "MSSOAPR\0"
+#define VER_FILENAME_STR    "MSSOAPR.DLL"
+
+
+// Version -------------------------------------------------------------------
+//
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     VER_FILEVERSION
+PRODUCTVERSION  VER_PRODUCTVERSION
+FILEFLAGSMASK   VER_FILEFLAGSMASK
+FILEFLAGS       VER_FILEFLAGS
+FILEOS          VER_FILEOS
+FILETYPE        VFT_DLL
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK LANGUAGE_ANSI
+        BEGIN
+        VALUE "CompanyName",            VER_COMPANYNAME_STR
+        VALUE "FileDescription",        VER_FILEDESC_STR
+        VALUE "FileVersion",            VER_FILEVERSION_STR
+        VALUE "InternalName",           VER_NAME_STR
+        VALUE "LegalCopyright",         VER_LEGALCOPYRIGHT_STR
+        VALUE "LegalTrademarks",        VER_LEGALTRADEMARKS_STR
+        VALUE "OriginalFilename",       VER_FILENAME_STR
+        VALUE "ProductName",            VER_PRODUCTNAME_STR
+        VALUE "ProductVersion",         VER_PRODUCTVERSION_STR 
+        VALUE "OLESelfRegister",        "\0"
+        END
+    END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation",  LANGUAGE_TRANS
+  END
+END
+
+#include "rcsoap.h"
+
+
+// String table for localized strings
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+SOAP_IDS_SERVER_ERR             "Unspecified Server error."
+SOAP_IDS_CLIENT_ERR             "Unspecified client error."
+SOAP_IDS_MUSTUNDERSTAND_ERR     "An element with a MustUnderstand attribute was not understood."
+SOAP_IDS_VERSIONMISM            "The Soap processor found an invalid namespace for the SOAP Envelope element."
+SOAP_IDS_UNSPECIFIED_ERR        "An unanticipated error occurred during the processing of this request."
+SOAP_IDS_OUTOFMEMORY            "There is not enough memory to service this request."
+SOAP_IDS_INVALID_PARAM          "One of the parameters supplied is invalid."
+SOAP_IDS_INVALID_PARAM_ARG      "Parameter %1!d! has an invalid value."
+SOAP_CLIENT_NOT_INITED          "Soap client is not initialized."
+SOAP_UNKNOWN_PROPERTY           "This property name is not recognized"
+CLIENT_IDS_DISPGETPARAMFAILED   "Type conversion failure for element %1 "
+SOAP_IDS_SERVER_COULDNOTLOADREQUEST "Loading the Soap message into MSXML failed with an MSXML error."
+SOAP_IDS_SENDMESSAGEFAILED      "Sending the Soap message failed or no recognizable response was received"
+SOAP_IDS_READMESSAGEFAILED      "Receiving the Soap response failed"
+SOAP_IDS_SERVER_NOTINITIALIZED  "The Soap server is not initialized"
+SOAP_IDS_COULDNOTFINDSERVICE    "The requested service %1 could not be found in the WSDL file"
+SOAP_IDS_COULDNOTFINDPORT       "The requested port %1 could not be found in the WSDL file"
+SOAP_IDS_NODEFAULTSERVICE       "The WSDL file does not contain a default service"
+SOAP_IDS_NODEFAULTPORT          "The WSDL file does not contain a default port"
+SOAP_CLIENT_ALREADY_INITED			" Soap client is already initialized."
+CLIENT_IDS_ARRAYRESULTBYREF	"Can't map array into BYREF parameter or function result"
+
+SOAP_IDS_COULDNOTCREATECONNECTOR   "The connector could not be created. There might be an invalid endPoint specified in the WSDL file"
+SOAP_IDS_COULDNOTCREATESERIALIZER    "The SoapSerializer object could not be created."
+
+
+
+
+CLIENT_IDS_INSUFFICIENTPARAMETERINMESSAGE   "Insufficient number of output parameters in SOAP response"
+CLIENT_IDS_UNKNOWNPARAMETERINMESSAGE     "Unexpected output parameter in SOAP answer"
+CLIENT_IDS_INCORRECTNUMBEROFPARAMETERS   "Incorrect number of parameters supplied for SOAP request"
+CLIENT_IDS_HEADERNOTUNDERSTOOD				  "The incoming SOAP response contained a header that could not be processed"
+
+
+SOAP_CONN_AMBIGUOUS              "Connector - Ambiguous server error."
+
+SOAP_CONN_BAD_REQUEST            "Connector - Bad request to the server."
+SOAP_CONN_ACCESS_DENIED          "Connector - Access denied."
+SOAP_CONN_FORBIDDEN              "Connector - Forbidden."
+SOAP_CONN_NOT_FOUND              "Connector - Resource not found on the server."
+SOAP_CONN_BAD_METHOD             "Connector - Invalid Http method."
+SOAP_CONN_REQ_TIMEOUT            "Connector - Request timeout."
+SOAP_CONN_CONFLICT               "Connector - Conflict of server resources."
+SOAP_CONN_GONE                   "Connector - Gone."
+SOAP_CONN_TOO_LARGE              "Connector - Request too large."
+SOAP_CONN_ADDRESS                "Connector - Bad server address."
+
+SOAP_CONN_SERVER_ERROR           "Connector - Unspecified server error."
+SOAP_CONN_SRV_NOT_SUPPORTED      "Connector - Feature not supported by the server."
+SOAP_CONN_BAD_GATEWAY            "Connector - Bad Gateway."
+SOAP_CONN_NOT_AVAILABLE          "Connector - Server overloaded."
+SOAP_CONN_SRV_TIMEOUT            "Connector - Server timeout."
+SOAP_CONN_VER_NOT_SUPPORTED      "Connector - Version not supported."
+
+SOAP_CONN_BAD_CONTENT            "Connector - Server returned contenttype other than text/xml "
+
+SOAP_CONN_CONNECTION_ERROR       "Connection failure."
+SOAP_CONN_BAD_CERTIFICATE_NAME   "Invalid client certificate name."
+
+
+SOAP_CONN_HTTP_UNSPECIFIED       "Unspecified HTTP error."
+SOAP_CONN_HTTP_SENDRECV          "HTTP Send/Receive error."
+SOAP_CONN_HTTP_OUTOFMEMORY       "Out of memory."
+SOAP_CONN_HTTP_BAD_REQUEST       "Bad HTTP Request."
+SOAP_CONN_HTTP_BAD_RESPONSE      "Bad HTTP Response."
+SOAP_CONN_HTTP_BAD_URL           "Bad URL specified."
+SOAP_CONN_HTTP_DNS_FAILURE       "DNS lookup failure."
+SOAP_CONN_HTTP_CONNECT_FAILED    "Connection failed."
+SOAP_CONN_HTTP_SEND_FAILED       "HTTP Send failed."
+SOAP_CONN_HTTP_RECV_FAILED       "HTTP Receive failed."
+SOAP_CONN_HTTP_HOST_NOT_FOUND    "Host not found."
+SOAP_CONN_HTTP_OVERLOADED        "HTTP protocol overloaded."
+SOAP_CONN_HTTP_FORCED_ABORT      "Externally forced HTTP connection abort."
+SOAP_CONN_HTTP_NO_RESPONSE       "No HTTP response received."
+SOAP_CONN_HTTP_BAD_CHUNK         "Bad HTTP chunk received."
+SOAP_CONN_HTTP_PARSE_RESPONSE    "Http error while parsing server's response."
+SOAP_CONN_HTTP_TIMEOUT           "Request timeout."
+SOAP_CONN_HTTP_CANNOT_USE_PROXY  "Cannot use proxy for the request."
+SOAP_CONN_HTTP_BAD_CERTIFICATE   "Bad certificate."
+SOAP_CONN_HTTP_BAD_CERT_AUTHORITY "Bad certification authority."
+SOAP_CONN_HTTP_SSL_ERROR         "SSL connection error."
+
+
+// WSDLREADER SECTION
+
+WSDL_IDS_READER                         "WSDLReader"
+WSML_IDS_LOADFAILED                     "Loading of the WSML file failed"
+WSDL_IDS_LOADFAILED                     "Loading of the WSDL file failed"
+WSDL_IDS_ENGLISHNOTINSTALLED			   "The current version of the Soap toolkit needs english language support installed"
+WSDL_IDS_NOSERVICE                      "No service entry found in the WSDL"
+WSDL_IDS_INITSERVICEFAILED              "Initialization of service failed"
+WSDL_IDS_SERVICENONAME                  "The service has no name attribute"
+WSDL_IDS_SERVICE                        "WSDLService"
+WSDL_IDS_SERVICENOPORTDEF               "Processing service %1 found no port definitions"
+WSDL_IDS_SERVICEPORTINITFAILED          "Initialization of the port for service %1 failed"
+WSDL_IDS_SERVICENOPORTSDEFINED          "Processing service %1 found no port definitions"
+WSDL_IDS_PORTNONAME                     "The port has no name"
+WSDL_IDS_PORT                           "WSDLPort"
+WSDL_IDS_PORTNOBINDING                  "The port %1 does not have binding information"
+WSDL_IDS_NOSOAPADDRESS                  "The port %1 has no soap:address attribute"
+WSDL_IDS_NOLOCATIONATTR                 "The port %1 has no location attribute"
+WSDL_IDS_PARSEREQUESTFAILED             "The operation requested in the Soap message with soapAction %1 isn't defined in the WSDL file.  This may be because it is in the wrong namespace or has incorrect case"
+WSDL_IDS_LOADREQUESTFAILED					"None of the matching operations for soapAction %1 could successfully load the incoming request. Potential typemapper problem"
+WSDL_IDS_XMLDOCUMENTLOADFAILED          "XML Parser failed at linenumber %2!d!, lineposition %3!d!, reason is: %1"
+WSDL_IDS_INVALIDSCHEMA                  "No valid schema specification was found. This version of the SOAP Toolkit only supports 1999 and 2000 XSD schema specifications"
+WSDL_IDS_MAPPERDUPLICATENAME            "The message part name %1 is a duplicate"
+WSDL_IDS_URIFORQNAMENF                  "The prefix %1 of QNAME %2 is not associated with a namespace"
+WSDL_IDS_MAPPERNOSCHEMAELEMENT          "The schema element %1 was not found in the targetnamespace"
+WSDL_IDS_TYPEINWRONGSCHEMA              "The type for SoapMapper %2 was defined in the %1 namespace. Currently only XSD schema types are supported"
+WSDL_IDS_WRONGENCODINGSTYLE             "Unsupported encoding style %1. Only SOAP spec section 5 compliant encoding is currently supported."
+WSDL_IDS_NOENCODINGSTYLE                "The operation %1 is defined with encoded-style but has no encoding attribute"
+WSDL_IDS_UNSUPPORTEDMODE				    "The operation %1 is defined as document/encoded. This is unsupported"
+WSDL_IDS_NONONAMSPACE                   "The operation %1 is defined with encoded-style but has no namespace attribute"
+WSDL_IDS_CREATINGPARAMETERS             "The parameters for element %1 in operation %2 could not be created. The parameters could not be expanded"
+WSDL_IDS_DOCLITERALTOOMANY					"In document/literal mode you can only have a single part/type declaration in a message definition. %1 is incorrectly defined"
+WSDL_IDS_RCPENCODEDWITHELMENT				"In rpc/encoded mode, message parts have to be defined with types, not with elements. %1 is incorrectly defined"
+WSDL_IDS_OPERPARAORDERINVALID           "The parameterOrder attribute for operation %1 was invalid. It either did specify the same parts multiple times or not all required parts"
+WSDL_IDS_OPERMULTIPLEPARTSWITHTYPE		    "The operation %1 is defined in document/literal mode and has multiple parts defined with types. This is invalid"
+WSDL_IDS_INITCALLEDTWICE                "Init was already called on the WSDLReader. It can only be called once per active object"
+WSDL_IDS_BINDINGSNOTFOUND               "No binding section was found for port %1"
+WSDL_IDS_BINDINGSNONAME                 "The name attribute on the binding for port %1 was not found"
+WSDL_IDS_ANALYZEBINDINGFAILED           "Analyzing the binding information for port %1 failed"
+WSDL_IDS_BINDINGNOTYPE                  "The type attribute on the binding for port %1 is missing"
+WSDL_IDS_PORTTYPENOBINDING              "The soap:binding subnode on the binding for port %1 is missing"
+WSDL_IDS_PORTNOSTYLE                    "The style attribute on the binding for port %1 is missing"
+WSDL_IDS_PORTNOTRANSPORT                "The transport attribute on the binding for port %1 is missing"
+WSDL_IDS_PORTNOOPERATIONS               "Port %1 has no operations"
+WSDL_IDS_PORTOPERATIONINITFAILED        "An operation for port %1 could not be initialized"
+WSDL_IDS_OPERNONAME                     "The operation has no name attribute"
+WSDL_IDS_OPERATION                      "WSDLOperation"
+WSDL_IDS_OPERNOSOAPOPER                 "The soap:operation subnode is missing for operation %1"
+WSDL_IDS_OPERNOSOAPACTION               "No soapaction attribute  for operation %1"
+WSDL_IDS_OPERINITINPUTFA                "Initializing of the input message failed for operation %1"
+WSDL_IDS_OPERINITOUTPUTFA               "Initializing of the output message failed for operation %1"
+WSDL_IDS_OPERNOBODYHEADER               "The operation %1 has neither body nor header definitions"
+WSDL_IDS_OPERNOUSEATTR                  "The operation %1 has no use attribute"
+WSDL_IDS_OPERNOTFOUNDINPORT             "The operation %1 was not found in the porttype section"
+WSDL_IDS_OPERMSGPARTINPORTNF            "The message part not found in the porttype section for operation %1"
+WSDL_IDS_OPERMSGPARTNF                  "The message part not found for message  %1"
+WSDL_IDS_INITMAPPERFAILED               "Initialization of a SoapMapper for operation %1 failed"
+WSDL_IDS_MAPPER                         "SoapMapper"
+WSDL_IDS_MAPPERNONAME                   "The SoapMapper has no name attribute"
+WSDL_IDS_MAPPERNOELEMENTORTYPE          "The SoapMapper %1 has neither element nor type definitions"
+WSDL_IDS_MAPPERNOSCHEMA                 "The schema definition with a targetnamespace of %1 for SoapMapper %2 could not be found"
+WSDL_IDS_MAPPERNODEFINITION             "The schema definition for SoapMapper %1 could not be understood"
+WSDL_IDS_MAPPERNOTYPE                   "The type attribute for SoapMapper %1 could not be found"
+WSDL_IDS_MAPPERNOTCREATED               "The SoapMapper for element %1 could not be created"
+WSDL_IDS_ANALYZEWSDLFAILED              "Analyzing the WSDL file failed"
+WSDL_IDS_OPERNODISPIDFOUND              "GetIDsOfNames failed: no dispatch ID for method %1 found"
+WSDL_IDS_OPERCAUSEDEXECPTION            "Executing method %1 caused an exception"
+WSDL_IDS_EXECFAILED                     "Executing method %1 failed"
+WSDL_IDS_EXECBADPARAMCOUNT              "The server object expected a different parameter count for method %1"
+WSDL_IDS_EXECBADVARTYPE                 "One of the passed in parameters was no valid VARTYPE for method %1"
+WSDL_IDS_EXECMEMBERNOTFOUND             "The requested member %1 does not exist, or the call to Invoke tried to set the value of a read-only property"
+WSDL_IDS_EXECUNKNOWNERROR               "Execution failed with an HRESULT of 0x%1!x!"
+WSDL_IDS_EXECBADTYPE                    "The SoapMapper %1 had a type which could not be converted during IDispatch::Invoke"
+WSDL_IDS_OPERNOOBJECT                   "Instantiating the dispatch object for method %1 failed"
+WSDL_IDS_OPERNOHEADERHANDLER				"Instantiating the header handler for method %1 failed"
+WSDL_IDS_OPERREADHEADERSFAILED				"Reading the headers for method %1 failed"
+WSDL_IDS_CUSTOMMAPPERFREETHREADED     "The custom mapper with progid %1 is marked free threaded. This is unsupported"
+
+WSDL_IDS_VTRECORDNOTSUPPORTED      	"You were trying to pass a VT_RECORD to SoapMapper %1. This is currently not supported"
+
+
+// WSML Section
+WSML_IDS_WSMLANALYZEFAILED              "Analyzing the WSML file failed"
+WSML_IDS_WSMLLOADFAILED                 "Loading the WSML file into MSXML failed"
+WSML_IDS_SERVICENOTFOUND                "The service %1 was not found"
+WSML_IDS_INITSERVICEFAILED              "Initializing the service %1 failed"
+WSML_IDS_SERVICENONAME                  "The service element has no name attribute"
+WSML_IDS_SERVICENOUSING                 "No <using> elements for service %1"
+WSML_IDS_SERVICENOPROGID                "No PROGID attribute for service %1"
+WSML_IDS_SERVICEINVALIDPROGID				"The PROGID %1 is invalid"
+WSML_IDS_SERVICENOID                    "No ID attribute for service %1"
+WSML_IDS_PORTINITFAILED                 "Initializing the port for service %1 failed"
+WSML_IDS_OPERATIONINITFAILED            "Initializing the operation for port %1 failed"
+WSML_IDS_OPERATIONNOEXECUTE             "Operation %1 has no execute section or the operation node itself could not be found"
+WSML_IDS_OPERATIONNOMETHODNAME          "Operation %1 has no methodname attribute in the execute section"
+WSML_IDS_OPERATIONNOUSESATTR            "Operation %1 has no ""uses"" attributed in the execute section"
+WSML_IDS_OPERATIONINVALIDDISP           "Operation %1 has invalid dispatch information in the execute section"
+WSML_IDS_MAPPERINITFAILED               "A SoapMapper for operation %1 could not be initialized"
+WSML_IDS_MAPPERNOELEMENTNAME            "A parameter node for the %1 part specified in the WSDL document could not be found in the WSML document"
+WSML_IDS_MAPPERNOCALLINDEX              "SoapMapper %1 found no callindex attribute"
+WSML_IDS_CUSTOMMAPERNOUSE               "The custom mapper %1 has no uses attribute defined"
+WSML_IDS_CUSTOMMAPPERNOOBJECT           "The dispatch object for attribute %1 could not be found"
+WSML_IDS_CUSTOMMAPPERNOINTERFACE        "The custom typemapper %1 in namespace %2 could not be added"
+WSML_IDS_TYPEMAPPERINITFAILED           "Initializing typemapper for the SoapMapper %1 failed"
+WSML_IDS_TYPEMAPPERCONVERTFAILED        "Converting data for SoapMapper failed inside the typemapper"
+WSML_IDS_TYPEMAPPERPUTVALUE             "Putting data into SoapMapper %1 failed"
+WSML_IDS_TYPEMAPPERPUTSOAPVALUE         "Restoring data into SoapMapper %1 failed"
+WSML_IDS_TYPEMAPPERSAVE                 "Saving SoapMapper %1 failed"
+WSML_IDS_COULDNOTFINDHREF					"Finding the href attribute %1 failed"
+WSML_IDS_TYPEMAPPERCLSID					"Creating ID for %1 failed"
+
+// SoapArray related section
+SOAP_IDS_MAPPERARRAYCREATEELEMENT		"Can't create mapper for array element of type %1 in namespace %2."
+SOAP_IDS_MAPPERARRAYDIMENSIONS		"Array dimensions do not match definition."
+SOAP_IDS_MAPPERARRAYNULL "Array type and definition are undefined."
+SOAP_IDS_MAPPERINVALIDANYTYPE "Undefined or unsupported mapper requested inside 'anyType'"
+SOAP_IDS_MAPPERANYTYPECREATEELEMENT		"Can't create mapper inside 'anyType' of type %1 in namespace %2."
+
+SOAP_IDS_SOAPHEADERS                     "Soap Header Handler"
+
+IDS_SOAPHEADER_WRITEFAILED            		 "Writing soap headers failed"
+IDS_SOAPHEADER_READFAILED                	 "Reading soap headers failed"
+
+
+END

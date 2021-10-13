@@ -1,0 +1,38 @@
+TARGETNAME=CetkConnLib
+TARGETTYPE=LIBRARY
+RELEASETYPE=CETK
+
+ATL_VER=30
+USE_CRTDLL=1
+USE_MSVCRT=1
+USE_IOSTREAM=1
+USE_STL=1
+TARGETTHREADMODEL=MT
+
+
+CDEFINES=$(CDEFINES) /D_WIN32_WINNT=0x0400 -DUNDER_NT
+
+
+INCLUDES=\
+	..\inc;\
+	$(TEST_ROOT)\common\inc\wce500;\
+	$(_SDKROOT)\nt\inc\atl$(ATL_VER);\
+	$(INCLUDES)
+
+
+SOURCES=\
+   ..\CetkConnLib.cpp \
+
+
+TARGETLIBS=\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\CetkUtil.lib \
+   $(_SDKROOT)\$(_TGTOS)\lib\x86\wsock32.lib \
+   $(_SDKROOT)\$(_TGTOS)\lib\x86\comctl32.lib \
+   $(_SDKROOT)\$(_TGTOS)\lib\x86\comdlg32.lib \
+   $(_SDKROOT)\$(_TGTOS)\lib\x86\shell32.lib \
+   $(_SDKROOT)\$(_TGTOS)\lib\x86\ole32.lib \
+
+
+#    $(_SDKROOT)\nt\lib\x86\Ws2_32.lib
+
+

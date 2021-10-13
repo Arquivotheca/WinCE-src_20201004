@@ -1,0 +1,7 @@
+TARGETNAME=devutils
+TARGETTYPE=LIBRARY
+
+CDEFINES=/W4 /FIwarning.h
+
+SOURCES=\
+    devutils.cpp

@@ -1,0 +1,77 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+//+----------------------------------------------------------------------------
+//
+//
+// File:
+//      Conn.idl
+//
+// Contents:
+//
+//      ISoapConnector and ISoapConnector factory interface definitions
+//
+//-----------------------------------------------------------------------------
+
+#include "ConnGuid.h"
+
+
+#ifdef SOAP_INTERFACES
+
+interface IWSDLPort;
+interface IWSDLOperation;
+
+
+
+
+
+DUAL_INTERFACE(UUID_ISOAPCONNECTOR, SOAP_SDK_VERSION, "ISoapConnector Interface")
+interface ISoapConnector : IDispatch
+{
+    [propget, helpstring("An IStream compatible stream that provides data to be sent out")] HRESULT InputStream([out, retval] IStream **pVal);
+    [propget, helpstring("An IStream compatible stream that accepts returned data.")] HRESULT OutputStream([out, retval] IStream **pVal);
+    [propget, helpstring("Used to get connection specific properties.")] HRESULT Property([in] BSTR pPropertyName, [out, retval] VARIANT *pPropertyValue);
+    [propput, helpstring("Used to set connection specific properties.")] HRESULT Property([in] BSTR pPropertyName, [in] VARIANT PropertyValue);
+    [id(DISPID_CONNECTOR_CONNECT_WSDL), helpstring("Initiates a connection to the remote host.")] HRESULT ConnectWSDL([in] IWSDLPort *pPort);
+    [id(DISPID_CONNECTOR_RESET), helpstring("Sets up the connection to be used again.")] HRESULT Reset();
+    [id(DISPID_CONNECTOR_BEGINMSG_WSDL), helpstring("Starts a Soap message")] HRESULT BeginMessageWSDL([in] IWSDLOperation *pOperation);
+    [id(DISPID_CONNECTOR_ENDMSG), helpstring("Marks the end of a Soap Message and initiates the send.")] HRESULT EndMessage();
+    [id(DISPID_CONNECTOR_CONNECT), helpstring("Initiates a connection to the remote host.")] HRESULT Connect();
+    [id(DISPID_CONNECTOR_BEGINMSG), helpstring("Starts a Soap message")] HRESULT BeginMessage();
+};
+
+
+DUAL_INTERFACE(UUID_ISOAPCONNECTORFACTORY, SOAP_SDK_VERSION, "ISoapConnectorFactory Interface")
+interface ISoapConnectorFactory : IDispatch
+{
+    [id(DISPID_CONNECTFACT_CREATE), helpstring("method CreatePortConnector")]
+    HRESULT CreatePortConnector([in] IWSDLPort *pPort, [out, retval] ISoapConnector **ppConnector);
+};
+#endif
+
+#ifdef SOAP_COCLASSES 
+
+LOCAL_COCLASS(CLSID_SOAPCONNECTOR, SOAP_SDK_VERSION, "SoapConnector Class")
+coclass SoapConnector
+{
+    [default] interface ISoapConnector;
+};
+
+LOCAL_COCLASS(CLSID_SOAPCONNECTORFACTORY, SOAP_SDK_VERSION, "Soap Connector Factory Class")
+coclass SoapConnectorFactory
+{
+    [default] interface ISoapConnectorFactory;
+};
+
+LOCAL_COCLASS(CLSID_HTTPCONNECTOR, SOAP_SDK_VERSION, "Soap Http Connector Class")
+coclass HttpConnector
+{
+    [default] interface ISoapConnector;
+};
+
+#endif 

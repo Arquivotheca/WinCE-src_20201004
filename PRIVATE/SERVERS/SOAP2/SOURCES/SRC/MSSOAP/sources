@@ -1,0 +1,59 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!INCLUDE ..\user.mk
+
+TARGETNAME=MSSOAP1
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+# Copy DEF file
+TARGETDEFNAME=$(TARGETNAME)
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def
+
+# Copy RES file
+COPYRES=1
+WINCETARGETFILES=$(_RELEASELIBDIR)\$(TARGETNAME).res
+
+INCLUDES=\
+    ..\..\inc\soaputil; \
+    ..\..\inc\mssoap; \
+    ..\..\inc\soapmsg; \
+    ..\..\inc\Idl; \
+    ..\..\inc\soapser; \
+    ..\..\inc\soapreader; \
+    ..\..\inc\wsdl; \
+    ..\..\inc\Connect; \
+    ..\..\inc\version; \
+    ..\..\WinCEUtils; \
+    ..\..\inc\version; \
+    $(INCLUDES)
+
+
+
+TARGETLIBS=	 \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\WinCEUtils.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ole32.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\oleaut32.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\MSSOAP.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\wsdl.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapmsg.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\SoapUtil.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapser.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapreader.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Soapconn.lib \
+    $(TARGETLIBS)
+
+SOURCES=\
+    faultinf.cpp \
+    mssoap.cpp \
+    mssoap1.rc \
+
+DLLENTRY=_DllMainCRTStartup

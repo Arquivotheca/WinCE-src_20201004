@@ -1,0 +1,49 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!INCLUDE ..\..\..\user.mk
+
+TARGETNAME=WiSC10Lite
+TARGETTYPE=LIBRARY
+
+#NOTE: the def file ISNT copied here.. its copied in the 'regular' directory
+#  this is because in the cesysgen.bats for hlbase and iabase we sneek in
+#  the correct wisc10X.lib (based on if we are using httplite or wininet)
+
+CDEFINES=$(CDEFINES) -DHTTP_LITE -DUTIL_HTTPLITE
+
+TARGETLIBS=	 \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Allconn.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\WinCEUtils.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\SoapUtil.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\MSSOAP.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\oleaut32.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\crypt32.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\wininet.lib \
+    $(TARGETLIBS)
+
+
+INCLUDES= \
+    ..\..\..\..\Inc\Idl; \
+    ..\..\..\..\Inc\SoapUtil; \
+    ..\..\..\..\Inc\Connect; \
+    ..\..\..\..\Inc\version; \
+    ..\..\..\..\WinCEUtils; \
+    $(INCLUDES)
+
+SOURCES= \
+    ..\WIConn.cpp \
+    ..\WIConn.rc \
+    ..\WinInetConnector.cpp \
+    ..\WinInetResponseStream.cpp \
+    ..\WinInetRequestStream.cpp \
+    ..\httprequest.cpp
+
+DLLENTRY=_DllMainCRTStartup

@@ -1,0 +1,35 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ndt_2cm
+TARGETTYPE=DYNLINK
+
+CDEFINES= \
+    -DUNICODE \
+    -D_UNICODE
+
+INCLUDES= \
+    ..\inc; \
+    $(_PRIVATEROOT)\test\net\common\inc; \
+    $(_PUBLICROOT)\test\sdk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    $(_PUBLICROOT)\common\oak\inc; 
+
+SOURCES= \
+    ndt_2cm.cxx \
+    ShellProc.cxx \
+    Utils.cxx \
+    MediaCheck.cxx
+
+TARGETLIBS= \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\NDTLib.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\winsock.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib
+ 
+RELEASETYPE=CETK 

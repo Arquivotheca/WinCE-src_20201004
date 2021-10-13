@@ -1,0 +1,24 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+
+#include <windows.h>
+#include "resource.h"
+
+STRINGTABLE DISCARDABLE
+BEGIN
+
+IDS_URL_NOT_FOUND		"<HTML><TITLE>The Web site cannot be found.</TITLE><H2>The requested page could not be found</H2><BR>The web proxy could not find the specified web site.  Make sure that the specified URL is valid and that you are connected to the Internet.</HTML>"
+IDS_PROXY_AUTH_FAILED	"<HTML><TITLE>Access Denied</TITLE><H2>Access Denied</H2><BR>Access to the Internet through the web proxy has been denied.  You must enter a valid user name and password.</HTML>"
+IDS_HEADER_NOT_SUPPORT	"<HTML><TITLE>Unsupported HTTP Header</TITLE><H2>Unsupported HTTP Header</H2>An HTTP header was not supported by the web proxy and therefore, the page you requested could not be displayed.  Make sure that your web browser is configured to use HTTP 1.0 behind proxies and that the page you are visiting supports HTTP 1.0 proxies.</HTML>"
+IDS_PROTO_NOT_SUPPORT	"<HTML><TITLE>Unsupported Protocol</TITLE><H2>Unsupported Protocol</H2>The page you requested could not be downloaded as it uses a protocol other than HTTP or secure HTTP.  If you are trying to use a protocol such as FTP or Gopher then make sure your browser is not configured to go through a web proxy for these protocols.</HTML>"
+IDS_VER_NOT_SUPPORT		"<HTML><TITLE>Unsupported HTTP Version</TITLE><H2>Unsupported HTTP Version</H2>The HTTP version your browser is configured to use is not supported behind this proxy. Make sure that your web browser is configured to use HTTP 1.0 behind proxies.</HTML>"
+IDS_MISC_ERROR			"<HTML><TITLE>Web Proxy Error</TITLE><H2>Web Proxy Error</H2>An internal error occured on the web proxy based on the last request.</HTML>"
+
+END
+

@@ -1,0 +1,9 @@
+DIRS=\
+	main \
+	iolib \
+	irlib \
+	irsrv \
+
+DIRS_CE=\
+	apitst \
+

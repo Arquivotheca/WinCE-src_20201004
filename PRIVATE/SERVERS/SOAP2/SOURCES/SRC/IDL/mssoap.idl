@@ -1,0 +1,65 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// mssoap.idl : IDL source for mssoap.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (soapreader.tlb) and marshalling code.
+
+
+import "oaidl.idl";
+
+
+#include "IdlUtils.h"
+#include "SoapVer.h"
+#include "mssoapid.h"
+
+
+#define SOAP_PROXY_STUB
+
+#ifdef SOAP_PROXY_STUB
+#   define SOAP_INTERFACES 
+#   include "conn.idl"
+#   include "soapreader.idl"
+#   include "soapserializer.idl"
+#   include "soapmsg.idl"
+#   include "wsdl.idl"
+#   include "soaperr.idl"
+#   undef SOAP_INTERFACES
+#   define SOAP_COCLASSES
+#else
+#   define SOAP_INTERFACES
+#   define SOAP_COCLASSES
+#endif
+
+
+
+TYPE_LIBRARY(LIBID_MSSOAP_TYPELIB, SOAP_SDK_VERSION, "Microsoft Soap Type Library")
+library MSSOAPLib
+{
+    importlib("stdole32.tlb");
+    importlib("stdole2.tlb");
+    importlib("msxml2.tlb");
+
+#ifdef SOAP_PROXY_STUB
+    interface ISOAPError;
+    interface IStream;
+    interface ISequentialStream;
+    interface ISoapConnector;
+    interface ISoapConnectorFactory;
+    interface IHeaderHandler;
+#endif
+    
+    #include "conn.idl"
+    #include "soapreader.idl"
+    #include "soapserializer.idl"
+    #include "soapmsg.idl"
+    #include "wsdl.idl"
+    #include "soaperr.idl"
+};

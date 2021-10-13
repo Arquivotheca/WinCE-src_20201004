@@ -1,0 +1,174 @@
+Copy 0-length file
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -bytes 0"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+
+Copy 1 byte file
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -bytes 1"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+Copy binary file
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -bytes 100000"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+
+All file attributes preserved after copy of archive, system, hidden, readonly file
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -archive  -system -hidden -readonly -create"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+All file attributes preserved after copy of normal file
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin  -create -normal"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+
+Copies hidden file  
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -hidden -create"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+Copies system file  
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -system -create"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+Fails with invalid input or output file name
+s tux.exe -o -d genfile.dll -c"-file ???.bin -delete -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile ???.bin -outfile ???.bin -progress -retval 0 -errexp 2"
+s tux.exe -o -d fdiff.dll -c"-infile ???.bin -outfile ???.bin -failifexist"
+
+
+Fails gracefully copying nonexistant input file
+s tux.exe -o -d genfile.dll -c"-file nosuch.fil -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file output.bin -delete -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile nosuch.fil -outfile output.bin -progress -retval 0 -errexp 2"
+s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.bin -failifexist"
+
+
+Fails gracefully copying input file with nonexistant path
+s tux.exe -o -d genfile.dll -c"-file output.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file \nosuchdirectory\nosuch.fil -delete -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile \nosuchdirectory\nosuch.fil -outfile output.bin -progress -retval 0 -errexp 3"
+s tux.exe -o -d fdiff.dll -c"-infile nosuch.fil -outfile output.bin -failifexist"
+
+
+Fails gracefully copying output file with nonexistant path
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile \nosuchdirectory\output.bin -progress -retval 0 -errexp 3"
+s tux.exe -o -d fdiff.dll -c"-infile nosuch.fil -outfile \nosuchdirectory\output.bin -failifexist"
+
+Copy flags:
+	- FailIfExist == true fails on existing file and reports error correctly 
+	s tux.exe -o -d genfile.dll -c"-file input.bin			-delete -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file input.bin	-normal	-create -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file output.bin			-delete -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file output.bin -normal -create -passalways 1"
+
+	;;now create a copy of the output to test for corruption later
+	s tux.exe -o -d genfile.dll -c"-file output.BAK			-delete -passalways 1"
+	s tux.exe -o -d copyfileex.dll -c"-infile output.bin -outfile output.BAK"
+	
+	s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 5 -failifexist"
+	
+	;;make sure the output file has not changed
+	s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.BAK"
+
+	- FailIfExist == true succeeds if file does not exist
+	s tux.exe -o -d genfile.dll -c"-file input.bin			-delete -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file input.bin	-normal	-create -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file output.bin			-delete -passalways 1"
+	
+	s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 5 -failifexist"
+
+	s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+
+	- FailIfExist == false --> succeeds for existing file 
+	s tux.exe -o -d genfile.dll -c"-file input.bin			-delete -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file input.bin -normal	-create -passalways 1 -bytes 100000"
+
+	;;output file != input file, make sure it was over written
+	s tux.exe -o -d genfile.dll -c"-file input.bin			-delete -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file output.bin -normal -create -passalways 1 -bytes 99999"
+
+	s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+	
+	s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+	- FailIfExist == false --> succeeds for non-existing file 
+	s tux.exe -o -d genfile.dll -c"-file input.bin			-delete -passalways 1"
+	s tux.exe -o -d genfile.dll -c"-file input.bin -normal	-create -passalways 1 -bytes 100000"
+
+	s tux.exe -o -d genfile.dll -c"-file input.bin			-delete -passalways 1"
+	
+	s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 0"
+
+	s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+
+Attempt to overwrite file with READONLY flag set will fail with ACCESS_DENIED
+s tux.exe -o -d genfile.dll -c"-file output.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file output.bin -create -readonly -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -create -normal -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 5"
+s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.bin -failifexist"
+
+Attempt to overwrite file with HIDDEN flag set will fail with ACCESS_DENIED
+s tux.exe -o -d genfile.dll -c"-file output.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file output.bin -create -hidden -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -create -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -errexp 5"
+s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.bin -failifexist"
+
+Attempt to write over input file will fail with ACCESS_DENIED
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -create -normal -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile input.bin -progress -retval 0 -errexp 5 -passexpected 0"
+s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.bin -failifexist"
+
+
+Cancel flag cancels during copy
+s tux.exe -o -d genfile.dll -c"-file input.bin -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -create -passalways 1"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -progress -retval 0 -cancel 1"
+s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.bin -failifexist"
+
+
+Progress routine NULL works
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -bytes 100000"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -retval 0 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"
+
+Progress routine is not called again after CANCEL(1), return fail, delete output
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -bytes 1000000"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -retval 1 -errexp 0 -passexpected 0"
+s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.bin -failifexist"
+
+
+Progress routine is not called again after STOP(2), return fail, output in place
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -bytes 1000000"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -retval 2 -errexp 0 -passexpected 0"
+s tux.exe -o -d fdiff.dll -c"-infile output.bin -outfile output.bin"
+
+
+Progress routine is not called again after QUENCH(3), return success, output identical to input
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -delete -passalways 1"
+s tux.exe -o -d genfile.dll -c"-file input.bin -normal -create -bytes 1000000"
+s tux.exe -o -d copyfileex.dll -c"-infile input.bin -outfile output.bin -retval 3 -errexp 0"
+s tux.exe -o -d fdiff.dll -c"-infile input.bin -outfile output.bin"

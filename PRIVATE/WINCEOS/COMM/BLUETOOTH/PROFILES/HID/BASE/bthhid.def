@@ -1,0 +1,34 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; This source code is licensed under Microsoft Shared Source License
+; Version 1.0 for Windows CE.
+; For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+;
+;
+;THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+;EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
+;WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+;
+;
+;Abstract:
+;    Windows CE Bluetooth stack layer sample
+;
+;
+LIBRARY         BTHHID
+
+EXPORTS
+                BHI_Init                @11
+            BHI_Deinit              @12
+            BHI_Open                @13
+            BHI_Close               @14
+            BHI_Read                @15
+            BHI_Write               @16
+            BHI_Seek                @17
+            BHI_IOControl           @18
+            BHI_PowerUp             @19
+            BHI_PowerDown           @20
+            Init
+            Deinit
+

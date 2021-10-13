@@ -1,0 +1,8 @@
+DIRS_CE= \
+	dummydrivers	\
+	lib		\
+	PCMLegacy	\
+	PCC16bit	\
+	PCC32bit	\
+	drvloadtests	\
+

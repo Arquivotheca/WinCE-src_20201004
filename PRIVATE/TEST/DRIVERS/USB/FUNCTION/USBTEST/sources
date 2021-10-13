@@ -1,0 +1,53 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!IF 0
+
+
+Module Name:
+    sources.
+
+Abstract:
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+
+Author:
+    davli
+
+!ENDIF
+
+
+TARGETNAME=usbtest
+TARGETTYPE=DYNLINK
+
+TARGETLIBS= \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\usbcomon.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+SOURCELIBS= \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\ddlxioct.lib
+
+DLLENTRY=DllEntry
+
+
+PREPROCESSDEFFILE=1
+INCLUDES=$(_COMMONDDKROOT)\inc;$(_COMMONOAKROOT)\inc;..\..\common;$(INCLUDES)
+SOURCES= \
+	dialogboxes.rc \
+	USBCLASS.CPP \
+	mthread.cpp  \
+	syncobj.cpp  \
+	USBSERV.CPP  \
+	usbtest.cpp  \
+	PIPETEST.CPP \
+	TRANSTST.cpp \
+	BaseTst.cpp

@@ -1,0 +1,15 @@
+#sample script file
+[BitBlt]
+
+[BitBlt]
+Count=10
+
+[BitBlt]
+Confidence=50
+
+[BitBlt]
+Count=bad
+
+[BitBlt]
+Confidence=bad
+

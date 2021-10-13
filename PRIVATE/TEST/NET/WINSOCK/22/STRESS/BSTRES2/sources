@@ -1,0 +1,33 @@
+TARGETNAME=bstres2
+TARGETTYPE=PROGRAM
+
+SOURCES=\
+   bstres2.cpp
+
+INCLUDES=\
+	..\..\..\..\common\inc
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+TARGETLIBS=\
+   $(_SDKROOT)\nt\lib\x86\ws2_32.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netall.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netmain.lib \
+
+!ELSE
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netall.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netmain.lib \
+
+!ENDIF
+
+!IF ("$(_TGTOS)" == "NT")
+EXEENTRY=wmainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF
+
+!IF ("$(_TGTOS)" == "NTANSI")
+EXEENTRY=mainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF

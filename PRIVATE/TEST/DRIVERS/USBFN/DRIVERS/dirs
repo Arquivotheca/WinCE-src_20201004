@@ -1,0 +1,6 @@
+DIRS_CE=			\
+	ufnlpbkmdd		\
+	net2280			\
+	bulverde		\
+	cotulla			\
+	sc2410			\

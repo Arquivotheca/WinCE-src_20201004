@@ -1,0 +1,31 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+!IFDEF SP_REF_VERBOSE
+CDEFINES=$(CDEFINES) -DSP_REF_VERBOSE
+!ENDIF
+
+TARGETNAME=ppp2ras
+TARGETTYPE=LIBRARY
+TARGETLIBS= 
+
+CDEFINES = $(CDEFINES) -DDEF_COMPRESSION
+
+INCLUDES= \
+	..\inc; \
+	..\..\..\inc; \
+	..\..\..\security\inc;
+
+
+SOURCES= \
+	ras.c \
+	rasreg.c
+
+#xref VIGUID {2cefa8bf-57b9-44e6-afb2-630c1cdd9216}
+#xref VSGUID {496ce1e5-6644-4328-846f-206a460797be}

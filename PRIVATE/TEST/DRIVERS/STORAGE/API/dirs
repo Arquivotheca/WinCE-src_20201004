@@ -1,0 +1,4 @@
+DIRS_CE=\
+    blkioctl \
+    rwtest \
+    rw_all

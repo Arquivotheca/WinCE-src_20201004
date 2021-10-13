@@ -1,0 +1,15 @@
+DIRS=\
+	iolib \
+  	main \
+	irlib \
+	cetk
+
+
+DIRS_NT=\
+	irsrv
+
+DIRS_CE=\
+	apitst \
+	irsrv \
+	powermanager
+

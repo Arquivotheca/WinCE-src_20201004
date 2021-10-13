@@ -1,0 +1,36 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+# 
+# 
+# Module Name:
+# 
+#     sources.
+# 
+# Abstract:
+# 
+#     
+# 
+# Author:
+# 
+########################################################################
+#        COMMON SETTINGS                                               #
+########################################################################
+DLLENTRY=LibMain
+TARGETNAME=pcc_dummydr_lib
+TARGETTYPE=LIBRARY
+
+
+SOURCES= pcc_dummydr.c
+
+CDEFINES=$(COMMON_CDEFINES) $(DEP_DEFINES)
+
+INCLUDES=$(_COMMONOAKROOT)\inc;$(_COMMONDDKROOT)\inc; \
+	 $(_PRIVATEROOT)\test\inc; \
+
+CDEFINES=$(CDEFINES) -DPCMCIA_TEST /W4 /FIwarning.h

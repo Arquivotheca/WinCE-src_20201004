@@ -1,0 +1,33 @@
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+Copyright (c) 1996-2000 Microsoft Corporation.  All rights reserved.
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+
+!IF ("$(_TGTOS)" == "CE")
+TARGETNAME=pppconfig
+TARGETTYPE=PROGRAM
+TARGETLIBS= \
+	$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\cclib.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib
+
+!ENDIF
+
+CDEFINES=-DWINCEMACRO -DWINCEOEM
+NOMIPS16CODE=1
+
+EXEENTRY=WinMain
+DLLENTRY=dllentry
+
+INCLUDES=$(_PUBLICROOT)\common\sdk\inc;
+
+SOURCES= pppconfig.c
+
+RELEASETYPE=CETK

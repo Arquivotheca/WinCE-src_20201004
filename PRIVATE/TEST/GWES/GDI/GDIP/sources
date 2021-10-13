@@ -1,0 +1,87 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+# This source code is licensed under Microsoft Shared Source License
+# Version 1.0 for Windows CE.
+# For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+WINCEOEM=1
+
+TARGETNAME = gdip
+TARGETTYPE = PROGRAM
+
+WINCETARGETFILE0=scriptfiles
+
+#CDEFINES=/FIwarning.h
+
+CDEFINES=\
+    $(CDEFINES) \
+    /EHsc
+
+SOURCES=    \
+    gdip.rc \
+    benchbase.cpp \
+    dispperfdata.cpp	\
+				\
+    bitblt.cpp \
+    maskblt.cpp \
+    stretchblt.cpp \
+    patblt.cpp \
+    fillrgn.cpp \
+    alphablend.cpp \
+    transparentblt.cpp \
+    GetPixel.cpp	\
+    SetPixel.cpp	\
+    rectangle.cpp	    \
+    ellipse.cpp	    \
+    roundrect.cpp \
+    lineto.cpp		\
+    polyline.cpp	\
+    polygon.cpp	\
+    exttextout.cpp \
+    drawtext.cpp \
+    				\
+    helpers.cpp \
+    handles.cpp \
+    brush.cpp \
+    pen.cpp \
+    surface.cpp \
+    rop2.cpp \
+    rop3.cpp \
+    rop4.cpp \
+    rgn.cpp \
+    stretchcoordinates.cpp \
+    rectcoordinates.cpp \
+    pointcoordinates.cpp \
+    linecoordinates.cpp \
+    polycoordinates.cpp \
+    font.cpp	\
+    bkmode.cpp \
+    strings.cpp
+
+INCLUDES=$(INCLUDES)
+
+!IF "$(_TGTOS)" == "CE"
+
+TARGETLIBS= $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\otak.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\section.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\bencheng.lib
+
+!ELSE
+
+CDEFINES= $(CDEFINES) \
+		   -DNT
+TARGETLIBS= $(_SDKROOT)\nt\lib\x86\comctl32.lib \
+            $(_SDKROOT)\nt\lib\x86\comdlg32.lib \
+            $(_SDKROOT)\nt\lib\x86\ctl3d32.lib \
+            $(_SDKROOT)\nt\lib\x86\msimg32.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\otak.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\section.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\bencheng.lib
+
+!ENDIF

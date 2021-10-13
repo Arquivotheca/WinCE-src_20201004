@@ -1,0 +1,37 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=udftest
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   main.cpp \
+   util.cpp \
+   writetest.cpp \
+   iotest.cpp \
+   memmaptest.cpp \
+   attributetest.cpp \
+   pathtable.cpp \
+   findfile.cpp
+
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+TARGETLIBS=\
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\devutils.lib
+!ELSE
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\devutils.lib
+!ENDIF
+ 
+RELEASETYPE=CETK 

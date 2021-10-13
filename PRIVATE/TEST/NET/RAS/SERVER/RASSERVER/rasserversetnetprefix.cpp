@@ -1,0 +1,100 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+#include "RasServerTest.h"
+
+extern BOOL bExpectedFail;
+
+BYTE SetNetSamplePrefix[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xb, 0xc, 0xd, 0xe, 0xf}; 
+
+TESTPROCAPI RasServerSetNetPrefix(UINT uMsg, 
+						 TPPARAM tpParam, 
+						 LPFUNCTION_TABLE_ENTRY lpFTE) 
+{	
+	HANDLE	hHandle=NULL;
+	DWORD dwResult=ERROR_SUCCESS, dwExpectedResult=ERROR_SUCCESS, cbStatus=0;
+	RASCNTL_SERVER_IPV6_NET_PREFIX PrefixValues;
+	DWORD					dwStatus = TPR_PASS;
+
+    // Check our message value to see why we have been called
+    if (uMsg == TPM_QUERY_THREAD_COUNT) 
+	{
+		((LPTPS_QUERY_THREAD_COUNT)tpParam)->dwThreadCount = 0;
+		return TPR_HANDLED;
+    } 
+	else if (uMsg != TPM_EXECUTE) 
+	{
+		return TPR_NOT_HANDLED;
+    }
+	
+	if(bExpectedFail)
+	{
+		//
+		// Try the IOCTL here. This should fail with ERROR_NOT_SUPPORTED
+		//
+		dwResult = RasIOControl(NULL, RASCNTL_SERVER_SET_IPV6_NET_PREFIX, NULL, 0, NULL, 0, &cbStatus);
+		RasPrint(TEXT("RasIOControl() FAIL'ed (%d) AS EXPECTED "), dwResult);
+		return (dwResult==ERROR_NOT_SUPPORTED? TPR_PASS: TPR_FAIL);
+	}
+	
+	PrefixValues.IPV6NetPrefixCount=3;
+	PrefixValues.IPV6NetPrefixBitLength=48;
+	memcpy(&PrefixValues.IPV6NetPrefix, &SetNetSamplePrefix, 16);
+
+	switch(LOWORD(lpFTE->dwUserData))
+	{
+		case RASSERVER_INVALID_RANGE:
+			PrefixValues.IPV6NetPrefixCount=0;
+			PrefixValues.IPV6NetPrefixBitLength=-1;
+			break;
+			
+		case RASSERVER_VALID_RANGE:
+			break;
+	}	
+
+	//
+	// Call the IOCTL
+	//
+	dwResult = RasIOControl(
+						hHandle, 
+						RASCNTL_SERVER_SET_IPV6_NET_PREFIX, 
+						(PUCHAR)&PrefixValues, sizeof(RASCNTL_SERVER_IPV6_NET_PREFIX), 
+						NULL, 0,
+						&cbStatus
+						);
+	RasPrint(TEXT("dwResult = %d\tdwExpectedResult = %d"), dwResult, dwExpectedResult);	
+
+	if (dwResult != dwExpectedResult)
+	{
+		dwStatus=TPR_FAIL;
+	}
+
+	// Was the correct result returned?
+	dwResult = RasIOControl(
+						hHandle, 
+						RASCNTL_SERVER_GET_IPV6_NET_PREFIX, 
+						NULL, 0, 
+						(PUCHAR)&PrefixValues, sizeof(RASCNTL_SERVER_IPV6_NET_PREFIX), 
+						&cbStatus
+						);	
+	if(!dwResult)
+	{
+		dwStatus=TPR_SKIP;
+	}
+	else if (
+			!(PrefixValues.IPV6NetPrefixCount != 3) ||
+			!(PrefixValues.IPV6NetPrefixBitLength != 48) ||
+			(memcmp(&PrefixValues.IPV6NetPrefix, &SetNetSamplePrefix, 16))
+		)
+	{
+		dwStatus=TPR_FAIL;
+	}
+
+	CleanupServer();
+	return dwStatus;
+}

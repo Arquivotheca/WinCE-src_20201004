@@ -1,0 +1,157 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// Soaptest.idl : IDL source for the SoapClient and SoapServer classes
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (soapmsg.tlb) and marshalling code.
+
+#include "Soaptestids.h"
+#include "IdlUtils.h"
+#include "SoapVer.h"
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+
+DUAL_INTERFACE(UUID_ISOAPTESTOBJECT, SOAP_SDK_VERSION, "ISOAPTestObject Interface")
+interface ISOAPTestObject : IDispatch
+{
+	[id(DISPID_SOAPTEST_ADDSTRING), helpstring("method AddString")] HRESULT AddString(
+				[in] BSTR bstrInOne,
+				[in] BSTR bstrInTwo,
+				[out, retval] BSTR *pbstrOut
+			);
+	[id(DISPID_SOAPTEST_ADDNUMBER), helpstring("method AddNumber")] HRESULT AddNumber(
+				[in, out] byte *pbNumberOne,
+				[in] VARIANT NumberTwo,
+				[out, retval] VARIANT *pResult
+			);
+
+	[id(DISPID_SOAPTEST_ADDNUMBERBYREF), helpstring("method AddNumberByRef")] HRESULT AddNumberByRef(
+				[in] long lNumberOne,
+				[in, out] VARIANT * NumberTwo,
+				[out] VARIANT *pResult
+			);
+
+
+	[id(DISPID_SOAPTEST_BIGSTRING), helpstring("method BigString")] HRESULT BigString(
+				[in] long lTimes,
+				[in] BSTR bstrStringIn,
+				[out, retval] BSTR *pbstrReturn
+			);
+
+	[id(DISPID_SOAPTEST_RETURNERROR), helpstring("Returns error")] HRESULT ReturnError(
+				[in] BSTR bstrErrorSource,
+				[in] BSTR bstrDescription,
+				[in] BSTR bstrHelpfile,
+				[in] long  lHelpcontext, 
+				[in] long dwErrorCode
+			);
+			
+	[id(DISPID_SOAPTEST_RETURNFAULTERROR), helpstring("Returns SOAPError")] HRESULT ReturnSoapError(
+				[in] BSTR bstrFaultStringIn,
+				[in] BSTR bstrFaultCodeIn,
+				[in] BSTR bstrFaultDetailIn,
+				[in] long dwErrorCode,
+				[out, retval] long * pdwError
+			);				
+
+	[id(DISPID_SOAPTEST_ADDCUSTOM), helpstring("Demonstrates custom soapmapper")] HRESULT AddCustom(
+				[in] long lInput,
+				[out, retval] long * plReturn
+			);				
+
+	[id(DISPID_SOAPTEST_SETDATE), helpstring("Demonstrates custom soapmapper")] HRESULT SetDate(
+				[in] DATE DateIn,
+				[out, retval] DATE *pDateOut
+			);				
+
+	[id(DISPID_SOAPTEST_GETDATE), helpstring("Demonstrates custom soapmapper")] HRESULT GetDate(
+				[out, retval] DATE *pDateOut
+			);				
+
+	[id(DISPID_SOAPTEST_SETURI), helpstring("Demonstrates custom soapmapper")] HRESULT SetURI(
+				[in] BSTR bstrURIin,
+				[out, retval] BSTR * pbstrURIout
+			);				
+
+	[id(DISPID_SOAPTEST_SENDDOM), helpstring("Demonstrates sending a DOM")] HRESULT SendDom(
+				[in] IDispatch *pDispatch,
+				[out, retval] IDispatch **pDispatchOut
+			);				
+
+	[id(DISPID_SOAPTEST_MULFLOAT), helpstring("Demonstrates multiplying floats")] HRESULT MulFloats(
+				[in] float fNumberOne,
+				[in] double fNumberTwo,
+				[out, retval] double*pfResult
+			);
+
+	[id(DISPID_SOAPTEST_CHANGEBOOL), helpstring("Demonstrates sending booleans")] HRESULT ChangeBool(
+				[in] VARIANT_BOOL vbIn,
+				[out, retval] VARIANT_BOOL *vbOut
+			);
+
+	[id(DISPID_SOAPTEST_STRINGTODOM), helpstring("Pass string, return DOM")] HRESULT StringToDom(
+				[in] BSTR bstrXML,
+				[out, retval] IDispatch **pDispatchOut
+			);				
+
+	[id(DISPID_SOAPTEST_TESTARRAY1), helpstring("Demonstrates sending arrays")] HRESULT CTestShortInputByrefOutputArray(
+				[in, out] SAFEARRAY(short) *pArrayIn, 
+				[out, retval] SAFEARRAY(short)* pArrayOut
+			);
+
+	[id(DISPID_SOAPTEST_TESTARRAY2), helpstring("Demonstrates sending arrays")] HRESULT CTestShortInputOutputArray(
+				[in] SAFEARRAY(short) pArrayIn, 
+				[out, retval] SAFEARRAY(short)* pArrayOut
+			);
+
+	[id(DISPID_SOAPTEST_TESTARRAY3), helpstring("Demonstrates sending arrays")] HRESULT CTestShortOutputArray(
+				[out, retval] SAFEARRAY(short)* pArrayOut
+			);
+
+
+	[id(DISPID_SOAPTEST_COMPLICATEDPARA), helpstring("Demonstrates parameterOrder")] HRESULT TestParaOrder(
+				[in] long lNumberOne,
+				[in, out] long *plNumberTwo,
+				[out] long *plResult,
+				[in]  BSTR bstrIN,
+				[in, out] BSTR *bstrInOUT, 
+				[out, retval] VARIANT_BOOL *vbOut
+			);
+
+	[id(DISPID_SOAPTEST_MANGLECDATA), helpstring("method MangleCDATA")] HRESULT MangleCDATA(
+				[in] BSTR cdataIn,
+				[in] BSTR cdataIn2,
+				[out, retval] BSTR *cdataOut
+			);
+
+	[id(DISPID_SOAPTEST_TESTBINARY), helpstring("Demonstrates sending binarydata")] HRESULT CTestSendBinary(
+				[in] SAFEARRAY(byte) pArrayIn, 
+				[out, retval] SAFEARRAY(byte)* pArrayOut
+			);
+			
+
+};
+
+
+TYPE_LIBRARY(LIBID_SOAPTEST_TYPELIB, SOAP_SDK_VERSION, "Microsoft Soap SoapTestObject Type Library")
+library SoapTestLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	LOCAL_COCLASS(CLSID_SOAPTEST, SOAP_SDK_VERSION, "SOAP TestObject Class")
+	coclass SoapTestObject
+	{
+		[default] interface ISOAPTestObject;
+	};
+};
+

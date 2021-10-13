@@ -1,0 +1,4 @@
+DIRS_CE=\
+   wavefunc \
+   wavetest \
+    

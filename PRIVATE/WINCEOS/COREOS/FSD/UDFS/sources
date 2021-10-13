@@ -1,0 +1,48 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+WINCEOEM=1
+IMGNODFLTDDK=1
+
+TARGETNAME=udfs
+TARGETTYPE=LIBRARY
+
+
+DLLENTRY=DllMain
+
+
+SOURCES= \
+     udfsapi.cpp \
+     udfscdda.cpp \
+     udfscdfs.cpp \
+     udfscln.cpp \
+     udfsfile.cpp \
+     udfsfind.cpp \
+     udfsinit.cpp \
+     udfsio.cpp \
+     udfsmain.cpp \
+     udfsmnt.cpp \
+     udfsudfs.cpp \
+     udfshelper.cpp \
+     udfsread.cpp \
+     udfssrch.cpp \
+     udfsdbg.cpp 
+
+
+TARGETDEFNAME=udfs
+DEFFILE=udfs.def
+WINCETARGETFILE0=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\udfs.def
+
+
+
+
+
+
+
+#xref VIGUID {4d8fd8f2-d3d1-47c4-a65b-c817b3c12af7}
+#xref VSGUID {08dfd992-ec0e-4964-a0c0-ee097b0ff084}

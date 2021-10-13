@@ -1,0 +1,31 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+
+TARGETNAME=xnic
+TARGETTYPE=DYNLINK
+
+CDEFINES= \
+    -DNDIS_MINIPORT_DRIVER \
+    -DNDIS51_MINIPORT \
+    -DNDIS51
+
+INCLUDES= \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc;           
+
+TARGETLIBS= \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ndis.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ntcompat.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib
+
+SOURCES= \
+    miniport.cpp \
+    oidstr.cpp \
+    xnic.cpp

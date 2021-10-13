@@ -1,0 +1,36 @@
+WINCEOEM=1
+RELEASETYPE=OAK
+
+_COMMONPUBROOT=$(_PROJECTROOT)\cesysgen
+__PROJROOT = $(_PROJECTROOT)
+
+!IF "$(TEST_ROOT)"==""
+TEST_ROOT=$(_PRIVATEROOT)\test
+!ENDIF
+
+EXT_INCLUDES=$(TEST_ROOT)\common\inc;$(EXT_INCLUDES)
+
+_ISVINCPATH=$(_WINCEROOT)\public\speech\sdk\inc;$(_WINCEROOT)\public\datasync\sdk\inc;$(_WINCEROOT)\public\voip\sdk\inc;$(_WINCEROOT)\public\directx\sdk\inc;$(_WINCEROOT)\public\wceappsfe\sdk\inc;$(_WINCEROOT)\public\wceshellfe\sdk\inc;$(_WINCEROOT)\public\rdp\sdk\inc;$(_WINCEROOT)\public\shellsdk\sdk\inc;$(_WINCEROOT)\public\servers\sdk\inc;$(_WINCEROOT)\public\ie\sdk\inc;$(_WINCEROOT)\public\gdiex\sdk\inc;$(_WINCEROOT)\public\dcom\sdk\inc;$(_PROJECTROOT)\cesysgen\sdk\inc;
+_OEMINCPATH=$(_WINCEROOT)\public\speech\sdk\inc;$(_WINCEROOT)\public\datasync\sdk\inc;$(_WINCEROOT)\public\voip\sdk\inc;$(_WINCEROOT)\public\directx\sdk\inc;$(_WINCEROOT)\public\directx\oak\inc;$(_WINCEROOT)\public\wceappsfe\sdk\inc;$(_WINCEROOT)\public\wceshellfe\sdk\inc;$(_WINCEROOT)\public\wceshellfe\oak\inc;$(_WINCEROOT)\public\rdp\sdk\inc;$(_WINCEROOT)\public\rdp\oak\inc;$(_WINCEROOT)\public\shell\oak\inc;$(_WINCEROOT)\public\shellsdk\sdk\inc;$(_WINCEROOT)\public\servers\sdk\inc;$(_WINCEROOT)\public\servers\oak\inc;$(_WINCEROOT)\public\ie\sdk\inc;$(_WINCEROOT)\public\gdiex\sdk\inc;$(_WINCEROOT)\public\dcom\sdk\inc;$(_WINCEROOT)\public\dcom\oak\inc;$(_PROJECTROOT)\cesysgen\ddk\inc;$(_PROJECTROOT)\cesysgen\sdk\inc;$(_PROJECTROOT)\cesysgen\oak\inc;
+
+LIBPATH=$(LIBPATH);$(_PRIVATEROOT)\sdk\Lib
+
+SPEECH_ROOT=$(TEST_ROOT)\speech
+SPEECHCE_ROOT=$(TEST_ROOT)\SpeechCE
+WM_TST_ROOT=$(TEST_ROOT)\directx\winmedia
+
+!IF "$(TEST_W4)"=="1"
+CDEFINES=/W4 /FI$(TEST_ROOT)\inc\warning.h
+!ENDIF
+
+_CELLCORELEGACY=$(_PUBLICROOT)\cellcore\oak\inc\mdddup
+!IF "$(SYSGEN_CELLCORE)"=="1"
+_CELLCORESDKROOT=$(_COMMONSDKROOT)
+_CELLCOREOAKROOT=$(_COMMONOAKROOT)
+!ELSE
+_CELLCORESDKROOT=$(_PUBLICROOT)\Cellcore\sdk
+_CELLCOREOAKROOT=$(_PUBLICROOT)\Cellcore\oak
+!ENDIF
+
+CDEFINES=$(CDEFINES) -DNOAPC_NEWOP
+_NO_APC_FUNCTIONS=1

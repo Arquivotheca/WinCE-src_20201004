@@ -1,0 +1,37 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!if 0
+!endif
+
+TARGETNAME=irutil
+TARGETTYPE=LIBRARY
+TARGETLIBS=
+
+INCLUDES=..\inc;..\..\inc
+
+!IFDEF MEMTRACKING
+!IF $(MEMTRACKING)
+CDEFINES=$(CDEFINES) -DMEMTRACKING
+!ENDIF
+!ENDIF
+
+!IF ("$(IRDASTK_LOGDEV)" == "1")
+CDEFINES = $(CDEFINES) -DLOGDEV
+!ENDIF
+
+CONDITIONAL_INCLUDES=nt.h ntos.h filedbg.h stdio.h dbgmsg.h logdev.h
+CDEFINES=$(CDEFINES) -DIRDA
+
+SOURCES=  irtimer.c \
+          irevent.c \
+          refcnt.c  \
+          decdirda.c
+
+#xref VIGUID {8383cb73-8c04-4bde-902e-e360f0427ce2}
+#xref VSGUID {d7d42d0c-ad80-4eae-ad87-9eaf255891d5}

@@ -1,0 +1,36 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 1.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+// Note: this is currently not included in asp.rc.
+
+HKCR
+{
+	Asp.Request.1 = s 'Request Class'
+	{
+		CLSID = s '{2691399D-EDD7-11D2-9848-00C04F68E7A2}'
+	}
+	Asp.Request = s 'Request Class'
+	{
+		CLSID = s '{2691399D-EDD7-11D2-9848-00C04F68E7A2}'
+		CurVer = s 'Asp.Request.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2691399D-EDD7-11D2-9848-00C04F68E7A2} = s 'Request Class'
+		{
+			ProgID = s 'Asp.Request.1'
+			VersionIndependentProgID = s 'Asp.Request'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Free'
+			}
+			'TypeLib' = s '{26913990-EDD7-11D2-9848-00C04F68E7A2}'
+		}
+	}
+}

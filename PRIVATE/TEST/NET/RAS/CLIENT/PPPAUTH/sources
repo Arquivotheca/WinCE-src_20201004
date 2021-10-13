@@ -1,0 +1,39 @@
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+Copyright (c) 1996-2000 Microsoft Corporation.  All rights reserved.
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+TARGETNAME=pppauth
+TARGETTYPE=DYNLINK
+
+!IF ("$(_TGTOS)" == "CE")
+
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\winsock.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\cmdline.lib
+
+!ELSE
+
+TARGETLIBS= \
+	$(_SDKROOT)\nt\lib\x86\wsock32.lib \
+	$(_SDKROOT)\nt\lib\x86\tapi32.lib \
+	$(_SDKROOT)\nt\lib\x86\rasapi32.lib
+
+!ENDIF
+
+SOURCES= \
+	common.cpp\
+	tapiinfo.c\
+	Connect.cpp\
+	pppauth.cpp\
+	tuxstuff.cpp
+
+RELEASETYPE=CETK

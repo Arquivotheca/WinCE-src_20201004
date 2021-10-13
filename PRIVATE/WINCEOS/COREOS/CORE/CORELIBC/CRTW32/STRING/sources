@@ -1,0 +1,109 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ccrtstrg
+TARGETTYPE=LIBRARY
+
+
+NOMIPS16CODE=1
+NOLTCG=1
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+CDEFINES=$(CDEFINES) -Dmem_S -DI386
+ADEFINES=$(ADEFINES) -Dmem_S -DI386
+INCLUDES=..\..\..\inc;..\..\..\..\nk\inc;..\..\fpw32\cpu_x86
+!ELSE
+INCLUDES=..\..\..\inc;..\..\..\..\nk\inc
+CDEFINES=-DCOREDLL
+!ENDIF
+
+CDEFINES=$(CDEFINES) -DWINCEMACRO
+
+SOURCES= \
+	strtok.c \
+
+SH_SOURCES= \
+	memicmp.c \
+	memccpy.c \
+	strncat.c \
+	strncmp.c \
+	strncpy.c \
+	strchr.c \
+	strcspn.c \
+	strstr.c \
+	SH\sh4memcpy.c\
+	SH\sh4memset.c\
+	SH\memcmp.src \
+	SH\memmove.src \
+	SH\memset.src \
+	SH\mdsstrcat.src \
+	SH\mdsstrcmp.src \
+	SH\mdsstrlen.src \
+
+MIPS_SOURCES= \
+	memicmp.c \
+	memccpy.c \
+	strncat.c \
+	strncmp.c \
+	strncpy.c \
+	strcspn.c \
+	strstr.c \
+	mips\memorym.s \
+	mips\strcatm.s \
+	mips\strchrm.s \
+	mips\strcmpm.s \
+	mips\strcpym.s \
+	mips\strlenm.s \
+
+ARM_SOURCES= \
+	strcspn.c \
+	strstr.c \
+	arm\amemccpy.s \
+	arm\mbmemset.c \
+	arm\memchr.s \
+	arm\memcmp.s \
+	arm\memcpy.s \
+	arm\memmove.s \
+	arm\amemicmp.s \
+	arm\memset.s \
+	arm\mdsstrcat.s \
+	arm\astrchr.s \
+	arm\mdsstrcmp.s \
+	arm\strcpy.s \
+	arm\mdsstrlen.s \
+	arm\astrncat.s \
+	arm\astrncmp.s \
+	arm\astrncpy.s
+
+x86_SOURCES= \
+	x86\memccpy.asm \
+	x86\memchr.asm \
+	x86\memcmp.asm \
+	x86\memcpy.asm \
+	x86\memmove.asm \
+	x86\memset.asm \
+	x86\strcat.asm \
+	x86\strchr.asm \
+	x86\strcmp.asm \
+	x86\strcspn.asm \
+	x86\strdup.asm \
+	x86\strlen.asm \
+	x86\strncat.asm \
+	x86\strncmp.asm \
+	x86\strncpy.asm \
+	x86\strnset.asm \
+	x86\strpbrk.asm \
+	x86\strrchr.asm \
+	x86\strrev.asm \
+	x86\strset.asm \
+	x86\strspn.asm \
+	x86\strstr.asm \
+	x86\_memicmp.asm \
+	x86\_stricmp.asm \
+	x86\_strnicm.asm \
+

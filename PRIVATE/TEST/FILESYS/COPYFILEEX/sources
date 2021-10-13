@@ -1,0 +1,38 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+# --------------------------------------------------------------------------------
+# 
+#     Windows CE TUXTEST TUX DLL
+# 
+# --------------------------------------------------------------------------------
+
+TARGETNAME=CopyFileEx
+TARGETTYPE=DYNLINK
+DLLENTRY=_DllMainCRTStartup
+
+FILESYS_TESTROOT=..
+
+UTILS_INCLUDE=$(_PRIVATEROOT)\test\filesys\utility
+
+INCLUDES=\
+	$(_WINCEROOT)\public\common\sdk\inc;\
+	$(FILESYS_TESTROOT)\common\inc;\
+	$(UTILS_INCLUDE);
+
+TARGETLIBS=\
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib    \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+		$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\reg_util.lib
+
+
+SOURCES=\
+    test.cpp \
+    tuxtest.cpp \
+    globals.cpp \
+	progresspackage.cpp 

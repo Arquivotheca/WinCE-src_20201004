@@ -1,0 +1,4 @@
+DIRS_CE= \
+	lib		\
+	dummydr		\
+	baddr		\

@@ -1,0 +1,34 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft end-user
+license agreement (EULA) under which you licensed this SOFTWARE PRODUCT.
+If you did not accept the terms of the EULA, you are not authorized to use
+this source code. For a copy of the EULA, please see the LICENSE.RTF on your
+install media.
+!endif
+
+TARGETNAME=xwifi11btest
+TARGETTYPE=DYNLINK
+
+CDEFINES=$(CDEFINES) /DwinCE
+
+INCLUDES= \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc;           
+
+TARGETLIBS= \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ndis.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ntcompat.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)\wzcsapi.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\iphlpapi.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+SOURCES= \
+    xwifi11b_testproc.cpp \
+    xwifi11b_testproc_adhoc.cpp \
+    xwifi11b_testproc_ui.cpp \
+    xwifi11b_tuxmain.cpp

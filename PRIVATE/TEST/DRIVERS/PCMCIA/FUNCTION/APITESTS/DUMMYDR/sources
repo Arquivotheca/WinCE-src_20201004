@@ -1,0 +1,48 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!IF 0
+
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+    
+
+Author:
+
+!ENDIF
+########################################################################
+#        COMMON SETTINGS                                               #
+########################################################################
+DLLENTRY=LibMain
+TARGETNAME=dummydr
+TARGETTYPE=DYNLINK
+WINCEOEM=1
+WINCEMACRO=1
+COMMON_CDEFINES= -DUNICODE
+
+
+
+SOURCES= dummydr.c
+
+CDEFINES=$(COMMON_CDEFINES) $(DEP_DEFINES)
+
+INCLUDES=$(_COMMONOAKROOT)\inc;$(_COMMONDDKROOT)\inc \
+	 $(_PRIVATEROOT)\test\inc; \
+
+CDEFINES=$(CDEFINES) -DPCMCIA_TEST 
+
+TARGETLIBS=													\
+      $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib		\
+      $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\ceddk.lib
+ 
+RELEASETYPE=CETK 

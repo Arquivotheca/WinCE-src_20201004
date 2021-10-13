@@ -1,0 +1,5 @@
+DIRS=\
+   bstres2 \
+   ghstres2 \
+   ocstres2 \
+   rsstres2 \

@@ -1,0 +1,11 @@
+DIRS_NT=\
+   Help \
+   Server \
+   CetkPar \
+   inf \
+   CetkChCk \
+   util
+
+DIRS_CE=\
+   client \
+   DDTK

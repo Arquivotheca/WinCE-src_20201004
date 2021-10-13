@@ -1,0 +1,9 @@
+TARGETNAME=CaptureBMP
+TARGETTYPE=LIBRARY
+
+INCLUDES=                                                       \
+    $(INCLUDES)                                                 \
+
+SOURCES=\
+    CaptureBMP.cpp                                              \
+

@@ -1,0 +1,62 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=mqoa
+TARGETTYPE=LIBRARY
+TARGETTHREADMODEL=MT
+WINCEATL30=1
+WINCEOEM=1
+RELEASETYPE=OAK
+
+COPYRES=1
+
+TARGETDEFNAME=mqoa
+WINCETARGETFILES=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def $(_RELEASELIBDIR)\$(TARGETNAME).res
+
+# These two lines prevent the incredibly annoying rebuild-every-time of the IDL file
+# and all it's cascading rebuild effects 
+PASS0_HEADERDIR= .
+PASS0_SOURCEDIR= .
+
+MIDL_FLAGS = /h $(TARGETNAME).h /tlb $(TARGETNAME).tlb /DMIDL_COMPILER /D__MKTYPLIB__ 
+CDEFINES=$(CDEFINES) -D_ATL_NO_SECURITY -D_SHELL32_ -DINTERNATIONAL 
+
+#the typelib is here
+INCLUDES=.\obj\$(_CPUINDPATH);..\inc
+
+TARGETLIBS=\
+	$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib \
+	$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ole32.lib \
+	$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\oleaut32.lib \
+
+SOURCES=\
+	mqoa.odl \
+	mqoa.rc \
+	mqoa.cpp \
+	debug.cpp \
+	q.cpp \
+	qinfos.cpp \
+	msg.cpp \
+	event.cpp \
+	qinfo.cpp \
+	query.cpp \
+	stdenum.cpp \
+	autoobj.cpp \
+	unknown.cpp \
+	ipserver.cpp \
+	classf.cpp \
+	util.cpp \
+	utilx.cpp \
+	globals.cpp \
+		mqoa_i.c 
+	
+	
+
+#xref VIGUID {345a7618-717a-40f4-9349-b72e97bb839e}
+#xref VSGUID {ec732edf-05f3-4085-bb88-835d2d627e73}

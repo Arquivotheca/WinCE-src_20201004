@@ -1,0 +1,51 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+!INCLUDE ..\..\..\user.mk
+
+TARGETNAME=WiSC10
+TARGETTYPE=LIBRARY
+
+
+# Copy DEF file
+TARGETDEFNAME=$(TARGETNAME)
+WINCETARGETFILE0=$(_RELEASELIBDIR)\$(TARGETDEFNAME).def 
+
+CDEFINES=$(CDEFINES) 
+
+TARGETLIBS=	 \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\Allconn.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\WinCEUtils.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\SoapUtil.lib \
+    $(_PUBLICROOT)\$(WINCEPROJ)\oak\lib\$(_CPUINDPATH)\MSSOAP.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\oleaut32.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\crypt32.lib \
+    $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\wininet.lib \
+    $(TARGETLIBS)
+
+
+INCLUDES= \
+    ..\..\..\..\Inc\Idl; \
+    ..\..\..\..\Inc\SoapUtil; \
+    ..\..\..\..\Inc\Connect; \
+    ..\..\..\..\Inc\version; \
+    ..\..\..\..\WinCEUtils; \
+    $(INCLUDES)
+
+SOURCES= \
+    ..\HttpRequest.cpp \
+    ..\WIConn.cpp \
+    ..\WIConn.rc \
+    ..\WinInetConnector.cpp \
+    ..\WinInetResponseStream.cpp \
+    ..\WinInetRequestStream.cpp \
+
+
+DLLENTRY=_DllMainCRTStartup

@@ -1,0 +1,67 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+TARGETNAME=ccrtstrt
+TARGETTYPE=LIBRARY
+
+CDEFINES=$(CDEFINES) -DWINCEMACRO
+NOMIPS16CODE=1
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+INCLUDES=..\h;..\..\..\inc;..\..\..\..\nk\inc;..\..\fpw32\cpu_x86
+!ELSE
+INCLUDES=..\h;..\..\..\inc;..\..\..\..\nk\inc
+!ENDIF
+
+
+
+
+SOURCES= \
+	crt0dat.c \
+	onexit.c \
+	dllmain.c \
+	pegdmain.c \
+	pegwmain.c \
+	wwinmain.c \
+	crtstrta.cxx \
+	crtstrtw.cxx \
+	crtstrtg.cxx \
+	secchk.c \
+	seccinit.c \
+	seccook.c \
+
+SH_SOURCES= \
+	sh\crt0init.src \
+
+MIPS_SOURCES= \
+	mips\crt0init.c \
+	mips\interr.s \
+	mips\load32u.s \
+	mips\prologue.s \
+	mips\store32u.s \
+
+PPC_SOURCES= \
+	ppc\crt0init.c \
+	ppc\restgpr.s \
+	ppc\savegpr.s \
+	ppc\restfpr.s\
+	ppc\savefpr.s\
+
+ARM_SOURCES= \
+	arm\crt0init.c \
+	arm\__mulhi.s \
+	arm\r12ind.s \
+	arm\_intrlck.s \
+	arm\savegpr.s
+
+x86_SOURCES= \
+	x86\crt0init.c \
+	x86\fp8.c \
+	x86\_exclst_.asm \
+
+
