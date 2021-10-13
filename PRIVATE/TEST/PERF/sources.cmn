@@ -1,0 +1,7 @@
+!IF "$(TEST_ROOT)"==""
+TEST_ROOT=$(_PRIVATEROOT)\Test
+!ENDIF
+
+!INCLUDE $(TEST_ROOT)\sources.test
+
+_OEMINCPATH=$(_WINCEROOT)\public\voip\sdk\inc;$(_WINCEROOT)\public\directx\sdk\inc;$(_WINCEROOT)\public\servers\sdk\inc;$(_OEMINCPATH)

@@ -1,0 +1,14 @@
+DIRS=\
+    Kernel \
+    Drivers \
+    Filesys 
+
+#original_dirs
+#DIRS=\
+#    Kernel \
+#    Drivers \
+#    Filesys \
+#    imgupd
+#
+DIRS_CE=\
+    PQOal \

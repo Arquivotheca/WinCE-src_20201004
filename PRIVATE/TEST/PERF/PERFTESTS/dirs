@@ -1,0 +1,106 @@
+DIRS=\
+    perf_overlapd \
+    perf_winsock \
+    perf_winsock2 \
+    perf_capi1 \
+    perf_ndis \
+    perf_netSetupTeardown \
+
+DIRS_CE=\
+    perf_general \
+    perf_sleep \
+    perf_memory \
+    perf_float \
+    perf_fatfs \
+    perf_db \
+    perf_dbEx\
+    perf_reg\
+    perf_regEx\
+    perf_loader\
+    perf_font\
+    perf_DCOM\
+    perf_sample\
+    perf_upnp \
+    perf_voip \
+    perf_waveform \
+    perf_windowsmedia \
+    perf_windowsmediabvt \
+    perf_msmq \
+    perf_schannel \
+    perf_security \
+    perf_usb \
+    perf_httpd \
+    perf_suspend \
+    perf_redir \
+    perf_gwesUser \
+    perf_gwesOther \
+    perf_gwesMQ \
+    perf_SOAP   \
+    perf_gdi \
+    perf_osshell \
+    perf_disk	\
+    perf_iltiming \
+    perf_urlmon\
+    perf_inet\
+    perf_wininet
+
+DIRS_NT=\
+    perf_winsockd \
+    perf_SOAP \
+    perf_disk \
+    perf_SMB 
+
+#original_dirs
+#DIRS=\
+#    perf_overlapd \
+#    perf_winsock \
+#    perf_winsock2 \
+#    perf_capi1 \
+#    perf_ndis
+#
+#DIRS_CE=\
+#    perf_general \
+#    perf_sleep \
+#    perf_memory \
+#    perf_float \
+#    perf_fatfs \
+#    perf_db \
+#    perf_reg\
+#    perf_loader\
+#    perf_font\
+#    perf_DCOM\
+#    perf_sample\
+#    perf_upnp \
+#    perf_voip \
+#    perf_1394 \
+#    perf_waveform \
+#    perf_windowsmedia \
+#    perf_windowsmediabvt \
+#    perf_msmq \
+#    perf_dshow \
+#    perf_schannel \
+#    perf_security \
+#    perf_usb \
+#    perf_netSetupTeardown \
+#    perf_httpd \
+#    perf_suspend \
+#    perf_redir \
+#    perf_gwesUser \
+#    perf_gwesOther \
+#    perf_gwesMQ \
+#    perf_SOAP   \
+#    perf_gdi \
+#    perf_osshell \
+#    perf_disk	\
+#    perf_iltiming \
+#    perf_urlmon\
+#    perf_inet\
+#    perf_osbench\
+#    perf_wininet
+#
+#DIRS_NT=\
+#    perf_winsockd \
+#    perf_SOAP \
+#    perf_disk \
+#    perf_SMB 
+

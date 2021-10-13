@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+-->
+<Playlist>
+	<MediaContent id="HMC64">
+		<Description>160x120 64 kbit</Description>
+		<ClipName>highmotion_64K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>64000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3180</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC128">
+		<Description>160x120 128 kbit</Description>
+		<ClipName>highmotion_128K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>128000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3360</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC300A">
+		<Description>160x120 128 kbit</Description>
+		<ClipName>highmotion_300K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>300000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>
+	<MediaContent id="HMC300B">
+		<Description>320x240 300 kbit</Description>
+		<ClipName>highmotion_300K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>300000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC600A">
+		<Description>160x120 600 kbit</Description>
+		<ClipName>highmotion_600K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>
+	<MediaContent id="HMC600B">
+		<Description>320x240 600 kbit</Description>
+		<ClipName>highmotion_600K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3360</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC1200A">
+		<Description>320x240 1200 kbit</Description>
+		<ClipName>highmotion_1200K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>1200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC1200B">
+		<Description>640x480 1200 kbit</Description>
+		<ClipName>highmotion_1200K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>1200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3362</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC2400A">
+		<Description>320x240 2400 kbit</Description>
+		<ClipName>highmotion_2400K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>2400000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC2400B">
+		<Description>640x480 2400 kbit</Description>
+		<ClipName>highmotion_2400K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>2400000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3362</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC2400C">
+		<Description>720x480 2400 kbit</Description>
+		<ClipName>highmotion_2400K_720x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="480">
+			<BitRate>2400000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3362</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC4800A">
+		<Description>640x480 4800 kbit</Description>
+		<ClipName>highmotion_4800K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>4800000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>
+	<MediaContent id="HMC4800B">
+		<Description>1280x720 4800 kbit</Description>
+		<ClipName>highmotion_4800K_1280x720_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="1280">
+			<BitRate>4800000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3396</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC9600A">
+		<Description>640x480 9600 kbit</Description>
+		<ClipName>highmotion_9600K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>9600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC9600B">
+		<Description>1280x720 9600 kbit</Description>
+		<ClipName>highmotion_9600K_1280x720_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="1280">
+			<BitRate>9600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3396</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC19200A">
+		<Description>1280x720 19200 kbit</Description>
+		<ClipName>highmotion_19200K_1280x720_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="1280">
+			<BitRate>19200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3395</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="HMC19200B">
+		<Description>1920x1080 19200 kbit</Description>
+		<ClipName>highmotion_19200K_1920x1080_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\HighMotion\</Local>
+			<MMSU>mmsu://acedxmedia/dshowmedia/HighMotion/</MMSU>
+			<MMST>mmst://acedxmedia/dshowmedia/HighMotion/</MMST>
+			<HTTP>http://acedxmedia:18080/dshowmedia/HighMotion/</HTTP>
+		</Locations>
+		<VideoStats height="1080" width="1920">
+			<BitRate>19200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">3361</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC64">
+		<Description>160x120 64 kbit</Description>
+		<ClipName>lowMotion_64K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>64000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2999</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC128">
+		<Description>160x120 128 kbit</Description>
+		<ClipName>lowmotion_128K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>128000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC300A">
+		<Description>160x120 128 kbit</Description>
+		<ClipName>lowmotion_300K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>300000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>
+	<MediaContent id="LMC300B">
+		<Description>320x240 300 kbit</Description>
+		<ClipName>lowmotion_300K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>300000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC600A">
+		<Description>160x120 600 kbit</Description>
+		<ClipName>lowmotion_600K_160x120_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="160" width="120">
+			<BitRate>600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>
+	<MediaContent id="LMC600B">
+		<Description>320x240 600 kbit</Description>
+		<ClipName>lowmotion_600K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC1200A">
+		<Description>320x240 1200 kbit</Description>
+		<ClipName>lowmotion_1200K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>1200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC1200B">
+		<Description>640x480 1200 kbit</Description>
+		<ClipName>lowmotion_1200K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>1200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC2400A">
+		<Description>320x240 2400 kbit</Description>
+		<ClipName>lowmotion_2400K_320x240_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="320" width="240">
+			<BitRate>2400000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC2400B">
+		<Description>640x480 2400 kbit</Description>
+		<ClipName>lowmotion_2400K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>2400000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC2400C">
+		<Description>720x480 2400 kbit</Description>
+		<ClipName>lowmotion_2400K_720x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="480">
+			<BitRate>2400000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC4800A">
+		<Description>640x480 4800 kbit</Description>
+		<ClipName>lowmotion_4800K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>4800000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>
+	<MediaContent id="LMC4800B">
+		<Description>1280x720 4800 kbit</Description>
+		<ClipName>lowmotion_4800K_1280x720_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="1280">
+			<BitRate>4800000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC9600A">
+		<Description>640x480 9600 kbit</Description>
+		<ClipName>lowmotion_9600K_640x480_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="480" width="640">
+			<BitRate>9600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC9600B">
+		<Description>1280x720 9600 kbit</Description>
+		<ClipName>lowmotion_9600K_1280x720_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="1280">
+			<BitRate>9600000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC19200A">
+		<Description>1280x720 19200 kbit</Description>
+		<ClipName>lowmotion_19200K_1280x720_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="720" width="1280">
+			<BitRate>19200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>	
+	<MediaContent id="LMC19200B">
+		<Description>1920x1080 19200 kbit</Description>
+		<ClipName>lowmotion_19200K_1920x1080_main.wmv</ClipName>
+		<DRMClipName></DRMClipName>
+		<Codec>WMV 3</Codec>
+		<Locations>
+			<Local>\Hard Disk\dshowmedia\LowMotion\</Local>
+			<MMSU>mmsu://169.254.178.89/dshowmedia/LowMotion/</MMSU>
+			<MMST>mmst://169.254.178.89/dshowmedia/LowMotion/</MMST>
+			<HTTP>http://169.254.178.89:18080/dshowmedia/LowMotion/</HTTP>
+		</Locations>
+		<VideoStats height="1080" width="1920">
+			<BitRate>19200000</BitRate>
+			<ContainsAudio>false</ContainsAudio>
+		</VideoStats>
+		<QualityControl>
+			<AvgFrameRate>2997</AvgFrameRate>
+			<FramesDroppedInRenderer MarginOfError="0">0</FramesDroppedInRenderer>
+			<FramesDroppedInDecoder MarginOfError="0">0</FramesDroppedInDecoder>
+			<FramesDrawn MarginOfError="5">1799</FramesDrawn>
+		</QualityControl>
+	</MediaContent>		
+</Playlist>

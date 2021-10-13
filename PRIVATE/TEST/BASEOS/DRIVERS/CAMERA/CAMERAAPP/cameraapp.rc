@@ -1,0 +1,31 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+#include <windows.h>
+#include "resource.h"
+
+IDD_FORMATSELECTPAGE DIALOG 0, 0, 100, 85
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+CAPTION "VideoFormat"
+FONT 9, "Tahoma"
+BEGIN
+    COMBOBOX        IDC_COMBO1,35,05,65,60,CBS_DROPDOWN | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO2,35,20,65,60,CBS_DROPDOWN | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO3,35,35,65,60,CBS_DROPDOWN | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO4,35,50,65,60,CBS_DROPDOWN | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "OK",IDC_BUTTON1,25,65,50,14
+    LTEXT           "Driver",IDC_STATIC,2,4,28,8
+    LTEXT           "Preview",IDC_STATIC,2,19,28,8
+    LTEXT           "Capture",IDC_STATIC,2,34,28,8
+    LTEXT           "Still",IDC_STATIC,2,49,28,8
+END
+

@@ -1,0 +1,30 @@
+DIRS=\
+	tcpcmn\
+	DataMill\
+	QaEchoD\
+	QaEchoD_vx\
+	QaEcho_vx\
+	QaIgmp\
+	TcpTime\
+	perf\
+	natEditor\
+	gethostby\
+	perftime\
+	udputils\
+	sparta\
+	getaddrinfo
+DIRS_CE=\
+	getmail\
+	QaEcho\
+	QAPing\
+	Icmp\
+	sendmail\
+	regres\
+	iphlpapi\
+	ipsec\
+	tahi\
+	ipsec\
+	ipv6scenarios \
+	qos
+DIRS_NT=\
+	TcpTimeD	

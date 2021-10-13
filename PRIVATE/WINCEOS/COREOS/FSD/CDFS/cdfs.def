@@ -1,0 +1,46 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+LIBRARY 	UDFS
+
+EXPORTS
+    FSD_MountDisk
+    FSD_UnmountDisk
+    FSD_CreateDirectoryW=ROFS_CreateDirectory
+    FSD_RemoveDirectoryW=ROFS_RemoveDirectory
+    FSD_GetFileAttributesW=ROFS_GetFileAttributes
+    FSD_SetFileAttributesW=ROFS_SetFileAttributes
+    FSD_DeleteFileW=ROFS_DeleteFile
+    FSD_MoveFileW=ROFS_MoveFile
+    FSD_DeleteAndRenameFileW=ROFS_DeleteAndRenameFile
+    FSD_GetDiskFreeSpaceW=ROFS_GetDiskFreeSpace
+    FSD_Notify=ROFS_Notify
+    FSD_RegisterFileSystemFunction=ROFS_RegisterFileSystemFunction
+    FSD_FindFirstFileW=ROFS_FindFirstFile
+    FSD_FindNextFileW=ROFS_FindNextFile
+    FSD_FindClose=ROFS_FindClose
+    FSD_CreateFileW=ROFS_CreateFile
+    FSD_ReadFile=ROFS_ReadFile
+    FSD_ReadFileWithSeek=ROFS_ReadFileWithSeek
+    FSD_WriteFile=ROFS_WriteFile
+    FSD_WriteFileWithSeek=ROFS_WriteFileWithSeek
+    FSD_SetFilePointer=ROFS_SetFilePointer
+    FSD_GetFileSize=ROFS_GetFileSize
+    FSD_GetFileInformationByHandle=ROFS_GetFileInformationByHandle
+    FSD_FlushFileBuffers=ROFS_FlushFileBuffers
+    FSD_GetFileTime=ROFS_GetFileTime
+    FSD_SetFileTime=ROFS_SetFileTime
+    FSD_SetEndOfFile=ROFS_SetEndOfFile
+    FSD_DeviceIoControl=ROFS_DeviceIoControl
+    FSD_CloseFile=ROFS_CloseFileHandle
+    FSD_GetVolumeInfo = ROFS_GetVolumeInfo;
+    CDFS_RecognizeVolume = ROFS_RecognizeVolume;

@@ -1,0 +1,40 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+
+!IFDEF SP_REF_VERBOSE
+CDEFINES=$(CDEFINES) -DSP_REF_VERBOSE
+!ENDIF
+
+TARGETNAME=ppp2ndis
+TARGETTYPE=LIBRARY
+TARGETLIBS= 
+
+
+INCLUDES= \
+	..\inc; \
+	..\..\..\inc
+
+
+
+SOURCES= \
+	mac.c \
+	ndisprot.c \
+	adptlst.c \
+	ndistapi.c \
+	memory.c \
+	snddata.c
+
+
+
+#xref VIGUID {37e7be0f-15fe-4fcd-b9bf-6e9ce1a30821}
+#xref VSGUID {1b847523-ec20-4586-88a0-fdcb2fd8dd45}

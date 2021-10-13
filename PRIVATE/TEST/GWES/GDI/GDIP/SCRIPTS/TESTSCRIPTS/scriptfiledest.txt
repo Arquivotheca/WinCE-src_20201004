@@ -1,0 +1,16 @@
+#sample script file
+#sample script file
+[BitBlt]
+
+[BitBlt]
+Dest=bad
+
+[BitBlt]
+Dest=bad,bad, bad
+
+[BitBlt]
+Dest=Primary, bad, Primary
+
+[BitBlt]
+Dest=Primary, System_Memory, Video_Memory
+

@@ -1,0 +1,50 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+########################################################################
+#        COMMON SETTINGS                                               #
+########################################################################
+#PREPROCESSDEFFILE=1
+
+TARGETNAME=usbcomon
+#TARGETTYPE=DYNLINK
+TARGETTYPE=LIBRARY
+
+
+#Specify sources
+#
+SOURCES=\
+	loadfn.cpp    \
+	regdump.c
+	  
+	  
+#
+#Set All C Defines
+#
+CDEFINES=$(COMMON_CDEFINES) $(DEP_DEFINES)
+
+!IF "$(_TGTOS)"=="CE"
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+INCLUDES=$(_PUBLICROOT)\qa\sdk\inc;$(_COMMONDDKROOT)\inc;$(INCLUDES)
+!ELSE
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\kernel32.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\user32.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib
+
+INCLUDES=$(_PUBLICROOT)\qa\sdk\inc;
+
+# QATARGET DEPENDANT CFLAGS
+!ENDIF

@@ -1,0 +1,3 @@
+public\CEBase\cesysgen\sdk\inc\httpext.h
+public\CEBase\cesysgen\sdk\inc\httpfilt.h
+public\CEBase\cesysgen\sdk\inc\asp.h 

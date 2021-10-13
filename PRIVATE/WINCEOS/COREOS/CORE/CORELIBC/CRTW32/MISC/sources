@@ -1,0 +1,75 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=ccrtmisc
+TARGETTYPE=LIBRARY
+
+!INCLUDE "..\..\sources.inc"
+
+NOLTCG=1
+
+INCLUDES=..\h;..\..\..\inc;..\..\..\..\nk\inc
+# x86
+INCLUDES=$(INCLUDES);..\..\fpw32\cpu_x86
+
+!IF "$(_TGTCPUFAMILY)"=="x86"
+CDEFINES=$(CDEFINES) -Dmem_S -DI386
+ADEFINES=$(ADEFINES) -Dmem_S -DI386
+ASM_SAFESEH=1
+!ENDIF
+
+!IF "$(_TGTCPU)" == "SH4"
+ADEFINES=$(ADEFINES) -DSH_CPU=64
+!ENDIF
+
+SOURCES= \
+    abs.c \
+    byteswap.c \
+    countlead.c \
+    countonebits.c \
+    countonebits64.c \
+    div.c \
+    dosmap.c \
+    encptr.c \
+    invarg.c \
+    labs.c \
+    ldiv.c \
+    mulhigh.c \
+    mulunsignedhigh.c \
+    purevirt.c \
+    qsort.c \
+    qsort_s.c \
+    rand.c \
+    rand_s.c \
+    rotl.c \
+    rotr.c \
+    nlsdata1.c \
+    nlsdata2.c \
+    nlsdata3.c \
+    xcptfltr.c \
+    qsort.c \
+
+SH_SOURCES= \
+    sh\longjmp.src \
+    sh\setjmp.src \
+
+MIPS_SOURCES= \
+    mips\longjmp.s \
+    mips\setjmp.s \
+
+ARM_SOURCES= \
+    arm\longjmp.s \
+    arm\setjmp.s \
+
+x86_SOURCES= \
+    x86\longjmp.asm \
+    x86\setjmp.asm \

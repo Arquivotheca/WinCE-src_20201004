@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\CETest\WiFiRoamConfig]
+    "DTPTServerHost"="169.254.2.2"
+    "DTPTServerPort"="33331"
+    "WiFiServerHost"="10.10.0.100"
+    "WiFiServerPort"="33331"
+

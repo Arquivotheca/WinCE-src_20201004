@@ -1,0 +1,106 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// Microsoft Visual C++ generated resource script.
+//
+#include "bullrc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "bullrc.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_BULL_SET_PROTOCOL_T1 "Try to set incorrect protocol T=1"
+    IDS_BULL_SET_PROTOCOL_T0 "Set protocol T=0"
+    IDS_BULL_BUFFER_BOUNDARY "Buffer boundary test"
+    IDS_BULL_3BYTE_APDU     "3 byte APDU"
+    IDS_BULL_GET_CHALLENGE  "GET CHALLENGE"
+    IDS_BULL_VERIFY_PIN     "VERIFY PIN"
+    IDS_BULL_SEARCH_BLANK_WORD "SEARCH BLANK WORD"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_BULL_GET_RESPONSE   "GET RESPONSE"
+    IDS_BULL_LC_BYTE_INCORRECT "Lc byte incorrect"
+    IDS_BULL_SELECT_FILE    "SELECT FILE"
+    IDS_BULL_ERASE_BINARY   "ERASE BINARY"
+    IDS_BULL_WRITE_BINARY   "WRITE BINARY - 4 bytes (%03d)"
+    IDS_BULL_READ_BINARY_256_BYTES "READ BINARY - 256 bytes"
+    IDS_BULL_GENERATE_TEMP_KEY "GENERATE TEMP KEY"
+    IDS_BULL_SET_PROTOCOL_FAILED "Set Protocol Failed"
+    IDS_BULL_SHOULD_FAIL_SMALL_BUFFER 
+                            "Transmit should fail due to too small buffer"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,23 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!include ..\asp.src
+
+
+TARGETNAME=ASPSTUBS
+TARGETTYPE=LIBRARY
+SYNCHRONIZE_DRAIN=1
+SYNCHRONIZE_BLOCK=1
+
+SOURCES=collstub.cpp parsstub.cpp
+#xref VIGUID {1f8e6ff8-6c71-45be-9873-304c776da9fa}
+#xref VSGUID {09beb3e8-f991-47a0-8f19-21c99eed3a1f}

@@ -1,0 +1,43 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETTYPE=PROGRAM
+TARGETNAME=D3DMHelper
+
+D3D_TST_ROOT=$(DX_TST_ROOT)\d3d
+
+INCLUDES=                                 \
+	$(INCLUDES)                       \
+	$(D3D_TST_ROOT)\mobile\includes;  \
+	..\..\includes; \
+	$(D3D_TST_ROOT)\..\inc; \ 
+
+SOURCES= \
+    D3DMHelper.cpp      \
+
+TARGETLIBS=$(TARGETLIBS) \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib                 \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib                    \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\d3dm.lib                    \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTextureTools.lib       \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMSurfaceTools.lib       \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMColorConv.lib          \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMatrixManip.lib        \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\DeltaBMP.lib               \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib                   \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDebugOutput.lib        \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMultiInstTestHelper.lib\
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\RemoteTester.lib        	 \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMInitializer.lib      	 \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTestWindow.lib      	 \
+
+RELEASETYPE=CETK

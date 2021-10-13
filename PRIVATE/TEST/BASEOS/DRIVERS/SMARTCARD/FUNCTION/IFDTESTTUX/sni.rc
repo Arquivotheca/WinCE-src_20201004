@@ -1,0 +1,126 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// Microsoft Visual C++ generated resource script.
+//
+#include "snirc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "snirc.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_SNI_SET_PROTOCOL_T0 "Try to set incorrect protocol T=0"
+    IDS_SNI_SET_PROTOCOL_T1 "Set protocol T=1"
+    IDS_SNI_SELECT_FILE_EFWTX "SELECT FILE EFwtx"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SNI_SELECT_FILE_FRESYNC "SELECT FILE EFresync"
+    IDS_SNI_SELECT_FILE_EFSEQNUM "SELECT FILE EFseqnum"
+    IDS_SNI_SELECT_FILE_EFIFS "SELECT FILE EFifs"
+    IDS_SNI_SELECT_FILE_EFTIMEOUT "SELECT FILE EFtimeout"
+    IDS_SNI_BUFFER_BOUNDARY "Buffer boundary test"
+    IDS_SNI_READ_BINARY     "READ BINARY %3d bytes"
+    IDS_SNI_WRITE_BINARY    "WRITE BINARY %3d bytes"
+    IDS_SNI_WTX_RESULT      "WTX result"
+    IDS_SNI_RESYNC_READ_RESULT "RESYNCH read result"
+    IDS_SNI_RESYNC_WRITE_RESULT "RESYNCH write result"
+    IDS_SNI_SEQNUM_RESULT   "Sequence number result"
+    IDS_SNI_IFSC_REQUEST    "IFSC request"
+    IDS_SNI_IFSD_REQUEST    "IFSD request"
+    IDS_STRING717           "Forced timeout result"
+    IDS_SNI_SET_PROTOCOL_FAILED "Set Protocol Failed"
+    IDS_SNI_SHOULD_FAIL_SMALL_BUFFER 
+                            "Transmit should fail due to too small buffer\nReturned %2lxH\nExpected %2lxH"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SNI_SELECT_FILE_EFRESULT "SELECT FILE EFresult"
+    IDS_SNI_NO_TEST         "Test not performed"
+    IDS_SNI_NO_WTX_REPLY    "Smart card received no WTX reply"
+    IDS_SNI_WRONG_WTX_REPLY "Smart card received wrong WTX reply"
+    IDS_SNI_FAILED_ERROR    "Test failed. Error code %02xH"
+    IDS_SNI_NO_RESYNC_REQ   "Smart card received no RESYNCH request"
+    IDS_SNI_BAD_DATA        """Smart card received incorrect data"""
+    IDS_SNI_NO_IFSC_REPLY   "Smart card received no IFSC reply"
+    IDS_SNI_BAD_SIZE_BEFORE_IFSC_REQ 
+                            "Block size BEFORE IFSC request incorrect"
+    IDS_SNI_BAD_SIZE_AFTER_IFSC_REQ "Block size AFTER IFSC request incorrect"
+    IDS_SNI_FORCED_TIMEOUT_RESULT "Forced timeout result"
+    IDS_SNI_NO_IFSC_REQ     "Smart card received no IFSD request"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

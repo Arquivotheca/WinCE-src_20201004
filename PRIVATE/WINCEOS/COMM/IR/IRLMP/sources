@@ -1,0 +1,38 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!if 0
+!endif
+
+TARGETNAME=irlmp
+TARGETTYPE=LIBRARY
+TARGETLIBS=
+
+INCLUDES=..\inc;..\..\inc
+
+!IFDEF MEMTRACKING
+!IF $(MEMTRACKING)
+CDEFINES=$(CDEFINES) -DMEMTRACKING
+!ENDIF
+!ENDIF
+
+!IF ("$(IRDASTK_LOGDEV)" == "1")
+CDEFINES = $(CDEFINES) -DLOGDEV
+!ENDIF
+
+CONDITIONAL_INCLUDES=nt.h ntos.h filedbg.h dbgmsg.h logdev.h
+
+SOURCES=	irlmp.c 	
+
+
+#xref VIGUID {89178e14-7759-47f0-ba8d-12bf58381693}
+#xref VSGUID {2ee5faa1-ea0e-4e9d-820a-fdd84c54ddfd}

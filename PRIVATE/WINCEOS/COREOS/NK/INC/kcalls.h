@@ -1,0 +1,205 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+//
+// This source code is licensed under Microsoft Shared Source License
+// Version 6.0 for Windows CE.
+// For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+//
+
+//
+//    kcalls.h - headers for all KCalls
+//
+#ifndef _NK_KCALLS_H_
+#define _NK_KCALLS_H_
+
+#include "kerncmn.h"
+
+typedef struct _sttd_t {
+    PTHREAD pThNeedRun;
+    PTHREAD pThNeedBoost;
+} sttd_t;
+
+typedef struct _sleeper_t {
+    PTHREAD pth;
+    WORD    wCount2;
+    WORD    wDirection;
+    DWORD   dwWakeupTime;
+} sleeper_t;
+
+// resume a thread
+DWORD ThreadResume (PTHREAD pth);
+
+// suspend a thread
+DWORD ThreadSuspend (PTHREAD pth, BOOL fLateSuspend);
+
+// on api return, or exception return, check to see if we're late suspended
+void SuspendSelfIfNeeded (void);
+
+// current thread yield
+void ThreadYield (void);
+
+// change base priority of a thread
+BOOL SetThreadBasePrio (PTHREAD pth, DWORD nPriority);
+
+// set thread context
+BOOL DoThreadSetContext (PTHREAD pth, const CONTEXT *lpContext);
+
+// get thread context
+BOOL DoThreadGetContext (PTHREAD pth, CONTEXT *lpContext);
+
+// terminate a thread
+PTHREAD SetThreadToDie (PTHREAD pth, DWORD dwExitCode, sttd_t *psttd);
+
+// change thread quantum
+BOOL SetThreadQuantum (PTHREAD pth, DWORD dwQuantum);
+
+// get kernel time of current running thread
+DWORD GetCurThreadKTime (void);
+
+// get user time of current running thread
+DWORD GetCurThreadUTime (void);
+
+// GetOwnedSyncObject - called on thread exit to get/release owned sync objects
+PCRIT GetOwnedSyncObject (void);
+
+// FinalRemoveThread - final stage of thread/process cleanup.
+void FinalRemoveThread (PHDATA phdThrd);
+
+// NextThread - part I of scheduler. Set interrupt event on interrupt, 
+//              and make sleeping thread runnable when sleep time expired.
+void NextThread (void) ;
+
+// make a thread runnable
+VOID MakeRun (PTHREAD pth);
+
+// KCNextThread - part 2 of scheduler, find the highest prioity runnable thread
+void KCNextThread (void);
+
+// LaterLinkCritMut - current thread gets the ownership of a CS/Mutex
+void LaterLinkCritMut (PCRIT lpcrit, BOOL bIsCrit);
+
+// LaterLinkCritMut - a thread gets the ownership of a Mutex
+void LaterLinkMutOwner (PMUTEX lpm);
+
+// PreUnlinkMutex - step 1 of releasing the ownership of a CS/Mutex
+void PreUnlinkMutex (PCRIT lpcrit);
+
+// PostUnlinkCritMut - final step of releasing the ownership of a CS/Mutex
+void PostUnlinkCritMut (void);
+
+// MakeRunIfNeeded - make a thread runnable if needed
+void MakeRunIfNeeded (PTHREAD pth);
+
+// DequeueFlatProxy - remove a proxy from a flat list (not a 2-d priority queue)
+void DequeueFlatProxy (PPROXY pprox);
+
+// DequeuePrioProxy - remove a proxy form a 2-d priority queue
+BOOL DequeuePrioProxy (PPROXY pprox);
+
+// DoReprioCrit - re-prio a CS in the owner thread's 'owned object list'
+void DoReprioCrit (PCRIT lpcrit);
+
+// DoReprioMutex - re-prio a mutex in the owner thread's 'owned object list'
+void DoReprioMutex (PMUTEX lpm);
+
+// PostBoostMut - boost the priority of the owner of a mutex (current thread is
+//                acquiring a mutex that is owned by another thread)
+void PostBoostMut (PMUTEX lpm);
+
+// PostBoostCrit1 - part 1 of priority inheritance handling of CS.
+//                  (re-prio the cs in the owner thread's 'owned object list'
+void PostBoostCrit1 (PCRIT pcrit);
+
+// PostBoostCrit2 - part 2 of priority inheritance handling of CS.
+//                  (boost the priority of the owner thread)
+void PostBoostCrit2 (PCRIT pcrit);
+
+// CritFinalBoost - final step of priority inheritance handling of CS.
+//                  (boost the priority of the new owner)
+void CritFinalBoost (PCRIT pCrit, LPCRITICAL_SECTION lpcs);
+
+// WakeOneThreadFlat - wake up a thread that is blocked on thread/process/manual-event
+//                      (object linked on a flat-queue)
+void WakeOneThreadFlat (PEVENT pObject, PTHREAD *ppTh);
+
+// EventModMan - set/pulse a manual reset event
+DWORD EventModMan (PEVENT lpe, PSTUBEVENT lpse, DWORD action);
+
+// EventModAuto - set/pulse a auto-reset event
+BOOL EventModAuto (PEVENT lpe, DWORD action, PTHREAD *ppTh);
+
+// EventModIntr -- set/pulse a interrupt event
+PTHREAD EventModIntr (PEVENT lpe, DWORD type);
+
+// ResetProcEvent -- reset a process event if the process hasn't exited yet
+void ResetProcEvent (PEVENT lpe);
+
+// LeaveMutex - release the ownership of a mutex
+BOOL LeaveMutex (PMUTEX lpm, PTHREAD *ppTh);
+
+// DoFreeMutex -- clean up before deleting a mutex object
+void DoFreeMutex (PMUTEX lpm);
+
+// DoFreeCrit -- clean up before deleting a CS
+void DoFreeCrit (PCRIT lpcrit);
+
+// AdjustPrioDown -- adjust the priority of current running thread while set/pulse 
+//                   manual-reset events.
+void AdjustPrioDown (void);
+
+// SamAdd - increment Semaphore count by lReleaseCount,
+//          returns previous count (-1 if exceed max)
+LONG SemAdd (PSEMAPHORE lpsem, LONG lReleaseCount);
+
+// relase all threads, up to the current semaphore count, blocked on the semaphore
+BOOL SemPop (PSEMAPHORE lpsem, LPLONG pRemain, PTHREAD *ppTh);
+
+// PutThreadToSleep - put a thread into the sleep queue
+int PutThreadToSleep (sleeper_t *pSleeper);
+
+// WaitConfig - setup before start processing a blocking operation (Wait/ECS)
+void WaitConfig (PPROXY pProx, CLEANEVENT *lpce);
+
+// WaitOneMore - process one synchronization object in Wait funciton
+DWORD WaitOneMore (LPDWORD pdwContinue, PCRIT *ppCritMut);
+
+// WaitForOneManualNonInterruptEvent - wait for a single manual non-interrupt event
+typedef BOOL (* PFN_WAITFUNC) (DWORD dwUserData);
+DWORD WaitForOneManualNonInterruptEvent (PPROXY pProx, PFN_WAITFUNC pfnUserFunc, DWORD dwUserData); 
+
+#define CSWAIT_TAKEN 0
+#define CSWAIT_PEND  1
+#define CSWAIT_ABORT 2
+
+// CSWaitPart1 - part I of grabbing a CS.
+DWORD CSWaitPart1 (PCRIT *ppCritMut, PPROXY pProx, PCRIT pcrit);
+
+// CSWaitPart2 - part 2 of grabbing a CS.
+void CSWaitPart2 (void);
+
+// PreLeaveCrit - step 1 of leaving a CS
+//          remove the CS from the thread's "owned object list"
+BOOL PreLeaveCrit (PCRIT pCrit, LPCRITICAL_SECTION lpcs);
+
+// LeaveCrit - final stop to leave a CS
+//          give the CS to new owner or set owner to 0 if there is no one waiting
+BOOL LeaveCrit (PCRIT pCrit, LPCRITICAL_SECTION lpcs, PTHREAD *ppTh);
+
+// common Exception handler
+BOOL KC_CommonHandleException (PTHREAD pth, DWORD arg1, DWORD arg2, DWORD arg3);
+
+// ClearThreadStruct
+//          preserve wCount and wCount2 and set all other fields of THREAD to 0
+void ClearThreadStruct (PTHREAD pth);
+
+#endif // _NK_KCALLS_H_

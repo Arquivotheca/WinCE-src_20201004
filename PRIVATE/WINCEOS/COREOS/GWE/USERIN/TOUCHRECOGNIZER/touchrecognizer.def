@@ -1,0 +1,7 @@
+LIBRARY  TOUCHRECOGNIZER
+
+EXPORTS
+      Init
+      RecognizeGesture
+      ConfigSettings
+

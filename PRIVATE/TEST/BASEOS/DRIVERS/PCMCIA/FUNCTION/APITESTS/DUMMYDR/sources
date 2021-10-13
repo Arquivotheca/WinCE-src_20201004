@@ -1,0 +1,52 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!IF 0
+
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+    
+
+Author:
+
+!ENDIF
+########################################################################
+#        COMMON SETTINGS                                               #
+########################################################################
+DLLENTRY=LibMain
+TARGETNAME=dummydr
+TARGETTYPE=DYNLINK
+WINCEOEM=1
+WINCEMACRO=1
+COMMON_CDEFINES= -DUNICODE
+
+
+
+SOURCES= dummydr.c
+
+CDEFINES=$(COMMON_CDEFINES) $(DEP_DEFINES)
+
+INCLUDES=$(_COMMONOAKROOT)\inc;$(_COMMONDDKROOT)\inc \
+	 $(_PRIVATEROOT)\test\inc; \
+
+CDEFINES=$(CDEFINES) -DPCMCIA_TEST 
+
+TARGETLIBS=													\
+      $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib		\
+      $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\ceddk.lib
+ 
+RELEASETYPE=CETK 

@@ -1,0 +1,37 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=msmqsrc
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+WINCEOEM=1
+
+INCLUDES=..\msmqinc;..\inc;..\ce\server;..\srmp\core
+CDEFINES=$(CDEFINES) -DwinCE -D_WINDOWS_CE_ -DUSE_IPHELPER_INTERFACE
+
+SOURCES=scapi.cxx    \
+		scerror.cxx  \
+		scfile.cxx   \
+		scmain.cxx   \
+		scmgmt.cxx   \
+                scnb.cxx     \
+		scorder.cxx  \
+		scpacket.cxx \
+		scping.cxx   \
+		scqman.cxx   \
+		scqueue.cxx  \
+		scsman.cxx   \
+		scutil.cxx
+
+
+#xref VIGUID {85b5f617-1176-4d9a-8953-41161b7278c4}
+#xref VSGUID {b8edffce-a4fd-47f2-979e-23157894956c}

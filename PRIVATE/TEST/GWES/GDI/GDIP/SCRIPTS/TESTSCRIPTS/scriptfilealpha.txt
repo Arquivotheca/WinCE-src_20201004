@@ -1,0 +1,23 @@
+#sample script file
+
+#this times all ROP's with an area of 10000 from video memory to the primary
+[AlphaBlend]
+Count=10
+Dest=Primary
+Source=Video_Memory
+Coordinates=(0,0,100,100,0,0, 100, 100)
+BlendFunction=SCA
+
+[AlphaBlend]
+Count=10
+Dest=DIB32_RGB8888
+Source=DIB32_RGB8888
+Coordinates=(0,0,100,100,0,0, 100, 100)
+BlendFunction=PPA, SCA, PPA&SCA
+
+[AlphaBlend]
+Count=10
+Dest=Primary
+Source=DIB32_RGB8888
+Coordinates=(0,0,100,100,0,0, 100, 100)
+BlendFunction=PPA&SCA

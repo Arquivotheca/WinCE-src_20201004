@@ -1,0 +1,706 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+/////////////////////////////////////////////////////////////////////////////
+//
+//
+// Module Name:
+//
+//      DvbSiParser.idl
+//
+// Abstract:
+//
+//      Interface definitions for the DVB SI parsing functionality
+//
+// Notes:
+//
+//      This IDL file is not built independently, but is included and built
+//      in the main IDL file Mpeg2Data.idl
+//
+/////////////////////////////////////////////////////////////////////////////
+
+    // Forward interface declarations
+interface IPAT;
+interface ICAT;
+interface IPMT;
+interface ITSDT;
+interface IDVB_NIT;
+interface IDVB_SDT;
+interface IDVB_EIT;
+interface IDVB_BAT;
+interface IDVB_RST;
+interface IDVB_ST;
+interface IDVB_TDT;
+interface IDVB_TOT;
+interface IDVB_DIT;
+interface IDVB_SIT;
+
+
+
+    ////////////////////////////////////
+    //
+    // IDvbSiParser Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(B758A7BD-14DC-449d-B828-35909ACB3B1E),
+        pointer_default(unique)
+    ]
+    interface IDvbSiParser : IUnknown
+    {
+        HRESULT GetPAT([out] IPAT **ppPAT);
+
+        HRESULT GetCAT([in]  DWORD   dwTimeout,
+                       [out] ICAT ** ppCAT);
+
+        HRESULT GetPMT([in]  PID     pid,
+                       [in]  WORD *  pwProgramNumber,         // OPTIONAL
+                       [out] IPMT ** ppPMT);
+
+        HRESULT GetTSDT([out] ITSDT **ppTSDT);
+
+        HRESULT GetNIT([in]  TID         tableId,
+                       [in]  WORD *      pwNetworkId,         // OPTIONAL
+                       [out] IDVB_NIT ** ppNIT);
+
+        HRESULT GetSDT([in]  TID         tableId,
+                       [in]  WORD *      pwTransportStreamId, // OPTIONAL
+                       [out] IDVB_SDT ** ppSDT);
+
+        HRESULT GetEIT([in]  TID         tableId,
+                       [in]  WORD *      pwServiceId,         // OPTIONAL
+                       [out] IDVB_EIT ** ppEIT);
+
+        HRESULT GetBAT([in] WORD *       pwBouquetId,         // OPTIONAL
+                       [out] IDVB_BAT ** ppBAT);
+
+        HRESULT GetRST([in] DWORD        dwTimeout,
+                       [out] IDVB_RST ** ppRST);
+
+        HRESULT GetST([in]  PID        pid,
+                      [in]  DWORD      dwTimeout,
+                      [out] IDVB_ST ** ppST);
+
+        HRESULT GetTDT([out] IDVB_TDT **ppTDT);
+
+        HRESULT GetTOT([out] IDVB_TOT **ppTOT);
+
+        HRESULT GetDIT([in] DWORD        dwTimeout,
+                       [out] IDVB_DIT ** ppDIT);
+
+        HRESULT GetSIT([in] DWORD        dwTimeout,
+                       [out] IDVB_SIT ** ppSIT);
+
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_NIT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(C64935F4-29E4-4e22-911A-63F7F55CB097),
+        pointer_default(unique)
+    ]
+    interface IDVB_NIT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList * pSectionList,
+                           [in] IMpeg2Data *   pMPEGData);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetNetworkId([out] WORD *pwVal);
+
+        HRESULT GetCountOfTableDescriptors([out] DWORD *pdwVal);
+
+        HRESULT GetTableDescriptorByIndex([in]  DWORD                 dwIndex,
+                                          [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetTableDescriptorByTag([in]  BYTE                  bTag,
+                                        [in]  DWORD *               pdwCookie, // OPTIONAL
+                                        [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetCountOfRecords([out] DWORD *pdwVal);
+
+        HRESULT GetRecordTransportStreamId([in]  DWORD  dwRecordIndex,
+                                           [out] WORD * pwVal);
+
+        HRESULT GetRecordOriginalNetworkId([in]  DWORD  dwRecordIndex,
+                                           [out] WORD * pwVal);
+
+        HRESULT GetRecordCountOfDescriptors([in]  DWORD   dwRecordIndex,
+                                            [out] DWORD * pdwVal);
+
+        HRESULT GetRecordDescriptorByIndex([in]  DWORD                 dwRecordIndex,
+                                           [in]  DWORD                 dwIndex,
+                                           [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetRecordDescriptorByTag([in]  DWORD                 dwRecordIndex,
+                                         [in]  BYTE                  bTag,
+                                         [in]  DWORD *               pdwCookie, // OPTIONAL
+                                         [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT RegisterForNextTable([in] HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([out] IDVB_NIT **ppNIT);
+
+        HRESULT RegisterForWhenCurrent([in] HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+
+        HRESULT GetVersionHash([out] DWORD * pdwVersionHash);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_SDT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(02CAD8D3-FE43-48e2-90BD-450ED9A8A5FD),
+        pointer_default(unique)
+    ]
+    interface IDVB_SDT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList * pSectionList,
+                           [in] IMpeg2Data *   pMPEGData);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetTransportStreamId([out] WORD *pwVal);
+
+        HRESULT GetOriginalNetworkId([out] WORD *pwVal);
+
+        HRESULT GetCountOfRecords([out] DWORD *pdwVal);
+
+        HRESULT GetRecordServiceId([in]  DWORD  dwRecordIndex,
+                                   [out] WORD * pwVal);
+
+        HRESULT GetRecordEITScheduleFlag([in]  DWORD  dwRecordIndex,
+                                         [out] BOOL * pfVal);
+
+        HRESULT GetRecordEITPresentFollowingFlag([in]  DWORD  dwRecordIndex,
+                                                 [out] BOOL * pfVal);
+
+        HRESULT GetRecordRunningStatus([in]  DWORD  dwRecordIndex,
+                                       [out] BYTE * pbVal);
+
+        HRESULT GetRecordFreeCAMode([in]  DWORD  dwRecordIndex,
+                                    [out] BOOL * pfVal);
+
+        HRESULT GetRecordCountOfDescriptors([in]  DWORD   dwRecordIndex,
+                                            [out] DWORD * pdwVal);
+
+        HRESULT GetRecordDescriptorByIndex([in]  DWORD                 dwRecordIndex,
+                                           [in]  DWORD                 dwIndex,
+                                           [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetRecordDescriptorByTag([in]  DWORD                 dwRecordIndex,
+                                         [in]  BYTE                  bTag,
+                                         [in]  DWORD *               pdwCookie, //  OPTIONAL
+                                         [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT RegisterForNextTable([in]  HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([out] IDVB_SDT **ppSDT);
+
+        HRESULT RegisterForWhenCurrent([in] HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+
+        HRESULT GetVersionHash([out] DWORD * pdwVersionHash);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_EIT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(442DB029-02CB-4495-8B92-1C13375BCE99),
+        pointer_default(unique)
+    ]
+    interface IDVB_EIT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList * pSectionList,
+                           [in] IMpeg2Data *   pMPEGData);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetServiceId([out] WORD *pwVal);
+
+        HRESULT GetTransportStreamId([out] WORD *pwVal);
+
+        HRESULT GetOriginalNetworkId([out] WORD *pwVal);
+
+        HRESULT GetSegmentLastSectionNumber([out] BYTE *pbVal);
+
+        HRESULT GetLastTableId([out] BYTE *pbVal);
+
+        HRESULT GetCountOfRecords([out] DWORD *pdwVal);
+
+        HRESULT GetRecordEventId([in]  DWORD  dwRecordIndex,
+                                 [out] WORD * pwVal);
+
+        HRESULT GetRecordStartTime([in]  DWORD                dwRecordIndex,
+                                   [out] MPEG_DATE_AND_TIME * pmdtVal);
+
+        HRESULT GetRecordDuration([in]  DWORD           dwRecordIndex,
+                                  [out] MPEG_DURATION * pmdVal);
+
+        HRESULT GetRecordRunningStatus([in]  DWORD  dwRecordIndex,
+                                       [out] BYTE * pbVal);
+
+        HRESULT GetRecordFreeCAMode([in]  DWORD  dwRecordIndex,
+                                    [out] BOOL * pfVal);
+
+        HRESULT GetRecordCountOfDescriptors([in]  DWORD   dwRecordIndex,
+                                            [out] DWORD * pdwVal);
+
+        HRESULT GetRecordDescriptorByIndex([in]  DWORD                 dwRecordIndex,
+                                           [in]  DWORD                 dwIndex,
+                                           [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetRecordDescriptorByTag([in]  DWORD                 dwRecordIndex,
+                                         [in]  BYTE                  bTag,
+                                         [in]  DWORD *               pdwCookie, // OPTIONAL
+                                         [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT RegisterForNextTable([in] HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([out] IDVB_EIT **ppEIT);
+
+        HRESULT RegisterForWhenCurrent([in] HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+
+        HRESULT GetVersionHash([out] DWORD * pdwVersionHash);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_BAT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(ECE9BB0C-43B6-4558-A0EC-1812C34CD6CA),
+        pointer_default(unique)
+    ]
+    interface IDVB_BAT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList * pSectionList,
+                           [in] IMpeg2Data *   pMPEGData);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetBouquetId([out] WORD *pwVal);
+
+        HRESULT GetCountOfTableDescriptors([out] DWORD *pdwVal);
+
+        HRESULT GetTableDescriptorByIndex([in] DWORD                 dwIndex,
+                                          [in] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetTableDescriptorByTag([in]  BYTE                  bTag,
+                                        [in]  DWORD *               pdwCookie, // OPTIONAL
+                                        [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetCountOfRecords([out] DWORD *pdwVal);
+
+        HRESULT GetRecordTransportStreamId([in]  DWORD  dwRecordIndex,
+                                           [out] WORD * pwVal);
+
+        HRESULT GetRecordOriginalNetworkId([in]  DWORD  dwRecordIndex,
+                                           [out] WORD * pwVal);
+
+        HRESULT GetRecordCountOfDescriptors([in]  DWORD   dwRecordIndex,
+                                            [out] DWORD * pdwVal);
+
+        HRESULT GetRecordDescriptorByIndex([in]  DWORD                 dwRecordIndex,
+                                           [in]  DWORD                 dwIndex,
+                                           [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetRecordDescriptorByTag([in]  DWORD                 dwRecordIndex,
+                                         [in]  BYTE                  bTag,
+                                         [in]  DWORD *               pdwCookie, // OPTIONAL
+                                         [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT RegisterForNextTable([in]  HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([out] IDVB_BAT **ppBAT);
+
+        HRESULT RegisterForWhenCurrent([in]  HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_RST Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(F47DCD04-1E23-4fb7-9F96-B40EEAD10B2B),
+        pointer_default(unique)
+    ]
+    interface IDVB_RST : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList *pSectionList);
+
+        HRESULT GetCountOfRecords([out] DWORD *pdwVal);
+
+        HRESULT GetRecordTransportStreamId([in]  DWORD  dwRecordIndex,
+                                           [out] WORD * pwVal);
+
+        HRESULT GetRecordOriginalNetworkId([in]  DWORD  dwRecordIndex,
+                                           [out] WORD * pwVal);
+
+        HRESULT GetRecordServiceId([in]  DWORD  dwRecordIndex,
+                                   [out] WORD * pwVal);
+
+        HRESULT GetRecordEventId([in]  DWORD  dwRecordIndex,
+                                 [out] WORD * pwVal);
+
+        HRESULT GetRecordRunningStatus([in]  DWORD  dwRecordIndex,
+                                       [out] BYTE * pbVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_ST Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(4D5B9F23-2A02-45de-BCDA-5D5DBFBFBE62),   
+        pointer_default(unique)
+    ]
+    interface IDVB_ST : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList *pSectionList);
+
+        HRESULT GetDataLength([out] WORD *pwVal);
+
+        HRESULT GetData([out] BYTE **ppData);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_TDT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(0780DC7D-D55C-4aef-97E6-6B75906E2796),
+        pointer_default(unique)
+    ]
+    interface IDVB_TDT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList *pSectionList);
+     
+        HRESULT GetUTCTime([out] MPEG_DATE_AND_TIME *pmdtVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_TOT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(83295D6A-FABA-4ee1-9B15-8067696910AE),
+        pointer_default(unique)
+    ]
+    interface IDVB_TOT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList *pSectionList);
+
+        HRESULT GetUTCTime([out] MPEG_DATE_AND_TIME *pmdtVal);
+
+        HRESULT GetCountOfTableDescriptors([out] DWORD *pdwVal);
+
+        HRESULT GetTableDescriptorByIndex([in]  DWORD                 dwIndex,
+                                          [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetTableDescriptorByTag([in]      BYTE                  bTag,
+                                        [in, out] DWORD *               pdwCookie, // OPTIONAL
+                                        [out]     IGenericDescriptor ** ppDescriptor);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_DIT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(91BFFDF9-9432-410f-86EF-1C228ED0AD70),
+        pointer_default(unique)
+    ]
+    interface IDVB_DIT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList *pSectionList);
+
+        HRESULT GetTransitionFlag([out] BOOL *pfVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDVB_SIT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(68CDCE53-8BEA-45c2-9D9D-ACF575A089B5),
+        pointer_default(unique)
+    ]
+    interface IDVB_SIT : IUnknown
+    {
+        HRESULT Initialize([in] ISectionList * pSectionList,
+                           [in] IMpeg2Data *   pMPEGData);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetCountOfTableDescriptors([out] DWORD *pdwVal);
+
+        HRESULT GetTableDescriptorByIndex([in]  DWORD                 dwIndex,
+                                          [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetTableDescriptorByTag([in]  BYTE                  bTag,
+                                        [in]  DWORD *               pdwCookie, // OPTIONAL
+                                        [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetCountOfRecords([out] DWORD *pdwVal);
+
+        HRESULT GetRecordServiceId([in]  DWORD  dwRecordIndex,
+                                   [out] WORD * pwVal);
+
+        HRESULT GetRecordRunningStatus([in]  DWORD  dwRecordIndex,
+                                       [out] BYTE * pbVal);
+
+        HRESULT GetRecordCountOfDescriptors([in]  DWORD   dwRecordIndex,
+                                            [out] DWORD * pdwVal);
+
+        HRESULT GetRecordDescriptorByIndex([in]  DWORD                 dwRecordIndex,
+                                           [in]  DWORD                 dwIndex,
+                                           [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetRecordDescriptorByTag([in]  DWORD                 dwRecordIndex,
+                                         [in]  BYTE                  bTag,
+                                         [in]  DWORD *               pdwCookie, // OPTIONAL
+                                         [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT RegisterForNextTable([in] HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([in]  DWORD       dwTimeout,
+                             [out] IDVB_SIT ** ppSIT);
+
+        HRESULT RegisterForWhenCurrent([in] HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+    };
+
+    
+    
+    ////////////////////////////////////
+    //
+    // DVB_NIT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(7285C18B-B3D3-4d96-8FDB-AA2E9DA61129)
+    ]
+    coclass DVB_NIT
+    {
+        [default] interface IDVB_NIT;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_SDT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(FD1ECB11-FAC0-4536-A53D-B6F097BC7D33)
+    ]
+    coclass DVB_SDT
+    {
+        [default] interface IDVB_SDT;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_EIT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(0562F29E-2C93-4f39-A6D6-EA05F1E714FC)
+    ]
+    coclass DVB_EIT
+    {
+        [default] interface IDVB_EIT;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_BAT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(1E198087-59CC-4932-99FB-F5083DC2E714)
+    ]
+    coclass DVB_BAT
+    {
+        [default] interface IDVB_BAT;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_RST CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(86A9C2DD-E88C-4455-A2B7-CD3852716060)
+    ]
+    coclass DVB_RST
+    {
+        [default] interface IDVB_RST;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_ST CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(DC62E83B-8C3C-4a4f-9407-B9665088DC3B)
+    ]
+    coclass DVB_ST
+    {
+        [default] interface IDVB_ST;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_TDT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(8FB6E404-9685-465c-A2EC-1AD0A8D2E181)
+    ]
+    coclass DVB_TDT
+    {
+        [default] interface IDVB_TDT;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_TOT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(27B86B53-3839-4441-8D0D-71BA9EE8347B)
+    ]
+    coclass DVB_TOT
+    {
+        [default] interface IDVB_TOT;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_DIT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(28013E71-63F0-4427-9D98-EDAAC5C56C50)
+    ]
+    coclass DVB_DIT
+    {
+        [default] interface IDVB_DIT;
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // DVB_SIT CoClass
+    //
+    ////////////////////////////////////
+
+    [
+        uuid(FBE9EC50-DC42-404f-8CC9-2ACCCAAEE26B)
+    ]
+    coclass DVB_SIT
+    {
+        [default] interface IDVB_SIT;
+    };

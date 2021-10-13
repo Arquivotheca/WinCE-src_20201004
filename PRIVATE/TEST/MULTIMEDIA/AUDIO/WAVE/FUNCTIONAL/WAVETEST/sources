@@ -1,0 +1,72 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!IF 0
+--------------------------------------------------------------------
+                                                                    
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+
+WINCEOEM=1
+
+TARGETNAME=wavetest
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+   tuxmain.cpp \
+   BadDeviceID.cpp \
+   BadGUID.cpp \
+   BadHandles.cpp \
+   errormap.cpp \
+   International.cpp \
+   International_resource.rc \
+   WaveFile.cpp \
+   WaveFileEx.cpp \
+   test_wavetest.cpp \
+   test_wavein.cpp \
+   TestInHandle.cpp \
+   TestOutHandle.cpp \
+   WaveInterOp.cpp
+
+!IF "$(_TGTOS)" == "NT" || "$(_TGTOS)" == "NTANSI"
+
+OAKLIB=$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)
+SDKLIB=$(_NTSDK_LIB)
+
+TARGETLIBS=\
+   $(OAKLIB)\kato.lib \
+   $(SDKLIB)\winmm.lib
+          
+!ELSE
+
+SDKINC=$(_PROJECTSDKROOT)\inc
+OAKINC=$(_PROJECTOAKROOT)\inc
+SDKLIB=$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)
+OAKLIB=$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)
+
+INCLUDES= 
+
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+   $(SDKLIB)\coredll.lib \
+   $(OAKLIB)\kato.lib
+
+!ENDIF
+ 
+RELEASETYPE=CETK 

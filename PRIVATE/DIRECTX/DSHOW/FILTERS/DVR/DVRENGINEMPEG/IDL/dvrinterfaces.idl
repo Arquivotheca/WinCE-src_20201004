@@ -1,0 +1,287 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+import "oaidl.idl";
+import "ocidl.idl";
+import "strmif.idl";
+
+[
+	uuid(C1C6FF3A-DB5A-494e-BD1B-31FFA93E4D2C)
+]
+library DVREngineLib
+{
+	// EC_USER will normally be picked up from evode.h but processing the .idl
+	// doesn't have the define:
+	#ifndef EC_USER
+	#define EC_USER 0x8000
+	#endif // EC_USER
+
+	typedef enum DVREngineEvents
+	{
+		DVR_SOURCE_EC_COMPLETE_PENDING = (EC_USER | 819),
+		DVR_SOURCE_EC_COMPLETE_DONE = (EC_USER | 820),
+		DVRENGINE_EVENT_BEGINNING_OF_PAUSE_BUFFER = (EC_USER | 821),
+		DVRENGINE_EVENT_END_OF_PAUSE_BUFFER = (EC_USER | 822),
+		DVRENGINE_EVENT_RECORDING_END_OF_STREAM = (EC_USER | 823),
+		DVRENGINE_EVENT_COPYPROTECTION_CHANGE_DETECTED = (EC_USER | 824),
+		DVRENGINE_XDSCODEC_NEWXDSPACKET = (EC_USER | 825),
+		DVRENGINE_XDSCODEC_NEWXDSRATING = (EC_USER | 826),
+		DVRENGINE_XDSCODEC_DUPLICATEXDSRATING = (EC_USER | 827),
+		DVRENGINE_EVENT_COPYPROTECTION_DUPLICATE_RECEIVED = (EC_USER | 828),
+		DVRENGINE_EVENT_CAPTURE_TUNE_DETECTED = (EC_USER | 829),
+		DVRENGINE_EVENT_PLAYBACK_TUNE_HANDLED = (EC_USER | 830),
+	} DVR_ENGINE_EVENTS;
+
+	typedef enum  DVRENGINE_RESUMPTION_REASON {
+		DVRENGINE_REWOUND_TO_BEGINNING = 0,
+		DVRENGINE_PAUSED_UNTIL_TRUNCATION,
+		DVRENGINE_SLOW_PLAY_UNTIL_TRUNCATION
+	} DVRENGINE_RESUMPTION_REASON;
+
+	typedef enum DVRENGINE_END_BUFFER_MODE {
+		DVRENGINE_LIVE_POSITION_IN_LIVE_TV,
+		DVRENGINE_LIVE_POSITION_IN_BOUND_RECORDING
+	} DVRENGINE_END_BUFFER_MODE;
+
+	typedef enum DVRENGINE_END_RECORDING_MODE {
+		DVRENGINE_BEGINNING_OF_RECORDING,
+		DVRENGINE_END_OF_RECORDING
+	} DVRENGINE_END_RECORDING_MODE;
+
+	typedef enum CaptureMode
+	{
+		STRMBUF_TEMPORARY_RECORDING = 0,  // the default
+		STRMBUF_PERMANENT_RECORDING
+	} STRMBUF_CAPTURE_MODE;
+
+	// ################# Enums #################
+
+
+	typedef enum PlaybackTransitionPolicy
+	{
+		STRMBUF_STAY_WITH_RECORDING = 0,
+		STRMBUF_STAY_WITH_SINK
+	} STRMBUF_PLAYBACK_TRANSITION_POLICY;
+
+	// Policy for what to do in a bound-to-live playback
+	// graph when the capture graph tunes to a new channel.
+	// The default is the first choice below:  flush and go to
+	// live (now). The other option is to keep on playing
+	// whereever you are now.
+
+	typedef enum STRMBUF_PLAYBACK_TUNE_POLICY
+	{
+		STRMBUF_PLAYBACK_TUNE_FLUSH_AND_GO_TO_LIVE,
+		STRMBUF_PLAYBACK_TUNE_IGNORED
+	} STRMBUF_PLAYBACK_TUNE_POLICY;
+
+	// ################# Interfaces #################
+
+	[
+		object,
+		uuid(34DB9BD0-F185-4334-A2D7-CD460B950BDB),
+		pointer_default(unique)
+	]
+	interface IStreamBufferCapture : IUnknown
+	{
+		HRESULT GetCaptureMode(	[out] STRMBUF_CAPTURE_MODE *peStrmbufCaptureMode,
+								[out] LONGLONG *phyMaxBufferMilliseconds);
+
+		HRESULT BeginTemporaryRecording([in] LONGLONG hyBufferSizeInMilliseconds);
+		HRESULT BeginPermanentRecording([in] LONGLONG hyRetainedSizeInMilliseconds,
+										[out] LONGLONG *phyActualRetainedSizeInMillisecs);
+
+		// Convert a permanent recording to a transient one.  The recording MUST be
+		// already completed and MUST be part of this objects Pause Buffer.  Once
+		// this new transient recording falls out of the pause buffer window it
+		// will be deleted.  If this recording is not part of this objects Pause
+		// Buffer, HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) is returned indicating
+		// that an attempt to perform this same conversion on a different
+		// IStreamBufferCapture may succeed.
+		HRESULT ConvertToTemporaryRecording([in] LPCOLESTR pszFileName);
+
+		// Sets and gets the location in which recordings are made.  If the object
+		// implementing this interface is not capable of creating recordings at the
+		// specified location (for example because of the mounted FS),
+		// STG_E_ACCESSDENIED is returned.  The recording path can only be set when
+		// the capture graph is stopped.
+		HRESULT SetRecordingPath([in] LPCOLESTR pszPath);
+		HRESULT GetRecordingPath([out] LPOLESTR *ppszPath);
+
+		// Obtains the token to use used in IFileSourceFilter::Load() as the
+		// recording name if you want to bind to Live TV viewing:
+		HRESULT GetBoundToLiveToken([out] LPOLESTR *ppszToken);
+
+		HRESULT GetCurrentPosition([out] LONGLONG *phyCurrentPosition);
+	};
+
+	[
+		object,
+		uuid(50845279-8C98-4e1f-A16A-8C48CE35EC12),
+		pointer_default(unique)
+	]
+	interface IStreamBufferPlayback : IUnknown
+	{
+		// This interface will be implemented by the playback graph and the
+		// sample consumer. It allows the application to control whether
+		// a playback graph bound to live tv responds to a tune request
+		// by ignoring it or by flushing the graph and seeking to 'now'.
+
+		// SetTunePolicy() changes the policy. GetTunePolicy() reports what the
+		// current policy is.
+		HRESULT SetTunePolicy([in] STRMBUF_PLAYBACK_TUNE_POLICY eStrmbufPlaybackTunePolicy);
+		HRESULT GetTunePolicy([out] STRMBUF_PLAYBACK_TUNE_POLICY *peStrmbufPlaybackTunePolicy);
+
+		// SetThrottingEnabled() enables or disables throttling of the output
+		// of the filter. By default, this feature is on. It can only be
+		// disabled when the rate is 1x. When on, you cannot change the rate
+		// or do a seek.  To query the policy, use GetThrottlingDisabled().
+		HRESULT SetThrottlingEnabled([in] BOOL fThrottle);
+		HRESULT GetThrottlingEnabled([out] BOOL *pfThrottle);
+
+		// This interface will be implemented to tell the playback graph that
+		// it is time to finish setting up clock slaving after the Load() call
+		// that is done before connecting up the rest of the filter graph:
+		HRESULT NotifyGraphIsConnected();
+
+		// This interface will return whether or not the playback graph is
+		// bound to live tv and playing at a position that is essentially 'live'.
+		HRESULT IsAtLive([out] BOOL *pfAtLive);
+
+		// GetOffsetFromLive() will return an error if bound to a recording.
+		// If bound-to-live, it will return the DShow difference between
+		// estimated rendering position and the latest available content.
+		HRESULT GetOffsetFromLive([out] LONGLONG *pllOffsetFromLive);
+
+		// SetDesiredOffsetFromLive() records the desired offset from
+		// live after doing a trickmode that winds up with playback at
+		// live. The default comes from the registry. If a new value is
+		// set, it lasts until the graph is stopped. Note that the goal
+		// is to have playback at this position -- after factoring delays
+		// completing the trick mode and rounding off to the nearest sync
+		// point.
+		HRESULT SetDesiredOffsetFromLive([in] LONGLONG llOffsetFromLive);
+
+		// Gets a counter that is changed every time Load() is called --
+		// can be correlated with parameter 2 for most playback event
+		// types to confirm that an asynchronously dispatched event
+		// is associated with the current content.  Applies to
+		// DVRENGINE_EVENT_BEGINNING_OF_PAUSE_BUFFER
+		// DVRENGINE_EVENT_END_OF_PAUSE_BUFFER
+		// DVRENGINE_EVENT_RECORDING_END_OF_STREAM
+		HRESULT GetLoadIncarnation([out] DWORD *pdwLoadIncarnation);
+
+		// Used to put the DVR Engine playback into 'background' mode 
+		// -- priority one lower than usual for threads other than
+		// plumbing.
+		HRESULT EnableBackgroundPriority([in] BOOL fEnableBackgroundPriority);
+	};
+
+	[
+		object,
+		uuid(49AB7D6F-05B4-4ae4-9DB3-2F4A667CE674),
+		pointer_default(unique)
+	]
+	interface IDVREngineHelpersDeleteMonitor
+	{
+		void DeleteInProgress();
+	};
+
+	[
+		object,
+		uuid(88F784A7-E9D0-4178-AB99-A6C0267D0D8F),
+		pointer_default(unique)
+	]
+	interface IDVREngineHelpers : IUnknown
+	{
+		// This interface will be exposed by both the DVR Sink and DVR Source filters.
+		// It is used for deleting recordings.  An application (or the PAL) can use
+		// this interface on any DVR filter, regardless of its state, to achieve the
+		// same results.
+
+		// Deletes a recording off disk.  The recording may not be deleted immediately
+		// in the event that it is still part of the pause buffer.  If a DVR Source filter
+		// is bound to the specified recording (not via the live token, but as a perm
+		// recording) then E_ACCESSDENIED is returned.	
+		HRESULT DeleteRecording([in] LPCOLESTR pszFileName);
+
+		// Deletes any temporary recordings in the specified directory that have been
+		// 'orphaned'.  That is - any temporary recordings which may have been left
+		// sitting in the specified directory as a result of a hard power off or crash.
+		HRESULT CleanupOrphanedRecordings([in] LPCOLESTR pszDirName);
+
+		// Returns size in bytes of the specified recording.  This is a sum of all recording
+		// files in the set and includes any 'bonus' material.
+		HRESULT GetRecordingSizeOnDisk(LPCOLESTR pszRecordingName, LONGLONG *pllBytes);
+
+		// Deleting a recording with many/large files can take many seconds. You can
+		// register a callback to be invoked after each file is touched. The callback
+		// can, for example, be used to re-assure a watchdog that there is no need to
+		// reboot the system due to the UI being locked up during a long deletion.
+		// Only one callback can be registered at a time.
+		HRESULT RegisterActivityCallback([in] IDVREngineHelpersDeleteMonitor *piDVREngineHelpersDeleteMonitor);
+		HRESULT UnregisterActivityCallback([in] IDVREngineHelpersDeleteMonitor *piDVREngineHelpersDeleteMonitor);
+	};
+
+    /*++
+    ============================================================================
+    ============================================================================
+    IStreamBufferMediaSeeking
+
+    Implemented on the StreamBufferSource filter.  Used to seek and set the
+    playback rate.
+
+    --*/
+
+    [
+        object,
+        uuid(f61f5c26-863d-4afa-b0ba-2f81dc978596),
+        pointer_default(unique)
+    ]
+    interface IStreamBufferMediaSeeking : IMediaSeeking
+    {
+        //  no additional methods have been added
+    } ;
+
+    #define STREAMBUFFER_EC_BASE                     0x0326
+    enum
+    {
+        //  timehole event
+        //      param1 = timehole stream offset ms
+        //      param1 = timehole size ms
+        STREAMBUFFER_EC_TIMEHOLE = STREAMBUFFER_EC_BASE,
+
+        STREAMBUFFER_EC_STALE_DATA_READ,
+
+        STREAMBUFFER_EC_STALE_FILE_DELETED,
+        STREAMBUFFER_EC_CONTENT_BECOMING_STALE,
+        STREAMBUFFER_EC_WRITE_FAILURE,
+        //
+        //  unexpected read failure
+        //      param1 = HRESULT failure
+        //      param2 = undefined
+        STREAMBUFFER_EC_READ_FAILURE,
+        //
+        //  playback rate change
+        //      param1 = old_playback_rate * 10000 e.g. 2x is 20000
+        //      param2 = new_playback_rate * 10000
+        STREAMBUFFER_EC_RATE_CHANGED,
+    } ;
+
+};
+
+cpp_quote("DEFINE_GUID(CLSID_DVRSinkFilterMPEG,   0x07bd5a67, 0x25b8, 0x4738, 0x8c, 0xfc, 0x66, 0x31, 0x6c, 0xe6, 0x79, 0x9c);")
+cpp_quote("DEFINE_GUID(CLSID_DVRSourceFilterMPEG, 0xa791e35d, 0xdcd7, 0x46cc, 0xa8, 0xf5, 0x99, 0xd3, 0x89, 0x9f, 0xf9, 0x21);")
+cpp_quote("DEFINE_GUID(CLSID_DVDNav,              0x2e517ba9, 0x5f2c, 0x4e6e, 0x86, 0xe2, 0x53, 0x37, 0x63, 0x85, 0x8f, 0xec);")
+cpp_quote("DEFINE_GUID(CLSID_AudioSync,           0x04aa8285, 0x3c64, 0x4cc8, 0x8c, 0x83, 0x32, 0x6d, 0xa7, 0x15, 0x76, 0xf0);")
+cpp_quote("DEFINE_GUID(CLSID_DVRProgramStreamMux, 0xe9fa2a46, 0x8cd8, 0x4a5c, 0xae, 0x52, 0xb8, 0x23, 0x78, 0x70, 0x3a, 0x69);")
+

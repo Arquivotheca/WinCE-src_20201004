@@ -1,0 +1,92 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>DMUX Passthru</title>
+</head>
+
+<body>
+
+<p align="center"><b><font face="Arial" color="#0000FF" size="4">DMUX Passthru</font></b></p>
+<p><font face="Arial" size="2">This is <b>DMUX</b> version of NDIS IM driver for 
+Windows CE &amp; it is based on original <b>Passthru</b> sample code shipped at 
+public\COMMON\oak\drivers\netsamp\passthru. Windows CE does not have concept of 
+DMUX IM driver like desktop OS (Windows XP &amp; onwards) has. This DMUX IM driver 
+can layer over any miniport driver which exports 802.3 based interface on its 
+upper layer (except WiFi miniport driver). Also this DMUX IM driver can 
+instantiate as many virtual network instances as one want. All this is registry 
+configurable. <br>
+<br>
+</font><b><font face="Arial">Design:</font></b><font face="Arial" size="2"><br>
+This DMUX IM driver <br>
+&lt;1&gt; exports &quot;N&quot; number of virtual instances for one real miniport driver 
+instance.<br>
+&lt;2&gt; sets random/local mac address on those exported virtual instances.<br>
+&lt;3&gt; by default puts real miniport driver to PROMISCUOUS mode<br>
+&lt;4&gt; For send coming down from any virtual dmux instance, it passes to below real 
+miniport instance.<br>
+&lt;5&gt; filters the received packets &amp; pass the packets to appropriate DMUX virtual 
+instance based on destination Mac address defined in the packet.<br>
+&lt;6&gt; by defaults indicates all broadcast &amp; multicast packets to all dmux virtual 
+instances<br>
+<br>
+</font><font face="Arial"><b>DMUX IM Files :</b></font><font face="Arial" size="2"><br>
+DMUXMini.dll<br>
+dmuxmini.bat<br>
+Ndisconfigx.exe (This is modified version of original ndisconfig.exe. The 
+original ndisconfig uses 256 Wchar multiSzBuffer buffer which is not sufficient 
+for 16 interfaces. This exe file is not shipped herewith but one can just modify 
+ndisconfig.c under public\COMMON\oak\drivers\netsamp\ndisconfig &amp; can generate 
+the updated version of exe with larger multiSzBuffer size.)<br>
+<br>
+</font><font face="Arial"><b>How to use.</b></font><font face="Arial" size="2"><br>
+&lt;1&gt; Copy above files to release folder<br>
+&lt;2&gt; Run following commands in Platform Builder.<br>
+<br>
+&gt;run dmuxmini.bat<br>
+&gt;s ndisconfig miniport add dmuxmini<br>
+<br>
+This will show up 16 interfaces (DMUXMini\&lt;original adapter instance&gt;XX) where 
+XX range from 0 to 16<br>
+<br>
+&lt;3&gt; Use “ndisconfigx.exe” which will show the binding. The original 
+ndisconfig.exe will not show adapters &amp; binding because of buffer constrain.<br>
+<br>
+</font><b><font face="Arial">How to configure:</font></b><font face="Arial" size="2"><br>
+Look in dmuxmini.bat batch file. It is self explanatory. Right now there is no 
+control to have specific Mac addresses for DMUX virtual interfaces. These 
+interfaces will have random, unicast (LSB bit 0) &amp; local (next LSB bit 1) mac 
+addresses. But one can control to which real adapter DMUXMINI should bind &amp; how 
+many virtual interfaces DMUXMINI should instantiate.<br>
+<br>
+</font><font face="Arial"><b>Known issues:</b></font><font face="Arial" size="2"><br>
+This version is tested on CEPC &amp; Emulator using NE2000 (PCI,PCMCIA), E100BEX (PCI) 
+&amp; DC21x4 (on Emualtor) with 1,2,4,9 &amp; 16 virtual interfaces.<br>
+&lt;1&gt; Not all the interfaces will be shown up in system tray in GUI on CE device, 
+even though all the virtual interfaces are bound to TCP/IP &amp; have got IP 
+addresses from DHCP server. <br>
+Following are limitations of current version of DMUX IM.<br>
+&lt;2&gt; Power management events are not handled by this DMUXMINI version.<br>
+&lt;3&gt; DMUXMINI is tested when it has bound to only one adapter &amp; has exported any 
+number of virtual interfaces (1 to 16). Currently Max =16.<br>
+&lt;5&gt; When DMUXMINI is bound do not insert/remove or add/delete real adapter. One 
+can play (bind/unbind etc.) with virtual interfaces without any problem.<br>
+Eg. If DMUXMINI is made to bind to NE2000 PCMCIA card do not remove NE2000 
+PCMCIA card. These things are not handled right now.<br>
+&lt;6&gt; DMUXMINI currently does not honor filter setting per virtual interface. But 
+it will show all the packets up &amp; thus rely on filtering done by NDIS &amp; upper 
+protocol layers.<br>
+&nbsp;</font></p>
+
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\CETest\AzAtten\CEV6LAB]
+    "CapsImplemented"="WPA,WPA-PSK"
+    "CapsEnabled"="WPA,WPA-PSK"
+    "RadioState"=dword:1
+    "SSID"="CEV6LAB"
+    "Authentication"="open"
+    "Cipher"="cleartext"
+    "Configurator"="Manual"
+    "Attenuator"="Azimuth : C1-M1-1A"
+
+[HKEY_CURRENT_USER\Software\Microsoft\CETest\AzAtten\Z0_Linksys]
+    "CapsImplemented"="WPA,WPA-PSK"
+    "CapsEnabled"="WPA,WPA-PSK"
+    "RadioState"=dword:1
+    "SSID"="Z0_Linksys"
+    "Authentication"="open"
+    "Cipher"="cleartext"
+    "Configurator"="Manual"
+    "Attenuator"="Azimuth : C1-M1-2A"
+

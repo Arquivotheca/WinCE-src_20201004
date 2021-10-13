@@ -1,0 +1,39 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+#
+# Desktop (NT) build specific information
+#
+
+#
+# NOTE:
+# In general you should not need to include any of the _NTSDK_XXX_INC directories explicitly.
+# These are included for you in the correct order in public\common\oak\misc\makefile.def
+#
+# When including libraries, most can be found under _NTSDK_LIB.  For example:
+# TARGETLIBS=\
+#   $(_NTSDK_LIB)\ws2_32.lib \
+#   $(_NTSDK_LIB)\shell32.lib
+# 
+#
+_NTSDK_ROOT=$(_WINCEROOT)\Tools\public\ext
+_NTSDK_INC=$(_NTSDK_ROOT)\sdk\inc
+_NTSDK_LIB=$(_NTSDK_ROOT)\sdk\lib\i386
+_NTSDK_MFC_INC=$(_NTSDK_ROOT)\crt80\inc\atlmfc
+_NTSDK_MFC_LIB=$(_NTSDK_ROOT)\crt80\lib\i386\atlmfc
+_NTSDK_VC_INC=$(_NTSDK_ROOT)\crt80\inc
+_NTSDK_VC_LIB=$(_NTSDK_ROOT)\crt80\lib\i386
+_NTSDK_OTHER_INC=$(_NTSDK_ROOT)\other\inc
+_NTSDK_OTHER_LIB=$(_NTSDK_ROOT)\other\lib
+
+_COMMONPUBROOT=$(_PUBLICROOT)\common
+EXT_INCLUDES=$(EXT_INCLUDES);$(_WINCEROOT)\public\ostest\sdk\inc

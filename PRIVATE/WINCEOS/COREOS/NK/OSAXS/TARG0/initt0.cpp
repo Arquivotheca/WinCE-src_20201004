@@ -1,0 +1,292 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+/*++
+
+Module Name:
+
+    initt0.cpp
+
+Module Description:
+
+    Initialize OsAxsT0.
+
+--*/
+
+#include "osaxs_p.h"
+#define  WATSON_BINARY_DUMP TRUE
+#include "DwPublic.h"
+#include "DwDmpGen.h"
+
+HDSTUB_DATA Hdstub = {0};
+OSAXS_DATA g_OsaxsData = {0};
+void (*g_pfnOutputDebugString) (const char *sz, ...) = 0;
+
+extern HANDLE g_hEventDumpFileReady;
+
+// Pointer to kdata
+struct KDataStruct *g_pKData;
+
+HRESULT OsaxsT0Ioctl (DWORD dwFunction, void *);
+
+HDSTUB_CLIENT g_OsaxsT0Client =
+{
+    OSAXST0_NAME,
+    CaptureDumpFile,       
+    NULL,
+    NULL,
+    NULL,
+
+    OsaxsT0Ioctl,       
+    HDSTUB_FILTER_EXCEPTION,          
+    
+    NULL
+};
+
+#define STRING_UNDEFINED L"Undefined"
+
+VOID DwDmpGenInit()
+{
+    DWORD dwSPI;
+
+    // NOTE: If anything fails here we continue anyway, we just have reduced info in the dump file.
+
+    DEBUGGERMSG(OXZONE_DWDMPGEN,(L"++Initt0!DwDmpGenInit: Enter\r\n"));
+    
+    // THIS HANDLE IS CREATED IN NK.EXE.
+    // Create event to send notification to Watson Transfer Driver (DwXfer.dll) that a dump file is ready
+    KD_ASSERT (pActvProc == g_pprcNK);
+    g_hEventDumpFileReady = CreateEventW(NULL, FALSE, FALSE, WATSON_EVENT_DUMP_FILE_READY);
+    if (NULL == g_hEventDumpFileReady)
+    {
+        // This means the dumps will not be transferred immediately, but will be transferred eventually.
+        DEBUGGERMSG (OXZONE_ALERT, (L"  Initt0!DwDmpGenInit: CreateEventW failed for dump file ready event, error=0x%08X\r\n", GetLastError()));
+    }
+
+    // We need to do this at init time, since these APIs may block on Critical Sections on some BSPs
+    // Get OEMInfo String
+    dwSPI = SPI_GETOEMINFO;
+    g_dwOEMStringSize = 0;
+    if ((!pfnNKKernelLibIoControl((HANDLE) KMOD_OAL, IOCTL_HAL_GET_DEVICE_INFO, &dwSPI, sizeof(dwSPI), g_wzOEMString, sizeof(g_wzOEMString), &g_dwOEMStringSize)))
+    {
+        g_dwOEMStringSize = (wcslen(STRING_UNDEFINED) + 1) * sizeof(WCHAR);
+        memcpy(g_wzOEMString, STRING_UNDEFINED, g_dwOEMStringSize);
+    }
+    else
+    {
+        if (g_dwOEMStringSize <= 1)
+        {
+            // Only set this if IOCTL_HAL_GET_DEVICE_INFO did not set it
+            // since the string may have embedded NULL characters
+            g_dwOEMStringSize = (wcslen(g_wzOEMString) + 1) * sizeof(WCHAR);
+        }
+    }
+
+    // Get PlatformType String
+    dwSPI = SPI_GETPLATFORMNAME;
+    g_dwPlatformTypeSize = 0;
+    if ((!pfnNKKernelLibIoControl((HANDLE) KMOD_OAL, IOCTL_HAL_GET_DEVICE_INFO, &dwSPI, sizeof(dwSPI), g_wzPlatformType, sizeof(g_wzPlatformType), &g_dwPlatformTypeSize)))
+    {
+        g_dwPlatformTypeSize = (wcslen(STRING_UNDEFINED) + 1) * sizeof(WCHAR);
+        memcpy(g_wzPlatformType, STRING_UNDEFINED, g_dwPlatformTypeSize);
+    }
+    else
+    {
+        if (g_dwPlatformTypeSize <= 1)
+        {
+            // Only set this if IOCTL_HAL_GET_DEVICE_INFO did not set it
+            // since the string may have embedded NULL characters
+            g_dwPlatformTypeSize = (wcslen(g_wzPlatformType) + 1) * sizeof(WCHAR);
+        }
+    }
+    RETAILMSG (1, (L"OSAXST0: Platform Name = %s\r\n", g_wzPlatformType));
+
+    // Get PlatformVersion
+    dwSPI = SPI_GETPLATFORMVERSION;
+    g_dwPlatformVersionSize = 0;
+    if ((!pfnNKKernelLibIoControl((HANDLE) KMOD_OAL, IOCTL_HAL_GET_DEVICE_INFO, &dwSPI, sizeof(dwSPI), g_platformVersion, sizeof(g_platformVersion), &g_dwPlatformVersionSize)))
+    {
+        memset(g_platformVersion, 0, sizeof(g_platformVersion));
+        g_dwPlatformVersionSize = 0;
+    }
+    else
+    {
+        // Make sure the size is aligned to size of PLATFORMVERSION
+        g_dwPlatformVersionSize = (g_dwPlatformVersionSize / sizeof(PLATFORMVERSION)) * sizeof(PLATFORMVERSION);
+    }
+
+    DEBUGGERMSG(OXZONE_DWDMPGEN,(L"--Initt0!DwDmpGenInit: Leave\r\n"));
+}
+
+// TODO: Add a call to DwDmpGenDeInit when OsaxsT0 unloaded ...
+
+VOID DwDmpGenDeInit()
+{
+    DEBUGGERMSG(OXZONE_DWDMPGEN,(L"++Initt0!DwDmpGenDeInit: Enter\r\n"));
+
+    if (g_hEventDumpFileReady)
+    {
+        CloseHandle(g_hEventDumpFileReady);
+        g_hEventDumpFileReady = NULL;
+    }
+
+    g_dwOEMStringSize = 0;
+    g_dwPlatformTypeSize = 0;
+    g_dwPlatformVersionSize = 0;
+
+    DEBUGGERMSG(OXZONE_DWDMPGEN,(L"--Initt0!DwDmpGenDeInit: Leave\r\n"));
+}
+
+extern "C" BOOL OsaxsT0Init (HDSTUB_DATA *pHdstub, void *pvOsaxsData)
+{
+    BOOL fRet;
+    OSAXS_DATA *pOsaxsData;
+
+    fRet = FALSE;
+    pOsaxsData = (OSAXS_DATA *)pvOsaxsData;
+
+    if (pHdstub && pOsaxsData && pOsaxsData->cbSize == sizeof (OSAXS_DATA))
+    {
+        Hdstub = *pHdstub;
+        g_OsaxsData = *pOsaxsData;
+        g_pKData = pOsaxsData->pKData;
+        if (g_OsaxsData.pKITLIoCtl)
+        {
+            g_OsaxsData.pKITLIoCtl (IOCTL_EDBG_GET_OUTPUT_DEBUG_FN, NULL, 0,
+                (VOID*)&g_pfnOutputDebugString, sizeof (g_pfnOutputDebugString),
+                NULL);
+        }
+
+        if (Hdstub.pfnRegisterClient (&g_OsaxsT0Client, HdstubClientWatson))
+        {
+            DEBUGGERMSG(OXZONE_INIT, (L"  OsaxsT0Init: Registered OsaxsT0 with hdstub.\r\n"));
+        }
+        else
+        {
+            DEBUGGERMSG(OXZONE_INIT, (L"  OsaxsT0Init: Failed to register OsaxsT0 with hdstub.\r\n"));
+        }
+        
+        DwDmpGenInit();
+
+        fRet = TRUE;
+    }
+
+    return fRet;
+}
+
+extern "C" BOOL WINAPI OsaxsT0DLLEntry (HINSTANCE hInstance, ULONG ulReason,
+    LPVOID pvReserved)
+{
+    BOOL fResult;
+    BOOL (*pfnKernelLibIoctl) (HANDLE, DWORD, LPVOID, DWORD, LPVOID, DWORD, LPDWORD);
+    BOOL (*pfnInit) (HDSTUB_DATA *, void *);
+
+    pfnKernelLibIoctl = reinterpret_cast<BOOL (*)(HANDLE,DWORD,LPVOID,DWORD,LPVOID,DWORD,LPDWORD)> (pvReserved);
+    pfnInit = OsaxsT0Init;
+    fResult = TRUE;
+
+    RETAILREGISTERZONES (hInstance);
+    switch (ulReason)
+    {
+        case DLL_PROCESS_ATTACH:
+            fResult = (pfnKernelLibIoctl &&
+                       pfnKernelLibIoctl ((HANDLE)KMOD_DBG,
+                                          IOCTL_DBG_OSAXST0_INIT,
+                                          (void *)&pfnInit,
+                                          sizeof (pfnInit),
+                                          NULL,
+                                          0,
+                                          NULL));
+            break;
+        case DLL_PROCESS_DETACH:
+            break;
+    }
+
+    return fResult;
+}
+
+
+HRESULT OsaxsT0Ioctl (DWORD dwFunction, void *pvArg)
+{
+    HRESULT hr = E_FAIL;
+    
+    DEBUGGERMSG(OXZONE_IOCTL, (L"++OsaxsT0Ioctl: Calling GetFPTMI, dwFunction=%u, pvArg=0x%08X\r\n", dwFunction, pvArg));
+
+    switch (dwFunction)
+    {
+        case OSAXST0_IOCTL_GET_FLEXIPTMINFO:
+        {
+            POSAXSFN_GETFLEXIPTMINFO a = reinterpret_cast<POSAXSFN_GETFLEXIPTMINFO>(pvArg);
+            hr = GetFPTMI (a->pRequest, &a->dwBufferSize, a->pbBuffer);
+            if (FAILED(hr))
+            {
+                DEBUGGERMSG(OXZONE_ALERT, (L"  OsaxsT0Ioctl: GetFPTMI failed, hr=0x%08x\r\n",hr));
+            }
+            break;
+        }
+        
+        case OSAXST0_IOCTL_GET_WATSON_DUMP:
+        {
+            POSAXSFN_GETWATSONDUMP a = reinterpret_cast<POSAXSFN_GETWATSONDUMP>(pvArg);
+            hr = CaptureDumpFileOnTheFly (a->pWatsonOtfRequest,
+                                          a->pbOutBuffer,
+                                          &a->dwBufferSize,
+                                          a->pfnResponse);
+            if (FAILED(hr))
+            {
+                DEBUGGERMSG(OXZONE_ALERT, (L"  OsaxsT0Ioctl: CaptureDumpFileOnTheFly failed, hr=0x%08x\r\n",hr));
+            }
+            break;
+        }
+
+        case OSAXST0_IOCTL_SAVE_EXCEPTION_STATE:
+        {
+            POSAXSFN_SAVEEXCEPTIONSTATE a = reinterpret_cast<POSAXSFN_SAVEEXCEPTIONSTATE>(pvArg);
+            
+            // Check if we are doing the initial save (Both dwArg1 & dwArg3 will be set)
+            if (a->pNewExceptionInfo && a->ppSavedExceptionInfo)
+            {
+                // Flush FPU or DSP registers so that context information is correct
+                KdpFlushExtendedContext ((CONTEXT *)a->pNewExceptionInfo->ExceptionPointers.ContextRecord);
+            }
+
+            hr = SaveExceptionState (a->pNewExceptionInfo,
+                                     a->pNewSavedThreadState,
+                                     a->ppSavedExceptionInfo,
+                                     a->ppSavedThreadState);
+            if (FAILED(hr))
+            {
+                DEBUGGERMSG(OXZONE_ALERT, (L"  OsaxsT0Ioctl: SaveExceptionState failed, hr=0x%08x\r\n",hr));
+            }
+            break;
+        }
+        
+        case OSAXST0_IOCTL_MAP_TO_KVA_IF_ACC:
+        {
+            POSAXSFN_MAPTOKVA a = reinterpret_cast<POSAXSFN_MAPTOKVA>(pvArg);
+            DEBUGGERMSG(OXZONE_IOCTL, (L"  OsAxsT0Ioctl: Calling MapToDebuggeeCtxKernEquivIfAcc: %08X, %08X, %d\r\n",
+                                       a->pVM, a->pvAddr, a->fProbeOnly));
+            a->pvKVA = MapToDebuggeeCtxKernEquivIfAcc(a->pVM, a->pvAddr, a->fProbeOnly);
+            DEBUGGERMSG(OXZONE_IOCTL, (L"  OsAxsT0Ioctl: MapToDebuggeeCtxKernEquivIfAcc returned %08X\r\n", a->pvKVA));
+            hr = S_OK;
+            break;
+        }
+
+        default:
+            hr = OSAXS_E_APINUMBER;
+            break;
+    }
+
+    DEBUGGERMSG(OXZONE_IOCTL, (L"--OsaxsT0Ioctl: hr=0x%08X\r\n", hr));
+
+    return hr;
+}

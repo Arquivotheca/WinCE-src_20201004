@@ -1,0 +1,66 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+
+TARGETNAME=APControl
+TARGETTYPE=PROGRAM
+
+RELEASETYPE=CETK
+
+TARGETTHREADMODEL=MT
+
+SOURCES= \
+    APConfigDevice_t.cpp \
+    APControlServer.cpp \
+    AttenuatorDevice_t.cpp \
+    AzimuthController_t.cpp \
+    BuffaloBroadcomController_t.cpp \
+    BuffaloG54sController_t.cpp \
+    CommPort_t.cpp \
+    DLinkDI524Controller_t.cpp \
+    DLinkDWL3200Controller_t.cpp \
+    HtmlAPController_t.cpp \
+    HtmlForms_t.cpp \
+    HttpPort_t.cpp \
+    ManualAPConfigDevice_t.cpp \
+    ManualAttenuatorDevice_t.cpp \
+    RegistryAPPool_t.cpp \
+    TelnetPort_t.cpp \
+    Utils.cpp \
+    WeinschelController_t.cpp \
+
+INCLUDES= \
+    $(_PRIVATEROOT)\test\net\wireless\common\APController\svrinc; \
+    $(_PRIVATEROOT)\test\net\wireless\common\APController\inc; \
+    $(_PRIVATEROOT)\test\net\wireless\common\inc; \
+    $(_PRIVATEROOT)\test\net\wireless\inc; \
+    $(_PRIVATEROOT)\test\net\common\inc; \
+    $(_PUBLICROOT)\common\sdk; \
+    $(_PUBLICROOT)\common\oak; \
+    $(INCLUDES) \
+
+TARGETLIBS= \
+	$(_NTSDK_LIB)\ws2_32.lib \
+	$(_NTSDK_LIB)\wininet.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netmain.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netall.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\backchannel.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\cmnprint.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\APControlServer.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\APController.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\WifUtils.lib \
+
+!IF ("$(_TGTOS)" == "NTANSI")
+EXEENTRY=mainCRTStartup /SUBSYSTEM:CONSOLE
+!ELSE
+EXEENTRY=wmainCRTStartup /SUBSYSTEM:CONSOLE
+!ENDIF

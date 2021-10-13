@@ -1,0 +1,48 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!include $(DX_TST_ROOT)\dshow\dshowtest.inc
+!IF 0
+--------------------------------------------------------------------
+                                                                     
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+WINCEOEM=1
+!ENDIF
+TARGETNAME=EventSink
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+
+SOURCES=\
+   EventSink.cpp
+
+CDEFINES=\
+    $(CDEFINES) \
+    /EHsc
+
+INCLUDES=\
+        $(_WINCEROOT)\private\directx\dshow\h; \
+        ..\inc; \
+        $(INCLUDES)
+
+TARGETLIBS=$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib     \
+           $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ole32.lib       \
+           $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\Oleaut32.lib               \
+           $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib	\
+           $(_DIRECTXSDKROOT)\lib\$(_CPUINDPATH)\strmbase.lib \
+           $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\strmiids.lib \
+           $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\dmoguids.lib
+

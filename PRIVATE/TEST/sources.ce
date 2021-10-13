@@ -1,0 +1,54 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+#
+# Device (CE) build specific information
+#
+
+WINCEOEM=1
+
+_COMMONPUBROOT=$(_PROJECTROOT)\cesysgen
+#
+# Paths to the OS import library release points
+#
+# If you need to link to an OS DLL, use:
+OS_SDK_LIB_PATH=$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)
+OS_OAK_LIB_PATH=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)
+
+# Standard include paths
+_ISVINCPATH=$(_WINCEROOT)\public\ostest\sdk\inc;$(_PROJECTROOT)\cesysgen\sdk\inc;
+_OEMINCPATH=$(_WINCEROOT)\public\ostest\sdk\inc;$(_PROJECTROOT)\cesysgen\ddk\inc;$(_PROJECTROOT)\cesysgen\sdk\inc;$(_PROJECTROOT)\cesysgen\oak\inc;
+
+# Location of the ATL libraries
+SG_OUTPUT_ROOT=$(_PROJECTROOT)\cesysgen
+SG_OUTPUT_OAKLIB=$(SG_OUTPUT_ROOT)\oak\lib\$(_CPUINDPATH)
+ATL8LIBS=$(SG_OUTPUT_OAKLIB)\atls.lib $(SG_OUTPUT_OAKLIB)\atlosapis.lib
+
+
+
+#
+# *** WARNING ***
+# In general, you should not need to use the following settings.
+#
+
+# If you need to link to an OS source library, use a path like the following:
+# $(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)
+# This will include the library code into your application/DLL.
+#
+# NOTE: This path only applies to core OS libraries.  Project-specific
+# libraries (e.g. directx, ie, server) will go into
+# $(_PUBLICROOT)\directx\oak\lib\$(_CPUINDPATH)
+#
+
+# This is the path to the OS header files (pre-sysgen)
+# For most test binaries, use the '$(_PROJECTROOT)\cesysgen\sdk\inc' path automatically included above
+OS_SDK_INC_PATH=$(_PUBLICROOT)\common\sdk\inc

@@ -1,0 +1,54 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+#
+#
+#
+# MGDI.SRC
+#
+# This file contains information common to all
+# SOURCES file in the MGDI project.  It gives us
+# a place to put common declarations, flags, etc.
+#
+
+#
+# If BROWSE_MGDI is set, set CPPBROWSE to enable 
+# the generation of VC++ browse files.
+#
+!IFDEF BROWSE_MGDI
+CPPBROWSE=1
+!ENDIF
+
+#
+# Set ENABLE_PERFDDI to turn on DDI performance analysis.  If that's set,
+# you can also set ENABLE_PERFDDI_BOOT to turn profiling on at boot time.
+#
+#CDEFINES=$(CDEFINES) -DENABLE_PERFDDI
+#CDEFINES=$(CDEFINES) -DENABLE_PERFDDI_BOOT
+
+#
+# Turn warnings into errors.
+#
+!IF ("$(_TGTCPUTYPE)" != "MIPS")
+WARNISERROR=1
+!ENDIF
+
+#
+# Build for memory tracking if requested
+#
+!IFDEF MEMTRACKING
+CDEFINES=$(CDEFINES) -DMEMTRACKING
+!ENDIF
+
+# one huge PDB file for all of MGDI
+TARGET_PDB_NAME=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\mgdi.pdb
+

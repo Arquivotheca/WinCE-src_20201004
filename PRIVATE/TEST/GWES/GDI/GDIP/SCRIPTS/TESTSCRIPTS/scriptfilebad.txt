@@ -1,0 +1,93 @@
+#sample script file
+
+#should fail
+[BitBlt]
+Source=bad
+
+#should fail
+[BitBlt]
+Source=bad,bad, bad
+
+#should fail
+[BitBlt]
+Source=Primary, bad, Primary
+
+#should fail
+[BitBlt]
+ROP=a
+
+#should fail
+[BitBlt]
+Dest=bad
+
+#should fail
+[BitBlt]
+Dest=bad,bad, bad
+
+#should fail
+[BitBlt]
+Dest=Primary, bad, Primary
+
+#should fail
+[BitBlt]
+Width=1
+
+#should fail
+[BitBlt]
+Height=1
+
+#should fail
+[BitBlt]
+Width=1
+Height=1
+
+#should fail
+[BitBlt]
+Width=1
+Height=1
+WidthStep=10
+
+#should fail
+[BitBlt]
+Width=1
+Height=1
+HeightStep=10
+
+#should fail
+[BitBlt]
+Width=1-2-4
+Height=1
+HeightStep=10
+WidthStep=10
+
+#should fail
+[BitBlt]
+Width=1
+Height=1-2-4
+HeightStep=10
+WidthStep=10
+
+#should fail
+[BitBlt]
+Coordinates=1
+
+#should fail
+[BitBlt]
+Coordinates=1,2
+
+#should fail
+[BitBlt]
+Coordinates=1, 2,3
+
+#should fail
+[BitBlt]
+Coordinates=1,2,3,4
+
+#should fail
+[BitBlt]
+Coordinates=1,2,3,4,5
+
+#should fail
+[BitBlt]
+Brush=Bad
+

@@ -1,0 +1,45 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft end-user
+; license agreement (EULA) under which you licensed this SOFTWARE PRODUCT.
+; If you did not accept the terms of the EULA, you are not authorized to use
+; this source code. For a copy of the EULA, please see the LICENSE.RTF on your
+; install media.
+;
+; Abstract:
+;     Audio Video Remote Control Profile Bluetooth sdp record.
+;
+; All values and AttribIDs are in hex.
+
+1 SEQUENCE
+  ; AVRCP service class UUID
+  UUID16 110C 
+  END
+
+4 SEQUENCE
+    SEQUENCE 
+      ; L2CAP protocol identifier
+      UUID16 0100
+      ; psm = avctp
+      UINT16 0017
+    END
+    SEQUENCE 
+      ; AVCTP protocol identifier
+      UUID16 0017
+      ; version = 0x100
+      UINT16 0100
+    END
+  END
+
+9 SEQUENCE
+    SEQUENCE
+      ;avrcp
+      UUID16 110E
+      UINT16 0100
+    END
+  END
+
+100 STRING Audio Video Remote Control Profile
+311 UINT16 0001

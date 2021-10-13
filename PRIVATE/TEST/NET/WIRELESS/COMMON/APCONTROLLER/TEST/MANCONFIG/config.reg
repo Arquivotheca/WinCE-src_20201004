@@ -1,0 +1,35 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\CETest\APController\AP1]
+    "CapsImplemented"="WPA,WPA_PSK"
+    "CapsEnabled"="WPA,WPA,WPA"
+    "RadioState"=dword:1
+    "SSID"="CEOPEN"
+    "BSSID"=hex:1a,2b,3c,4d,5e,6f
+    "Authentication"="WPA"
+    "Cipher"="TKIP"
+    "RadiusServer"="10.10.0.1"
+    "RadiusPort"=dword:1213
+    "RadiusSecret"="guessme"
+    "WEPKey0"=hex:a0,b0,c0,d0,e0
+    "WEPKey1"=hex:f1,a2,b3,c4,d5
+    "WEPKey2"=hex:e2,f3,a4,b5,c6
+    "WEPKey3"=hex:d3,e4,f5,a6,b7
+    "Configurator"="Manual"
+    "Attenuator"="Manual  ;  50,0,100"
+
+[HKEY_CURRENT_USER\Software\Microsoft\CETest\APController\AP2]
+    "CapsImplemented"="WPA,WPA_PSK,WPA"
+    "SSID"="CEWPA"
+    "Authentication"="WPA"
+    "Cipher"="TKIP"
+    "RadiusServer"="10.10.0.1"
+    "RadiusPort"=dword:1213
+    "RadiusSecret"="guessme"
+    "WEPKey0"=hex:10,20,30,40,50
+    "WEPKey1"=hex:11,22,33,44,55
+    "WEPKey2"=hex:12,23,34,45,56
+    "WEPKey3"=hex:13,24,35,46,57
+    "Configurator"="Manual"
+    "Attenuator"="Manual;37,0,80"
+

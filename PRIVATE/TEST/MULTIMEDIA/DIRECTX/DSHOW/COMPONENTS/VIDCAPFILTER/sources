@@ -1,0 +1,64 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!include $(_PRIVATEROOT)\test\Multimedia\sources.cmn
+!include $(DX_TST_ROOT)\dshow\dshowtest.inc
+
+!IF 0
+--------------------------------------------------------------------
+                                                                     
+THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A      
+PARTICULAR PURPOSE.                                                 
+                                                                    
+--------------------------------------------------------------------
+
+!ENDIF
+
+TARGETNAME=VidCapTest
+TARGETTYPE = DYNLINK
+
+SOURCES=\
+   TuxMain.cpp	    \
+   VidCapTestSink.cpp 	\
+   VidCapTestUids.cpp	\
+   VidCapVerifier.cpp	\
+   VidCapTestGraph.cpp   \
+   vidcaptests.cpp \
+
+INCLUDES= ..\FilterTests\; ..\TestFilters\; \
+	$(DX_TST_ROOT)\dshow\Common\Libs\Imaging\; \
+	$(DX_TST_ROOT)\dshow\Common\Libs\ValidType\; \
+	$(DX_TST_ROOT)\dshow\Common\Libs\CamDriverLibrary\; \
+	$(DX_TST_ROOT)\dshow\Common\Libs\PropertyBag\; \
+	$(_DIRECTXSDKROOT)\inc; \
+	$(_COMMONSDKROOT)\inc; \
+	$(_COMMONOAKROOT)\inc \
+	$(INCLUDES)
+
+TARGETLIBS= \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib	\
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\TestFilters.lib       \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\dshow_component.lib           \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\Ole32.lib              \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\Oleaut32.lib           \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib            \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\strmiids.lib \
+    $(_DIRECTXSDKROOT)\lib\$(_CPUINDPATH)\strmbase.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\dmoguids.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\ValidType.lib           \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\Imaging.lib           \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\PropertyBag.lib         \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\DriverEnumerator.lib           \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\CamDriverLibrary.lib           \

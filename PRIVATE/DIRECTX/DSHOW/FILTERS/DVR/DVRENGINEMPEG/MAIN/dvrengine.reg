@@ -1,0 +1,96 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+; ============================================================================
+; =                  Sink and Source Filter Registration                     =
+; ============================================================================
+
+; WARNING: In the Babylon project, this file is #included by Basic.reg.
+
+
+; ============================================================================
+; DVR Engine Sink
+; ============================================================================
+
+[HKEY_CLASSES_ROOT\Filter\{07BD5A67-25B8-4738-8CFC-66316CE6799C}]
+@="DVR Sink Filter"
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}]
+@="DVR Sink Filter"
+"Merit"=dword:00200000
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}\InprocServer32]
+@="DVREngine.dll"
+"ThreadingModel"="Both"
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}\Pins]
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}\Pins\Sensor]
+;"Direction"=dword:00000000
+;"IsRendered"=dword:00000000
+;"AllowedZero"=dword:00000000
+;"AllowedMany"=dword:00000000
+
+; MEDIATYPE_Stream\MEDIASUBTYPE_Asf
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}\Pins\Sensor\Types]
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}\Pins\Sensor\Types\{E436EB83-524F-11CE-9F53-0020AF0BA770}]
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}\Pins\Sensor\Types\{E436EB83-524F-11CE-9F53-0020AF0BA770}\]
+
+[HKEY_CLASSES_ROOT\CLSID\{07BD5A67-25B8-4738-8CFC-66316CE6799C}\Pins\Sensor\Types\{E436EB83-524F-11CE-9F53-0020AF0BA770}\{3DB80F90-9412-11d1-ADED-0000F8754B99}]
+
+; ============================================================================
+; DVR Engine Source
+; ============================================================================
+
+[HKEY_CLASSES_ROOT\Filter\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}]
+@="DVR Source Filter"
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}]
+@="DVR Source Filter"
+"Merit"=dword:00200000
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}\InprocServer32]
+@="DVREngine.dll"
+"ThreadingModel"="Both"
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}\Pins]
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}\Pins\ASFStream]
+"Direction"=dword:00000001
+;"IsRendered"=dword:00000000
+;"AllowedZero"=dword:00000000
+;"AllowedMany"=dword:00000000
+
+; MEDIATYPE_Stream\MEDIASUBTYPE_Asf
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}\Pins\ASFStream\Types]
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}\Pins\ASFStream\Types\{E436EB83-524F-11CE-9F53-0020AF0BA770}]
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}\Pins\ASFStream\Types\{E436EB83-524F-11CE-9F53-0020AF0BA770}\]
+
+[HKEY_CLASSES_ROOT\CLSID\{A791E35D-DCD7-46CC-A8F5-99D3899FF921}\Pins\ASFStream\Types\{E436EB83-524F-11CE-9F53-0020AF0BA770}\{3DB80F90-9412-11d1-ADED-0000F8754B99}]
+
+; ============================================================================
+; File size regkeys
+; ============================================================================
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\MediaCenter\MCShell]
+    "MaxPermFileSizeCb"=dword:FF000000
+    "MaxTempFileSizeCb"=dword:8000000
+	"MillisecBufferingForLive"=dword:546
+	"MPEGMaxFullFrameRate"=dword:7D0
+	"MPEGKeyFramesPerSecond"=dword:7D0
+	"MPEGKeyFrameRatio"=dword:5DC
+

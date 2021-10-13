@@ -1,0 +1,10 @@
+#simple script file to test a BitBlt SRCCOPY from video memory to video memory
+
+[BitBlt]
+ROP=0x00CC0000
+Source=Video_Memory, System_Memory
+Dest=Primary, System_Memory
+Brush=NULL
+Coordinates=0,0,100,100,100,100
+
+

@@ -1,0 +1,151 @@
+#sample script file
+
+#should succeed.
+#[BitBlt]
+
+#should succeed.
+[BitBlt]
+Count=10
+
+#should succeed.
+[BitBlt]
+Confidence=.5
+
+#should succeed.
+[BitBlt]
+Count=1
+Source=Primary, System_Memory, Video_Memory
+
+#should succeed.
+[BitBlt]
+Count=1
+ROP=10
+
+#should succeed.
+[BitBlt]
+Count=1
+ROP=0x0, 0x1, 0x2, 0x3, 0x4, 0x5
+
+#should succeed.
+[BitBlt]
+Count=1
+Dest=Primary, System_Memory, Video_Memory
+
+#should succeed.
+[BitBlt]
+Count=1
+Width=1-10
+Height=1-10
+HeightStep=5
+WidthStep=5
+
+#should succeed
+[BitBlt]
+Coordinates=1,2,3,4,5,6
+
+#should succeed.
+[BitBlt]
+Count=1
+Brush=None
+
+#should succeed.
+[BitBlt]
+Count=1
+Brush=Solid
+
+#should succeed.
+[BitBlt]
+Count=1
+Brush=Solid, Solid
+
+#should fail
+[BitBlt]
+Source=bad
+
+#should fail
+[BitBlt]
+Source=bad,bad, bad
+
+#should fail
+[BitBlt]
+Source=Primary, bad, Primary
+
+#should fail
+[BitBlt]
+ROP=a
+
+#should fail
+[BitBlt]
+Dest=bad
+
+#should fail
+[BitBlt]
+Dest=bad,bad, bad
+
+#should fail
+[BitBlt]
+Dest=Primary, bad, Primary
+
+#should fail
+[BitBlt]
+Width=1
+
+#should fail
+[BitBlt]
+Height=1
+
+#should fail
+[BitBlt]
+Width=1
+Height=1
+
+#should fail
+[BitBlt]
+Width=1
+Height=1
+WidthStep=10
+
+#should fail
+[BitBlt]
+Width=1
+Height=1
+HeightStep=10
+
+#should fail
+[BitBlt]
+Width=1-2-4
+Height=1
+HeightStep=10
+WidthStep=10
+
+#should fail
+[BitBlt]
+Width=1
+Height=1-2-4
+HeightStep=10
+WidthStep=10
+
+#should fail
+[BitBlt]
+Coordinates=1
+
+#should fail
+[BitBlt]
+Coordinates=1,2
+
+#should fail
+[BitBlt]
+Coordinates=1, 2,3
+
+#should fail
+[BitBlt]
+Coordinates=1,2,3,4
+
+#should fail
+[BitBlt]
+Coordinates=1,2,3,4,5
+
+#should fail
+[BitBlt]
+Brush=Bad
+

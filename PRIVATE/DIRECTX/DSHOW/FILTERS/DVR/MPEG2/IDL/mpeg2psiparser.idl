@@ -1,0 +1,520 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+/////////////////////////////////////////////////////////////////////////////
+//
+//
+// Module Name:
+//
+//      Mpeg2PsiParser.idl
+//
+// Abstract:
+//
+//      Interface definitions for the MPEG-2 PSI parsing functionality
+//
+// Notes:
+//
+//      This IDL file is not built independently, but is included and built
+//      in the main IDL file Mpeg2Data.idl
+//
+/////////////////////////////////////////////////////////////////////////////
+
+    // Forward interface declarations
+interface ISectionList;
+//interface IMpeg2Data;
+
+
+
+    ////////////////////////////////////
+    //
+    // IGenericDescriptor Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(6A5918F8-A77A-4f61-AED0-5702BDCDA3E6),
+        pointer_default(unique)
+    ]
+    interface IGenericDescriptor : IUnknown
+    {
+        HRESULT Initialize([in]  BYTE *pbDesc,
+                           [in]  BYTE  bCount);
+
+        HRESULT GetTag([out] BYTE *pbVal);
+
+        HRESULT GetLength([out] BYTE *pbVal);
+
+        HRESULT GetBody([out] BYTE **ppbVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDvbSatelliteDeliverySystemDescriptor Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(02F2225A-805B-4ec5-A9A6-F9B5913CD470),
+        pointer_default(unique)
+    ]
+    interface IDvbSatelliteDeliverySystemDescriptor : IUnknown
+    {
+        HRESULT GetTag([out] BYTE *pbVal);
+
+        HRESULT GetLength([out] BYTE *pbVal);
+
+        HRESULT GetFrequency([out] DWORD *pdwVal);
+
+        HRESULT GetOrbitalPosition([out] WORD *pwVal);
+
+        HRESULT GetWestEastFlag([out] BYTE *pbVal);
+
+        HRESULT GetPolarization([out] BYTE *pbVal);
+
+        HRESULT GetModulation([out] BYTE *pbVal);
+
+        HRESULT GetSymbolRate([out] DWORD *pdwVal);
+
+        HRESULT GetFECInner([out] BYTE *pbVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDvbCableDeliverySystemDescriptor Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(DFB98E36-9E1A-4862-9946-993A4E59017B),
+        pointer_default(unique)
+    ]
+    interface IDvbCableDeliverySystemDescriptor : IUnknown
+    {
+        HRESULT GetTag([out] BYTE *pbVal);
+
+        HRESULT GetLength([out] BYTE *pbVal);
+
+        HRESULT GetFrequency([out] DWORD *pdwVal);
+
+        HRESULT GetFECOuter([out] BYTE *pbVal);
+
+        HRESULT GetModulation([out] BYTE *pbVal);
+
+        HRESULT GetSymbolRate([out] DWORD *pdwVal);
+
+        HRESULT GetFECInner([out] BYTE *pbVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDvbTerrestrialDeliverySystemDescriptor Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(ED7E1B91-D12E-420c-B41D-A49D84FE1823),
+        pointer_default(unique)
+    ]
+    interface IDvbTerrestrialDeliverySystemDescriptor : IUnknown
+    {
+        HRESULT GetTag([out] BYTE *pbVal);
+
+        HRESULT GetLength([out] BYTE *pbVal);
+
+        HRESULT GetCentreFrequency([out] DWORD *pdwVal);
+
+        HRESULT GetBandwidth([out] BYTE *pbVal);
+
+        HRESULT GetConstellation([out] BYTE *pbVal);
+
+        HRESULT GetHierarchyInformation([out] BYTE *pbVal);
+
+        HRESULT GetCodeRateHPStream([out] BYTE *pbVal);
+
+        HRESULT GetCodeRateLPStream([out] BYTE *pbVal);
+
+        HRESULT GetGuardInterval([out] BYTE *pbVal);
+
+        HRESULT GetTransmissionMode([out] BYTE *pbVal);
+
+        HRESULT GetOtherFrequencyFlag([out] BYTE *pbVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDvbFrequencyListDescriptor Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(1CADB613-E1DD-4512-AFA8-BB7A007EF8B1),
+        pointer_default(unique)
+    ]
+    interface IDvbFrequencyListDescriptor : IUnknown
+    {
+        HRESULT GetTag([out] BYTE *pbVal);
+
+        HRESULT GetLength([out] BYTE *pbVal);
+
+        HRESULT GetCodingType([out] BYTE *pbVal);
+
+        HRESULT GetCountOfRecords([out] BYTE *pbVal);
+
+        HRESULT GetRecordCentreFrequency([in]  BYTE bRecordIndex,
+                                         [out] DWORD *pdwVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDvbLogicalChannelDescriptor Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(CF1EDAFF-3FFD-4cf7-8201-35756ACBF85F),
+        pointer_default(unique)
+    ]
+    interface IDvbLogicalChannelDescriptor : IUnknown
+    {
+        HRESULT GetTag([out] BYTE *pbVal);
+
+        HRESULT GetLength([out] BYTE *pbVal);
+
+        HRESULT GetCountOfRecords([out] BYTE *pbVal);
+
+        HRESULT GetRecordServiceId([in]  BYTE bRecordIndex,
+                                   [out] WORD *pwVal);
+
+        HRESULT GetRecordLogicalChannelNumber([in]  BYTE bRecordIndex,
+                                              [out] WORD *pwVal);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IDvbServiceDescriptor Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(F9C7FBCF-E2D6-464d-B32D-2EF526E49290),
+        pointer_default(unique)
+    ]
+    interface IDvbServiceDescriptor : IUnknown
+    {
+        HRESULT GetTag([out] BYTE *pbVal);
+
+        HRESULT GetLength([out] BYTE *pbVal);
+
+        HRESULT GetServiceType([out] BYTE *pbVal);
+
+        HRESULT GetServiceProviderName([out] char **pszName);
+
+        HRESULT GetServiceName([out] char **pszName);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IPAT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(6623B511-4B5F-43c3-9A01-E8FF84188060),
+        pointer_default(unique)
+    ]
+    interface IPAT : IUnknown
+    {
+        typedef struct
+        {
+            WORD    wProgramNumber;
+            WORD    wProgramMapPID;
+        } ProgramElement;
+
+        HRESULT Initialize([in]  ISectionList * pSectionList,
+                           [in]  IMpeg2Data *   pMPEGData);
+
+        HRESULT GetTransportStreamId([out] WORD *pwVal);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetCountOfRecords([out] DWORD *pdwVal);
+
+        HRESULT GetRecordProgramNumber([in]  DWORD  dwIndex,
+                                       [out] WORD * pwVal);
+
+        HRESULT GetRecordProgramMapPid([in]  DWORD  dwIndex,
+                                       [out] WORD * pwVal);
+
+        HRESULT FindRecordProgramMapPid([in]  WORD   wProgramNumber,
+                                        [out] WORD * pwVal);
+
+        HRESULT RegisterForNextTable([in]  HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([out] IPAT **ppPAT);
+
+        HRESULT RegisterForWhenCurrent([in]  HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // ICAT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(7C6995FB-2A31-4bd7-953E-B1AD7FB7D31C),
+        pointer_default(unique)
+    ]
+    interface ICAT : IUnknown
+    {
+        HRESULT Initialize([in]  ISectionList * pSectionList,
+                           [in]  IMpeg2Data *   pMPEGData);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetCountOfTableDescriptors([out] DWORD *pdwVal);
+
+        HRESULT GetTableDescriptorByIndex([in]  DWORD                 dwIndex,
+                                          [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetTableDescriptorByTag([in]      BYTE                  bTag,
+                                        [in, out] DWORD *               pdwCookie, // OPTIONAL
+                                        [out]     IGenericDescriptor ** ppDescriptor);
+
+        HRESULT RegisterForNextTable([in]  HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([in]  DWORD   dwTimeout,
+                             [out] ICAT ** ppCAT);
+
+        HRESULT RegisterForWhenCurrent([in]  HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // IPMT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(01F3B398-9527-4736-94DB-5195878E97A8),
+        pointer_default(unique)
+    ]
+    interface IPMT : IUnknown
+    {
+        HRESULT Initialize([in]  ISectionList * pSectionList,
+                           [in]  IMpeg2Data *   pMPEGData);
+
+        HRESULT GetProgramNumber([out] WORD *pwVal);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetPcrPid([out] PID *pPidVal);
+
+        HRESULT GetCountOfTableDescriptors([out] DWORD *pdwVal);
+
+        HRESULT GetTableDescriptorByIndex([in]  DWORD                 dwIndex,
+                                          [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetTableDescriptorByTag([in]      BYTE                  bTag,
+                                        [in, out] DWORD *               pdwCookie, // OPTIONAL
+                                        [out]     IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetCountOfRecords([out] WORD *pwVal);
+
+        HRESULT GetRecordStreamType([in]  DWORD  dwRecordIndex,
+                                    [out] BYTE * pbVal);
+
+        HRESULT GetRecordElementaryPid([in]  DWORD dwRecordIndex,
+                                       [out] PID * pPidVal);
+
+        HRESULT GetRecordCountOfDescriptors([in]  DWORD   dwRecordIndex,
+                                            [out] DWORD * pdwVal);
+
+        HRESULT GetRecordDescriptorByIndex([in]  DWORD                 dwRecordIndex,
+                                           [in]  DWORD                 dwDescIndex,
+                                           [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetRecordDescriptorByTag([in]      DWORD                 dwRecordIndex,
+                                         [in]      BYTE                  bTag,
+                                         [in, out] DWORD *               pdwCookie, // OPTIONAL
+                                         [out]     IGenericDescriptor ** ppDescriptor);
+
+        HRESULT QueryServiceGatewayInfo([out] DSMCC_ELEMENT ** ppDSMCCList,
+                                        [out] UINT *           puiCount);
+
+        HRESULT QueryMPEInfo([out] MPE_ELEMENT ** ppMPEList,
+                             [out] UINT *         puiCount);
+
+        HRESULT RegisterForNextTable([in]  HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([out] IPMT **ppPMT);
+
+        HRESULT RegisterForWhenCurrent([in]  HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+    };
+
+
+
+    ////////////////////////////////////
+    //
+    // ITSDT Interface
+    //
+    ////////////////////////////////////
+
+    [
+        object,
+        uuid(D19BDB43-405B-4a7c-A791-C89110C33165),
+        pointer_default(unique)
+    ]
+    interface ITSDT : IUnknown
+    {
+        HRESULT Initialize([in]  ISectionList * pSectionList,
+                           [in]  IMpeg2Data *   pMPEGData);
+
+        HRESULT GetVersionNumber([out] BYTE *pbVal);
+
+        HRESULT GetCountOfTableDescriptors([out] DWORD *pdwVal);
+
+        HRESULT GetTableDescriptorByIndex([in]  DWORD                 dwIndex,
+                                          [out] IGenericDescriptor ** ppDescriptor);
+
+        HRESULT GetTableDescriptorByTag([in]      BYTE                  bTag,
+                                        [in, out] DWORD *               pdwCookie, // OPTIONAL
+                                        [out]     IGenericDescriptor ** ppDescriptor);
+
+        HRESULT RegisterForNextTable([in]  HANDLE hNextTableAvailable);
+
+        HRESULT GetNextTable([out] ITSDT **ppTSDT);
+
+        HRESULT RegisterForWhenCurrent([in]  HANDLE hNextTableIsCurrent);
+
+        HRESULT ConvertNextToCurrent(void);
+    };
+
+
+
+        ////////////////////////////////////
+        //
+        // GenericDescriptor CoClass
+        //
+        ////////////////////////////////////
+
+    [
+        uuid(CE872A99-09F9-441f-8E0B-679D648BE8CA)
+    ]
+    coclass GenericDescriptor
+    {
+        [default] interface IGenericDescriptor;
+        interface IDvbSatelliteDeliverySystemDescriptor;
+        interface IDvbCableDeliverySystemDescriptor;
+        interface IDvbTerrestrialDeliverySystemDescriptor;
+        interface IDvbFrequencyListDescriptor;
+        interface IDvbLogicalChannelDescriptor;
+        interface IDvbServiceDescriptor;
+    };
+
+
+
+        ////////////////////////////////////
+        //
+        // PAT CoClass
+        //
+        ////////////////////////////////////
+
+    [
+        uuid(164037BB-7C2B-43db-8B61-AF18D7401EB5)
+    ]
+    coclass PAT
+    {
+        [default] interface IPAT;
+    };
+
+
+
+        ////////////////////////////////////
+        //
+        // CAT CoClass
+        //
+        ////////////////////////////////////
+
+    [
+        uuid(F089B117-385B-419d-9B8A-042565DD7CC3)
+    ]
+    coclass CAT
+    {
+        [default] interface ICAT;
+    };
+
+
+
+        ////////////////////////////////////
+        //
+        // PMT CoClass
+        //
+        ////////////////////////////////////
+
+    [
+        uuid(1EE42F7A-18BB-42ef-A06E-C31A8337AE59)
+    ]
+    coclass PMT
+    {
+        [default] interface IPMT;
+    };
+
+
+
+        ////////////////////////////////////
+        //
+        // TSDT CoClass
+        //
+        ////////////////////////////////////
+
+    [
+        uuid(2FD674A5-FE4D-4bf6-AD25-83225CDED113)
+    ]
+    coclass TSDT
+    {
+        [default] interface ITSDT;
+    };

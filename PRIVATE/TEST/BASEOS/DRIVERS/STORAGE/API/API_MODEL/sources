@@ -1,0 +1,53 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+
+TARGETNAME=api_model
+TARGETTYPE=DYNLINK
+
+SOURCES=\
+    tuxmain.cpp \
+    api_model.cpp \
+    disk.cpp \
+    IOCTLTestBase.cpp \
+    ParameterFuncs.cpp \
+    Parameter.cpp \
+    Group.cpp \
+    DISK_IOCTL_GETINFO.cpp \
+    IOCTL_DISK_GETINFO.cpp \
+    DISK_IOCTL_SETINFO.cpp \
+    IOCTL_DISK_SETINFO.cpp \
+    DISK_IOCTL_READ.cpp \
+    IOCTL_DISK_READ.cpp \
+    DISK_IOCTL_FORMAT_MEDIA.cpp \
+    IOCTL_DISK_FORMAT_MEDIA.cpp \
+    DISK_IOCTL_GETNAME.cpp \
+    IOCTL_DISK_GETNAME.cpp \
+    IOCTL_DISK_GET_STORAGEID.cpp \
+    IOCTL_DISK_DEVICE_INFO.cpp \
+    DISK_IOCTL_WRITE.cpp \
+    IOCTL_DISK_WRITE.cpp \
+    IOCTL_DISK_FLUSH_CACHE.cpp
+	
+DLLENTRY=_DllMainCRTStartup
+
+CDEFINES=$(CDEFINES) /EHsc
+
+TARGETLIBS=\
+   $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+   $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\storeapi.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\devutils.lib \
+   $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\reg_util.lib
+
+ 
+RELEASETYPE=CETK 

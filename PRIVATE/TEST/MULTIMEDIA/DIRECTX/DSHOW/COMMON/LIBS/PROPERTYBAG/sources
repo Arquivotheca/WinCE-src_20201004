@@ -1,0 +1,56 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!include $(_PRIVATEROOT)\test\Multimedia\sources.cmn
+!include $(DX_TST_ROOT)\dshow\dshowtest.inc
+
+!if 0
+!endif
+!if 0
+This source code is licensed under Microsoft Shared Source License
+Version 1.0 for Windows CE.
+For a copy of the license visit http://go.microsoft.com/fwlink/?LinkId=3223.
+!endif
+WINCEOEM=1
+
+TARGETNAME = PropertyBag
+TARGETTYPE = LIBRARY
+RELEASETYPE = OAK
+
+SOURCES=            \
+    PropertyBag.cpp	    \
+
+INCLUDES=\
+	$(_DIRECTXSDKROOT)\inc\; \
+	$(_COMMONSDKROOT)\inc; \
+	$(_COMMONOAKROOT)\inc; \
+
+
+!IF "$(_TGTOS)" == "CE"
+TARGETLIBS= \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\Ole32.lib              \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\Oleaut32.lib           \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib            \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib
+
+!ELSE
+CDEFINES=-DNT
+TARGETLIBS= $(_NTSDK_LIB)\comctl32.lib \
+            $(_NTSDK_LIB)\comdlg32.lib \
+            $(_NTSDK_LIB)\ctl3d32.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\syslib.lib \
+            $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\qalib.lib \
+   			
+!ENDIF
+
+

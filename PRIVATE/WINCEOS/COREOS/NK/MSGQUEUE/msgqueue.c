@@ -1,0 +1,944 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+/*
+ *              NK Kernel code
+ *
+ *
+ * Module Name:
+ *
+ *              msgqueue.c
+ *
+ * Abstract:
+ *
+ *              This file implements the NK kernel message queue routines
+ *
+ */
+#include "kernel.h"
+
+static HANDLE           g_hMsgQHeap;    // heap for message queue
+static CRITICAL_SECTION g_MsgQcs;
+
+#define MAX_NODE_SIZE       0x100000    // max node size = 1M
+#define MAX_NUM_NODES       0x100000    // max # of nodes = 1M
+#define MAX_PREALLOC_SIZE   0x1000000   // max pre-alloc size = 16M
+
+// Bit in the queue flags to denote that the message queue is invalid; any 
+// attempt to open the message queue after the queue is marked invalid 
+// will be an error.
+// This bit is set if one end of the queue is closed and the queue is opened
+// as !MSGQUE_ALLOW_BROKEN
+#define MSGQUEUE_INVALID 0x80000000
+
+#define IS_QUEUE_EMPTY(q)   (!(q)->pHead && !(q)->pAlert)
+#define PHD2MSGQ(phd)       (((PEVENT) (phd)->pvObj)->pMsgQ)
+#define ISWRITER(lpe)       ((lpe)->manualreset & MSGQ_WRITER)
+
+static LPVOID MsgQmalloc (DWORD dwSize)
+{
+    return NKHeapAlloc (g_hMsgQHeap, dwSize);
+}
+
+static BOOL MsgQfree (LPVOID pMem)
+{
+    return NKHeapFree (g_hMsgQHeap, pMem);
+}
+
+static void LockQueue (PMSGQUEUE lpQ)
+{
+    EnterCriticalSection (&lpQ->csLock);
+}
+
+
+static void UnlockQueue (PMSGQUEUE lpQ)
+{
+    LeaveCriticalSection (&lpQ->csLock);
+}
+
+static void Enqueue(PMSGQUEUE lpQ, PMSGNODE lpN)
+{
+    DEBUGCHK (OwnCS (&lpQ->csLock));
+    lpN->pNext = NULL;
+    if (lpQ->pTail == NULL) {
+        DEBUGCHK(lpQ->pHead == NULL);
+        lpQ->pHead = lpN;
+    } else {
+        lpQ->pTail->pNext = lpN;
+    }
+    lpQ->pTail = lpN;
+}
+
+static PMSGNODE Dequeue(PMSGQUEUE lpQ)
+{
+    PMSGNODE lpN = lpQ->pHead;
+
+    DEBUGCHK (OwnCS (&lpQ->csLock));
+    if (lpN) {
+        lpQ->pHead = lpN->pNext;
+        if (lpQ->pHead == NULL) {
+            DEBUGCHK(lpQ->pTail == lpN);
+            lpQ->pTail = NULL;
+        }
+    }
+    return lpN;
+}
+
+static BOOL SetQEvent (PHDATA phdQ)
+{
+    return phdQ? EVNTModify ((PEVENT) phdQ->pvObj, EVENT_SET) : FALSE;
+}
+
+static BOOL ResetQEvent (PHDATA phdQ)
+{
+    return phdQ? EVNTModify ((PEVENT) phdQ->pvObj, EVENT_RESET) : FALSE;
+}
+
+static DWORD WaitQEvent (PHDATA phdQ, DWORD dwTimeout)
+{
+    DEBUGCHK (phdQ);
+    return DoWaitForObjects (1, &phdQ, dwTimeout);
+}
+
+static BOOL PreAllocQNodes (PMSGQUEUE lpQ)
+{
+    BOOL fRet = TRUE;
+    if (!(lpQ->dwFlags & MSGQUEUE_NOPRECOMMIT)) {
+        DWORD     cbSize = lpQ->cbMaxMessage;
+        DWORD     cNode  = lpQ->dwMaxNumMsg - lpQ->dwCurNumMsg;
+        ULONGLONG u64TotalSize = (ULONGLONG) cbSize * cNode;
+
+        DEBUGCHK (cbSize);
+
+        if (MAX_PREALLOC_SIZE < u64TotalSize) {
+            fRet = FALSE;
+        } else {
+            PMSGNODE lpn;
+        
+            // allocate message nodes
+            while (cNode--) {
+                if (!(lpn = MsgQmalloc (sizeof(MSGNODE) + cbSize)))
+                    return FALSE;
+
+                lpn->pNext     = lpQ->pFreeList;
+                lpQ->pFreeList = lpn;
+                lpn->phdTok    = NULL;
+            }
+        }
+    }
+    return fRet;
+}
+
+// allocate message queue structure, and room for the alert node
+static PMSGQUEUE AllocateMsgQ (PMSGQUEUEOPTIONS pOpt)
+{
+    PMSGQUEUE lpQ;
+
+    // pOpt->cbMaxMessage is validated in NKCreateMsgQueue
+    PREFAST_ASSUME (pOpt->cbMaxMessage <= MAX_NODE_SIZE);
+    
+    lpQ = MsgQmalloc (sizeof (MSGQUEUE) + sizeof (MSGNODE) + pOpt->cbMaxMessage);
+    DEBUGMSG (ZONE_MAPFILE, (L"Message Queue created, lpQ = %8.8lx, cbMaxMessage = %8.8lx\r\n", lpQ, pOpt->cbMaxMessage));
+    if (lpQ) {
+        memset (lpQ, 0, sizeof (MSGQUEUE));
+        lpQ->dwFlags      = pOpt->dwFlags;
+        lpQ->cbMaxMessage = pOpt->cbMaxMessage;
+        lpQ->dwMaxNumMsg  = pOpt->dwMaxMessages;
+        InitializeCriticalSection (&lpQ->csLock);
+    }
+
+    return lpQ;
+}
+
+static void LinkQToPHD (PMSGQUEUE lpQ, PHDATA phdQ, BOOL fRead)
+{
+    PEVENT lpe = (PEVENT) phdQ->pvObj;
+
+    DEBUGCHK (lpe->manualreset);
+    
+    LockQueue (lpQ);
+    lpe->pMsgQ = lpQ;
+    if (fRead) {
+        lpQ->phdReader = phdQ;
+        if (!IS_QUEUE_EMPTY (lpQ)) {
+            SetQEvent (phdQ);
+        }
+    } else {
+        lpe->manualreset |= MSGQ_WRITER;
+        lpQ->phdWriter = phdQ;
+    }
+    UnlockQueue (lpQ);
+}
+
+static void FreeAllNodes (PMSGNODE pHead)
+{
+    PMSGNODE lpN;
+    while (pHead) {
+        lpN = pHead;
+        pHead = lpN->pNext;
+        UnlockHandleData (lpN->phdTok);
+        MsgQfree (lpN);
+    }
+}
+
+BOOL InitMsgQueue(void)
+{
+    InitializeCriticalSection(&g_MsgQcs);
+    VERIFY (g_hMsgQHeap = NKCreateHeap ());
+
+    DEBUGMSG (1, (L"Message Queue support initialized, g_hMsgQHeap = %8.8lx\r\n", g_hMsgQHeap));
+    return g_hMsgQHeap != NULL;
+}
+
+
+//
+// NOTE: caller of this funciton is responsible for unlocking *pphd, even if returning NULL.
+//       the reason is that this funciton is called while holding g_MsgQcs, and calling UnlockHnadleData
+//       inside can cause deadlock if it's the last ref and the object got destroyed.
+//
+static HANDLE CreateAndLockQEvt (BOOL fCreate, BOOL fInitSet, LPCWSTR pszName, PHDATA *pphd, LPDWORD pdwErr)
+{
+    HANDLE hEvt = fCreate
+                    ? NKCreateEvent (NULL, TRUE, fInitSet, pszName)
+                    : NKOpenEvent (EVENT_ALL_ACCESS, FALSE, pszName);
+
+    if (hEvt) {
+        *pdwErr = pszName? GetLastError () : 0;
+        if (!(*pphd = LockHandleData (hEvt, pActvProc))) {
+            *pdwErr = ERROR_INVALID_PARAMETER;
+            hEvt = NULL;
+        } else if ((ERROR_ALREADY_EXISTS == *pdwErr)
+            && !PHD2MSGQ (*pphd)) {
+            // a named event exists, but not message queue
+            *pdwErr = ERROR_INVALID_NAME;
+            // UnlockHandleData (*pphd);  -- see note above.
+            HNDLCloseHandle (pActvProc, hEvt);
+            hEvt = NULL;
+        }
+    } else {
+        *pdwErr = fCreate? ERROR_OUTOFMEMORY : 0;
+    }
+    return hEvt;
+}
+
+static HANDLE CreateUnnamedMsgQ (PMSGQUEUEOPTIONS pOpt, LPDWORD pdwErr)
+{
+    HANDLE    hQ   = NULL;
+    PHDATA    phdQ = NULL;
+    PMSGQUEUE lpQ  = AllocateMsgQ (pOpt);
+
+    if (lpQ
+        && PreAllocQNodes (lpQ)
+        && (hQ = CreateAndLockQEvt (TRUE, !pOpt->bReadAccess, NULL, &phdQ, pdwErr))) {
+
+        LinkQToPHD (lpQ, phdQ, pOpt->bReadAccess);
+        
+    } else if (lpQ) {
+        // error and need cleanup
+        *pdwErr = ERROR_OUTOFMEMORY;
+        DEBUGCHK (!lpQ->pAlert);
+        FreeAllNodes (lpQ->pFreeList);
+        DeleteCriticalSection (&lpQ->csLock);
+        MsgQfree (lpQ);
+    }
+
+    UnlockHandleData (phdQ);
+    return hQ;
+}
+
+static HANDLE CreateNamedMsgQ (LPWSTR pQName, PMSGQUEUEOPTIONS pOpt, LPDWORD pdwErr)
+{
+    HANDLE    hQ        = NULL;
+    PHDATA    phdQ      = NULL;
+    PHDATA    phdOtherQ = NULL;
+    PMSGQUEUE lpQ       = NULL;
+
+    DEBUGCHK (pQName);
+
+    // It's possible that 2 thread calling CreateMsgQueue with the same name at the same time.
+    // Need to serialize the calls.
+    EnterCriticalSection (&g_MsgQcs);
+
+    // try to find our end of the queue
+    if ((hQ = CreateAndLockQEvt (TRUE, !pOpt->bReadAccess, pQName, &phdQ, pdwErr))
+        && !*pdwErr) {
+
+        // try the other end if this is not an existing queue.
+        HANDLE hOtherQ;
+
+        pQName[0] = pOpt->bReadAccess? 'W' : 'R';
+        if (hOtherQ = CreateAndLockQEvt (FALSE, FALSE, pQName, &phdOtherQ, pdwErr)) {
+            DEBUGCHK (ERROR_ALREADY_EXISTS == *pdwErr);
+            VERIFY (lpQ = PHD2MSGQ (phdOtherQ));
+            HNDLCloseHandle (pActvProc, hOtherQ);
+        }
+
+        // create a new queue if the other end doesn't exist either
+        if (!*pdwErr && !(lpQ = AllocateMsgQ (pOpt))) {
+            *pdwErr = ERROR_OUTOFMEMORY;
+        }
+
+        if (lpQ) {
+            LinkQToPHD (lpQ, phdQ, pOpt->bReadAccess);
+        }
+    }
+
+    LeaveCriticalSection (&g_MsgQcs);
+
+    // if new queue created, pre-allocate nodes if necessary
+    if (!*pdwErr) {
+        DEBUGCHK (lpQ);
+        LockQueue (lpQ);
+        if (!PreAllocQNodes (lpQ)) {
+            *pdwErr = ERROR_OUTOFMEMORY;
+        }
+        UnlockQueue (lpQ);
+    }
+
+    UnlockHandleData (phdOtherQ);
+    UnlockHandleData (phdQ);
+
+    if (hQ && *pdwErr && (ERROR_ALREADY_EXISTS != *pdwErr)) {
+        // error, close the handle. Queue will be destroyed 
+        // if this is the last reference.
+        HNDLCloseHandle (pActvProc, hQ);
+        hQ = NULL;
+    }
+
+    return hQ;
+
+}
+
+HANDLE NKCreateMsgQueue (
+    LPCWSTR pQName,                 // IN only
+    PMSGQUEUEOPTIONS lpOptions      // IN/OUT: dwSize is IN, all else is OUT
+    )
+{
+    MSGQUEUEOPTIONS opt;
+    DWORD           dwErr = 0;
+    HANDLE          hQRtn = NULL;
+    WCHAR           szQName[MAX_PATH];
+
+    DEBUGMSG (ZONE_MAPFILE, (L"NKCreateMsgQueue %8.8lx %8.8lx\r\n", pQName, lpOptions));
+    // make a local copy of the arguments for security and validate arguments
+    __try {
+        opt = *lpOptions;
+        opt.dwFlags &= ~MSGQUEUE_INVALID; // filter out flags set internally
+
+        if (   !opt.cbMaxMessage                        // max size can't be 0
+            || (opt.cbMaxMessage > MAX_NODE_SIZE)       // node size too big
+            || (opt.dwSize < sizeof (opt))              // invalid size field
+            || (opt.dwMaxMessages > MAX_NUM_NODES) // invalid max # of message
+            || (opt.dwFlags & ~(MSGQUEUE_NOPRECOMMIT | MSGQUEUE_ALLOW_BROKEN))) { // invalid flags - coudl be a BC issue
+            dwErr = ERROR_INVALID_PARAMETER;
+            
+        } else if (pQName) {
+            DWORD len = NKwcslen (pQName);
+            if (len >= MAX_PATH-2) {
+                dwErr = ERROR_INVALID_PARAMETER;
+            } else {
+                szQName[0] = opt.bReadAccess? 'R' : 'W';
+                szQName[1] = ':';
+                if (len) {
+                    memcpy (&szQName[2], pQName, len * sizeof(WCHAR));
+                }
+                szQName[len+2] = 0;
+            }
+        }
+        // update arguments if default is specified
+        if (!opt.dwMaxMessages) {
+            opt.dwFlags |= MSGQUEUE_NOPRECOMMIT;
+            opt.dwMaxMessages = MAX_NUM_NODES+1;
+        }
+
+    } __except (EXCEPTION_EXECUTE_HANDLER) {
+        dwErr = ERROR_INVALID_PARAMETER;
+    }
+
+    if (!dwErr) {
+
+        hQRtn = pQName
+            ? CreateNamedMsgQ (szQName, &opt, &dwErr)
+            : CreateUnnamedMsgQ (&opt, &dwErr);
+
+    }
+    
+    DEBUGMSG (ZONE_MAPFILE || dwErr, (L"NKCreateMsgQueue returns %8.8lx, dwErr = %8.8lx\r\n", hQRtn, dwErr));
+    SetLastError (dwErr);
+    return hQRtn;
+}
+
+//
+// MSGQClose - called when one end of the message queue is totally closed
+//
+BOOL MSGQClose (PEVENT lpe) 
+{
+    PMSGQUEUE lpQ = lpe->pMsgQ;
+    BOOL      fDestroy = FALSE;
+    PMSGNODE  pFreeList = NULL, pHead = NULL, pAlert = NULL;
+
+    EnterCriticalSection (&g_MsgQcs);
+    if (lpQ) {
+        DEBUGMSG (ZONE_MAPFILE, (L"MSGQClose: lpe = %8.8lx, lpQ = %8.8lx\r\n", lpe, lpQ));
+        LockQueue (lpQ);
+
+        // signal the queue event to wake up all reader/writes
+        EVNTModify (lpe, EVENT_SET);
+
+        // reset the msgQ hdata ptr
+        if (ISWRITER (lpe)) {
+            lpQ->phdWriter = NULL;
+        } else {
+            lpQ->phdReader = NULL;
+        }
+
+        // destroy the queue if there is no reader and no write
+        fDestroy = !lpQ->phdReader && !lpQ->phdWriter;
+
+        // free nodes if queue doesn't allow to be broken
+        if (fDestroy || !(MSGQUEUE_ALLOW_BROKEN & lpQ->dwFlags)) {
+            pFreeList  = lpQ->pFreeList;
+            pHead      = lpQ->pHead;
+            pAlert     = lpQ->pAlert;
+            lpQ->pHead = lpQ->pTail = lpQ->pFreeList = lpQ->pAlert = NULL;
+            lpQ->dwCurNumMsg = 0;
+            lpQ->dwFlags |= MSGQUEUE_INVALID;
+        }
+
+        UnlockQueue (lpQ);
+        DEBUGMSG (ZONE_MAPFILE, (L"MSGQClose: returns, fDestroy = %d\r\n", fDestroy));
+    }
+    LeaveCriticalSection (&g_MsgQcs);
+
+    // Free all the nodes
+    FreeAllNodes (pHead);
+    FreeAllNodes (pFreeList);
+    if (pAlert) {
+        UnlockHandleData (pAlert->phdTok);
+    }
+
+    if (fDestroy) {
+        DEBUGCHK (lpQ);
+        DeleteCriticalSection (&lpQ->csLock);
+        MsgQfree (lpQ);
+    }
+    return TRUE;
+}
+
+//
+// Notified when all handles to the message queue is closed (can still be locked)
+//
+BOOL MSGQPreClose (PEVENT lpe)
+{
+    PMSGQUEUE lpQ = (PMSGQUEUE) lpe->pMsgQ;
+
+    if (lpQ) {
+        DEBUGMSG (ZONE_MAPFILE, (L"MSGQPreClose: lpe = %8.8lx, lpQ = %8.8lx\r\n", lpe, lpQ));
+        LockQueue (lpQ);
+
+        // signal the queue event to wake up all reader/writes
+        if (lpQ->phdReader) {
+            EVNTModify (lpQ->phdReader->pvObj, EVENT_SET);
+        }
+
+        if (lpQ->phdWriter) {
+            EVNTModify (lpQ->phdWriter->pvObj, EVENT_SET);
+        }
+
+        UnlockQueue (lpQ);
+    }
+    return TRUE;
+}
+
+HANDLE NKOpenMsgQueueEx(
+    PPROCESS pprc,
+    HANDLE   hMsgQ,                // Event handle, NOT internal handle data
+    HANDLE   hDstPrc,
+    PMSGQUEUEOPTIONS lpOptions     // IN/OUT: dwSize is IN, all else is OUT
+    )
+{
+    PHDATA    phdDstPrc  = NULL;
+    PPROCESS  pprcDst;
+    PHDATA    phdQ = NULL;
+    HANDLE    hQRtn = 0;
+    PMSGQUEUE lpQ;
+    DWORD     dwErr = 0;
+    MSGQUEUEOPTIONS opt;
+
+    DEBUGMSG (ZONE_MAPFILE, (L"NKOpenMsgQueueEx %8.8lx %8.8lx %8.8lx %8.8lx\r\n", pprc, hMsgQ, hDstPrc, lpOptions));
+
+    if (GetCurrentProcess () == hDstPrc) {
+        pprcDst   = pActvProc;
+    } else {
+        phdDstPrc = LockHandleData (hDstPrc, pActvProc);
+        pprcDst   = GetProcPtr (phdDstPrc);
+    }
+    
+    // validate parameters
+    if (!hMsgQ
+        || !pprcDst
+        || !CeSafeCopyMemory (&opt, lpOptions, sizeof (opt))
+        || !(phdQ = LockHandleData (hMsgQ, pprc))
+        || !(lpQ = PHD2MSGQ (phdQ))
+        || (lpQ->dwFlags & MSGQUEUE_INVALID)) {
+        dwErr = ERROR_INVALID_PARAMETER;
+        
+    } else {
+
+        // change active process, so the handle created belongs to the destination process
+        PPROCESS  pprcActv = SwitchActiveProcess (pprcDst);
+        
+        if (phdQ->pName) {
+        
+            // named, just call NKCreateMsgQueue to create the named queue. Skip the "W:"
+            // or "R:" of the name.
+            opt.cbMaxMessage  = lpQ->cbMaxMessage;
+            opt.dwFlags       = 0;
+            opt.dwMaxMessages = 0;
+            if (!(hQRtn = NKCreateMsgQueue (&phdQ->pName->name[2], &opt)))            
+                dwErr = NKGetLastError ();
+            
+        } else {
+
+            PHDATA phdNewQ = NULL;
+
+            DEBUGMSG (ZONE_MAPFILE, (L"NKOpenMsgQueueEx: opt.bReadAccess = %8.8lx\r\n", opt.bReadAccess));
+            LockQueue (lpQ);
+            if (phdNewQ = opt.bReadAccess? lpQ->phdReader : lpQ->phdWriter) {
+
+                // the requested end of the queue already exist, just dup it and done        
+                if (!(hQRtn = HNDLDupWithHDATA (pprcDst, phdNewQ))) {
+                    dwErr = ERROR_NOT_ENOUGH_MEMORY;
+                }
+                
+            } else {
+            
+                // the requested end doesn't exist, create a new one
+                if (hQRtn = CreateAndLockQEvt (TRUE, !opt.bReadAccess, NULL, &phdNewQ, &dwErr)) {
+                    // unnamed, link the new event to the queue
+                    LinkQToPHD (lpQ, phdNewQ, opt.bReadAccess);
+                }
+
+                UnlockHandleData (phdNewQ);
+
+            }
+            UnlockQueue (lpQ);
+        }
+        
+        SwitchActiveProcess (pprcActv);
+    }
+
+    UnlockHandleData (phdQ);
+    UnlockHandleData (phdDstPrc);
+
+    DEBUGMSG (ZONE_MAPFILE, (L"NKOpenMsgQueueEx returns %8.8lx dwErr = %8.8lx\r\n", hQRtn, dwErr));
+    SetLastError (dwErr);
+    return hQRtn;
+    
+}
+
+ERRFALSE (WAIT_OBJECT_0 == 0);
+
+static DWORD WaitForQueueEvent (PHDATA phdQ, PMSGQUEUE lpQ, DWORD dwTimeout, DWORD dwWakeupTime)
+{
+    DWORD dwErr = WAIT_TIMEOUT;
+    
+    ResetQEvent (phdQ);
+
+    UnlockQueue (lpQ);
+
+    if ((INFINITE == dwTimeout)
+        || ((int) (dwTimeout = dwWakeupTime - OEMGetTickCount ()) > 0)) {
+
+        SET_USERBLOCK(pCurThread);
+        dwErr = WaitQEvent (phdQ, dwTimeout);
+        CLEAR_USERBLOCK(pCurThread);
+
+        if (GET_DYING(pCurThread) && !GET_DEAD(pCurThread)) {
+            // we're being terminated, while reading/writing message queue
+            dwErr = WAIT_ABANDONED;
+        }
+    }
+
+    LockQueue (lpQ);
+    if (WAIT_TIMEOUT == dwErr)
+        dwErr = ERROR_TIMEOUT; // for BC
+
+    return dwErr;
+}
+
+// we'll do copying without release CS if packet size if under the threshold
+// for perf improvemnt
+#define COPY_THRESHOLD  128
+
+BOOL  MSGQRead (
+    PEVENT  lpe,                    // Event object of the message queue
+    LPVOID  lpBuffer,               // OUT only
+    DWORD   cbSize,
+    LPDWORD lpNumberOfBytesRead,    // OUT only
+    DWORD   dwTimeout,
+    LPDWORD pdwFlags,               // OUT only
+    PHANDLE phTok                   // OUT only, to receive sender's token
+    )
+{
+    DWORD       dwErr = ERROR_INVALID_HANDLE;
+    PMSGQUEUE   lpQ;
+
+    // validate parameters
+    if (   !lpBuffer
+        || ((int) cbSize <= 0)
+        || !lpNumberOfBytesRead
+        || !pdwFlags) {
+        dwErr = ERROR_INVALID_PARAMETER;
+
+    // make sure thisis the reader end of the queue
+    } else if (!ISWRITER (lpe) && (lpQ = lpe->pMsgQ)) {
+
+        DWORD    dwWakeupTime = (INFINITE == dwTimeout)? INFINITE : (OEMGetTickCount () + dwTimeout);
+        PMSGNODE lpN;
+
+        LockQueue (lpQ);
+        do {
+        
+            if (!GetHandleCountFromHDATA (lpQ->phdReader)) {
+                // all handle to the read-end closed while we're reading.
+                dwErr = ERROR_INVALID_HANDLE;
+                break;
+            }
+            
+            // queue broken?            
+            if (!(lpQ->dwFlags & MSGQUEUE_ALLOW_BROKEN) && !GetHandleCountFromHDATA (lpQ->phdWriter)) {
+                dwErr = ERROR_PIPE_NOT_CONNECTED;
+                break;
+            }
+            
+            // any data available?
+            if (lpN = (lpQ->pAlert? lpQ->pAlert : lpQ->pHead)) {
+                dwErr = 0;
+                break;
+            }
+        } while (!(dwErr = WaitForQueueEvent (lpQ->phdReader, lpQ, dwTimeout, dwWakeupTime)));
+
+        if (!dwErr) {
+            HANDLE hTok = NULL;
+            DEBUGCHK (lpN);
+
+            if (phTok
+                && lpN->phdTok
+                && !(hTok = HNDLDupWithHDATA (pActvProc, lpN->phdTok))) {
+                dwErr = ERROR_NOT_ENOUGH_MEMORY;
+
+            } else {
+
+                BOOL   fUnlocked = FALSE;
+                // data available, check size. Succeed even if passed in buffer is < message size (MSDN).
+                if (cbSize < lpN->dwDataSize) {
+                    dwErr = ERROR_INSUFFICIENT_BUFFER;
+                } else {
+                    cbSize = lpN->dwDataSize;
+                }
+
+                // unlock the sender's token (we've already duplicated it)
+                UnlockHandleData (lpN->phdTok);
+                lpN->phdTok = NULL;
+                
+                // unlock queue if it's not an alert message and the size exceed threshold
+                //
+                if (lpQ->pAlert != lpN) {
+
+                    DEBUGCHK (lpN == lpQ->pHead);
+                    Dequeue (lpQ);
+                    lpQ->dwCurNumMsg --;
+
+                    // unlock the queue if size exceeds threshold (perf consideration, don't unlock/re-lock
+                    // if the data size is small enough
+                    if (cbSize > COPY_THRESHOLD) {
+                        UnlockQueue (lpQ);
+                        fUnlocked = TRUE;
+                    }
+                }
+
+                // copy data
+                __try {
+                    memcpy(lpBuffer, (lpN+1), cbSize);
+                    *lpNumberOfBytesRead = cbSize;
+                    *pdwFlags = lpN->dwFlags;
+                    if (phTok) {
+                        *phTok = hTok;
+                    }
+                } __except (EXCEPTION_EXECUTE_HANDLER) {
+                    DEBUGMSG(1 ,(TEXT("ReadMsgQueue: copy data error\r\n")));
+                    dwErr = ERROR_INVALID_PARAMETER;
+                    if (hTok) {
+                        HNDLCloseHandle (pActvProc, hTok);
+                    }
+                }
+
+                // re-lock the queue if necessary
+                if (fUnlocked) {
+                    LockQueue (lpQ);
+                }
+
+                if (lpQ->pAlert == lpN) {
+
+                    lpQ->pAlert = NULL;
+
+                // final queue data management (node release, max # of messages, etc)
+                } else if ((lpQ->dwFlags & MSGQUEUE_NOPRECOMMIT)
+                    && (lpQ->pFreeList || (lpN->dwDataSize != lpQ->cbMaxMessage))) {
+
+                    // not pre-commit, and can't cache the node -- free it
+                    MsgQfree (lpN);
+
+                } else {
+
+                    // max specified, or cached node
+                    lpN->pNext = lpQ->pFreeList;
+                    lpQ->pFreeList = lpN;
+                }
+
+                // signal room available for write
+                SetQEvent (lpQ->phdWriter);
+
+                // Need to reset event if queue is empty. Otherwise, codes using 
+                // "WaitForSingleObject/WaitForMultipleObjects" on queue handle will get
+                // signaled, while there is no data in the queue.
+                // NOTE: We don't have to do this if we don't make queue handle waitable by 
+                // WaitForSingleObject/WaitForMultipleObjects. 
+                if (IS_QUEUE_EMPTY (lpQ)) {
+                    ResetQEvent (lpQ->phdReader);
+                }
+            }
+        }
+
+        UnlockQueue (lpQ);
+    }
+
+    SetLastError (dwErr);
+    return (!dwErr || (ERROR_INSUFFICIENT_BUFFER == dwErr));
+}
+
+BOOL MSGQWrite (
+    PEVENT  lpe,                    // Event object of the message queue
+    LPCVOID lpBuffer,               // IN only
+    DWORD   cbDataSize,
+    DWORD   dwTimeout,
+    DWORD   dwFlags
+    )
+{
+    DWORD       dwErr = ERROR_INVALID_HANDLE;
+    PMSGQUEUE   lpQ;
+
+    // validate parameters
+    if (!lpBuffer || !cbDataSize) { // invalid queue
+        dwErr = ERROR_INVALID_PARAMETER;
+
+    // valid writer end of the queue?
+    } else if (ISWRITER(lpe) && (lpQ = lpe->pMsgQ)) {
+
+        PMSGNODE   lpN = NULL;
+        DWORD      dwWakeupTime = (INFINITE == dwTimeout)? INFINITE : (OEMGetTickCount () + dwTimeout);
+        PHDATA     phdReader = NULL;
+
+        LockQueue (lpQ);
+
+        do {
+            
+            // check msg size limitation
+            if (cbDataSize > lpQ->cbMaxMessage) {
+                dwErr = ERROR_INSUFFICIENT_BUFFER;
+                break;
+            }
+
+            if (!GetHandleCountFromHDATA (lpQ->phdWriter)) {
+                // all handle to the write-end closed while we're writing.
+                dwErr = ERROR_INVALID_HANDLE;
+                break;
+            }
+
+            // queue broken?
+            if (!(lpQ->dwFlags & MSGQUEUE_ALLOW_BROKEN) && !GetHandleCountFromHDATA (lpQ->phdReader)) {
+                dwErr = ERROR_PIPE_NOT_CONNECTED;
+                break;
+            }
+
+            // alert message?
+            if ((dwFlags & MSGQUEUE_MSGALERT) && !lpQ->pAlert) {
+                // alert buffer is right after the queue
+                lpQ->pAlert = lpN = (PMSGNODE)(lpQ + 1);
+                break;
+            }
+
+            // anything in the free list?
+            if (lpN = lpQ->pFreeList) {
+                lpQ->pFreeList = lpN->pNext;
+                break;
+            }
+
+            // allocate memory if not pre-commit
+            if ((lpQ->dwFlags & MSGQUEUE_NOPRECOMMIT)
+                && (lpQ->dwCurNumMsg < lpQ->dwMaxNumMsg)) {
+
+                if (!(lpN = (PMSGNODE) MsgQmalloc (cbDataSize + sizeof(MSGNODE)))) {
+                    dwErr = ERROR_OUTOFMEMORY;
+                }
+                break;
+            }
+            // when we gets here, queue is full.
+
+        } while (!(dwErr = WaitForQueueEvent (lpQ->phdWriter, lpQ, dwTimeout, dwWakeupTime)));
+
+        if (lpN) {
+            BOOL fUnlocked = FALSE;
+            // got space in queue
+
+            // unlock queue if it's not an alert message and the size exceed threshold
+            //
+            if (lpQ->pAlert != lpN) {
+
+                lpQ->dwCurNumMsg ++;
+
+                // unlock the queue if size exceeds threshold
+                if (cbDataSize > COPY_THRESHOLD) {
+                    UnlockQueue (lpQ);
+                    fUnlocked = TRUE;
+                }
+            }
+
+            // start copying data
+            __try {
+                memcpy (lpN+1, lpBuffer, cbDataSize);
+                lpN->dwDataSize = cbDataSize;
+                lpN->dwFlags = dwFlags;
+                lpN->phdTok  = LockThrdToken (pCurThread);
+                dwErr = 0;
+            }  __except (EXCEPTION_EXECUTE_HANDLER) {
+                DEBUGMSG(1, (TEXT("WriteMsgQueue: copy data error\r\n")));
+                dwErr = ERROR_INVALID_PARAMETER;
+            }
+
+            // re-lock the queue if necessary
+            if (fUnlocked) {
+                LockQueue (lpQ);
+            }
+            
+            if (!dwErr) {
+
+                if (lpQ->pAlert != lpN) {
+                    Enqueue (lpQ, lpN);
+
+                    // update high water mark if necessary
+                    if (lpQ->dwMaxQueueMessages < lpQ->dwCurNumMsg) {
+                        lpQ->dwMaxQueueMessages = lpQ->dwCurNumMsg;
+                    }
+                }
+
+                // queue is no longer empty, we need signal the read event.
+                // However, we don't want to signal while holding the lock as it'll
+                // cause extra context switches if writer is lower in priority.
+                // So, we lock the HDATA of reader event here and will signal it
+                // once we release the lock.
+                if (lpQ->phdReader) {
+                    phdReader = lpQ->phdReader;
+                    LockHDATA (phdReader);
+                }
+
+                // Need to reset event if queue is full. Otherwise, codes using 
+                // "WaitForSingleObject/WaitForMultipleObjects" on queue handle will get
+                // signaled, while there is no space available in the queue.
+                // NOTE: We don't have to do this if we don't make queue handle waitable by 
+                // WaitForSingleObject/WaitForMultipleObjects. 
+                if (lpQ->dwCurNumMsg == lpQ->dwMaxNumMsg) {
+                    ResetQEvent (lpQ->phdWriter);
+                }
+
+
+            // else - restore the queue state from error
+            } else {
+
+                // unlock the token handle
+                UnlockHandleData (lpN->phdTok);
+                lpN->phdTok = NULL;
+                
+                if (lpQ->pAlert == lpN) {
+                    // alert message, just set alert to NULL
+                    lpQ->pAlert = NULL;
+                } else {
+                    lpQ->dwCurNumMsg --;
+
+                    if (lpQ->dwFlags & MSGQUEUE_NOPRECOMMIT) {
+                        // not pre-commit, just free it
+                        MsgQfree (lpN);
+                    } else {
+                        // put it back to free list
+                        lpN->pNext = lpQ->pFreeList;
+                        lpQ->pFreeList = lpN;
+                    }
+                }
+            }
+                
+        }
+
+        UnlockQueue (lpQ);
+
+        if (phdReader) {
+            SetQEvent (phdReader);
+            UnlockHandleData (phdReader);
+        }
+    }
+
+    SetLastError (dwErr);
+    return NOERROR == dwErr;
+
+}
+
+
+
+BOOL MSGQGetInfo (
+    PEVENT lpe,            // Event handle, NOT internal handle data
+    PMSGQUEUEINFO lpInfo   // IN/OUT: dwSize is IN, all else is OUT
+    )
+{
+    DWORD        dwErr = 0;
+    MSGQUEUEINFO info;      // local copy of the info
+    PMSGQUEUE    lpQ    = lpe->pMsgQ;
+
+    // validate parameters
+    if (!lpQ
+        || !CeSafeCopyMemory (&info.dwSize, &lpInfo->dwSize, sizeof (DWORD))
+        || (info.dwSize < sizeof (info))) {
+        dwErr = ERROR_INVALID_PARAMETER;
+
+    } else {
+        LockQueue (lpQ);
+        info.dwFlags             = (lpQ->dwFlags & ~MSGQUEUE_INVALID); // filter out the flags not set by user
+        info.cbMaxMessage        = lpQ->cbMaxMessage;
+        info.dwCurrentMessages   = lpQ->dwCurNumMsg;
+        info.dwMaxQueueMessages  = lpQ->dwMaxQueueMessages;
+        info.wNumReaders         = (WORD) GetHandleCountFromHDATA (lpQ->phdReader);
+        info.wNumWriters         = (WORD) GetHandleCountFromHDATA (lpQ->phdWriter);
+        // we modified dwMaxMessages to simplified 'full test', special care here
+        info.dwMaxMessages       = (lpQ->dwMaxNumMsg <= MAX_NUM_NODES)? lpQ->dwMaxNumMsg : 0;
+        UnlockQueue (lpQ);
+
+        if (!CeSafeCopyMemory (lpInfo, &info, sizeof (info))) {
+            dwErr = ERROR_INVALID_PARAMETER;
+        }
+    }
+
+    if (dwErr) {
+        SetLastError (dwErr);
+    }
+
+    return !dwErr;
+}
+
+

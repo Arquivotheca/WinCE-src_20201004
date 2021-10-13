@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompareXmlLists", "CompareXmlLists.csproj", "{993C208E-4A53-4CE2-B110-4151431CFE4C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{993C208E-4A53-4CE2-B110-4151431CFE4C}.Debug.ActiveCfg = Debug|.NET
+		{993C208E-4A53-4CE2-B110-4151431CFE4C}.Debug.Build.0 = Debug|.NET
+		{993C208E-4A53-4CE2-B110-4151431CFE4C}.Release.ActiveCfg = Release|.NET
+		{993C208E-4A53-4CE2-B110-4151431CFE4C}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

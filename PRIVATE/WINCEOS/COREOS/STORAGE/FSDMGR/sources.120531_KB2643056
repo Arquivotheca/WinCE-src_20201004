@@ -1,0 +1,53 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+
+TARGETNAME=fsdmgr_lib
+TARGETTYPE=LIBRARY
+WINCEPROJ=COMMON
+INCLUDES= \
+  $(_PRIVATEROOT)\winceos\COREOS\inc; \
+  ..\inc;
+
+PRECOMPILED_INCLUDE=storeincludes.hpp
+PRECOMPILED_PCH=precomp.pch
+PRECOMPILED_OBJ=precomp.obj
+PRECOMPILED_CXX=1
+
+SOURCES= \
+  fsdmain.cpp \
+  mounttable.cpp \
+  mountedvolume.cpp \
+  logicaldisk.cpp \
+  filesystem.cpp \
+  virtroot.cpp \
+  fileapi.cpp \
+  searchapi.cpp \
+  volumeapi.cpp \
+  stgapi.cpp \
+  afsapi.cpp \
+  fsdmgrapi.cpp \
+  pathapi.cpp \
+  fsddbg.cpp \
+  fsdhelper.cpp \
+  fsdcache.cpp \
+  storestr.cpp \
+  nullcache.cpp \
+  blockdevice.cpp \
+  storedisk.cpp \
+  partition.cpp \
+  storemain.cpp \
+  nullpart.cpp \
+  detector.cpp \
+  stgmarshal.cpp
+
+!INCLUDE "sources.$(_TGTOS)"

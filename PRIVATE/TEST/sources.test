@@ -1,0 +1,62 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+#
+# main sources file for test tree
+#
+
+RELEASETYPE=OAK
+__PROJROOT = $(_PROJECTROOT)
+!INCLUDE $(TEST_ROOT)\sources.$(_TGTOS)
+
+EXT_INCLUDES=$(TEST_ROOT)\common\inc;$(EXT_INCLUDES)
+
+LIBPATH=$(LIBPATH);$(_PRIVATEROOT)\sdk\Lib
+#
+# If you need to link to a test library, use this path
+#
+TEST_OAK_LIB_PATH=$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)
+
+#Adding some stuff for new DATK 
+QALIBK_INC_DIRS=$(TEST_ROOT)\common\libs\qalibk\inc;$(TEST_ROOT)\common\libs\UISync\inc;$(TEST_ROOT)\common\libs\qalib\inc;$(TEST_ROOT)\common\mdpgutils\inc
+
+_COREDLL=$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib
+_COMMCTRL=$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\commctrl.lib
+_OLEAUT32 = $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\oleaut32.lib
+_OLE32 = $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ole32.lib
+_UUID =  $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib
+
+
+# Microsoft.WindowsCE assemblies
+TEST_OAK_MANAGED_PATH=$(__PROJROOT)\oak\target\$(_CPUINDPATH)
+_CEQANAMESPACE=Microsoft.WindowsCE
+_DATK=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).DATK.dll
+_LOGGER=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).Logging.dll
+_TUXNETCORE=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).TuxNet.Core.dll
+_WIN32API=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).Win32API.dll
+_RANDOM=$(TEST_OAK_MANAGED_PATH)\$(_CEQANAMESPACE).Random.dll
+_UTILSDOTNET=$(TEST_OAK_MANAGED_PATH)\$(_WMQANAMESPACE).utils.dll
+_WINSOCK=$(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ws2.lib
+_TOOLHELP=$(_PROJECTROOT)\\cesysgen\sdk\lib\$(_CPUINDPATH)\toolhelp.lib
+_XLOCK=$(_PUBLICROOT)\COMMON\sdk\lib\$(_CPUINDPATH)\xlock.lib
+_SHLWAPI=$(_PROJECTROOT)\cesysgen\oak\lib\$(_CPUINDPATH)\shlwapi.lib
+_PACKAGEINFOAPI=$(_PUBLICROOT)\COMMON\oak\lib\$(_CPUINDPATH)\packageinfoapi.lib
+
+
+# Microsoft.MobileDevices assemblies
+_WMQANAMESPACE=Microsoft.MobileDevices
+
+#end adding.
+
+!IF "$(TEST_W4)"=="1"
+CDEFINES=/W4 /FI$(TEST_ROOT)\common\inc\warning.h
+!ENDIF

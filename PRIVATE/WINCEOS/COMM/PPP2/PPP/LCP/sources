@@ -1,0 +1,36 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+
+!IFDEF SP_REF_VERBOSE
+CDEFINES=$(CDEFINES) -DSP_REF_VERBOSE
+!ENDIF
+
+TARGETNAME=ppp2lcp
+TARGETTYPE=LIBRARY
+TARGETLIBS= 
+
+INCLUDES= \
+	..\inc; \
+	..\..\..\inc; \
+	..\..\..\security\inc;
+
+
+
+SOURCES=             \
+	lcpmsg.c     \
+	lcpopt.c     \
+	lcp.c 
+
+
+#xref VIGUID {88517a59-0faf-4104-8e0f-0a175b0cbf6a}
+#xref VSGUID {9b3d8266-e91b-408f-9f51-116064144b51}

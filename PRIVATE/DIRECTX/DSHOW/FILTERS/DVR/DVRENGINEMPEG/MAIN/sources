@@ -1,0 +1,81 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=DVREngine
+TARGETTYPE=LIBRARY
+RELEASETYPE=OAK
+FILE_VIEW_ROOT_FOLDER= \
+
+FILE_VIEW_RESOURCE_FOLDER= \
+
+FILE_VIEW_INCLUDES_FOLDER= \
+  ..\DVREngine.h \
+  ..\PauseBuffer.h \
+  ..\PipelineInterfaces.h \
+  ..\ComponentWorkerThread.h \
+  ..\HResultError.h \
+  ..\CopyProtectionPolicies.h \
+  ..\ContentRestriction.h \
+  ..\DVREngineTestHooks.h \
+
+SYNCHRONIZE_DRAIN=1
+
+WINCEATL80=1
+
+TARGET_PDB_NAME=..\Precomp\obj\$(_CPUINDPATH)\precomp.pdb
+
+CDEFINES=$(CDEFINES) -DDVRENGINE_EXPORTS -GX -Yustdafx.h \
+  -Fp..\Precomp\obj\$(_CPUINDPATH)\stdafx.pch \
+  -DDVRENGINE_EXPORTS
+
+INCLUDES= \
+  ..; \
+  ..\Main; \
+  ..\..\encdec\EncDecLib; \
+  ..\..\encdec\inc; \
+  ..\..\mpeg2\ceinclude; \
+  ..\DirectX9_0Extras; \
+  $(_PUBLICROOT)\$(WINCEPROJ)\sdk\inc; \
+  ..\idl; \
+
+SOURCES= \
+  ..\DVREngine.cpp \
+  ..\PublicInterfaceIIDs.cpp \
+  ..\ComponentWorkerThread.cpp \
+  ..\HResultError.cpp \
+  ..\ContentRestriction.cpp \
+  ..\MissingInterfaceIIDs.cpp \
+  ..\DVREngineTestHooks.cpp \
+  ..\debug.cpp \
+
+SOURCELIBS= $(SOURCELIBS) \
+  ..\DecoderDriver\obj\$(_CPUINDPATH)\DecoderDriver.lib \
+  ..\Plumbing\obj\$(_CPUINDPATH)\Plumbing.lib \
+  ..\Reader\obj\$(_CPUINDPATH)\Reader.lib \
+  ..\SampleConsumer\obj\$(_CPUINDPATH)\SampleConsumer.lib \
+  ..\SampleProducer\obj\$(_CPUINDPATH)\SampleProducer.lib \
+  ..\Writer\obj\$(_CPUINDPATH)\Writer.lib \
+  ..\Encrypter\obj\$(_CPUINDPATH)\Encrypter.lib \
+  ..\Tagger\obj\$(_CPUINDPATH)\ContentTagger.lib \
+  ..\Detagger\obj\$(_CPUINDPATH)\ContentDetagger.lib \
+  ..\..\encdec\dll\obj\$(_CPUINDPATH)\EncDecDll.lib \
+  ..\..\encdec\EncDecLib\obj\$(_CPUINDPATH)\EncDecLib.lib \
+  ..\..\mpeg2\mp2uuids\obj\$(_CPUINDPATH)\mp2uuids.lib \
+
+FILE_VIEW_PARAMETER_FOLDER= \
+  DVREngine.bib \
+  DVREngineMpeg.reg \
+
+DEFFILE=..\DVREngine.def
+WINCETARGETFILE0=$(_RELEASELIBDIR)\DVREngine.def
+
+

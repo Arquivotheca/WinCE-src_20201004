@@ -1,0 +1,192 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+//----------------------------------------------------------------------------
+//
+// This RC file MUST contain ONLY localizable resources (strings, dialogs,
+// menus, accelerators, message tables). Any other resources placed here will 
+// cause the build errors during SYSGEN
+//
+//----------------------------------------------------------------------------
+
+#include "cmdrsc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABORT_MEMORY        "Fatal Error: low on memory.\n"
+    IDS_HELP_CMD_EXIT       "Exit command interpreter."
+    IDS_HELP_CMD_HELP       "Print help for command interpreter or individual commands."
+    IDS_HELP_CMD_SET        "Set or list environment variables."
+    IDS_HELP_CMD_ECHO       "Echo output on the screen or change echoing parameters."
+    IDS_HELP_CMD_PATH       "Alias for SET PATH."
+    IDS_HELP_CMD_PWD        "Print current working directory."
+    IDS_HELP_START          "The following commands are available:"
+    IDS_HELP_END            "Use HELP [command name] to display extended help for given command, or\nHELP CMD to display help on general topics such as\ncommand input options, I/O redirection or CMD parameters."
+    IDS_HELP_CMD_CD         "Change directory."
+    IDS_ERROR_GENERAL_BADNAME 
+                            "%s: Cannot form path from %s. Name too long or malformed.\n"
+    IDS_ERROR_GENERAL_NOTFOUND "%s: %s not found.\n"
+    IDS_ERROR_GENERAL_BADSTDIN "Incorrect input reassignment.\n"
+    IDS_ERROR_GENERAL_BADSTDOUT "Incorrect output reassignment.\n"
+    IDS_ERROR_GENERAL_DOUBLEOUT "Double redirection of output stream.\n"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERROR_GENERAL_DOUBLEERR "Double redirection of error stream.\n"
+    IDS_ERROR_GENERAL_BADSTDERR "Incorrect error stream reassignment.\n"
+    IDS_ERROR_GENERAL_CANTSTDIN "Cannot open %s as standard input.\n"
+    IDS_ERROR_GENERAL_CANTSTDOUT "Cannot open %s as standard output.\n"
+    IDS_ERROR_GENERAL_CANTSTDERR "Cannot open %s as standard error.\n"
+    IDS_ERROR_GENERAL_IOBROKEN 
+                            "I/O broken. Restoring console redirection...\n"
+    IDS_HELP_CMD_TYPE       "Output contents of a file or files to the screen."
+    IDS_ERROR_BADSYNTAX     "%s: incorrect command syntax.\n"
+    IDS_ERROR_FNF           "%s: File not found.\n"
+    IDS_HELP_CMD_MKDIR      "Same as MD."
+    IDS_HELP_CMD_MD         "Create a directory."
+    IDS_HELP_CMD_CHDIR      "Same as CD."
+    IDS_ERROR_GENERAL_ALREADYEXISTS "%s: %s already exists.\n"
+    IDS_ERROR_MD_CANTMAKE   "%s: failed to create %s.\n"
+    IDS_HELP_CMD_RD         "Remove directory."
+    IDS_HELP_CMD_RMDIR      "Same as RD."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_YES                 "YES"
+    IDS_AREYOUSURE          "%s %s: are you sure? (Y/N) "
+    IDS_ERROR_CANTREMOVE    "Cannot remove %s.\n"
+    IDS_ERROR_RD_CANTREMOVE "%s: failed to remove %s.\n"
+    IDS_HELP_CMD_DEL        "Delete a file."
+    IDS_HELP_CMD_DIR        "Print contents of a directory."
+    IDS_ERROR_GENERAL_BADOPTION "Unrecognized option %s.\n"
+    IDS_ERROR_GENERAL_NONOPTION "Non-option in configuration variable %s.\n"
+    IDS_ERROR_DEL_FNF       "File not found.\n"
+    IDS_ERROR_DEL_TOOBIG    "Path too long in one of subdirectories.\n"
+    IDS_ERROR_GENERAL_PATHTOOBIG "Path too big in %s.\n"
+    IDS_DIR_HEADER          "\n    Directory of "
+    IDS_DIR_FNF             "File not found.\n\n"
+    IDS_DIR_FOOTER          "\n    Found %d file(s). Total size %I64d bytes.\n"
+    IDS_MORE                "More? "
+    IDS_ANYKEY              "Press any key to continue..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_HELP_CMD_ATTRIB     "Set/display file attributes."
+    IDS_ERROR_ATTRIB_CANT   "Cannot set attributes for %s.\n"
+    IDS_HELP_CMD_ERASE      "Same as DEL."
+    IDS_HELP_EXT_EXIT       "Quits the CMD.EXE program.\n\nEXIT\n\n"
+    IDS_HELP_EXT_HELP       "Provides help information for Windows CE commands.\n\nHELP [command]\n\ncommand - displays help information on that command.\n\n"
+    IDS_HELP_EXT_SET        "Displays, sets, or removes cmd.exe environment variables.\n\nSET [variable=[string]]\n\n  variable  Specifies the environment-variable name.\n  string    Specifies a series of characters to assign to the variable.\n\nType SET without parameters to display the current environment variables.\n\nSET command invoked with just a variable name, no equal sign or value\nwill display the value of all variables whose prefix matches the name\ngiven to the SET command.  For example:\n\n    SET P\n\nwould display all variables that begin with the letter 'P'\n\nSET command will set the ERRORLEVEL to 1 if the variable name is not\nfound in the current environment.\n\nSET command will allow an equal sign (=) in the value of an environment\nvariable in any position other than the first character.\n\n"
+    IDS_HELP_EXT_ECHO       "Displays messages, or turns command-echoing on or off.\n\n  ECHO [ON | OFF]\n  ECHO [message]\n\nType ECHO without parameters to display the current echo setting.\n\n"
+    IDS_HELP_EXT_PATH       "Displays or sets a search path for executable files.\n\nPATH [path[;...][;%PATH%]\nPATH ;\n\nType PATH ; to clear all search-path settings and direct cmd.exe to search only in the current directory.\n\nType PATH without parameters to display the current path\n\nIncluding %PATH% in the new path setting causes the old path to be appended to the new setting.\n\n"
+    IDS_HELP_EXT_PWD        "Prints out current directory path.\n\nPWD\n\n"
+    IDS_HELP_EXT_CD         "Displays the name of or changes the current directory.\n\nCHDIR  [path]\nCHDIR [..]\nCD [path]\nCD [..]\n\n..   Specifies that you want to change to the parent directory.\n\nType CD without parameters to display the current directory.\n\n"
+    IDS_HELP_EXT_TYPE       "Displays the contents of a text file or files.\n\nTYPE [path]filename\n\n"
+    IDS_HELP_EXT_MD         "Creates a directory.\n\nMKDIR path\nMD path\n\nMKDIR creates any intermediate directories in the path, if needed.\n\nFor example, assume \\b does not exist then:\n\n    mkdir \\b\\b\\c\\d\n\nis the same as:\n\n    mkdir \\b\n    chdir \\b\n    mkdir b\n    chdir b\n    mkdir c\n    chdir c\n    mkdir d\n\n"
+    IDS_HELP_EXT_RD         "Removes (deletes) a directory.\n\nRMDIR [/S] [/Q] path\nRD [/S] [/Q] path\n\n  /S Removes all directories and files in the specified directory in addition to the directory itself.  Used to remove a directory tree.\n  /Q Quiet mode, do not ask if ok to remove a directory tree with /S.\n\n"
+    IDS_HELP_EXT_DEL        "Deletes one or more files.\n\nDEL [/P] [/F] [/S] [/Q]  [[path]filename\nERASE [/P] [/F] [/S] [/Q] [[path]filename\n\n Specify multiple  files by using wildcards.\n  /P Prompts for confirmation before deleting each file.\n  /F Force deleting of read-only files.\n  /S Delete specified files from all subdirectories.\n  /Q Quiet mode, do not ask if ok to delete on global wildcard.\n\n"
+    IDS_HELP_EXT_DIR        "Displays a list of files and subdirectories in a directory.\n\nDIR [path][filename] [/P] [/W] [/A[[:]attributes]] [/O[[:]sortorder]] [/T[[:]timefield]] [/S] [/B] [/L]\n\n  /P Pauses after each screenful of information.\n  /W Uses wide list format.\n  /A Displays files with specified attributes\n    (A[rch], D[ir], R[eadonly], S[ys], H[idden], prefix with ""-"" for NOT).\n  /O List by files in sorted order\n    (N[ame], E[xt], S[ize], D[ate], G[roup dirs] Prefix with ""-"" to reverse).\n  /T Controls  time used in displaying and sorting\n    (C[reation], W[rite], A[ccess]).\n  /B No headers.\n  /S Recurse in subdirectories.\n  /L Lowercase names.\n\n"
+    IDS_HELP_EXT_ATTRIB     "Displays or changes file attributes.\n\nATTRIB [+R | -R] [+A | -A ] [+S | -S] [+H | -H] [[path] filename] [/S]\n\n  +   Sets an attribute.\n  -   Clears an attribute.\n  R   Read-only file attribute.\n  A   Archive file attribute.\n  S   System file attribute.\n  H   Hidden file attribute.\n  /S  Processes matching files in the current directory and all subdirectories.\n\n"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERROR_HELP_NOTFOUND "Do not know anything about %s.\n"
+    IDS_ECHOON              "ECHO is on.\n"
+    IDS_ECHOOFF             "ECHO is off.\n"
+    IDS_TIME_PREFIX         "The current time is: "
+    IDS_TIME_POSTFIX        "\nEnter the new time (hh:mm:ss): "
+    IDS_ERROR_TIME_BAD      "System cannot accept the time specified.\n"
+    IDS_HELP_CMD_TIME       "Display/change system time."
+    IDS_HELP_EXT_TIME       "Displays or sets the system time.\n\nTIME [time]\n\nType TIME with no parameters to display the current time setting\nand a prompt for a new one.  Press ENTER to keep the same time.\n\nTIME command supports the /T switch which tells the command to just output\nthe current time, without prompting for a new time.\n\n"
+    IDS_DATE_PREFIX         "The current date is: "
+    IDS_DATE_POSTFIX        "\nEnter the new date (%s): "
+    IDS_ERROR_DATE_BAD      "The system cannot accept the date specified.\n"
+    IDS_HELP_CMD_DATE       "Display/set system date."
+    IDS_HELP_EXT_DATE       "Displays or sets the date.\n\nDATE [date]\n\nType DATE without parameters to display the current date setting\nand a prompt for a new one.  Press ENTER to keep the same date.\n\nThe DATE command supports the /T switch which tells the command to just\noutput the current date, without prompting for a new date.\n\n"
+    IDS_HELP_CMD_MOVE       "Move/rename files."
+    IDS_HELP_EXT_MOVE       "Moves one or more files from one directory to another directory.\n\nMOVE [Source] [Target]\n\n  source       Specifies the path and name of the file(s) to move.\n  target       Specifies the path and name to move file(s) to.\n\n\n"
+    IDS_ERROR_MOVE_MULTSOURCES "Cannot move several files to %s.\n"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERROR_MOVE_CANT     "Can't move %s to %s.\n"
+    IDS_HELP_CMD_RENAME     "Same as REN."
+    IDS_HELP_EXT_REN        "Renames a file or files.\n\nRENAME [path]filename1 filename2.\nREN [path]filename1 filename2.\n\nNote that you cannot specify a new drive or path for your destination file.\n\n"
+    IDS_HELP_CMD_REN        "Change file name."
+    IDS_HELP_CMD_COPY       "Copy files."
+    IDS_HELP_EXT_COPY       "Copies one or more files to another location.\n\nCOPY source  [+ source  [+ ...]] [destination]\n\n  source       Specifies the file or files to be copied.\n\nTo append files, specify a single file for destination,\nbut multiple files for source (using wildcards or file1+file2+file3 format).\n\n"
+    IDS_HELP_CMD_PROMPT     "Reconfigure system prompt."
+    IDS_HELP_EXT_PROMPT     "Changes the cmd.exe command prompt.\n\nPROMPT [text]\n\n  text    Specifies a new command prompt.\n\nPrompt can be made up of normal characters and the following special codes:\n\n  $A   & (Ampersand)\n  $B   | (pipe)\n  $C   ( (Left parenthesis)\n  $D   Current date\n  $E   Escape code (ASCII code 27)\n  $F   ) (Right parenthesis)\n  $G   > (greater-than sign)\n  $L   < (less-than sign)\n  $P   Current path\n  $Q   = (equal sign)\n  $S     (space)\n  $T   Current time\n  $_   Carriage return and linefeed\n  $$   $ (dollar sign)\n\n"
+    IDS_ERROR_GENERAL_CANTOPEN "%s: Cannot open %s.\n"
+    IDS_ERROR_COPY_CANT     "Cannot copy %s to %s.\n"
+    IDS_ERROR_GENERAL_IOFAILED "I/O failure: disk may be full.\n"
+    IDS_CMD_COPY_STATS      "Copied %d file(s).\n"
+    IDS_ERROR_BADPATH       "Incorrect syntax in PATH variable.\n"
+    IDS_ERROR_CANTEXECUTE   "Cannot execute %s.\n"
+    IDS_ERROR_DONTKNOWHOW   "Don't know how to execute %s.\n"
+    IDS_HELP_CMD_PAUSE      "Suspend execution of a batch file."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_HELP_EXT_PAUSE      "Suspends processing of a batch program and displays the message\n    Press any key to continue . . .\n\nPAUSE\n\n"
+    IDS_HELP_CMD_REM        "Record comments in batch file."
+    IDS_HELP_EXT_REM        "Records comments (remarks) in a batch file.\n\nREM [comment]\n\n"
+    IDS_HELP_CMD_SHIFT      "Shift arguments of a batch file."
+    IDS_HELP_EXT_SHIFT      "Changes the position of replaceable parameters in a batch file.\n\nSHIFT\n\n"
+    IDS_ERROR_PIPE_CANT     "Cannot create pipe: out of memory or temporary files.\n"
+    IDS_STARTMESSAGE        "Pocket CMD v %d.%02d\n"
+    IDS_HELP_CMD_CALL       "Call batch script."
+    IDS_HELP_EXT_CALL       "Calls one batch program from another.\n\nCALL [path]filename [batch-parameters]\n\n  batch-parameters   Specifies any command-line information required by\n                     the batch program.\n\n"
+    IDS_HELP_CMD_START      "Start detached process."
+    IDS_HELP_EXT_START      "Starts a separate window to run a specified program or command.\n\nSTART command/program [parameters]\n\n\n"
+    IDS_HELP_CMD_GOTO       "Transfer control to a label in batch processing."
+    IDS_HELP_EXT_GOTO       "Directs cmd.exe to a labeled line in a batch program.\n\nGOTO label\n\n  label   Specifies a text string used in the batch program as a label.\n\nYou type a label on a line by itself, beginning with a colon.\n\nGOTO command accepts a target label of :EOF which transfers control to the end of the current batch script file.  This is an easy way to exit a batch script file without defining a label.\n\n"
+    IDS_HELP_CMD_IF         "Conditionally execute a command."
+    IDS_HELP_EXT_IF         "Performs conditional processing in batch programs.\n\nIF [NOT] ERRORLEVEL number command\nIF [NOT] string1==string2 command\nIF [NOT] EXIST filename command\nIF [NOT] DEFINED variable command\n\n  NOT               Specifies that Windows CE should carry out the command\n                    only if the condition is false.\n  ERRORLEVEL number Specifies a true condition if the last program run\n                    returned an exit code equal to or greater than\n                    the number specified.\n  command           Specifies the command to carry out if the condition is met.\n  string1==string2  Specifies a true condition if the specified text\n                    strings match.\n  EXIST filename    Specifies a true condition if the specified filename exists.\n\nThe DEFINED conditional works just like EXISTS except it takes\nan environment variable name and returns true if the environment\nvariable is defined.\n\n"
+    IDS_ERROR_IF_BADERRLEVEL "Bad errorlevel conditional.\n"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_HELP_CMD_TITLE      "Set the window title for a CMD.EXE session."
+    IDS_HELP_EXT_TITLE      "Sets the window title for the command prompt window.\n\nTITLE [string]\n\n  string       Specifies the title for the command prompt window.\n\n"
+    IDS_ERROR_START_CANT    "CMD cannot start. Low on memory or too many console windows open. Please close some console applications and try again."
+    IDS_ERROR_TITLE         "CMD Error"
+    IDS_HELP_CMD_CLS        "Clear the screen."
+    IDS_HELP_EXT_CLS        "Clears the screen.\n\nCLS\n\n"
+    IDS_DATE_FORM1          "mm-dd-[yy]yy"
+    IDS_DATE_FORM2          "dd-mm-[yy]yy"
+    IDS_DATE_FORM3          "[yy]yy-mm-dd"
+    IDS_CMD_TITLE           "Command Prompt"
+    IDS_ERROR_MOVE_CANT1    "Can't move system or hidden file %s.\n"
+    IDS_ERROR_COPY_CANT1    "Can't copy system or hidden file %s.\n"
+    IDS_ERROR_COPY_SELF	    "Can't copy to file %s to itself.\n"
+    IDS_HELP_CMD            "Starts a new instance of the Windows/CE command interpreter\n\nCMD [[/C | /K] string]\n\n/C      Carries out the command specified by string and then terminates\n/K      Carries out the command specified by string but remains\n\nThe structure of command line supported by CMD is\n\nCOMMAND [OPTIONS] [[2]>[>] File 1] [< File 2] [{&, |} COMMAND...]\n\nUse the HELP command to display list of available commands.\n\n>      redirects text output of a command or program to a file.\n2>     redirects error output of a program to a file.\n>>     appends output of a program to a file.\n2>>    appends error output of a program to a file.\n<      reads text input of a command or program from a file.\n&      separates two or more commands executed sequentially\n|      separates two or more commands, but output of all commands\n       except the last is sent as an input for the subsequent command.\n\n"
+    IDS_DIR_FOOTER_GR       "\n    Total Files Listed:\n        %d File(s) %I64d bytes.\n        %d Dir(s) %I64d bytes free\n\n"
+    IDS_DIR_FOOTER_GU       "    %d Dir(s) %I64d bytes free\n\n"
+END
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN_ICON           ICON    DISCARDABLE     "cmd.ico"
+

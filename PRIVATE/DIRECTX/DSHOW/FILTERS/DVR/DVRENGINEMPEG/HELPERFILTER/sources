@@ -1,0 +1,59 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=NullIP
+TARGETTYPE=DYNLINK
+RELEASETYPE=LOCAL
+
+FILE_VIEW_ROOT_FOLDER= \
+
+FILE_VIEW_PARAMETER_FOLDER= \
+
+FILE_VIEW_RESOURCE_FOLDER= \
+
+FILE_VIEW_INCLUDES_FOLDER= \
+  INull.h \
+  NullProp.h \
+  NullUIDs.h \
+  Prop2.h \
+  Prop3.h \
+  Resource.h \
+
+CDEFINES=$(CDEFINES) \
+
+
+INCLUDES= \
+  $(INCLUDES); \
+  ..\DirectX9_0Extras \
+
+SOURCES= \
+  NullIP.cpp \
+  NullProp.cpp \
+  NullProp.rc \
+  Prop2.cpp \
+  Prop3.cpp \
+
+TARGETLIBS= $(TARGETLIBS) \
+  $(_PUBLICROOT)\$(WINCEPROJ)\sdk\lib\$(_CPUINDPATH)\strmiids.lib      \
+  $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\ole32.lib       \
+  $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\uuid.lib        \
+  $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\coredll.lib     \
+  $(_PROJECTROOT)\cesysgen\sdk\lib\$(_CPUINDPATH)\mmtimer.lib     \
+
+SOURCELIBS= \
+  $(STREAMBASELIBRARY)
+
+#DEFFILE=NullIP.def
+TARGETDEFNAME=$(TARGETNAME)
+
+#xref VIGUID {68785eef-eb45-439c-8771-b769ca7bc37a}
+#xref VSGUID {692639ce-16fe-4913-87bd-2e25e89c6206}

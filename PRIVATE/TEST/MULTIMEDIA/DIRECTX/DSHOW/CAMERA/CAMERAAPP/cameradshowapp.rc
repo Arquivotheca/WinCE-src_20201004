@@ -1,0 +1,40 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+#include <windows.h>
+#include "resource.h"
+
+IDD_FORMATSELECTPAGE DIALOG 0, 0, 120, 141
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE
+CAPTION "Capture Parameters"
+FONT 9, "Tahoma"
+BEGIN
+    LTEXT           "Driver",IDC_STATIC1,1,5,20,8
+    COMBOBOX        IDC_DRIVERSELECT,30,3,88,100,CBS_DROPDOWN | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Still",IDC_STATIC2,1,22,20,8
+    EDITTEXT        IDC_STILLNAME,30,20,88,12,WS_TABSTOP | ES_AUTOHSCROLL
+    LTEXT           "Stream",IDC_STATIC3,1,37,23,8
+    EDITTEXT        IDC_CAPTURENAME,30,37,88,12,WS_TABSTOP | ES_AUTOHSCROLL
+    CONTROL         "VideoCapture",IDC_VCFCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,2,50,60,10
+    CONTROL         "Video Encoder",IDC_VIDEOENCODER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,2,65,60,10
+    CONTROL         "Still image sink",IDC_STILLCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,2,80,60,10
+    CONTROL         "File Mux",IDC_FILEMUXCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,2,95,60,10
+    CONTROL         "VideoRenderer",IDC_VRCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,2,110,60,10
+
+    CONTROL         "AudioCapture",IDC_AUDIOCAPTURE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,63,50,60,10
+    CONTROL         "Audio Encoder",IDC_AUDIOENCODER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,63,65,60,10
+    CONTROL         "Intelliconnect",IDC_VRINTELLICHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,63,80,60,10
+    CONTROL         "SimulControl",IDC_SIMULTCONTROL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,63,95,60,10
+
+    PUSHBUTTON   "OK",IDC_BUTTON1,35,125,50,14
+END
+

@@ -1,0 +1,2 @@
+set SYSGEN_HTTPD=1
+set SYSGEN_ASP=1

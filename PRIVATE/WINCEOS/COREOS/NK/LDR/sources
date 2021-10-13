@@ -1,0 +1,55 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=nkldr
+WINCECPU=1
+TARGETTYPE=LIBRARY
+CDEFINES=$(CDEFINES) -DIN_KERNEL -DNK_LOADER
+
+# Machine independent defines
+CDEFINES=$(CDEFINES) -DDBGSUPPORT
+INCLUDES=..\inc;..\..\inc
+
+!IF "$(_TGTCPU)" == "SH4"
+ADEFINES=$(ADEFINES) -DSH_CPU=64
+!ENDIF
+!IF "$(_TGTCPU)" == "SH3"
+ADEFINES=$(ADEFINES) -DSH_CPU=48
+!ENDIF
+!IF "$(_TGTCPU)" == "SH3e"
+ADEFINES=$(ADEFINES) -DSH_CPU=62
+!ENDIF
+
+ASM_SAFESEH=1
+
+SOURCES= \
+    ldrcmn.c \
+    strings.c \
+    kdinfo.c
+
+x86_SOURCES=     \
+    x86\x86init.c    \
+    x86\x86Start.asm 
+
+ARM_SOURCES=     \
+    arm\arminit.c    \
+    arm\armstart.s 
+
+MIPS_SOURCES=   \
+    mips\mipstart.s
+
+SH_SOURCES=   \
+    sh\shstart.src
+
+#xref ModuleMembership nk.exe
+#xref VIGUID {f5b8ef6f-f194-49b7-86df-60f0e1318fd3}
+#xref VSGUID {c3590776-1698-4e72-8433-707cafc79eeb}

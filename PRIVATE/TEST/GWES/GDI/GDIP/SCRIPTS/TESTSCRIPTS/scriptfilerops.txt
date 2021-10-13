@@ -1,0 +1,11 @@
+#sample script file
+[BitBlt]
+
+[BitBlt]
+ROP=a
+
+[BitBlt]
+ROP=10
+
+[BitBlt]
+ROP=0x0, 0x1, 0x2, 0x3, 0x4, 0x5

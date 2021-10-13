@@ -1,0 +1,139 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+// Microsoft Visual C++ generated resource script.
+//
+#include <windows.h>
+#include "resource.h"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOGEX 0, 0, 328, 140
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "Mute Video",IDC_MUTEVID,65,116,55,17
+    PUSHBUTTON      "Begin Perm Recording",IDC_BEGIN_PERM,7,89,62,23,
+                    BS_MULTILINE
+    PUSHBUTTON      "Set Recording Path",IDC_SETPATH,217,101,79,17
+    EDITTEXT        IDC_TEXTCURFILE,3,6,314,15,ES_AUTOHSCROLL
+    PUSHBUTTON      "Convert To Temp",IDC_CONVERT,217,81,80,17
+    EDITTEXT        IDC_TEMP_REC_LEN,72,64,36,15,ES_AUTOHSCROLL | ES_NUMBER
+    PUSHBUTTON      "Begin Temp Recording",IDC_BEGIN_TEMP,6,61,62,23,
+                    BS_MULTILINE
+    EDITTEXT        IDC_PERM_REC_LEN,72,94,36,15,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "seconds",IDC_STATIC,108,68,42,12
+    LTEXT           "seconds",IDC_STATIC,109,99,42,12
+    PUSHBUTTON      "Mute Audio",IDC_MUTEAUD,7,116,54,17
+    PUSHBUTTON      "Get Current Filename",IDC_GETCURFILENAME,9,25,78,17
+    PUSHBUTTON      "Delete Recording",IDC_DELRECORDING,98,25,82,17
+    PUSHBUTTON      "Delete Orphaned Recordings",IDC_DELORPHANS,193,25,106,
+                    17
+END
+
+IDD_DIALOG2 DIALOGEX 0, 0, 328, 141
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_CURSEEKPOS,64,14,64,15,ES_RIGHT | ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_CURRATE,225,22,64,15,ES_RIGHT | ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "Current Seek Pos",IDC_STATIC,4,17,56,10
+    LTEXT           "Current Rate",IDC_STATIC,178,24,42,10
+    CONTROL         "0",IDC_RATE0,"Button",BS_AUTORADIOBUTTON,298,19,26,8
+    CONTROL         "-.5",IDC_RATE_1_2,"Button",BS_AUTORADIOBUTTON,298,11,26,
+                    8
+    CONTROL         "1",IDC_RATE1,"Button",BS_AUTORADIOBUTTON,298,38,26,8
+    CONTROL         ".5",IDC_RATE1_2,"Button",BS_AUTORADIOBUTTON,298,28,26,8
+END
+
+IDD_DIALOG3 DIALOGEX 0, 0, 328, 141
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_TEXT_CHANNEL,146,39,64,15,ES_RIGHT | ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "Channel",-1,108,41,33,10
+    PUSHBUTTON      "TUNE",IDC_BUTTON_TUNE,143,68,36,15
+END
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,0,0,0
+ PRODUCTVERSION 9,0,0,0
+ FILEFLAGSMASK 0x30003fL
+#ifdef _DEBUG
+ FILEFLAGS 0xbL
+#else
+ FILEFLAGS 0xaL
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", "Microsoft Corporation"
+            VALUE "Comment", "DirectShow Sample"
+            VALUE "FileDescription", "Null-In-Place Filter (Sample)"
+            VALUE "FileVersion", "9.00"
+            VALUE "InternalName", "NullIP.ax"
+            VALUE "OriginalFilename", "NullIP.ax"
+            VALUE "ProductName", "DirectX 9.0 Sample"
+            VALUE "ProductVersion", "9.00"
+            VALUE "ActiveMovie", "Filter dll"
+            VALUE "OLESelfRegister", "AM20"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_PREFORMAT           "Format:  "
+    IDS_PREMAJOR            "Major Type:  "
+    IDS_PRESUB              "Sub Type:  "
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_NOTYPE              "(none)"
+    IDS_ANYTYPE             "Any Media Type/Sub Type"
+    IDS_TITLE               "Writing"
+    IDS_TITLE2              "Reading"
+    IDS_TITLE3              "Tuning"
+END
+

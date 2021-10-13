@@ -1,0 +1,753 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+#include "storeincludes.hpp"
+
+void Disk_PowerOn(HANDLE hDsk)
+{
+    PartitionDisk_t *pPartition = (PartitionDisk_t *)hDsk;
+    __try {
+        if (pPartition && pPartition->m_pStore) {
+            pPartition->m_pStore->PowerOn();
+        }
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        DEBUGCHK (0);
+    }
+}
+
+void Disk_PowerOff(HANDLE hDsk)
+{
+    PartitionDisk_t *pPartition = (PartitionDisk_t *)hDsk;
+    __try {
+        if (pPartition && pPartition->m_pStore) {
+            pPartition->m_pStore->PowerOff();
+        }
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        DEBUGCHK (0);
+    }
+}
+
+BOOL PartitionIoControl(PartitionDisk_t *pPartition, DWORD dwIoControlCode, LPVOID lpInBuf, DWORD nInBufSize, LPVOID lpOutBuf, DWORD nOutBufSize, LPDWORD lpBytesReturned, LPOVERLAPPED lpOverlapped)
+{
+    DWORD dwError;
+    if ((dwIoControlCode == IOCTL_DISK_GETNAME) || (dwIoControlCode == DISK_IOCTL_GETNAME)){
+        if (lpOutBuf && (nOutBufSize >= FOLDERNAMESIZE) && wcslen(pPartition->m_szFolderName)) {
+            VERIFY(SUCCEEDED(StringCchCopy((TCHAR *)lpOutBuf, nOutBufSize, pPartition->m_szFolderName)));
+            return TRUE;
+        }   
+    }
+    SetLastError(ERROR_SUCCESS);
+    dwError = pPartition->m_pPartDriver->DeviceIoControl( pPartition->m_dwPartitionId, 
+                                                      dwIoControlCode, 
+                                                      lpInBuf, 
+                                                      nInBufSize, 
+                                                      lpOutBuf, 
+                                                      nOutBufSize, 
+                                                      lpBytesReturned);
+    if ((dwError != ERROR_SUCCESS) &&
+        ((dwIoControlCode == IOCTL_DISK_READ) || 
+         (dwIoControlCode == IOCTL_DISK_WRITE) || 
+         (dwIoControlCode == DISK_IOCTL_WRITE) ||
+         (dwIoControlCode == DISK_IOCTL_READ))) 
+    {
+        DEBUGMSG( ZONE_ERRORS, (L"FSDMGR!PartitionIoControl: failed with the following error %ld\r\n", dwError));        
+    }
+    if (dwError != ERROR_SUCCESS) {
+        SetLastError(dwError);
+    }
+    return (ERROR_SUCCESS == dwError);
+}
+
+LRESULT MountFileSystemDriver (MountableDisk_t* pDisk, FileSystemDriver_t* pFSD, DWORD MountFlags, BOOL fDoFormat);
+
+DWORD PartitionDriver_t::LoadPartitionDriver(const WCHAR *szPartDriver)
+{
+    DWORD dwError = ERROR_SUCCESS;
+
+    m_pOpenStore = (POPENSTORE)PD_OpenStore;
+    m_pCloseStore = (PCLOSESTORE)PD_CloseStore;
+    m_pFormatStore = (PFORMATSTORE)PD_FormatStore;
+    m_pIsStoreFormatted = (PISSTOREFORMATTED)PD_IsStoreFormatted;
+    m_pGetStoreInfo = (PGETSTOREINFO)PD_GetStoreInfo;
+    m_pCreatePartition = (PCREATEPARTITION)PD_CreatePartition;
+    m_pDeletePartition = (PDELETEPARTITION)PD_DeletePartition;
+    m_pRenamePartition = (PRENAMEPARTITION)PD_RenamePartition;
+    m_pSetPartitionAttrs = (PSETPARTITIONATTRS)PD_SetPartitionAttrs;
+    m_pSetPartitionSize = (PSETPARTITIONSIZE)PD_SetPartitionSize;
+    m_pFormatPartition = (PFORMATPARTITION)PD_FormatPartition;
+    m_pGetPartitionInfo = (PGETPARTITIONINFO)PD_GetPartitionInfo;
+    m_pFindPartitionStart = (PFINDPARTITIONSTART)PD_FindPartitionStart;
+    m_pFindPartitionNext = (PFINDPARTITIONNEXT)PD_FindPartitionNext;
+    m_pFindPartitionClose = (PFINDPARTITIONCLOSE)PD_FindPartitionClose;
+    m_pOpenPartition = (POPENPARTITION)PD_OpenPartition;
+    m_pClosePartition = (PCLOSEPARTITION)PD_ClosePartition;
+    m_pDeviceIoControl = (PPD_DEVICEIOCONTROL)PD_DeviceIoControl;
+    m_pMediaChangeEvent = (PMEDIACHANGEEVENT)PD_MediaChangeEvent;
+    m_pStoreIoControl = (PSTOREIOCONTROL)NULL;
+
+    if (wcslen(szPartDriver)) {
+        m_hPartDriver = ::LoadDriver( szPartDriver);
+        if (m_hPartDriver) {
+            DEBUGMSG(ZONE_INIT, (L"FSDMGR!LoadPartitionDriver: Loading partition driver %s hModule=%08X\r\n", szPartDriver, m_hPartDriver));
+            m_pOpenStore = (POPENSTORE)FsdGetProcAddress( m_hPartDriver, L"PD_OpenStore");
+            m_pCloseStore = (PCLOSESTORE)FsdGetProcAddress( m_hPartDriver, L"PD_CloseStore");
+            m_pFormatStore = (PFORMATSTORE)FsdGetProcAddress( m_hPartDriver, L"PD_FormatStore");
+            m_pIsStoreFormatted = (PISSTOREFORMATTED)FsdGetProcAddress( m_hPartDriver, L"PD_IsStoreFormatted");
+            m_pGetStoreInfo = (PGETSTOREINFO)FsdGetProcAddress( m_hPartDriver, L"PD_GetStoreInfo");
+            m_pCreatePartition = (PCREATEPARTITION)FsdGetProcAddress( m_hPartDriver, L"PD_CreatePartition");
+            m_pDeletePartition = (PDELETEPARTITION)FsdGetProcAddress( m_hPartDriver, L"PD_DeletePartition");
+            m_pRenamePartition = (PRENAMEPARTITION)FsdGetProcAddress( m_hPartDriver, L"PD_RenamePartition");
+            m_pSetPartitionAttrs = (PSETPARTITIONATTRS)FsdGetProcAddress( m_hPartDriver, L"PD_SetPartitionAttrs");
+            m_pSetPartitionSize = (PSETPARTITIONSIZE)FsdGetProcAddress( m_hPartDriver, L"PD_SetPartitionSize");
+            if (!m_pSetPartitionSize) m_pSetPartitionSize = (PSETPARTITIONSIZE)PD_SetPartitionSize;
+            m_pFormatPartition = (PFORMATPARTITION)FsdGetProcAddress( m_hPartDriver, L"PD_FormatPartition");
+            m_pGetPartitionInfo = (PGETPARTITIONINFO)FsdGetProcAddress( m_hPartDriver, L"PD_GetPartitionInfo");
+            m_pFindPartitionStart = (PFINDPARTITIONSTART)FsdGetProcAddress( m_hPartDriver, L"PD_FindPartitionStart");
+            m_pFindPartitionNext = (PFINDPARTITIONNEXT)FsdGetProcAddress( m_hPartDriver, L"PD_FindPartitionNext");
+            m_pFindPartitionClose = (PFINDPARTITIONCLOSE)FsdGetProcAddress( m_hPartDriver, L"PD_FindPartitionClose");
+            m_pOpenPartition = (POPENPARTITION)FsdGetProcAddress( m_hPartDriver, L"PD_OpenPartition");
+            m_pClosePartition = (PCLOSEPARTITION)FsdGetProcAddress( m_hPartDriver, L"PD_ClosePartition");
+            m_pDeviceIoControl = (PPD_DEVICEIOCONTROL)FsdGetProcAddress( m_hPartDriver, L"PD_DeviceIoControl");
+            m_pMediaChangeEvent = (PMEDIACHANGEEVENT)FsdGetProcAddress( m_hPartDriver, L"PD_MediaChangeEvent");
+            m_pStoreIoControl = (PSTOREIOCONTROL)FsdGetProcAddress( m_hPartDriver, L"PD_StoreIoControl");
+
+            if (!m_pOpenStore ||
+                !m_pCloseStore ||
+                !m_pFormatStore ||
+                !m_pIsStoreFormatted ||
+                !m_pGetStoreInfo ||
+                !m_pCreatePartition ||
+                !m_pDeletePartition ||
+                !m_pRenamePartition ||
+                !m_pSetPartitionAttrs ||
+                !m_pFormatPartition ||
+                !m_pGetPartitionInfo ||
+                !m_pFindPartitionStart ||
+                !m_pFindPartitionNext ||
+                !m_pFindPartitionClose ||
+                !m_pOpenPartition ||
+                !m_pClosePartition ||
+                !m_pDeviceIoControl)
+            {    
+                DEBUGMSG(ZONE_ERRORS, (L"FSDMGR!LoadPartitionDriver: Entry points in the driver not found\r\n"));
+                dwError = ERROR_BAD_DRIVER;
+            }
+            DEBUGMSG(ZONE_VERBOSE, (L"FSDMGR!LoadPartitionDriver: Driver %s loaded\r\n", szPartDriver));
+        } else {
+            DEBUGMSG(ZONE_ERRORS, (L"FSDMGR!LoadPartitionDriver: Could not find/load partition driver %s\r\n", szPartDriver));
+            dwError = ERROR_FILE_NOT_FOUND;
+        }    
+    } 
+    return dwError;
+}
+
+BOOL PartitionDisk_t::GetPartitionInfo(PARTINFO *pInfo)
+{
+    __try {
+        pInfo->bPartType = m_pi.bPartType;
+        pInfo->dwAttributes = m_dwFlags;
+        memcpy( &pInfo->ftCreated, &m_pi.ftCreated, sizeof(FILETIME));
+        memcpy( &pInfo->ftLastModified, &m_pi.ftLastModified, sizeof(FILETIME));
+        pInfo->snNumSectors = m_pi.snNumSectors;
+        VERIFY(SUCCEEDED(StringCchCopy( pInfo->szPartitionName, PARTITIONNAMESIZE, m_szPartitionName)));
+        if (wcslen(m_szFriendlyName)) {
+            StringCchCopyW( pInfo->szFileSys, FILESYSNAMESIZE, m_szFriendlyName);
+        } else {
+            StringCchCopyW( pInfo->szFileSys, FILESYSNAMESIZE, m_szFileSys);
+        }
+        VERIFY(SUCCEEDED(StringCchCopy(pInfo->szVolumeName, VOLUMENAMESIZE, L"")));
+        MountedVolume_t* pVolume = GetVolume ();
+        if (pVolume) {
+            FSDMGR_GetVolumeName (pVolume->GetVolumeHandle (), pInfo->szVolumeName, VOLUMENAMESIZE);
+        }
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+void PartitionDisk_t::SignalActivity ()
+{
+    // Simply signal activity on the parent store.
+    m_pStore->SignalActivity ();
+}
+
+LRESULT PartitionDisk_t::GetName (WCHAR* pDiskName, DWORD NameChars)
+{
+    if (FAILED (::StringCchCopyW (pDiskName, NameChars, m_szPartitionName))) {
+        return ERROR_INSUFFICIENT_BUFFER;
+    } else {
+        return ERROR_SUCCESS;
+    }
+}
+
+LRESULT PartitionDisk_t::DiskIoControl (DWORD IoControlCode, void* pInBuf, 
+        DWORD InBufBytes, void* pOutBuf, DWORD OutBufBytes, 
+        DWORD* pBytesReturned, OVERLAPPED* pOverlapped)
+{    
+    if ((IOCTL_DISK_GETNAME == IoControlCode) ||
+        (DISK_IOCTL_GETNAME == IoControlCode)) {
+
+        size_t FolderNameChars = 0;
+        VERIFY (SUCCEEDED (::StringCchLengthW (m_szFolderName, FOLDERNAMESIZE, &FolderNameChars)));
+
+        if (!pOutBuf || (OutBufBytes < ((FolderNameChars+1) * sizeof (WCHAR)))) {
+            return ERROR_INSUFFICIENT_BUFFER;
+        }
+            
+        VERIFY (SUCCEEDED (::StringCbCopyW ((WCHAR*)pOutBuf, OutBufBytes, m_szFolderName)));
+        if (pBytesReturned) {
+            *pBytesReturned = (FolderNameChars+1) * sizeof (WCHAR);
+        }
+
+        return ERROR_SUCCESS;
+    }
+
+    return m_pPartDriver->DeviceIoControl (m_dwPartitionId, IoControlCode, pInBuf, InBufBytes, pOutBuf, OutBufBytes,
+        pBytesReturned);
+}
+
+LRESULT PartitionDisk_t::GetVolumeInfo (CE_VOLUME_INFO* pInfo)
+{
+    VERIFY (SUCCEEDED (::StringCchCopyW (pInfo->szPartitionName, PARTITIONNAMESIZE, m_szPartitionName)));
+    VERIFY (SUCCEEDED (::StringCchCopyW (pInfo->szStoreName, STORENAMESIZE, m_pStore->m_szDeviceName)));
+
+    pInfo->dwFlags |= CE_VOLUME_FLAG_STORE;
+
+    if ((STORE_ATTRIBUTE_READONLY & m_pStore->m_si.dwAttributes) ||
+        (PARTITION_ATTRIBUTE_READONLY & m_pi.dwAttributes)) {
+        pInfo->dwAttributes |= CE_VOLUME_ATTRIBUTE_READONLY;
+    }
+
+    if (STORE_ATTRIBUTE_REMOVABLE & m_pStore->m_si.dwAttributes) {
+        pInfo->dwAttributes |= CE_VOLUME_ATTRIBUTE_REMOVABLE;
+    }    
+   
+    return ERROR_SUCCESS;
+}
+
+HANDLE PartitionDisk_t::GetDeviceHandle ()
+{
+    return m_hPartition;
+}
+
+
+BOOL PartitionDisk_t::LoadPartition(LPCTSTR szPartitionName, LPCTSTR RootRegKey)
+{
+    StringCchCopyW (m_szPartitionName, PARTITIONNAMESIZE, szPartitionName);
+    m_pPartDriver->GetPartitionInfo(m_dwStoreId, szPartitionName, &m_pi);
+
+    LRESULT lResult;
+    
+    lResult = AddRootRegKey (g_szSTORAGE_PATH);
+    if (ERROR_SUCCESS != lResult) {
+        ::SetLastError (lResult);
+        return FALSE;
+    }
+            
+    lResult = AddRootRegKey (RootRegKey);
+    if (ERROR_SUCCESS != lResult) {
+        ::SetLastError (lResult);
+        return FALSE;
+    }
+    
+    return TRUE;
+}
+
+BOOL PartitionDisk_t::MountPartition(HANDLE hPartition)
+{
+    LRESULT lResult;
+
+    m_hPartition = hPartition;
+
+    DWORD dwMountFlags = m_pStore->m_dwDefaultMountFlags;
+    
+    const WCHAR* RootRegKey = m_pStore->m_szRootRegKey;
+    const WCHAR* DefaultFileSystem = m_pStore->m_szDefaultFileSystem;
+
+    // Look for "CheckForFormat" under the profile key.
+    
+    HKEY hKey = NULL;
+    DWORD CheckForFormat = 0;
+    ::FsdRegOpenKey (RootRegKey, &hKey);
+    if (hKey) {
+        ::FsdGetRegistryValue (hKey, g_szCHECKFORFORMAT,  &CheckForFormat);
+        ::FsdRegCloseKey (hKey);
+        hKey = NULL;
+    }
+
+    // Determine the name of the file system.
+    
+    // Try to open a profile specific partition table key.
+    // 
+    //      HKLM\System\StorageManager\Profiles\<ProfileName>\PartitionTable
+    //
+
+    WCHAR RegKey[MAX_PATH];
+    VERIFY (SUCCEEDED (::StringCchPrintfW (RegKey, MAX_PATH, L"%s\\%s", RootRegKey, g_szPART_TABLE_STRING)));
+    if (ERROR_SUCCESS != ::FsdRegOpenKey (RegKey, &hKey)) {
+        
+        // There is no profile specific partition table key, use the default partition table key.
+        //
+        //      HKLM\System\StorageManager\PartitionTable
+        //
+        
+        VERIFY (SUCCEEDED (::StringCchPrintfW (RegKey, MAX_PATH, L"%s\\%s", g_szSTORAGE_PATH, g_szPART_TABLE_STRING)));
+        ::FsdRegOpenKey( RegKey, &hKey);
+    }
+
+
+    // Convert partition type into a string in %02x format.
+    WCHAR PartId[10];
+    if (hKey) {
+
+        // NOTE: We use _itow here instead of wsprintf because the latter requires the locale to be
+        // initialized. Since this code must execute in boot-phase zero, we cannot be dependent on
+        // any locale-sensitive functions.
+
+        WCHAR* pTempId = PartId;
+        DWORD TempIdChars = sizeof (PartId) / sizeof (PartId[0]);
+        // Convert m_pi.bPartType into a string in %02x format.
+        if (m_pi.bPartType < 0x10) {
+            *pTempId++ = L'0';
+            TempIdChars -= 1;
+        }
+
+        VERIFY (0 == ::_itow_s (m_pi.bPartType, pTempId, TempIdChars, 16));
+
+        // Use the partition mapping table to map the partition type hex string to the name of the
+        // file system to mount on this partition.
+        if (!::FsdGetRegistryString (hKey, PartId, m_szFileSys, sizeof(m_szFileSys)/sizeof(WCHAR))) {
+            // This partition type has no entry in the table, so use the default file system.
+            VERIFY (SUCCEEDED (::StringCchCopyW (m_szFileSys, FILESYSNAMESIZE, DefaultFileSystem)));
+        }
+        ::FsdRegCloseKey(hKey);
+        hKey = NULL;
+
+    } else {
+
+        // No partition table anywhere? Use the default file system.
+        VERIFY (SUCCEEDED (::StringCchCopy (m_szFileSys, FILESYSNAMESIZE, DefaultFileSystem)));
+    }
+
+    DEBUGMSG (ZONE_INIT, (L"FSDMGR!ParitionDisk::LoadPartition: Partition Type 0x%s --> \"%s\"\r\n", 
+        PartId, m_szFileSys));
+
+    if (!m_szFileSys[0]) {
+        // No file system name.
+        ::SetLastError (ERROR_FILE_NOT_FOUND);
+        return FALSE;
+    }
+
+    // Set the file system name as the sub-key for this LogicalDisk_t object.
+    lResult = SetRegSubKey (m_szFileSys, FILESYSNAMESIZE);
+    if (ERROR_SUCCESS != lResult) {
+        ::SetLastError (lResult);
+        return FALSE;
+    }
+   
+    // Look for the module name under the profile or the root file system key.
+    //
+    //      HKLM\System\StorageManager\Profiles\<ProfileName>\<FileSystemName>
+    //
+    //          or
+    //
+    //      HKLM\System\StorageManager\<FileSystemName>
+    //
+    
+    WCHAR ModuleName[MAX_PATH] = L"";
+
+    GetRegistryString (g_szFILE_SYSTEM_MODULE_STRING, ModuleName, sizeof(ModuleName)/sizeof(WCHAR));
+    GetRegistryString (g_szFILE_SYSTEM_MODULE_STRING, m_szFriendlyName, sizeof(m_szFriendlyName)/sizeof(WCHAR));
+
+    if (!ModuleName[0]) {
+
+        // No module name found using the determined file system name, so
+        // attempt to run FSD detectors. If successful, this will replace
+        // the file system name.
+        lResult = DetectFileSystem (m_szFileSys, FILESYSNAMESIZE);
+        if (ERROR_UNRECOGNIZED_VOLUME == lResult) {
+            // None of the detectors recognized the volume, so use the
+            // default file system, if one is specified.
+            lResult = GetRegistryString (g_szFILE_SYSTEM_STRING, m_szFileSys, FILESYSNAMESIZE/sizeof(WCHAR));
+        }
+
+        if (ERROR_SUCCESS != lResult) {
+            DEBUGMSG (ZONE_ERRORS, (L"FSDMGR!ParitionDisk::LoadPartition: DetectFileSystem failed; error=%u\r\n", lResult));
+            ::SetLastError (lResult);
+            return FALSE;
+        }
+
+        DEBUGMSG (ZONE_INIT, (L"FSDMGR!ParitionDisk::LoadPartition: DetectFileSystem remapped 0x%s --> \"%s\"\r\n", 
+            PartId, m_szFileSys));
+
+        // Replace our reg subkey with the new name determined by running
+        // the FSD detector(s).
+        lResult = SetRegSubKey (m_szFileSys);
+        if (ERROR_SUCCESS != lResult) {
+            ::SetLastError (lResult);
+            return FALSE;
+        }
+
+        // Try again now that we've loaded a different file system name
+        // based on the results of DetectFileSystem.
+        GetRegistryString (g_szFILE_SYSTEM_MODULE_STRING, ModuleName, sizeof(ModuleName)/sizeof(WCHAR));
+        GetRegistryString (g_szFILE_SYSTEM_MODULE_STRING, m_szFriendlyName, sizeof(m_szFriendlyName)/sizeof(WCHAR));
+    }
+
+    DEBUGMSG (ZONE_INIT, (L"FSDMGR!ParitionDisk::MountPartition: \"%s\" --> %s\r\n", m_szFileSys, ModuleName));
+
+    if (!ModuleName[0]) {
+        // Could not determine the name of the module to use for this file system.
+        ::SetLastError (ERROR_MOD_NOT_FOUND);
+        return FALSE;
+    }
+
+    // Instantiate a file system object using the specified dll name.
+    FileSystemDriver_t* pFileSystem = new FileSystemDriver_t (this, ModuleName);
+    if (!pFileSystem) {
+        ::SetLastError (ERROR_NOT_ENOUGH_MEMORY);
+        return FALSE;
+    }
+
+    WCHAR FolderName[FOLDERNAMESIZE];
+
+    // Look for MountAsXXX (MountFlags), CheckForFormat, and Folder values under the
+    // file system key.
+    //
+    //      HKLM\System\StorageManager\Profiles\<ProfileName>\<FileSystemName>
+    //
+    
+    VERIFY (SUCCEEDED (::StringCchPrintfW(RegKey, MAX_PATH, L"%s\\%s", RootRegKey, m_szFileSys)));
+    if (ERROR_SUCCESS == ::FsdRegOpenKey (RegKey, &hKey)) {
+        g_pMountTable->GetMountSettings (hKey, &dwMountFlags);
+        DWORD TmpFlags;
+        if (::FsdGetRegistryValue (hKey, g_szCHECKFORFORMAT, &TmpFlags)) {
+            CheckForFormat = TmpFlags;
+        }
+        if (::FsdGetRegistryString (hKey, g_szFOLDER_NAME_STRING, FolderName, sizeof(FolderName)/sizeof(WCHAR))) {
+            VERIFY (SUCCEEDED ( ::StringCchCopyW(m_szFolderName, FOLDERNAMESIZE, FolderName)));
+        }
+        ::FsdRegCloseKey (hKey);
+        hKey = NULL;
+    }
+
+    // Look for MountAsXXX (MountFlags) and Folder values under the partition key.
+    //
+    //      HKLM\System\StorageManager\Profiles\<ProfileName>\<PartitionName>
+    //
+    
+    VERIFY (SUCCEEDED (::StringCchPrintfW (RegKey, MAX_PATH, L"%s\\%s", RootRegKey, m_szPartitionName)));
+    if (ERROR_SUCCESS == ::FsdRegOpenKey (RegKey, &hKey)) {
+        g_pMountTable->GetMountSettings(hKey, &dwMountFlags);
+        if (::FsdGetRegistryString (hKey, g_szFOLDER_NAME_STRING, FolderName, sizeof(FolderName)/sizeof(WCHAR))) {
+            VERIFY (SUCCEEDED (::StringCchCopyW (m_szFolderName, FOLDERNAMESIZE, FolderName)));
+        }
+        ::FsdRegCloseKey (hKey);
+        hKey = NULL;
+    }
+
+    // Enable the partition before mounting a volume on it.
+    EnablePartition ();
+        
+#ifdef UNDER_CE    
+    if (CheckForFormat) {
+        // Query the kernel with STORAGECONTEXT information to determine whether or
+        // not this partition should be formatted before it is mounted.
+        BOOL fTemp = 0;
+        STORAGECONTEXT sc = {0};
+        sc.cbSize = sizeof(sc);
+        m_pStore->GetStoreInfo( &sc.StoreInfo);
+        GetPartitionInfo(&sc.PartInfo);
+        sc.dwFlags = dwMountFlags;
+        if (::KernelIoControl(IOCTL_HAL_QUERY_FORMAT_PARTITION, &sc, sizeof(sc), (LPBYTE)&fTemp, sizeof(BOOL), NULL)) {
+            if (fTemp) {
+                FormatPartition(m_pi.bPartType, FALSE);
+            }
+        }
+    }
+#endif // UNDER_CE
+
+    // Mount a new volume.
+    lResult = MountFileSystemDriver (this, pFileSystem, dwMountFlags, m_fFormatOnMount);   
+    if (ERROR_SUCCESS != lResult) {
+        delete pFileSystem;
+        ::SetLastError (lResult);
+        return FALSE;
+    }
+
+    // The partition is now mounted.
+    m_dwFlags |= PARTITION_ATTRIBUTE_MOUNTED;
+    m_fFormatOnMount = FALSE;
+
+    return TRUE;
+}
+
+void PartitionDisk_t::DisablePartition()
+{
+    if (PARTITION_FLAG_DISABLED & m_dwInternalFlags) {
+        return;
+    }
+
+    MountedVolume_t* pVolume = GetVolume ();
+    if (pVolume) {
+        pVolume->Disable ();
+    }
+
+    m_dwInternalFlags |= PARTITION_FLAG_DISABLED;
+}
+
+void PartitionDisk_t::EnablePartition()
+{
+    if (!(PARTITION_FLAG_DISABLED & m_dwInternalFlags)) {
+        return;
+    }
+    
+    MountedVolume_t* pVolume = GetVolume ();
+    if (pVolume) {
+        pVolume->Enable ();
+    }
+
+    m_dwInternalFlags &= ~PARTITION_FLAG_DISABLED;
+}
+
+
+BOOL PartitionDisk_t::UnmountPartition()
+{
+    if (PARTITION_FLAG_NODISMOUNT & m_dwInternalFlags) {
+        ::SetLastError (ERROR_ACCESS_DENIED);
+        return FALSE;
+    }
+
+    DisablePartition ();
+
+    LRESULT lResult = UnmountFileSystemDriver (this);
+    if (ERROR_SUCCESS != lResult) {
+        ::SetLastError (lResult);
+        return FALSE;
+    }
+    
+    m_dwFlags &= ~PARTITION_ATTRIBUTE_MOUNTED;
+    
+#ifdef UNDER_CE
+    ::CloseHandle (m_hPartition);
+#else
+    ::STG_CloseHandle (reinterpret_cast<PSTOREHANDLE> (m_hPartition));
+#endif
+
+    m_hPartition = NULL;
+
+    return TRUE;
+}
+
+BOOL PartitionDisk_t::RenamePartition(LPCTSTR szNewName)
+{
+    DWORD dwError = ERROR_SUCCESS;
+    if (ERROR_SUCCESS == (dwError = m_pPartDriver->RenamePartition(m_dwStoreId, m_szPartitionName, szNewName))) {
+        VERIFY(SUCCEEDED(StringCchCopy(m_szPartitionName, PARTITIONNAMESIZE, szNewName)));
+        return TRUE;
+    }
+    SetLastError(dwError);
+    return FALSE;
+}    
+
+BOOL PartitionDisk_t::FormatPartition(BYTE bPartType, BOOL bAuto)
+{
+    DWORD dwError = ERROR_SUCCESS;
+    if (ERROR_SUCCESS == (dwError = m_pPartDriver->FormatPartition(m_dwStoreId, m_szPartitionName, bPartType, bAuto))) {
+        m_pPartDriver->GetPartitionInfo(m_dwStoreId, m_szPartitionName, &m_pi);
+        m_fFormatOnMount = TRUE;
+        return TRUE;
+    }
+    SetLastError(dwError);
+    return FALSE;
+}
+
+// RunAllDetectors
+// 
+// Determine the name of the file system to associate with
+// a partition by invoking a set of detector dlls. 
+// 
+// Returns ERROR_SUCCESS and the file system name in
+// pFileSystemName if detection was successful.
+//
+// Returns non-zero error code on failure:
+//      ERROR_UNRECOGNIZED_VOLUME if the no detector succeeds
+//      ERROR_INSUFFICIENT_BUFFER if the file system name is
+//      longer than FileSystemNameChars characters.
+//
+LRESULT PartitionDisk_t::RunAllDetectors (HKEY hKey, 
+        __out_ecount(FileSystemNameChars) WCHAR* pFileSystemName, 
+        size_t FileSystemNameChars)
+{
+    LRESULT lResult = ERROR_UNRECOGNIZED_VOLUME;
+
+    // Use LoadFSDList to build a list of detector Dlls.
+    FSDLOADLIST* pLoadList = LoadFSDList (hKey, LOAD_FLAG_ASYNC | LOAD_FLAG_SYNC, 
+        NULL, NULL, FALSE);
+
+    BYTE* pBootSector = NULL;
+    DWORD SectorSize = m_pStore->m_si.dwBytesPerSector;
+    FSDLOADLIST* pNextDetect = pLoadList;
+
+    if (pNextDetect) {
+        // Try to read sector zero from the disk to pass to the detector.
+        pBootSector = new BYTE[SectorSize];
+        if (pBootSector &&
+            (ERROR_SUCCESS != FSDMGR_ReadDisk (this, 0, 1, pBootSector, SectorSize))) {
+            // Unable to read boot sector. Pass NULL to the detector.
+            delete[] pBootSector;
+            pBootSector = NULL;
+        }
+    }
+
+    // Iterate over the load list, invoking every detector driver.
+    while (pNextDetect && 
+            (ERROR_UNRECOGNIZED_VOLUME == lResult)) {
+
+        // Open the detector key.
+        HKEY hSubKey = NULL;
+        if (ERROR_SUCCESS != 
+            ::FsdRegOpenSubKey (hKey, pNextDetect->szName, &hSubKey)) {
+            continue;
+        }
+
+        GUID FsdGuid;
+        WCHAR DetectorDll[MAX_PATH];
+        WCHAR DetectorExport[MAX_PATH];
+
+        // Query the GUID, detector dll name, and dll export name from the
+        // registry and invoke the detector.
+        if (::FsdGetRegistryString (hSubKey, L"Guid", DetectorDll, MAX_PATH) &&
+            ::FsdGuidFromString (DetectorDll, &FsdGuid) &&
+            ::FsdGetRegistryString (hSubKey, L"Dll", DetectorDll, MAX_PATH) &&
+            ::FsdGetRegistryString (hSubKey, L"Export", DetectorExport, 
+                MAX_PATH)) {
+
+            // Run the detector function.
+            lResult = m_DetectorState.RunDetector (this, DetectorDll, DetectorExport,
+                &FsdGuid, pBootSector, SectorSize);
+        }
+
+        ::FsdRegCloseKey (hSubKey);
+        hSubKey = NULL;
+
+        if (ERROR_SUCCESS == lResult) {
+            // On success, copy the file system name to the output buffer.
+            if (FAILED (::StringCchCopy (pFileSystemName, 
+                            FileSystemNameChars, pNextDetect->szName))) {
+                // Failed to copy to output buffer, indicate failure.
+                lResult = ERROR_INSUFFICIENT_BUFFER;
+            }
+        }
+        pNextDetect = pNextDetect->pNext;
+    }
+
+    if (pBootSector) {
+        delete[] pBootSector;
+    }
+
+    // Cleanup the list.
+    while (pLoadList) {
+        pNextDetect = pLoadList;
+        pLoadList = pLoadList->pNext;
+        delete pNextDetect;
+    }
+
+    return lResult;
+}
+
+LRESULT PartitionDisk_t::DetectFileSystem (__out_ecount(FileSystemNameChars) WCHAR* pFileSystemName, size_t FileSystemNameChars)
+{
+    LRESULT lResult = ERROR_UNRECOGNIZED_VOLUME;
+    WCHAR LocalString[MAX_PATH];
+    HKEY hKey = NULL;
+
+    // Enumerate all registry keys.
+    RootRegKeyListItem* pItem;
+    for (pItem = m_pRootRegKeyList; pItem != NULL; pItem = pItem->pNext) {
+
+        if (FAILED (::StringCchPrintfW (LocalString, MAX_PATH, L"%s\\%s\\Detectors",
+            pItem->RootRegKeyName, m_pRegSubKey))) {
+            return ERROR_REGISTRY_IO_FAILED;
+        }
+
+        if (ERROR_SUCCESS == ::FsdRegOpenKey (LocalString, &hKey)) {
+
+            // Run detectors listed under this key.
+            lResult = RunAllDetectors (hKey, pFileSystemName, 
+                FileSystemNameChars);
+            if (ERROR_UNRECOGNIZED_VOLUME != lResult) {
+                ::FsdRegCloseKey (hKey);
+                hKey = NULL;
+                break;
+            }
+
+            ::FsdRegCloseKey (hKey);
+            hKey = NULL;
+        }
+    }
+
+    return lResult;
+
+}
+
+BOOL PartitionDisk_t::ComparePartitions (PartitionDisk_t *pPartition)
+{
+    if (0 != memcmp (&m_pi, &pPartition->m_pi, sizeof(PD_PARTINFO)))
+    {
+        // Partition informatin mismatch.
+        return FALSE;
+    }
+    
+    LRESULT lResult = ERROR_SUCCESS;
+    if (m_DetectorState.IsDetectorPresent ())
+    {
+        // Read the boot sector to pass to the detector.
+        DWORD SectorSize = pPartition->m_pStore->m_si.dwBytesPerSector;
+        BYTE* pBootSector = new BYTE[SectorSize];
+        if (pBootSector &&
+            (ERROR_SUCCESS != FSDMGR_ReadDisk (pPartition, 0, 1, pBootSector, SectorSize)))
+        {
+            // Failed reading the boot sector, 
+            delete[] pBootSector;
+            pBootSector = NULL;
+        }
+        
+        // Run the detector which identified this partition on the new
+        // partition to see if it also succeeds.
+        lResult = m_DetectorState.ReRunDetector (pPartition, pBootSector, SectorSize);
+    }
+
+    // In the case there there is no detector state, then a detector was
+    // not used to detect this volume's file system type and so the file
+    // system types are assumed to be the same since the partition info
+    // contents were identical.
+
+    if ((ERROR_SUCCESS == lResult) && m_pVolume)
+    {
+        // Now check with the volume to see if its view of the partition
+        // is the same.
+        STORAGE_MEDIA_ATTACH_RESULT Result = StorageMediaAttachResultUnchanged;
+        if (ERROR_SUCCESS == m_pVolume->MediaChangeEvent (
+            StorageMediaChangeEventAttached, &Result) &&
+            (StorageMediaAttachResultChanged == Result))
+        {
+            // The volume has indicated that its view of the partition is not
+            // the same, so the partitions do not compare.
+            lResult = ERROR_UNRECOGNIZED_VOLUME;
+        }
+    }
+
+    return (ERROR_SUCCESS == lResult);
+}
+

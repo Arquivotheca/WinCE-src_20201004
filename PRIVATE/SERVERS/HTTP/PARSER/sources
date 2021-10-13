@@ -1,0 +1,21 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!include ..\http.src
+
+TARGETNAME=HTTPPARSE
+TARGETTYPE=LIBRARY
+SOURCES=buffio.cpp parser.cpp
+
+
+#xref VIGUID {5a1e4958-8c11-4c32-8d31-459b6f61f5ac}
+#xref VSGUID {28b53d60-9578-474c-937a-1ce1ad94d0df}

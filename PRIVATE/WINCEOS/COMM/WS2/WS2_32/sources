@@ -1,0 +1,53 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+
+
+TARGETNAME=ws2
+TARGETDEFNAME=ws2
+DEFFILE=ws2.def
+TARGETTYPE=LIBRARY
+PREPROCESSDEFFILE=1
+
+TARGETLIBS= \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\cclib.lib
+
+CDEFINES=-DWINCEAFDMACRO -DWIN32_NO_OLE
+NOMIPS16CODE=1
+
+EXEENTRY=main
+DLLENTRY=dllentry
+
+CONDITIONAL_INCLUDES=issper16.h secpkg.h kerberos.h ntlmsp.h wchar.h
+
+INCLUDES=..\..\inc;..\..\winsock\secure\sslinc
+
+SOURCES= \
+	select.c \
+	options.c \
+	gxy.c \
+	rnr.c \
+	install.c \
+	wceinit.c \
+	upcalls.c \
+	socket.c \
+	addr.c \
+	comm.c \
+	conn.c \
+	ipconst.c \
+	wsahwnd.c \
+
+WINCETARGETFILE0=$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\ws2.def
+
+#xref VIGUID {e29dd3ce-c204-4c0d-9dcf-69f18ec9b90f}
+#xref VSGUID {0698369b-6592-425d-9481-1598f0cc2b02}

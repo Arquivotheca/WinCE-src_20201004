@@ -1,0 +1,65 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+!IF 0
+
+
+Module Name:
+
+    sources.
+
+Abstract:
+
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+
+!include $(DX_TST_ROOT)\dshow\camera\camera.mk
+
+TARGETNAME=CameraMultiGraphTests
+TARGETTYPE=DYNLINK
+
+CDEFINES=$(CDEFINES) /EHsc -D_TUX_SUITE
+WINCEATL80=1
+
+INCLUDES=\
+        $(_WINCEROOT)\private\directx\dshow\h; \
+        $(DX_TST_ROOT)\dshow\common\libs\camdriverlibrary; \
+        $(DX_TST_ROOT)\dshow\camera\inc;\
+        $(INCLUDES) \
+
+TARGETLIBS= \
+        $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+        $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+        $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ole32.lib       \
+        $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\oleaut32.lib       \
+        $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib    \
+        $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\strmiids.lib \
+        $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\dmoguids.lib \
+        $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\CaptureFramework_tux.lib \
+        $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\EventSink.lib \
+        $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\PlaybackFramework_tux.lib \
+        $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\imagingguid.lib \
+        $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\camdriverlibrary.lib \
+        $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\driverenumerator.lib \
+        $(_WINCEROOT)\public\directx\sdk\lib\$(_CPUINDPATH)\strmbase.lib    \
+        $(ATL8LIBS)\
+
+SOURCES=\
+        Globals.cpp \
+        TuxTest.cpp \
+        CameraMultiGraphTests.cpp
+

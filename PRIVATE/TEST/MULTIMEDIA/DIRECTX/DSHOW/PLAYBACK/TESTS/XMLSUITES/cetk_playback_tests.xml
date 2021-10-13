@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+<TestConfig Name="Playback Tests" Desc="Verifying graph building and playback" GenerateId=true>
+    <MediaList>
+    <Media>
+        <Name>WMV1</Name>
+        <FileName>highmotion_600K_320x240_main.wmv</FileName>
+        <Description>320x240,600b,WMV3</Description>
+        <BaseUrl>
+            <IIS_HTTP>http://cedxmedia/new/HighMotion/</IIS_HTTP>
+            <WMS_HTTP>http://cedxmedia:18080/new/HighMotion/</WMS_HTTP>
+            <MMSU>mmsu://cedxmedia/new/HighMotion/</MMSU>
+            <release>\release\</release>
+            <Disk>\Hard Disk\</Disk>
+        </BaseUrl>
+    </Media>
+    <Media>
+        <Name>WMV2</Name>
+        <FileName>highmotion_1200K_320x240_main.wmv</FileName>
+        <Description>320x240,1200b,WMV3</Description>
+        <BaseUrl>
+            <IIS_HTTP>http://cedxmedia/new/HighMotion/</IIS_HTTP>
+            <WMS_HTTP>http://cedxmedia:18080/new/HighMotion/</WMS_HTTP>
+            <MMSU>mmsu://cedxmedia/new/HighMotion/</MMSU>
+            <release>\release\</release>
+            <Disk>\Hard Disk\</Disk>
+        </BaseUrl>
+    </Media>
+    </MediaList>
+    <TestList>
+        <TestGroup Name="Build VerificationTests" TestIdBase="0">
+            <Test Name="AddSourceFilterTest" Desc="Verify that source filter gets added, for this particular media">
+                <Media>WMV2:IIS_HTTP</Media>
+            </Test>
+            <Test Name="BuildGraphPreLoadFilterTest" Desc="Verify that the correct graph gets built, forcing certain filters to be present">
+                <Media>WMV2:IIS_HTTP</Media>
+                <FilterList>NSSOURCE</FilterList>
+            </Test>
+            <Test Name="RenderPinTest" Desc="Verify that we can render a graph from the source filter onwards">
+                <Media>WMV2:IIS_HTTP</Media>
+            </Test>
+            <Test Name="ConnectSourceFilterToRendererTest" Desc="Verify that we can connect the Source Filter to the renderer">
+                <Media>WMV2:WMS_HTTP</Media>
+                <FilterList>NSSOURCE:VIDREND</FilterList>
+            </Test>         
+            <Test Name="BuildGraphTest" Desc="Verify that RenderFile will build the correct graph">
+                <Media>WMV2:IIS_HTTP</Media>
+                <Verify>
+                    <CorrectGraph>NSSOURCE:ICMDISP:WMVDEC:VIDREND</CorrectGraph>
+                </Verify>
+            </Test>
+            <Test Name="BuildGraphQueryInterfaceTest" Desc="Verify that the correct interfaces exist in the graph">
+                <Media>WMV2:WMS_HTTP</Media>
+            </Test>
+        </TestGroup>
+        <TestGroup Name="Playback Duration Tests" TestIdBase="100">
+            <Test Name="ManualPlaybackTest" Desc="playback a clip, manually verify and pass/fail the test">
+                <TestId>1</TestId>
+                <Media>WMV1:IIS_HTTP</Media>
+                <PositionList>0,100</PositionList>
+            </Test>
+            <Test Name="ManualPlaybackTest" Desc="copy a clip to hard disk first and then playback clip, manually verify and pass/fail test">
+                <TestId>1</TestId>
+                <Media>WMV1:IIS_HTTP</Media>
+                <DownloadTo>\Hard Disk\</DownloadTo>
+            </Test>
+            <Test Name="EndToEndPlaybackTest" Desc="verify duration, verify it played till end">
+                <Media>WMV1:IIS_HTTP</Media>
+                <Verify>
+                    <PlaybackDuration>20,2000</PlaybackDuration>
+                </Verify>           
+            </Test>     
+        </TestGroup>
+        <TestGroup Name="Startup Latency Tests" TestIdBase="200">
+            <Test Name="EndToEndPlaybackTest" Desc="verify startup latency">
+                <Media>WMV1:IIS_HTTP</Media>
+                <Verify>
+                    <StartupLatency>3000</StartupLatency>
+                </Verify>           
+            </Test>     
+            <Test Name="EndToEndPlaybackTest" Desc="verify startup latency, higher bitrate content">
+                <Media>WMV2:IIS_HTTP</Media>
+                <Verify>
+                    <StartupLatency>3000</StartupLatency>
+                </Verify>           
+            </Test>     
+        </TestGroup>                            
+        <TestGroup Name="State Change/Latency Tests" TestIdBase="300">
+            <Test Name="StateChangeTest" Desc="verify state change (Play to Pause) and measure latency">
+                <Media>WMV2:IIS_HTTP</Media>
+                <StateChangeSequence Desc="Type,HowMany,TimeBetween">Stopped,PlayPause,50,500</StateChangeSequence>
+                <Verify>
+                    <VerifyStateChangeLatency>6000</VerifyStateChangeLatency>
+                </Verify>
+            </Test>
+            <Test Name="StateChangeTest" Desc="verify state change (Random state changes) and measure latency">
+                <Media>WMV2:IIS_HTTP</Media>
+                <StateChangeSequence>Stopped,RandomSequence,50,500</StateChangeSequence>
+                <Verify>
+                    <VerifyStateChangeLatency>6000</VerifyStateChangeLatency>
+                </Verify>
+            </Test>
+            <Test Name="StateChangeTest" Desc="verify state (Play to Stop) change and measure latency">
+                <Media>WMV2:WMS_HTTP</Media>
+                <StateChangeSequence>Stopped,PlayStop,50,500</StateChangeSequence>
+                <Verify>
+                    <VerifyStateChangeLatency>6000</VerifyStateChangeLatency>
+                </Verify>               
+            </Test>         
+            <Test Name="Run_Pause_Run_Test" Desc="verify latency of first sample to come out of the decoder, after calling Run">
+                <Media>WMV1:IIS_HTTP</Media>
+                <Verify>
+                    <DecodedVideoLatencyRunToFirstSample>300</DecodedVideoLatencyRunToFirstSample>
+                </Verify>
+            </Test>
+        </TestGroup>                        
+                        
+    </TestList>     
+</TestConfig>

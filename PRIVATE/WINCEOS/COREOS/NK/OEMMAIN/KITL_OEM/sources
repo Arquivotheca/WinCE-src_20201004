@@ -1,0 +1,47 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=oemmain_statickitl
+WINCECPU=1
+TARGETTYPE=LIBRARY
+CDEFINES=$(CDEFINES) -DIN_KERNEL
+NOMIPS16CODE=1
+
+# Machine independent defines
+CDEFINES=$(CDEFINES) -DDBGSUPPORT -DKITLOEM
+INCLUDES=..\..\inc;..\..\..\inc
+
+!IF "$(_TGTCPUFAMILY)"=="MIPS"
+WARNISERROR=0
+!ENDIF
+
+!IF "$(_TGTCPU)" == "SH4"
+ADEFINES=$(ADEFINES) -DSH_CPU=64
+!ENDIF
+
+!IF "$(_TGTCPUFAMILY)" == "ARM"
+ADEFINES=-pd "_TGTCPU SETS \"$(_TGTCPU)\"" $(ADEFINES)
+
+!ELSEIF "$(_TGTCPUFAMILY)" == "x86"
+
+CDEFINES=$(CDEFINES) -Gs100000
+
+!ENDIF
+
+SOURCES= \
+    ..\oemglobal.c \
+    ..\oemconst.c
+
+
+#xref ModuleMembership kernel.dll
+#xref VIGUID {b87bf528-b78c-4272-a07d-283b89a84b9e}
+#xref VSGUID {8c653067-ccbf-455a-858d-2ae5ce9ab727}

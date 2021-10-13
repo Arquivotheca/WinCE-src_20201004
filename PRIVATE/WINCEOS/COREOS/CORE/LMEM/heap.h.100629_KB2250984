@@ -1,0 +1,183 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+#ifndef _RHEAP_H_
+#define _RHEAP_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifndef ERRFALSE
+#define ERRFALSE(exp)           extern char __ERRXX[(exp)!=0];
+#endif
+
+#define CE_FIXED_HEAP_MAXSIZE   (15*VM_PAGE_SIZE)   // size 60K for heap (last page intentionally left open to track buffer overrun)
+#define CE_VALLOC_MINSIZE       (4*VM_PAGE_SIZE)    // use VirtualAlloc for size > 16K
+
+#define RHEAP_BLOCK_SIZE_SHIFT  5
+#define RHEAP_BLOCK_SIZE        (1 << RHEAP_BLOCK_SIZE_SHIFT)
+
+// 2-bits per block (a block == 64 bytes)
+#define RHEAP_BITS_PER_BLOCK    2           // 2 bits per block
+
+#define RHEAP_BLOCKS_PER_PAGE   (VM_PAGE_SIZE / RHEAP_BLOCK_SIZE)
+#define RHEAP_VA_BLOCK_CNT      (CE_VALLOC_MINSIZE / RHEAP_BLOCK_SIZE)
+
+#define RHEAP_BLOCK_CNT(size)   (((size) + RHEAP_BLOCK_SIZE - 1) >> RHEAP_BLOCK_SIZE_SHIFT)
+#define RHEAP_BLOCKALIGN_UP(size) (((size) + RHEAP_BLOCK_SIZE - 1) & -RHEAP_BLOCK_SIZE)
+
+#define RHF_FREEBLOCK           0x00        // free block                   - 0b00
+#define RHF_CONTBLOCK           0x01        // middle/end of allocation     - 0b01
+#define RHF_HEADBIT             0x02        // head bit                     - 0b10
+#define RHF_STARTBLOCK          0x03        // start of allocation          - 0b11
+
+#define RHF_BITMASK             0x03
+
+// a bitmap-dword == 16 blocks
+#define BLOCKS_PER_BITMAP_DWORD        16          // 32 bits / 2 bits per block
+#define BLOCKS_PER_BITMAP_DWORD_SHIFT  4           // >> 4 == / 16
+
+// # of blocks in a 64K region
+#define NUM_DEFAULT_BLOCKS_PER_RGN          (CE_FIXED_HEAP_MAXSIZE/RHEAP_BLOCK_SIZE)
+#define NUM_DEFAULT_DWORD_BITMAP_PER_RGN    (NUM_DEFAULT_BLOCKS_PER_RGN/BLOCKS_PER_BITMAP_DWORD)
+
+
+// Internal: cannot conflict with any HEAP_XXX flags in winnt.h
+#define HEAP_IS_PROC_HEAP       0x00002000
+#define HEAP_IS_REMOTE          0x00004000
+
+#define ALIGNSIZE(x)            (((x) + 0xf) & ~0xf)
+
+
+#ifdef SHIP_BUILD
+//#ifndef DEBUG
+#define HEAP_SENTINELS          0
+
+#else
+
+typedef struct _RHEAP_SENTINEL_HEADER {
+    DWORD   dwSig;                      // sentinal signature
+    DWORD   dwAllocSentinel1;
+    DWORD   dwAllocSentinel2;
+    DWORD   cbSize;                     // size of the item
+} RHEAP_SENTINEL_HEADER, *PRHEAP_SENTINEL_HEADER;
+
+
+#define HEAP_SENTINELS          16
+#define HEAP_SENTINEL_SIGNATURE 0xa9e4b6f1
+#define HEAP_ALLOC_SENTINEL1    0xa8a7a6a5
+#define HEAP_ALLOC_SENTINEL2    0xacabaaa9
+#define HEAP_TAILSIG_START      0xa5
+#define HEAP_BYTE_FREE          0xcc
+#define HEAP_DWORD_FREE         0xcccccccc
+
+ERRFALSE (HEAP_SENTINELS == sizeof(RHEAP_SENTINEL_HEADER));
+
+#endif
+
+#ifdef DEBUG
+#define HEAP_STATISTICS
+#endif
+
+typedef struct _RHRGN       RHRGN, *PRHRGN;
+typedef struct _RHEAP       RHEAP, *PRHEAP;
+
+typedef struct _RHVAITEM    RHVAITEM, *PRHVAITEM;
+
+#pragma warning(disable:4200) // nonstandard extensions warning
+
+// remote heap region structure
+struct _RHRGN {
+    DWORD       cbSize;                     // size of region structure (for debug extention)
+    PRHRGN      prgnNext;                   // link to next region
+    PRHEAP      phpOwner;                   // heap where the region belongs
+    DWORD       dwRgnData;                  // per-region user data
+    HANDLE      hMapfile;                   // mapfile handle, used only in remote heap
+    LPBYTE      pRemoteBase;                // base address of the region (remote)
+    LPBYTE      pLocalBase;                 // base address of the region (local
+    DWORD       numBlkFree;                 // # of free blocks (uncommitted pages included)
+    DWORD       numBlkTotal;                // # of blocks total.
+    DWORD       idxBlkFree;                 // idx to a likely free block
+    DWORD       idxBlkCommit;               // idx of next page to commit
+    DWORD       maxBlkFree;                 // max # of consective free blocks (uncommitted pages included)
+    DWORD       allocMap[];                 // allocation bit maps
+};
+
+#pragma warning(default:4200) // nonstandard extensions warning
+
+#define HEAPSIG         0x50616548UL
+
+// remote heap structure
+// NOTE: 1st DWORD must be signature
+struct _RHEAP {
+    DWORD       cbSize;                     // size of heap structure (for debug extention)
+    DWORD       dwSig;                      // heap signature "Rhap", MUST BE 1st
+    DWORD       dwProcessId;                // the remote process id of the heap or module base address if it is dll heap
+    DWORD       cbMaximum;                  // max heap size (0 if growable)
+    DWORD       flOptions;                  // option
+    PRHEAP      phpNext;                    // link to next heap
+    PRHVAITEM   pvaList;                    // list of VirtualAlloc'ed items
+    PRHRGN      prgnLast;                   // last region of the heap
+    CRITICAL_SECTION cs;                    // critial section to guard the heap
+    PFN_AllocHeapMem pfnAlloc;              // allocator
+    PFN_FreeHeapMem pfnFree;                // de-allocator
+    DWORD       cIters;                     // statistic
+    RHRGN       rgn;                        // 1st heap region -- MUST BE LAST
+};
+
+typedef struct _RHVAITEM {
+    DWORD       cbSize;                     // size of the allocation (NOT the size of the structure)
+    PRHVAITEM   pNext;                      // link to next item
+    PRHEAP      phpOwner;                   // heap where the item belongs
+    DWORD       dwRgnData;                  // per-reservation user data
+    HANDLE      hMapfile;                   // mapfile handle, used only in remote heap
+    LPBYTE      pRemoteBase;                // remote base address of the item
+    LPBYTE      pLocalBase;                 // local base address of the item
+    DWORD       cbReserve;                  // size of reservation
+} RHVAITEM, *PRHVAITEM;
+
+// WIN32 exported functions
+LPBYTE WINAPI RHeapAlloc (PRHEAP php, DWORD dwFlags, DWORD cbSize);
+LPBYTE WINAPI RHeapReAlloc (PRHEAP php, DWORD dwFlags, LPVOID ptr, DWORD cbSize);
+BOOL   WINAPI RHeapFree (PRHEAP php, DWORD dwFlags, LPVOID pMem);
+DWORD  WINAPI RHeapSize (PRHEAP php, DWORD dwFlags, LPCVOID pMem);
+PRHEAP WINAPI RHeapCreate (DWORD flOptions, DWORD dwInitialSize, DWORD dwMaximumSize);
+BOOL   WINAPI RHeapDestroy (PRHEAP php);
+BOOL   WINAPI RHeapValidate (PRHEAP php, DWORD dwFlags, LPCVOID pMem);
+UINT   WINAPI RHeapCompact (PRHEAP php, DWORD dwFlags);
+
+// internal used funcitons
+PRHEAP DoRHeapCreate (DWORD fOptions, DWORD dwInitialSize, DWORD dwMaximumSize, PFN_AllocHeapMem pfnAlloc, PFN_FreeHeapMem pfnFree, DWORD dwProcessId);
+BOOL   RHeapInit (void);
+void   RHeapDeInit (void);
+
+// heap item enumeration.
+#define RHE_FREE            0x0
+#define RHE_NORMAL_ALLOC    0x1
+#define RHE_VIRTUAL_ALLOC   0x2
+typedef BOOL (* PFN_HeapEnum) (LPBYTE pMem, DWORD cbSize, DWORD dwFlags, LPVOID pEnumData);
+
+BOOL EnumerateHeapItems (PRHEAP php, PFN_HeapEnum pfnEnum, LPVOID pEnumData);
+
+extern PRHEAP g_hProcessHeap, g_phpListAll;
+extern CRITICAL_SECTION g_csHeapList;
+
+#ifdef DEBUG
+void RHeapDump (PRHEAP php);
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif //  _RHEAP_H_

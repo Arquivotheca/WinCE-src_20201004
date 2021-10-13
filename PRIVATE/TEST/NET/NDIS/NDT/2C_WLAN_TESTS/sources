@@ -1,0 +1,65 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=ndt_2c_wlan
+TARGETTYPE=DYNLINK
+
+CDEFINES= \
+    -DUNICODE \
+    -D_UNICODE 
+
+
+INCLUDES= \
+    ..\inc; \
+    $(_PRIVATEROOT)\test\net\common\inc; \
+    $(_PUBLICROOT)\test\sdk\inc; \
+    $(_PUBLICROOT)\common\sdk\inc; \
+    $(_PUBLICROOT)\common\oak\inc; \
+    $(_PUBLICROOT)\common\ddk\inc; \
+    $(_PUBLICROOT)\sdk\vc\inc;
+
+SOURCES= \
+    ndt_2c_wlan.cxx \
+    ShellProc.cxx \
+    Utils.cxx \
+    TempTestDef.cxx \
+    Reloaddefaults.cxx \
+    Wep.cxx \
+    Adhoc.cxx \
+    Statistics.cxx  \
+    WPAAuthentication.cxx \
+    WPABssidlist.cxx \
+    WPAInfrastructure.cxx \
+    WPAAddKey.cxx \
+    WPARemoveKey.cxx \
+    WPAAdhoc.cxx \
+    WPASendcheck.cxx \
+    WPASendrecvAes.cxx \
+    WPA2Sendcheck.cxx \
+    WPA2Misc.cxx \
+    WPA2Sendrecv.cxx \
+    SimpleWEPXfer.cxx \
+    SimpleWPAXfer.cxx \
+    SimpleWPA2Xfer.cxx \
+    SimpleWPAWEPXfer.cxx \
+    SimpleWPA2WEPXfer.cxx \
+
+TARGETLIBS= \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\NDTLib.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\winsock.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\NDTsuppLib.lib \
+    $(_PUBLICROOT)\ostest\oak\lib\$(_CPUINDPATH)\NDTcryptLib.lib \
+    $(_PUBLICROOT)\common\oak\lib\$(_CPUINDPATH)\rsa32.lib
+ 
+RELEASETYPE=CETK 

@@ -1,0 +1,42 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\CETest\AuthMatrix\AP1]
+    "CapsImplemented"="WPA,WPA_PSK,WPA2,WPA2_PSK"
+    "CapsEnabled"="WPA,WPA_PSK,WPA2,WPA2_PSK"
+    "RadioState"=dword:1
+    "SSID"="WPA2_WME_AuthMatrix"
+    "BSSID"=hex:00,13,46,89,b9,db
+    "Authentication"="WPA2_PSK"
+    "Cipher"="TKIP"
+    "RadiusServer"="10.10.0.1"
+    "RadiusPort"=dword:1812
+    "RadiusSecret"="0123456789"
+    "WEPIndex"=dword:0
+    "WEPKey0"=hex:a0,b0,c0,d0,e0
+    "WEPKey1"=hex:f1,a2,b3,c4,d5
+    "WEPKey2"=hex:e2,f3,a4,b5,c6
+    "WEPKey3"=hex:d3,e4,f5,a6,b7
+    "Passphrase"="0123456789"
+    "Configurator"="dlink;10.10.0.48"
+    "Attenuator"="Manual;0,0,100"
+
+[HKEY_CURRENT_USER\Software\Microsoft\CETest\AuthMatrix\AP2]
+    "CapsImplemented"="WEP_802_1X,WPA,WPA_PSK,WPA2,WPA2_PSK"
+    "CapsEnabled"="WEP_802_1X,WPA,WPA_PSK,WPA2,WPA2_PSK"
+    "RadioState"=dword:1
+    "SSID"="CE_WPA2_AuthMatrix"
+    "BSSID"=hex:00,13,46,89,b9,db
+    "Authentication"="WPA2_PSK"
+    "Cipher"="TKIP"
+    "RadiusServer"="10.10.0.1"
+    "RadiusPort"=dword:1812
+    "RadiusSecret"="0123456789"
+    "WEPIndex"=dword:0
+    "WEPKey0"=hex:a0,b0,c0,d0,e0
+    "WEPKey1"=hex:f1,a2,b3,c4,d5
+    "WEPKey2"=hex:e2,f3,a4,b5,c6
+    "WEPKey3"=hex:d3,e4,f5,a6,b7
+    "Passphrase"="0123456789"
+    "Configurator"="buffalo;10.10.0.16:admin:admin"
+    "Attenuator"="Manual;0,0,100"
+

@@ -1,0 +1,87 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+	.HEADING "Interlock memory operations"
+	.FORM LINES=55
+;++
+;
+;
+; Module Name:
+;
+;    intrlock.src
+;
+; Abstract:
+;
+;    This module implements the InterlockedIncrement, I...Decrement,
+; I...Exchange and I...TestExchange APIs.
+;
+;    WARNING: This module jumps to well known code in the kernel data page to
+; perform the interlocked operations.  The kernel exception handlers know the
+; locations of those routines so that it can perform any necessary restarts in
+; case of an interrupt or an exception.
+;
+; Environment:
+;
+;    Kernel mode or User mode.
+;
+; Revision History:
+;
+;--
+
+
+	.include "ksshx.h"
+
+	LEAF_ENTRY InterlockAPIs
+	ALTERNATE_ENTRY _InterlockedExchange
+	mov	#USER_KPAGE+h'3c0, r0
+	jmp	@r0
+	nop
+
+	ALTERNATE_ENTRY _InterlockedTestExchange
+	mov	r5, r0		;\ 
+	mov	r6, r5		; > swap 2nd & 3rd arguments
+	mov	r0, r6		;/
+	ALTERNATE_ENTRY _InterlockedCompareExchange
+	mov	#USER_KPAGE+h'3d0, r0
+	jmp	@r0
+	nop
+
+	ALTERNATE_ENTRY _InterlockedIncrement
+	mov	#USER_KPAGE+h'3e0, r0
+	jmp	@r0
+	nop
+
+	ALTERNATE_ENTRY _InterlockedExchangeAdd
+	mov	#USER_KPAGE+h'3f0, r0
+	jmp	@r0
+	nop
+	.endf
+
+	NESTED_ENTRY _InterlockedDecrement
+	sts	PR, @-r15	; save return address
+	PROLOG_END
+	mov	#USER_KPAGE+h'3f0, r0
+	jsr	@r0		; InterlockedExchangeAdd(addend, -1)
+	mov	#-1, r5
+
+	lds	@r15+, PR
+	rts			; return to original caller
+	add	#-1, r0		; adjust for correct return value
+	.endf
+
+	LEAF_ENTRY _DebugBreak
+	trapa	#1
+	rts
+	nop
+	.endf
+
+	.end

@@ -1,0 +1,268 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+/*
+ *              NK Kernel printf code
+ *
+ *
+ * Module Name:
+ *
+ *              printf.c
+ *
+ * Abstract:
+ *
+ *              This file implements debug and string routines
+ *
+ */
+ 
+/*
+@doc    EXTERNAL KERNEL
+@topic  Debug Support for Applications | 
+    The kernel provides several kinds of supports for debugging
+    applications. These are:
+    
+    <b Debug Messages>: The kernel provides API's for printing out
+    of debug messages which can be turned on and off dynamically 
+    using zones. Any module (DLL/Process) can register itself
+    with the debug subsystem using <f DEBUGREGISTER>. This API
+    registers the address of a Zonemask (which is a DWORD) with the
+    kernel. Using the debug shell, a user can now dynamically turn
+    bits of this zonemask on and off from the shell window.        
+    The most typical way to use this is to filter debug messages
+    based on these bits. A structured way to do this is to use
+    the <f DEBUGZONE> macro to associate zones with bits, and then
+    use the <f DEBUGMSG> function to associate each debug message
+    with a zone. Type ? in the shell to see how to change zones 
+    dynamically from the shell which uses the <f SetDbgZone> function
+    to implement the change. See the example below for general zone
+    usage.
+    
+    <b Asserts>: The kernel also provides for simple asserts. See
+    <f DEBUGCHK> for details.
+    
+@ex     An example of using debug zones |
+    // Declare a DBGPARAM structure & give names to all used zones
+    DBGPARAM dpCurSettings = { L"foodll", {
+        L"Info",       L"Validate",  L"bar",       L"random",
+        L"Undefined",  L"Undefined", L"Undefined", L"Undefined",
+        L"Undefined",  L"Undefined", L"Undefined", L"Undefined",
+        L"Undefined",  L"Undefined", L"Undefined", L"Undefined" },
+        0x00000000 };
+        
+    // Associate bits with a zone 
+    // these should match up with the text strings above!
+    #define ZONE_INFO       DEBUGZONE(0)
+    #define ZONE_VALIDATE   DEBUGZONE(1)
+
+    // Register : Assume this is a DLL 
+    // A Process would do the same in their libmain
+    BOOL DllEntry (HANDLE hinstDLL, DWORD fdwReason, LPVOID lpv) {
+        if ( fdwReason == DLL_PROCESS_ATTACH ) {
+        DEBUGREGISTER(hinstDLL);
+        }
+        ...
+    }
+
+    // Use the defined zone in debug messages
+    DEBUGMSG (ZONE_INFO, (L"This is an illustrative messages only!"));
+
+    // Or use a zone to turn execution of some code on & off
+    if (ZONE_VALIDATE) {
+        // validate some stuff ...
+    }            
+            
+@xref   
+    <f DEBUGMSG> <tab> <f RETAILMSG> <tab> <f ERRORMSG> <tab> <f DEBUGCHK> <tab>
+    <f DEBUGREGISTER> <tab> <f DEBUGZONE> <tab> <t DBGPARAM> <tab>
+    <f RegisterDebugZones> <tab> <f SetDbgZone>
+*/ 
+
+#include "kernel.h"
+
+int 
+NKwvsprintfW(
+    LPWSTR lpOut,
+    LPCWSTR lpFmt,
+    va_list lpParms,
+    int maxchars
+    );
+
+extern CRITICAL_SECTION ODScs, PhysCS;
+
+extern BOOL fSysStarted;
+extern BOOL g_cInterruptsOff;    // this indicates KD had turned interrupts off
+
+extern BOOL SendAndReceiveDebugInfo(PPROCESS pprc, PTHREAD pth, LPCVOID lpBuffer, DWORD dwccbBuffer, LPDWORD pdwContinueStatus);
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+VOID WINAPI 
+OutputDebugStringW(
+    LPCWSTR str
+    ) 
+{
+    PPROCESS pprc = pActvProc;
+    PTHREAD pth = pCurThread;
+    BOOL fGetODScs = FALSE, fLockPages = FALSE;
+    int len;
+    DWORD dwLastErr = 0;
+
+    // increase debug count to indicate we're in ODS
+    if (!str)
+        str = __TEXT("(NULL)");
+
+    // forces the string to be paged in if not already
+    len = (NKwcslen(str)+1)*sizeof(WCHAR);
+
+    if (pth) {
+
+        dwLastErr = KGetLastError (pth);
+        pth->bDbgCnt ++;
+
+        // not in kcall and not in power handler thread
+        if (!InSysCall () && !IsInPwrHdlr ()) {
+        
+            if (pprc->pDbgrThrd && pth->hDbgEvent && IsValidUsrPtr(str, len, FALSE)) {
+                DEBUG_EVENT dbginfo = {0};
+                dbginfo.dwDebugEventCode = OUTPUT_DEBUG_STRING_EVENT;
+                dbginfo.dwProcessId = dwActvProcId;
+                dbginfo.dwThreadId = dwCurThId;
+                dbginfo.u.DebugString.lpDebugStringData = (LPBYTE)str;
+                dbginfo.u.DebugString.fUnicode = TRUE;
+                dbginfo.u.DebugString.nDebugStringLength = (WORD) (NKwcslen(str)+1)*2;
+
+                // send the debug info to the debugger and get the response back
+                SendAndReceiveDebugInfo(pprc, pth, &dbginfo, sizeof(dbginfo), NULL);    
+            }
+
+            // don't need to get ODScs if KITL started as KITL will be control serialization
+            fGetODScs = (OEMWriteDebugString == g_pNKGlobal->pfnWriteDebugString);
+            fLockPages = (1 == pth->bDbgCnt) && !IsKernelVa ((LPVOID)str);
+
+        }
+    }
+
+    // Lock page if we need to
+    if (fLockPages)
+        VMLockPages(pprc, (LPVOID)str,len,0,0);
+
+    if (fGetODScs)
+        EnterCriticalSection(&ODScs);
+
+    if (g_cInterruptsOff) {
+        OEMWriteDebugString ((unsigned short *)str);
+    } else {
+        g_pNKGlobal->pfnWriteDebugString ((unsigned short *)str);
+    }
+    CELOG_OutputDebugString(dwActvProcId, dwCurThId, str);
+
+    if (fGetODScs)
+        LeaveCriticalSection(&ODScs);
+
+    if (fLockPages)
+        VMUnlockPages (pprc, (LPVOID)str,len);
+
+    // decrement debug count to indicate we're out of ODS
+    if (pth) {
+        pth->bDbgCnt --;
+        KSetLastError (pth, dwLastErr);
+    }
+
+
+//    KITLOutputDebugString ("-ODS 0x%x\r\n", dwCurThId);
+}
+
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+int 
+InputDebugCharW(void) 
+{
+    int retvalue;
+    if (!InSysCall())
+        EnterCriticalSection(&ODScs);
+    retvalue = OEMReadDebugByte ();
+    if (!InSysCall())
+        LeaveCriticalSection(&ODScs);
+    return retvalue;
+}
+
+//------------------------------------------------------------------------------
+// special version if we're on KStack
+//------------------------------------------------------------------------------
+static VOID _NKvDbgPrintfW(LPCWSTR lpszFmt, va_list lpParms) {
+    static WCHAR rgchBuf[384];
+    NKwvsprintfW(rgchBuf, lpszFmt, lpParms, sizeof(rgchBuf)/sizeof(WCHAR));
+    OutputDebugStringW(rgchBuf);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+#if (_MSC_VER >= 1300)
+__declspec(noinline) // Too much KStack is used if this is inlined
+#endif
+static VOID NKvDbgPrintfWOnStack(LPCWSTR lpszFmt, va_list lpParms) 
+{
+    WCHAR rgchBuf[384];
+
+    NKwvsprintfW (rgchBuf, lpszFmt, lpParms, sizeof(rgchBuf)/sizeof(WCHAR));
+
+    // don't need to call LockPages since it's on stack.
+    if (pCurThread) {
+        pCurThread->bDbgCnt ++;
+    }
+    OutputDebugStringW(rgchBuf);
+    if (pCurThread) {
+        pCurThread->bDbgCnt --;
+    }
+}
+
+
+//------------------------------------------------------------------------------
+//
+//  @doc    EXTERNAL KERNEL
+//  @func   VOID | NKDbgPrintf | Prints debug messages
+//  @parm   LPWSTR | lpszFmt | Printf style formatting string
+//  @parmvar Variable argument list
+//  @comm   Should not be used directly - macros like <f DEBUGMSG> should
+//      be used to print messages. This function will format the
+//      debug string into a buffer and then log it according to the
+//      current logging paramters. If terminal logging is on it
+//      outputs this to the debug terminal, and if file logging
+//      is on it stores it to the file peg.log on the host PC.
+//      
+//      <b WARNING>: The message being output must be smaller than
+//      256 bytes - ie 128 unicode characters.
+//  @xref   <f DEBUGMSG>
+//
+//------------------------------------------------------------------------------
+void WINAPIV 
+NKDbgPrintfW(
+    LPCWSTR lpszFmt,
+    ...
+    )  
+{
+    va_list arglist;
+    va_start(arglist, lpszFmt);
+    NKvDbgPrintfW(lpszFmt, arglist);
+    va_end(arglist);
+}
+
+VOID NKvDbgPrintfW (LPCWSTR lpszFmt, va_list lpParms) 
+{
+    if (fSysStarted && !InSysCall ())
+        NKvDbgPrintfWOnStack (lpszFmt, lpParms);
+    else
+        _NKvDbgPrintfW(lpszFmt, lpParms);
+}
+

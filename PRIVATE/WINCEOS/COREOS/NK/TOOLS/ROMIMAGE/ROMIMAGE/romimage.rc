@@ -1,0 +1,43 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dummy PID Resource for PB TimeBomb
+//
+// The TTLl size of this binary data is PID_BUFFER_SIZE
+// PBPROMPC occurs at offset cbCDEncrypt
+// Uncomment PBPROMPC to test the code.
+// The default is to not be defined in the RC data, 
+// so this is an Evaluation PC copy.
+//
+#include "pbtimebomb.h"
+
+PID_RES_NUM PID_RES_TYPE
+{ 
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, /* PBPROMPC,*/
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 0x0304, 0x0506, 0x0708, 0x090A,
+0x0102, 
+}

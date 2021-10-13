@@ -1,0 +1,306 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+//------------------------------------------------------------------------------
+// File: DShowFix.idl
+//
+// Desc: Define latest DShow interfaces that don't exist on CE 5.0
+//
+//------------------------------------------------------------------------------
+
+import "unknwn.idl";
+import "objidl.idl";	// for IPersist (IFilter's root)
+
+import "strmif.idl";
+
+
+// some GUIDS that aren't part of the standard CE 5.0 dshow headers
+
+cpp_quote ("//  {afb6c280-2c41-11d3-8a60-0000f81e0e4a}")
+cpp_quote ("DEFINE_GUID(CLSID_MPEG2Demultiplexer,")
+cpp_quote ("0xafb6c280, 0x2c41, 0x11d3, 0x8a, 0x60, 0x00, 0x00, 0xf8, 0x1e, 0x0e, 0x4a);")
+
+cpp_quote ("// 138AA9A4-1EE2-4c5b-988E-19ABFDBC8A11")
+cpp_quote ("DEFINE_GUID(MEDIASUBTYPE_MPEG2_TRANSPORT_STRIDE,")
+cpp_quote ("0x138aa9a4, 0x1ee2, 0x4c5b, 0x98, 0x8e, 0x19, 0xab, 0xfd, 0xbc, 0x8a, 0x11);")
+
+cpp_quote ("// {3ae86b20-7be8-11d1-abe6-00a0c905f375}")
+cpp_quote ("DEFINE_GUID(CLSID_MMSPLITTER,")
+cpp_quote ("0x3ae86b20, 0x7be8, 0x11d1, 0xab, 0xe6, 0x00, 0xa0, 0xc9, 0x05, 0xf3, 0x75);")
+
+
+// forward declarations - these are the interfaces declared in this file
+
+interface IAMPushSource;
+interface IAMLatency;
+interface IMpeg2Demultiplexer ;
+interface IMPEG2StreamIdMap ;
+interface IEnumStreamIdMap ;
+
+
+//---------------------------------------------------------------------
+//
+// IAMPushSource interface
+//
+// Provides a means for source filters to describe information about the
+// data that they source, such as whether the data is live or not, and
+// what type of clock was used for timestamps. This information may be
+// needed by other clocks in the graph in order to provide accurate
+// synchronization. Also provides a way to specify an offset value for
+// the filter to use when timestamping the streams it sources. Provides
+// support for the IAMLatency interface as well.
+//
+//---------------------------------------------------------------------
+
+enum _AM_PUSHSOURCE_FLAGS {
+
+    //
+    // The default assumption is that the data is from a live source,
+    // time stamped with the graph clock, and the source does not
+    // attempt to rate match the data it delivers.
+    // The following flags can be used to override this assumption.
+    //
+
+    // capability flags
+    AM_PUSHSOURCECAPS_INTERNAL_RM        = 0x00000001,  // source provides internal support for rate matching
+    AM_PUSHSOURCECAPS_NOT_LIVE           = 0x00000002,  // don't treat source data as live
+    AM_PUSHSOURCECAPS_PRIVATE_CLOCK      = 0x00000004,  // source data timestamped with clock not
+                                                        // exposed to the graph
+
+    // request flags, set by user via SetPushSourceFlags method
+    AM_PUSHSOURCEREQS_USE_STREAM_CLOCK   = 0x00010000,  // source was requested to timestamp
+                                                        // using a clock that isn't the graph clock
+
+    AM_PUSHSOURCEREQS_USE_CLOCK_CHAIN    = 0x00020000,  // source requests reference clock chaining
+};
+
+//
+// Used to set a source filter to run in a "live" mode.
+//
+[
+object,
+    uuid(F185FE76-E64E-11d2-B76E-00C04FB6BD3D),
+    pointer_default(unique)
+]
+interface IAMPushSource : IAMLatency
+{
+    // used to discover push source's capabilities.
+    // may be any combination of the AM_PUSHSOURCE_FLAGS flags.
+    HRESULT GetPushSourceFlags (
+        [out] ULONG *pFlags
+    );
+
+    // used to set request flags for a push source.
+    // may be a combination of the AM_PUSHSOURCE_REQS_xxx flags.
+    HRESULT SetPushSourceFlags (
+        [in]  ULONG Flags
+    );
+
+    // specify an offset for push source time stamps
+    HRESULT SetStreamOffset (
+        [in]  REFERENCE_TIME  rtOffset
+    );
+
+    // retrieve the offset this push source is using
+    HRESULT GetStreamOffset (
+        [out] REFERENCE_TIME  *prtOffset
+    );
+
+    // retrieve the maximum stream offset this push source thinks it can support
+    HRESULT GetMaxStreamOffset (
+        [out] REFERENCE_TIME  *prtMaxOffset
+    );
+
+    // allows the filter graph to tell a push source the maximum latency allowed on the graph
+    // this allows pins like the video capture preview pin to be more efficient with the amount
+    // of buffering required to support the maximum graph latency
+    HRESULT SetMaxStreamOffset (
+        [in] REFERENCE_TIME  rtMaxOffset
+    );
+};
+
+
+//---------------------------------------------------------------------
+//
+// IAMLatency interface
+//
+// Allows a filter to report the expected latency associated with a data
+// stream flowing from its input to output pin. Supported on output pins.
+//
+//---------------------------------------------------------------------
+
+[
+object,
+    uuid(62EA93BA-EC62-11d2-B770-00C04FB6BD3D),
+    pointer_default(unique)
+]
+interface IAMLatency : IUnknown
+{
+    HRESULT GetLatency(
+        [in]   REFERENCE_TIME  *prtLatency
+    );
+}
+
+
+enum _AM_INTF_SEARCH_FLAGS {
+    AM_INTF_SEARCH_INPUT_PIN  = 0x00000001,   // search input pins
+    AM_INTF_SEARCH_OUTPUT_PIN = 0x00000002,   // search output pins
+    AM_INTF_SEARCH_FILTER     = 0x00000004    // search filters
+};
+
+
+
+/*++
+    IMpeg2Demultiplexer
+
+    This interface is implemented by the MPEG-2 Demultiplexer filter,
+    irrespective of program vs. transport stream splitting functionality.
+--*/
+[
+    object,
+    local,
+    uuid (436eee9c-264f-4242-90e1-4e330c107512),
+    pointer_default(unique)
+]
+interface IMpeg2Demultiplexer : IUnknown
+{
+    /*++
+        ------------------------------------------------------------------------
+        purpose:    Creates an output pin of the specified media type.
+
+        pMediaType      media type specifier for the new pin
+        pszPinName      pin name; cannot be a duplicate of an existing pin
+        ppIPin          IPin interface pointer to the newly created pin
+    --*/
+    HRESULT
+    CreateOutputPin (
+        [in]    AM_MEDIA_TYPE * pMediaType,
+        [in]    LPWSTR          pszPinName,
+        [out]   IPin **         ppIPin
+        ) ;
+
+    /*++
+        ------------------------------------------------------------------------
+        purpose:    Updates the media type of the specified output pin.  If no
+                      connection exists, the media type is updated always.  If
+                      the pin is connected, the success/failure of the call will
+                      depend on downstream input pin's accetance/rejection of
+                      the specified media type, and subsequent success/failure
+                      of a reconnect.
+
+        pszPinName      pin name
+        pMediaType      new media type specifier
+    --*/
+    HRESULT
+    SetOutputPinMediaType (
+        [in]    LPWSTR          pszPinName,
+        [in]    AM_MEDIA_TYPE * pMediaType
+        ) ;
+
+    /*++
+        ------------------------------------------------------------------------
+        purpose:    Deletes the specified output pin.
+
+        pszPinName      pin name
+    --*/
+    HRESULT
+    DeleteOutputPin (
+        [in]    LPWSTR  pszPinName
+        ) ;
+} ;
+
+//---------------------------------------------------------------------
+// IEnumStreamIdMap interface
+//---------------------------------------------------------------------
+
+cpp_quote("#define MPEG2_PROGRAM_STREAM_MAP                 0x00000000")
+cpp_quote("#define MPEG2_PROGRAM_ELEMENTARY_STREAM          0x00000001")
+cpp_quote("#define MPEG2_PROGRAM_DIRECTORY_PES_PACKET       0x00000002")
+cpp_quote("#define MPEG2_PROGRAM_PACK_HEADER                0x00000003")
+cpp_quote("#define MPEG2_PROGRAM_PES_STREAM                 0x00000004")
+cpp_quote("#define MPEG2_PROGRAM_SYSTEM_HEADER              0x00000005")
+
+cpp_quote("#define SUBSTREAM_FILTER_VAL_NONE                0x10000000")
+
+typedef struct {
+    ULONG   stream_id ;                     //  mpeg-2 stream_id
+    DWORD   dwMediaSampleContent ;          //  #define'd above
+    ULONG   ulSubstreamFilterValue ;        //  filtering value
+    int     iDataOffset ;                   //  offset to elementary stream
+} STREAM_ID_MAP ;
+
+/*++
+    Enumerates the StreamIds mapped on a pin
+--*/
+[
+    object,
+    local,
+    uuid (945C1566-6202-46fc-96C7-D87F289C6534),
+    pointer_default(unique)
+]
+interface IEnumStreamIdMap : IUnknown
+{
+    HRESULT
+    Next (
+        [in]                            ULONG           cRequest,
+        [in, out, size_is (cRequest)]   STREAM_ID_MAP * pStreamIdMap,
+        [out]                           ULONG *         pcReceived
+        ) ;
+
+    HRESULT
+    Skip (
+        [in]    ULONG   cRecords
+        ) ;
+
+    HRESULT
+    Reset (
+        ) ;
+
+    HRESULT
+    Clone (
+        [out]   IEnumStreamIdMap **  ppIEnumStreamIdMap
+        ) ;
+} ;
+
+/*++
+    Implemented on the output pin.
+
+    Provides the ability to map/unmap a stream_id to/from an output pin.
+--*/
+[
+    object,
+    local,
+    uuid (D0E04C47-25B8-4369-925A-362A01D95444),
+    pointer_default(unique)
+]
+interface IMPEG2StreamIdMap : IUnknown
+{
+    HRESULT
+    MapStreamId (
+        [in]    ULONG   ulStreamId,                 //  mpeg-2 stream_id
+        [in]    DWORD   MediaSampleContent,         //  #define'd above IEnumStreamIdMap
+        [in]    ULONG   ulSubstreamFilterValue,     //  filter value
+        [in]    int     iDataOffset                 //  elementary stream offset
+        ) ;
+
+    HRESULT
+    UnmapStreamId (
+        [in]    ULONG   culStreamId,                //  number of stream_id's in pulStreamId
+        [in]    ULONG * pulStreamId                 //  array of stream_id's to unmap
+        ) ;
+
+    HRESULT
+    EnumStreamIdMap (
+        [out]   IEnumStreamIdMap ** ppIEnumStreamIdMap
+        ) ;
+} ;
+

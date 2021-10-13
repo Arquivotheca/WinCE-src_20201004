@@ -1,0 +1,125 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+//
+// String table for the SiCrypt Test Card
+//
+#include "sicryptrc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "sicryptrc.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+STRINGTABLE
+BEGIN     IDS_SICRYPT_SETINCORRECTPROTOCOLT0  "Try to set incorrect protocol T=0"
+     IDS_SICRYPT_SETPROTOCOLFAILED  "Set protocol failed"
+     IDS_SICRYPT_SETPROTOCOLT1  "Set protocol T=1"
+     IDS_SICRYPT_INITCARD  "Initialize card state"
+     IDS_SICRYPT_WRITEBINARY "Write binary %3d Byte(s)"
+     IDS_SICRYPT_SELECTFILE7 "Select file 0007"
+     IDS_SICRYPT_READBINARY  "Read  binary %3d Byte(s)"
+     IDS_SICRYPT_PERFISGOOD "Reader performance is good (%u sec)"
+     IDS_SICRYPT_PERFISOK "Reader performance is average (%u sec)"
+     IDS_SICRYPT_PERFISBAD "Reader performance is bad (%u sec)"
+     IDS_SICRYPT_WRITE55  "Write binary %3d Byte(s) Pattern 55h"
+     IDS_SICRYPT_READ55  "Read  binary %3d Byte(s) Pattern 55h"
+     IDS_SICRYPT_WRITEAA  "Write binary %3d Byte(s) Pattern AAh"
+     IDS_SICRYPT_READAA  "Read  binary %3d Byte(s) Pattern AAh"
+     IDS_SICRYPT_WRITE00 "Write binary %3d Byte(s) Pattern 00h"
+     IDS_SICRYPT_READ00 "Read binary %3d Byte(s) Pattern 00h"
+     IDS_SICRYPT_WRITEFF "Write binary %3d Byte(s) Pattern FFh"
+     IDS_SICRYPT_READFF "Read binary %3d Byte(s) Pattern FFh"
+     IDS_SICRYPT_SELECTNOFILE  "Select non-existent file"
+     IDS_SICRYPT_SELECTMF  "Select MF wite 4 byte command"
+     IDS_SICRYPT_SELECT77 "SELECT command path with path too short"
+     IDS_SICRYPT_SELECTWRONGLC  "SELECT command path with wrong Lc"
+     IDS_SICRYPT_SELECTTOOSHORT  "SELECT command too short"
+     IDS_SICRYPT_ADMINAUTH  "Authenticate with Admin PIN"
+     IDS_SICRYPT_CREATE5555  "Create directory 5555  from the MF"
+     IDS_SICRYPT_SELECT5555  "Select directory 5555 from MF"
+     IDS_SICRYPT_CREATE5656 "Create subdirectory 5656 of directory 5555"
+     IDS_SICRYPT_SELECT5656 "Select subdirectory 5656 of directory 5555"
+     IDS_SICRYPT_CREATE5757 "Create file 5757 in subdirectory 5656"
+     IDS_SICRYPT_SELECTFILEBYPATH "Select file by full path select command"
+     IDS_SICRYPT_WRITE8 "Test write 8 bytes to file"
+     IDS_SICRYPT_VERIFY8 "Verify read 8 bytes from file"
+     IDS_SICRYPT_DELETESELECTED "Cleanup: Erase selected file / directory"
+     IDS_SICRYPT_VERIFYNOTFOUND "Cleanup: Verify file not found"
+     IDS_SICRYPT_SELECTDIRECTORY "Cleanup: Select directory by path"
+     IDS_SICRYPT_CLEANUPSELECT7 "Cleanup: Select test file 0007"
+     IDS_SICRYPT_CARDTYPENAME "PC/SC Compliance Test Card 4 (Infineon)"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SICRYPT_NO_TEST        "Test not performed"
+    IDS_SICRYPT_INCORRECT_DATA """Smart card received incorrect data"""
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED

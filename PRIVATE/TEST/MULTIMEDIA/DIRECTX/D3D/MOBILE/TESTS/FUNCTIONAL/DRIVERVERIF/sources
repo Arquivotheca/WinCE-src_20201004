@@ -1,0 +1,63 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+TARGETNAME=D3DM_DriverVerif
+TARGETTYPE=DYNLINK
+SYNCHRONIZE_DRAIN=1
+
+INCLUDES=                                                                 \
+	..\..\..\includes;                                                    \
+	..\..\..\..\..\inc;                                                   \
+	..\..\..\..\..\..\..\common\inc;                                      \
+	$(INCLUDES)                                                           \
+
+SOURCES=\
+    Test.cpp                                                              \
+    DriverVerif.cpp                                                       \
+    KatoUtils.cpp                                                         \
+
+SOURCELIBS=$(SOURCELIBS)                                                  \
+#
+# D3DM Test Case Libraries
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBlendTestCases.lib       \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMResManTestCases.lib      \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMStencilTestCases.lib     \
+#
+#
+# D3DM Test Utility Libraries
+#
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBlendTools.lib           \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMBufferTools.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMInitializer.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMMatrixManip.lib          \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMTestWindow.lib           \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\QAD3DMX.lib                  \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\D3DMDebugOutput.lib          \
+#
+#
+# Test Utility Libraries
+#
+#
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\CaptureBMP.lib               \
+
+
+
+TARGETLIBS=$(TARGETLIBS)                                                  \
+       $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib                   \
+       $(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\uuid.lib                      \
+       $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib                     \
+
+
+
+RELEASETYPE=CETK

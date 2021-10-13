@@ -1,0 +1,2 @@
+public\CEBase\cesysgen\sdk\inc\upnphost.h
+public\CEBase\cesysgen\sdk\inc\upnphost.idl

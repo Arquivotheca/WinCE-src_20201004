@@ -1,0 +1,1 @@
+159#\Windows\authmat.exe -v -z -wHost 10.10.0.2 -wPort 33331 -wSSID CE_Cisco_WPA2_AuthMatrix -wAuth open -wEncr wep -wKey 0123456789 -tAPNames WPA -tConnTime 300

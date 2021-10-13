@@ -1,0 +1,48 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this source code is subject to the terms of the Microsoft shared
+source or premium shared source license agreement under which you licensed
+this source code. If you did not accept the terms of the license agreement,
+you are not authorized to use this source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the SOURCE.RTF on your install media or the root of your tools installation.
+THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+!endif
+
+TARGETNAME=AuthMatrix
+TARGETTYPE=DYNLINK
+
+RELEASETYPE=CETK
+
+SOURCES=\
+    TuxMain.cpp \
+	
+INCLUDES=\
+    $(_PRIVATEROOT)\test\net\wireless\WiFiTests\AuthMatrix\inc; \
+    $(_PRIVATEROOT)\test\net\wireless\WiFiTests\inc; \
+    $(_PRIVATEROOT)\test\net\wireless\common\APController\inc; \
+    $(_PRIVATEROOT)\test\net\wireless\common\inc; \
+    $(_PRIVATEROOT)\test\net\wireless\inc; \
+    $(_PRIVATEROOT)\test\net\common\inc; \
+    $(_PUBLICROOT)\common\sdk; \
+    $(_PUBLICROOT)\common\oak\; \
+    $(INCLUDES) \
+
+DLLENTRY=_DllMainCRTStartup
+
+TARGETLIBS=\
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\coredll.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\iphlpapi.lib \
+	$(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\wzcsapi.lib \
+	$(_COMMONSDKROOT)\lib\$(_CPUINDPATH)\ws2.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\kato.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netmain.lib \
+	$(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\backchannel.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\cmnprint.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\netall.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\WiFiTests.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\AuthMatLib.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\APController.lib \
+    $(_PROJECTOAKROOT)\lib\$(_CPUINDPATH)\WiFUtils.lib \

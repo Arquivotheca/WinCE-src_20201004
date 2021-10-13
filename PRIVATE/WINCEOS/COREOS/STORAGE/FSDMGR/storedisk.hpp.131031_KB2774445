@@ -1,0 +1,171 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+#ifndef __STORAGE__
+#define __STORAGE__
+
+#include <partdrv.h>
+#include <cdioctl.h>
+
+class BlockDevice_t;
+class PartitionDriver_t;
+class PartitionDisk_t;
+
+#define STOREHANDLE_TYPE_SEARCH     (1 << 0)
+#define STOREHANDLE_TYPE_CURRENT    (1 << 1)
+#define STOREHANDLE_TYPE_INTERNAL   (1 << 2)
+
+#define STORE_FLAG_MOUNTED          (1 << 31)
+#define STORE_FLAG_MEDIACHANGED     (1 << 30)
+#define STORE_FLAG_DETACHED         (1 << 29)
+#define STORE_FLAG_REFRESHED        (1 << 28)
+#define STORE_FLAG_ACTIVITYTIMER    (1 << 27)
+#define STORE_FLAG_DISABLE_ON_SUSPEND   (1 << 26)
+#define STORE_FLAG_MEDIA_DETACHED   (1 << 25)
+#define STORE_FLAG_MEDIA_DETACH_COMPLETE (1 << 24)
+
+#define STORE_HANDLE_SIG 0x00596164
+#define PART_HANDLE_SIG  0x64615900
+
+class  StoreHandle_t
+{
+public:
+    DWORD dwSig;
+    class StoreDisk_t *pStore;
+    class PartitionDisk_t *pPartition;
+    HANDLE hProc;
+    DWORD dwFlags;
+    StoreHandle_t *pNext;
+public:
+    StoreHandle_t() :
+    dwSig(STORE_HANDLE_SIG),
+    pStore(NULL),
+    pPartition(NULL),
+    hProc(NULL),
+    dwFlags(0),
+    pNext(NULL)
+    {
+    }
+};     
+
+//typedef StoreHandle_t STOREHANDLE, *PSTOREHANDLE, SEARCHSTORE, *PSEARCHSTORE, SEARCHPARTITION, *PSEARCHPARTITION;
+
+class StoreDisk_t : public LogicalDisk_t
+{
+public:
+    HANDLE m_hDisk;
+    HANDLE m_hStore;
+    TCHAR  m_szDeviceName[DEVICENAMESIZE];
+    TCHAR  m_szOldDeviceName[DEVICENAMESIZE];
+    TCHAR  m_szStoreName[STORENAMESIZE];
+    TCHAR  m_szFolderName[FOLDERNAMESIZE];
+    TCHAR  m_szPartDriverName[32];
+    TCHAR  m_szPartDriver[MAX_PATH];
+    TCHAR  m_szRootRegKey[MAX_PATH];
+    TCHAR  m_szDefaultFileSystem[MAX_PATH];
+    GUID   m_DeviceGuid;
+    DWORD  m_dwPartCount;
+    DWORD  m_dwMountCount;
+    DWORD m_dwPowerCount;
+    DWORD  m_dwFlags;
+    TCHAR  m_szActivityName[MAX_PATH];
+    HANDLE m_hActivityEvent;
+    DWORD  m_dwDefaultMountFlags;
+    DWORD  m_dwRefCount;
+    PBYTE  m_pStorageId;
+public:
+    PartitionDriver_t *m_pPartDriver;
+    PartitionDisk_t *m_pPartitionList;
+    PD_STOREINFO m_si;
+    CRITICAL_SECTION m_cs;
+    STORAGEDEVICEINFO m_sdi;
+    DISK_INFO m_di;
+    BlockDevice_t *m_pBlockDevice;
+    DWORD m_dwStoreId;
+public:    
+    StoreDisk_t *m_pNextStore;
+    PSTOREHANDLE m_pRootHandle;
+public:
+   StoreDisk_t(const WCHAR *szDeviceName, const GUID* pDeviceGuid);
+
+   virtual ~StoreDisk_t();
+public:
+    inline void Lock()
+    {
+        EnterCriticalSection( &m_cs);
+    }
+    inline void Unlock()
+    {
+        LeaveCriticalSection( &m_cs);
+    }    
+    BOOL SetBlockDevice(const TCHAR *szDriverName); 
+
+    void SwapWithStore (StoreDisk_t* pNewStore);
+
+public:
+    // Required LogicalDisk_t virtual functions.
+    virtual LRESULT DiskIoControl (DWORD IoControlCode, void* pInBuf, 
+            DWORD InBufBytes, void* pOutBuf, DWORD nOutBufBytes, 
+            DWORD* pBytesReturned, OVERLAPPED* pOverlapped);
+    // Sets an activity timer event associated with the logical disk, if any.
+    virtual void SignalActivity ();
+    // Query the name of the disk.
+    virtual LRESULT GetName (WCHAR* pDiskName, DWORD NameChars);
+    // Return the true device handle for this disk (if there is one).    
+    virtual HANDLE GetDeviceHandle ();    
+    
+public:   
+    BOOL GetPartitionDriver(HKEY hKeyStore, HKEY hKeyDevice);
+    BOOL GetStoreSettings();
+    DWORD MountStore(HANDLE hStore, BOOL bMount=TRUE);
+    void MediaDetachFromStore ();
+    void MediaAttachToStore ();
+    void MediaAttachToPartition (PartitionDisk_t* pPartition);
+    void MediaDetachFromPartition (PartitionDisk_t* pPartition);
+    void EnableStore ();
+    void DisableStore ();
+    BOOL UnmountStore(BOOL bDelete = TRUE);
+    DWORD OpenDisk();
+    void GetPartitionCount();
+    void LoadExistingPartitions(BOOL bMount, BOOL bFormat);
+    void AddPartition(PartitionDisk_t *pPartition);
+    void DeletePartition(PartitionDisk_t *pPartition);
+    PartitionDisk_t *FindPartition(LPCTSTR szPartitionName);
+    BOOL LoadPartition(LPCTSTR szPartitionName, BOOL bMount, BOOL bFormat);
+    DWORD FormatStore();
+    DWORD CreatePartition(LPCTSTR szPartitionName, BYTE bPartType, SECTORNUM snNumSectors, BOOL bAuto);
+    DWORD DeletePartition(LPCTSTR szPartitionName);
+    DWORD OpenPartition(LPCTSTR szPartitionName, HANDLE *pbHandle, HANDLE hProc);
+    DWORD MountPartition(PartitionDisk_t *pPartition);
+    BOOL IsValidPartition(PartitionDisk_t *pPartition);
+    DWORD UnmountPartition(PartitionDisk_t *pPartition);
+    DWORD RenameParttion(PartitionDisk_t *pPartition, LPCTSTR szNewName);
+    DWORD SetPartitionAttributes(PartitionDisk_t *pPartition, DWORD dwAttrs);
+    DWORD SetPartitionSize(PartitionDisk_t *pPartition, SECTORNUM snNumSectors);
+    BOOL GetStoreInfo(STOREINFO *pInfo);
+    DWORD GetPartitionInfo(PartitionDisk_t *pPartition, PPARTINFO info);
+    DWORD FormatPartition(PartitionDisk_t *pPartition, BYTE bPartType, BOOL bAuto);
+    DWORD FindFirstPartition(PPARTINFO pInfo, HANDLE *pHandle, HANDLE hProc);
+    DWORD FindNextPartition(PSEARCHPARTITION pSearch, PPARTINFO pInfo);
+    DWORD FindClosePartition(PSEARCHPARTITION pSearch);
+    DWORD StoreIoControl(PartitionDisk_t *pPartition, DWORD dwIoControlCode, PVOID pInBuf, DWORD nInBufSize, PVOID pOutBuf, DWORD nOutBufSize, PDWORD pBytesReturned);
+    void PowerOff();
+    void PowerOn();
+    DWORD GetStorageId(PVOID pOutBuf, DWORD nOutBufSize, DWORD *pBytesReturned);
+    DWORD GetDeviceInfo(STORAGEDEVICEINFO *pDeviceInfo, DWORD *pBytesReturned);
+    BOOL CompareStores (StoreDisk_t *pStore);
+
+};
+
+
+#endif /* __STORAGEMGR__ */
+

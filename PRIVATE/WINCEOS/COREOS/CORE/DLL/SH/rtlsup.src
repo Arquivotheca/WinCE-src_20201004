@@ -1,0 +1,474 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this source code is subject to the terms of the Microsoft shared
+; source or premium shared source license agreement under which you licensed
+; this source code. If you did not accept the terms of the license agreement,
+; you are not authorized to use this source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the SOURCE.RTF on your install media or the root of your tools installation.
+; THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+;
+	.HEADING "Interlock memory operations"
+	.FORM LINES=55
+;++
+;
+;
+; Module Name:
+;
+;    rtlsup.src
+;
+; Abstract:
+;
+;    This module implements the SEH support functions
+;
+; Environment:
+;
+;    Kernel mode or User mode.
+;
+; Revision History:
+;
+;--
+
+    .list OFF
+	.include "ksshx.h"
+    .list ON
+
+EXCEPTION_FLAG_UNHANDLED:   .equ  h'80000000
+
+; only S and T bit needs to be restored
+SR_T_BIT:                   .equ  h'1
+SR_S_BIT:                   .equ  h'2
+
+
+        .import _xxx_RaiseException
+        .import _DoRtlDispatchException
+
+;
+; Define call frame for calling exception handlers.
+;
+
+CfArg:          .equ    0                       ; argument save area for exception handlers
+CfRa:           .equ    16                      ; saved return address (4 DWORDS for calling convention)
+CfFrameLength   .equ    (CfRa + 4)
+
+CfA0:           .equ    (CfFrameLength + 0)     ; caller argument save area
+CfA1:           .equ    (CfFrameLength + 4)
+CfA2:           .equ    (CfFrameLength + 8)
+CfA3:           .equ    (CfFrameLength + 12)
+CfExr:          .equ    (CfFrameLength + 16)    ; address of exception routine
+
+;++
+;
+; EXCEPTION_DISPOSITION
+; RtlpExecuteHandlerForException (
+;    IN PEXCEPTION_RECORD ExceptionRecord,
+;    IN ULONG EstablisherFrame,
+;    IN OUT PCONTEXT ContextRecord,
+;    IN OUT PDISPATCHER_CONTEXT DispatcherContext,
+;    IN PEXCEPTION_ROUTINE ExceptionRoutine)
+;
+; Routine Description:
+;    This function allocates a call frame, stores the establisher frame
+;    pointer in the frame, establishes an exception handler, and then calls
+;    the specified exception handler as an exception handler. If a nested
+;    exception occurs, then the exception handler of this function is called
+;    and the establisher frame pointer is returned to the exception dispatcher
+;    via the dispatcher context parameter. If control is returned to this
+;    routine, then the frame is deallocated and the disposition status is
+;    returned to the exception dispatcher.
+;
+; Arguments:
+;    ExceptionRecord (r4) - Supplies a pointer to an exception record.
+;
+;    EstablisherFrame (r5) - Supplies the frame pointer of the establisher
+;       of the exception handler that is to be called.
+;
+;    ContextRecord (r6) - Supplies a pointer to a context record.
+;
+;    DispatcherContext (r7) - Supplies a pointer to the dispatcher context
+;       record.
+;
+;    ExceptionRoutine (4 * 4(r15)) - supplies a pointer to the exception handler
+;       that is to be called.
+;
+; Return Value:
+;    The disposition value returned by the specified exception handler is
+;    returned as the function value.
+;--
+
+        EXCEPTION_HANDLER RtlpExceptionHandler
+
+        NESTED_ENTRY _RtlpExecuteHandlerForException
+        sts     PR, @-r15               ; save return address
+        add     #CfArg-CfRa, r15        ; allocate argument area
+
+        PROLOG_END
+
+        mov.l   @(CfExr,r15), r0        ; (r0) = address of exception routine
+        mov.l   r7, @(CfA3,r15)         ; save address of dispatcher context
+        jsr     @r0
+        nop
+        mov.l   @(CfRa,r15), r3         ; (r3) = return address
+        lds     r3, PR                  ; restore return address
+        rts                             ; return
+        add     #CfFrameLength, r15     ;  & deallocate stack frame
+
+        .endf
+
+;++
+; EXCEPTION_DISPOSITION
+; RtlpExceptionHandler (
+;    IN PEXCEPTION_RECORD ExceptionRecord,
+;    IN ULONG EstablisherFrame,
+;    IN OUT PCONTEXT ContextRecord,
+;    IN OUT PDISPATCHER_CONTEXT DispatcherContext
+;    )
+;
+; Routine Description:
+;    This function is called when a nested exception occurs. Its function
+;    is to retrieve the establisher frame pointer from its establisher's
+;    call frame, store this information in the dispatcher context record,
+;    and return a disposition value of nested exception.
+;
+; Arguments:
+;    ExceptionRecord (r4) - Supplies a pointer to an exception record.
+;
+;    EstablisherFrame (r5) - Supplies the frame pointer of the establisher
+;       of this exception handler.
+;
+;    ContextRecord (r6) - Supplies a pointer to a context record.
+;
+;    DispatcherContext (r7) - Supplies a pointer to the dispatcher context
+;       record.
+;
+; Return Value:
+;    A disposition value ExceptionNestedException is returned if an unwind
+;    is not in progress. Otherwise a value of ExceptionContinueSearch is
+;    returned.
+;--
+
+        LEAF_ENTRY RtlpExceptionHandler
+        mov.l   @(ErExceptionFlags,r4), r0      ; (r0) = exception flags
+        tst     #EXCEPTION_UNWIND, r0           ; check if unwind in progress
+        bf      reh10                           ; if non-zero, unwind in progress
+
+; Unwind is not in progress - return nested exception disposition.
+        mov.l   @(CfA3-CfA0,r5), r1             ; (r1) = dispatcher context address
+        mov     #ExceptionNestedException, r0   ; set disposition value
+        mov.l   @(DcEstablisherFrame,r1), r2    ; copy the establisher frame pointer
+        rts
+        mov.l   r2, @(DcEstablisherFrame,r7)    ; to current dispatcher context
+
+; Unwind is in progress - return continue search disposition.
+
+reh10:  rts                                     ; return
+        mov     #ExceptionContinueSearch, r0    ; set disposition value
+        .endf
+
+
+;++
+; EXCEPTION_DISPOSITION
+; RtlpExecuteHandlerForUnwind (
+;    IN PEXCEPTION_RECORD ExceptionRecord,
+;    IN ULONG EstablisherFrame,
+;    IN OUT PCONTEXT ContextRecord,
+;    IN OUT PDISPATCHER_CONTEXT DispatcherContext,
+;    IN PEXCEPTION_ROUTINE ExceptionRoutine)
+;
+; Routine Description:
+;    This function allocates a call frame, stores the establisher frame
+;    pointer and the context record address in the frame, establishes an
+;    exception handler, and then calls the specified exception handler as
+;    an unwind handler. If a collided unwind occurs, then the exception
+;    handler of of this function is called and the establisher frame pointer
+;    and context record address are returned to the unwind dispatcher via
+;    the dispatcher context parameter. If control is returned to this routine,
+;    then the frame is deallocated and the disposition status is returned to
+;    the unwind dispatcher.
+;
+; Arguments:
+;    ExceptionRecord (r4) - Supplies a pointer to an exception record.
+;
+;    EstablisherFrame (r5) - Supplies the frame pointer of the establisher
+;       of the exception handler that is to be called.
+;
+;    ContextRecord (r6) - Supplies a pointer to a context record.
+;
+;    DispatcherContext (r7) - Supplies a pointer to the dispatcher context
+;       record.
+;
+;    ExceptionRoutine (4 * 4(r15)) - supplies a pointer to the exception handler
+;       that is to be called.
+;
+; Return Value:
+;    The disposition value returned by the specified exception handler is
+;    returned as the function value.
+;--
+
+        EXCEPTION_HANDLER RtlpUnwindHandler
+
+        NESTED_ENTRY _RtlpExecuteHandlerForUnwind
+        sts     PR, @-r15               ; save return address
+        add     #CfArg-CfRa, r15        ; allocate argument area
+        PROLOG_END
+
+        mov.l   @(CfExr,r15), r0        ; (r0) = address of exception routine
+        mov.l   r7, @(CfA3,r15)         ; save address of dispatcher context
+        jsr     @r0
+        nop
+        mov.l   @(CfRa,r15), r3         ; (r3) = return address
+        lds     r3, PR                  ; restore return address
+        rts                             ; return
+        add     #CfFrameLength, r15     ;  & deallocate stack frame
+
+        .endf
+
+;++
+; EXCEPTION_DISPOSITION
+; RtlpUnwindHandler (
+;    IN PEXCEPTION_RECORD ExceptionRecord,
+;    IN PVOID EstablisherFrame,
+;    IN OUT PCONTEXT ContextRecord,
+;    IN OUT PVOID DispatcherContext
+;    )
+;
+; Routine Description:
+;    This function is called when a collided unwind occurs. Its function
+;    is to retrieve the establisher dispatcher context, copy it to the
+;    current dispatcher context, and return a disposition value of nested
+;    unwind.
+;
+; Arguments:
+;    ExceptionRecord (r4) - Supplies a pointer to an exception record.
+;
+;    EstablisherFrame (r5) - Supplies the frame pointer of the establisher
+;       of this exception handler.
+;
+;    ContextRecord (r6) - Supplies a pointer to a context record.
+;
+;    DispatcherContext (r7) - Supplies a pointer to the dispatcher context
+;       record.
+;
+; Return Value:
+;    A disposition value ExceptionCollidedUnwind is returned if an unwind is
+;    in progress. Otherwise, a value of ExceptionContinueSearch is returned.
+;--
+
+        LEAF_ENTRY RtlpUnwindHandler
+        mov.l   @(ErExceptionFlags,r4), r0      ; (r0) = exception flags
+        tst     #EXCEPTION_UNWIND, r0           ; check if unwind in progress
+        bt      ruh10                           ; if zero, unwind not in progress
+
+; Unwind is not in progress - return nested exception disposition.
+        mov.l   @(CfA3-CfA0,r5), r1             ; (r1) = dispatcher context address
+        mov     #ExceptionCollidedUnwind, r0    ; set disposition value
+        mov.l   @(DcControlPc,r1), r2           ; Copy the establisher frames'
+        mov.l   @(DcFunctionEntry,r1), r3       ; dispatcher context to the current
+        mov.l   r2, @(DcControlPc,r7)           ;
+        mov.l   r3, @(DcFunctionEntry,r7)       ;
+        mov.l   @(DcEstablisherFrame,r1), r2    ; dispatcher context
+        mov.l   @(DcContextRecord,r1), r3       ;
+        mov.l   r2, @(DcEstablisherFrame,r7)    ;
+        rts
+        mov.l   r3, @(DcContextRecord,r7)       ;
+
+; Unwind is not in progress - return continue search disposition.
+
+ruh10:  rts                                     ; return
+        mov     #ExceptionContinueSearch, r0    ; set disposition value
+        .endf
+
+;++
+; void
+; RtlResumeFromContext (
+;    IN OUT PCONTEXT ContextRecord,
+;    )
+;
+; Routine Description:
+;    This function is called to resume from a give context.
+;
+; Arguments:
+;
+;    ContextRecord (r4) - Supplies a pointer to a context record.
+;
+;
+; Return Value:
+;    None. (Never returns)
+;
+;--
+
+        LEAF_ENTRY _RtlResumeFromContext
+
+        mov     r4, r14                 ; (r14) = pCtx
+        add     #CtxPR, r14             ; (r14) = ptr to context.PR
+
+        ; restore all registers except R13, R14, R15, SR, PC
+        lds     @r14+, PR
+        lds     @r14+, MACH
+        lds     @r14+, MACL
+        ldc     @r14+, GBR
+        mov.l   @r14+, r0
+        mov.l   @r14+, r1
+        mov.l   @r14+, r2
+        mov.l   @r14+, r3
+
+        ; fix M, Q, S, T bits while we still have some scratch registers
+
+        ; fix M, Q bits
+        mov.l   @(CtxPsr-CtxR4, r14), r4    ; (r4) = SR
+        mov     r4, r5                      ; (r5) = SR
+        mov     #31-9, r6                   ; (r6) = shift amount
+        mov     r4, r7                      ; (r7) = SR
+        shld    r6, r4                      ; (r4) = 0bM...
+        shld    r6, r5                      ; (r5) = 0bMQ...
+        shll    r5                          ; (r5) = 0bQ...
+        div0s   r4, r5                      ; (M),(Q) = M,Q from SR
+
+        ; fix 'S' bits
+        ; (r7) = SR
+        mov     #SR_S_BIT, r6               ; (R6) = 'S' Bit in SR
+        tst     r6, r7                      ; 'S' bit set?
+        bt/s    NoSBit
+        clrs                                ; (delay slot) Clear 'S' bit
+
+        ; 'S' bit is et
+        sets                                ; set 'S' bit
+
+NoSBit:
+        ; now  restore 'T' bit.
+        ; simply do a 'shift right' of R15 and T bit will be set to LSB (T bit) of the save SR
+        shlr    r7
+
+        ; 'push' pCtx->R14, and pCtx->Fir onto the stack of context
+        ;   (r14) = &pCtx->R4;
+        mov.l   @(CtxR15-CtxR4, R14), r4    ; r4 = pCtx->R15 (SP)
+        mov.l   @(CtxR14-CtxR4, R14), r5    ; r5 = pCtx->R14
+        mov.l   @(CtxFir-CtxR4, R14), r6    ; r6 = pCtx->Fir (PC)
+
+        mov.l   r5, @-r4                    ; push pCtx->r14 on context SP
+        mov.l   r6, @-r4                    ; push pCtx->Fir on context SP
+
+        mov.l   r4, @(CtxR15-CtxR4, R14)    ; pCtx->R15 -= 8 (room for R14, and Fir)
+
+        ; continue restoring the other registers
+        mov.l   @r14+, r4
+        mov.l   @r14+, r5
+        mov.l   @r14+, r6
+        mov.l   @r14+, r7
+        mov.l   @r14+, r8
+        mov.l   @r14+, r9
+        mov.l   @r14+, r10
+        mov.l   @r14+, r11
+        mov.l   @r14+, r12
+        mov.l   @R14+, r13
+
+        ;
+        ; restore R15 (SP), @R14 should not be referenced afterward for it's above SP and can be trashed on exception
+        ;    (r14) = &pCtx->R14
+        ;
+        mov.l   @(CtxR15-CtxR14, R14), R15  ; (R15) = pCtx->R15 (already decremented by 8 above)
+
+        ; now we need to restore R14 and PC
+        ; Here are the steps:
+        ;   (1) load R14 with pCtx->pc
+        ;   (2) jump to R14, while pop R14 from stack in delay slot
+        mov.l   @R15+, R14                  ; (R14) = pCtx->PC
+
+        jmp     @R14                        ; jump to R14
+        mov.l   @R15+, R14                  ; (delay slot) pop R14
+
+        .endf
+
+
+;++
+; void
+; RtlReportUnhandledException (
+;    IN PEXCEPTION_RECORD pExr,
+;    IN PCONTEXT pCtx
+;    )
+;
+; Routine Description:
+;    This function is called to report a unhandled exception.
+;
+; Arguments:
+;
+;    pExr (r4) - Supplies a pointer to the excepiton record.
+;    pCtx (r5) - Supplies a pointer to the context record.
+;
+;
+; Return Value:
+;    None. (Never returns)
+;
+;--
+
+        LEAF_ENTRY _RtlReportUnhandledException
+
+        ; pop off everything above pExr-sizeof(CONTEXT)
+        add     #-CtxSizeof, R15
+
+        ; call RaiseException
+        mov     r5, r7                          ; (r7) = (r5) == pCtx
+        mov     #0, r6                          ; (r6) = 0
+        mov     #EXCEPTION_FLAG_UNHANDLED, r5   ; (r5) = EXCEPTION_FLAG_UNHANDLED
+        mov.l   @r4, r4                         ; (r4) = pExt->ExceptionCode
+
+        mov     #_xxx_RaiseException, r3        ; (r3) = RaiseException
+        jmp     @r3
+        nop
+
+        .endf
+
+
+;-------------------------------------------------------------------------------
+;++
+; void RtlDispatchException (
+;    IN PEXCEPTION_RECORD pExr,
+;    IN PCONTEXT pCtx
+;    )
+;
+        ; Fake prolog for unwinding.
+        NESTED_ENTRY xxRtlDispatchException
+
+        add     #-ExrSizeof, r15        ; room for Exception Record
+
+        add     #h'80-CtxSizeof, r15    ; room for everything before Fir
+        add     #CtxR15-h'80, r15       ; (r15) = &pCtx->R15
+
+        ; Note that we must use the @(disp, Rn) addressing mode to save SPC
+        ; because the unwinder doesn't support @-Rn in this case
+        stc     SPC, R0
+        mov.l   R0, @(4, r15)           ; save fault PC
+        mov.l   R14, @-r15              ; save R14
+        mov.l   R13, @-r15              ; save R13
+        mov.l   R12, @-r15              ; save R12
+        mov.l   R11, @-r15              ; save R11
+        mov.l   R10, @-r15              ; save R10
+        mov.l   R9, @-r15               ; save R9
+        mov.l   R8, @-r15               ; save R8, (r15) = &pCtx->R8
+        add     #-(CtxR8-CtxMACH), r15  ; skip the volatile portion
+        sts.l   PR, @-r15               ; save PR
+        add     #-(CtxPR+16), r15       ; skip flags + room for 4 arguments (C calling convention)
+
+    PROLOG_END
+
+        ; real entry point for RtlDispatchException
+        ALTERNATE_ENTRY _RtlDispatchException
+
+        mov     #_DoRtlDispatchException, r3
+        jsr     @r3
+        nop
+
+        ; should never return
+        mov     #0, r3
+        jmp     @r3
+        nop
+
+        .endf
+
+
+
+
+
+    	.end

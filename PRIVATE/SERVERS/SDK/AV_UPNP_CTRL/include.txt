@@ -1,0 +1,16 @@
+public\CEBase\cesysgen\oak\inc\av_dcp.h
+public\CEBase\cesysgen\oak\inc\av_dcp.idl
+public\CEBase\cesysgen\oak\inc\av_upnp.h
+public\CEBase\cesysgen\oak\inc\av_upnp_impl.h
+public\CEBase\cesysgen\oak\inc\av_upnp_internal.h
+public\CEBase\cesysgen\oak\inc\singleton.hxx
+public\CEBase\cesysgen\oak\inc\auto_xxx.hxx
+public\CEBase\cesysgen\oak\inc\sync.hxx
+public\CEBase\cesysgen\oak\inc\allocator.hxx
+public\CEBase\cesysgen\oak\inc\string.hxx
+public\CEBase\cesysgen\oak\inc\hash.hxx
+public\CEBase\cesysgen\oak\inc\hash_map.hxx
+public\CEBase\cesysgen\oak\inc\hash_set.hxx
+public\CEBase\cesysgen\oak\inc\list.hxx
+public\CEBase\cesysgen\oak\inc\vector.hxx
+public\CEBase\cesysgen\oak\inc\variant.h

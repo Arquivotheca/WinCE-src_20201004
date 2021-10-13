@@ -1,0 +1,203 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this sample source code is subject to the terms of the Microsoft
+// license agreement under which you licensed this sample source code. If
+// you did not accept the terms of the license agreement, you are not
+// authorized to use this sample source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the LICENSE.RTF on your install media or the root of your tools installation.
+// THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+#include <winuser.h>
+#include <wingdi.h>
+#include "ControlDefinitions.h"
+#include "Resource.h"
+
+
+IDB_BACKGROUND              BITMAP "Background.bmp"
+IDB_BUTTON                  BITMAP "Button.bmp"
+IDB_BUTTONDOWN              BITMAP "ButtonDown.bmp"
+IDB_STATUS                  BITMAP "Status.bmp"
+IDB_TITLE_BAR               BITMAP "TitleBar.bmp"
+IDB_TRACKBAR_CHANNEL        BITMAP "TrackBar_Channel.bmp"
+IDB_TRACKBAR_CHANNEL_SEL    BITMAP "TrackBar_Channel_Sel.bmp"
+IDB_TRACKBAR_THUMB          BITMAP "TrackBar_Thumb.bmp"
+IDB_TRACKBAR_THUMB_SEL      BITMAP "TrackBar_Thumb_Sel.bmp"
+IDB_LOGO_SMALL              BITMAP "SmallFlag.bmp"
+IDB_POPUPMENU_RIGHT_ARROW   BITMAP "PopupMenu_Right_Arrow.bmp"
+IDB_SCROLL_ARROW_UP         BITMAP "ScrollArrowUp.bmp"
+IDB_SCROLL_ARROW_DOWN       BITMAP "ScrollArrowDown.bmp"
+
+
+// Layout Metrics
+IDR_METRICS_DATA RCDATA
+BEGIN
+    40,     // ButtonWidth
+    20,     // ButtonHeight
+    DEFINE_MARGIN(4, 4, 4, 4), // ButtonTile Margins
+    4,      // ButtonConnectorLine
+
+    55,     // PopupItemWidth
+    15,     // PopupItemHeight
+    5,      // PopupTextMargin
+    5,      // PopupRightArrowTopMargin
+    5,      // PopupRightArrowRightMargin
+
+    20,     // MenuBarHeight
+    280,    // MenuBarTop
+    242,    // MenuBarRight
+
+    DEFINE_MARGIN(5, 54, 5, 40), // ListBox Margins
+    45,     // ListBoxDefaultItemHeight
+
+    5,      // LogoTopMargin
+    9,      // LogoRightMargin
+
+    22,     // DialogScreenTitleHeight
+    DEFINE_MARGIN(5, 32, 5, 0xFFFF), // DialogScreenTitle Margins
+    5,      // DialogScreenTitleTextHorzMargin
+    DEFINE_MARGIN(4, 4, 4, 0), // DialogScreenTitleTile Margins
+    7,      // DialogScreenScrollArrowWidth
+    8,      // DialogScreenScrollArrowHeight
+    DEFINE_MARGIN(0xFFFF, 32+6, 15, 22+4), // DialogScreenScrollArrow Margins
+
+    137,    // MessageBoxHeight
+    12,     // MessageBoxTextMargin
+    32,     // MessageBoxIconWidth
+    32,     // MessageBoxIconHeight
+    18,     // MessageBoxTitleHeight
+    7,      // MessageBoxTitleToDividerMargin
+    19,     // MessageBoxTitleToIconMargin
+    27,     // MessageBoxTitleToTextMargin
+
+    22,     // StatusHeaderHeight
+    DEFINE_MARGIN(5, 5, 5+36, 0xFFFF), // StatusHeader Margins
+    5,      // StatusTextMargin
+    DEFINE_MARGIN(3, 4, 3, 4), // StatusHeaderTile Margins
+
+    5,      // ToolTipTextMargin
+    30,     // ToolTipItemDelta
+
+    DEFINE_MARGIN(3, 3, 3, 3), // TrackbarThumbTile Margins
+    DEFINE_MARGIN(2, 2, 2, 2), // TrackbarChannelTile Margins
+
+    20,     // TextItemHeight
+    7,      // TextItemHorzMargin
+    3,      // TextItemVerMargin
+
+    8,      // LabeledItemToControlMargin
+    (8+6),  // LabeledItemHorzMargin
+    11,     // LabeledItemVerMargin
+END
+
+// Colors
+IDR_COLORS_DATA RCDATA
+BEGIN
+    DEFINE_RGB_COLOR(0xFF,0x00,0xFF),   // DefaultTransparentColor
+    DEFINE_RGB_COLOR(0x74,0x96,0xE2),   // DefaultBackgroundColor
+    DEFINE_RGB_COLOR(0x00,0x00,0x00),   // DefaultTextColor
+
+    DEFINE_RGB_COLOR(0x00,0x00,0x00),   // GradientTopBackgroundColor
+    DEFINE_RGB_COLOR(0xA4,0xB6,0x8E),   // GradientBottomBackgroundColor
+
+    DEFINE_RGB_COLOR(0x00,0x00,0x00),   // MenuButtonDownTextColor
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xFF),   // MenuButtonUpTextColor
+    DEFINE_RGB_COLOR(0x31,0x51,0xBF),   // ButtonDownConnectorLineColor
+    DEFINE_RGB_COLOR(0xC7,0xD3,0xF7),   // ButtonUpConnectorLineColor
+
+    DEFINE_RGB_COLOR(0xD6,0xDF,0xF7),   // PopupMenuItemBackgroundColor
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xFF),   // PopupMenuItemSelectedBackgroundColor
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xFF),   // PopupMenuItemBorderColor
+    DEFINE_RGB_COLOR(0xEC,0xCC,0x5E),   // PopupMenuItemSelectedBorderColor
+    DEFINE_RGB_COLOR(0x6A,0x7D,0xC0),   // PopupMenuItemTextColor
+    DEFINE_RGB_COLOR(0x00,0x00,0x00),   // PopupMenuItemSelectedTextColor
+    DEFINE_RGB_COLOR(0x80,0x80,0x80),   // PopupMenuItemDisabledTextColor
+
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xFF),   // DialogScreenTitleTextColor
+
+    DEFINE_RGB_COLOR(0xD6,0xDF,0xF7),   // ListBoxBackgroundColor
+
+    DEFINE_RGB_COLOR(0xA4,0xB6,0x8E),   // MessageBoxBackgroundColor
+    DEFINE_RGB_COLOR(0x00,0x00,0x00),   // MessageBoxTextColor
+    DEFINE_RGB_COLOR(0xC7,0xD3,0xF7),   // MessageBoxTitleColor
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xFF),   // MessageBoxBorderColor
+    DEFINE_RGB_COLOR(0xC7,0xD3,0xF7),   // MessageBoxDividerLineColor
+
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xD9),   // ToolTipBackgroundColor
+    DEFINE_RGB_COLOR(0x00,0x00,0x00),   // ToolTipTextColor
+
+    DEFINE_RGB_COLOR(0xD6,0xDF,0xF7),   // DisplayItemBackgroundColor
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xFF),   // DisplayItemSelectedBackgroundColor
+    DEFINE_RGB_COLOR(0x6A,0x7D,0xC0),   // DisplayItemTextColor
+    DEFINE_RGB_COLOR(0x00,0x00,0x00),   // DisplayItemSelectedTextColor
+    DEFINE_RGB_COLOR(0xFF,0xFF,0xFF),   // DisplayItemBorderColor
+    DEFINE_RGB_COLOR(0xEC,0xCC,0x5E),   // DisplayItemSelectedBorderColor
+END
+
+// Fonts
+IDR_FONTS_DATA RCDATA
+BEGIN
+    DEFINE_FONT(IDS_FONT_TAHOMA, 7, 400),       // StandardText
+    DEFINE_FONT(IDS_FONT_TAHOMA, 7, 700),       // StandardTextBold
+    DEFINE_FONT(IDS_FONT_ARIAL, 7, 400),        // InformationText
+    DEFINE_FONT(IDS_FONT_TREBUCHET, 18, 700),   // LargeText
+    DEFINE_FONT(IDS_FONT_TREBUCHET, 14, 700),   // BigNumbersText
+END
+
+STRINGTABLE
+BEGIN
+    IDS_FONT_TAHOMA          "Tahoma"
+    IDS_FONT_ARIAL           "Arial"
+    IDS_FONT_TREBUCHET       "Trebuchet"
+END
+
+
+IDD_DIALOG_SCREEN DIALOG DISCARDABLE 20, 20, 200, 240
+STYLE DS_USEPIXELS | WS_POPUP | WS_VISIBLE
+BEGIN
+    CONTROL "", IDC_STATUSREGION, WNDCLASS_STATUSHEADER, WS_VISIBLE, 0, 0, 0, 0 //window pos based on metrics
+
+    CONTROL "", IDC_LISTBOX, WNDCLASS_LISTBOX, WS_VISIBLE | WS_CHILD | LBS_NOTIFY | LBS_OWNERDRAWVARIABLE, 0, 0, 0, 0 //window pos based on metrics
+
+    CONTROL "", IDC_BUTTON1, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 5   , 220, 40, 20
+    CONTROL "", IDC_BUTTON2, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 55  , 220, 40, 20
+    CONTROL "", IDC_BUTTON3, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 105 , 220, 40, 20
+    CONTROL "", IDC_BUTTON4, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 155 , 220, 40, 20
+    CONTROL "", IDC_MENUBAR, WNDCLASS_MENUBAR,    0, 0, 0, 0, 0 //offscreen menubar helper
+END
+
+IDMB_DEFAULT_MESSAGE_BOX MENU
+BEGIN
+    MENUITEM "Ok", IDOK
+    MENUITEM "*", 0
+    MENUITEM "*", 0
+    MENUITEM "Cancel", IDCANCEL
+END
+
+IDD_MESSAGE_BOX DIALOG DISCARDABLE 20, 20, 200, 240
+STYLE DS_USEPIXELS | WS_POPUP | WS_VISIBLE
+BEGIN
+    CONTROL "", IDC_BUTTON1, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 5   , 220, 40, 20
+    CONTROL "", IDC_BUTTON2, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 55  , 220, 40, 20
+    CONTROL "", IDC_BUTTON3, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 105 , 220, 40, 20
+    CONTROL "", IDC_BUTTON4, WNDCLASS_MENUBUTTON, WS_VISIBLE | WS_TABSTOP, 155 , 220, 40, 20
+    CONTROL "", IDC_MENUBAR, WNDCLASS_MENUBAR,    0, 0, 0, 0, 0 //offscreen menubar helper
+END
+
+IDMB_MENU_SCREEN MENU
+BEGIN
+    MENUITEM "*", 0
+    MENUITEM "*", 0
+    MENUITEM "Done", IDCANCEL
+    MENUITEM "Select", IDOK
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDS_MENU_SCREEN_HEADER      "Select one item"
+    IDS_MENU_SCREEN_TITLE       "Menu"
+    IDS_DIALOG_SCREEN_CURRENT_ITEMS "Items %d-%d"
+END
+

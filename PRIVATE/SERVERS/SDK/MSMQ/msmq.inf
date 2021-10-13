@@ -1,0 +1,47 @@
+[Version]
+Signature = "$Windows NT$"
+Provider = "Microsoft"
+CESignature = "$Windows CE$"
+
+[CEStrings]
+AppName = Microsoft Message Queue
+InstallDir = %CE2%  	                ; \Windows
+
+[CEDevice]
+VersionMin = 5.00
+VersionMax = 9.00
+
+[DefaultInstall]
+CopyFiles = SystemFiles
+AddReg = SystemReg
+
+[SourceDisksFiles.arm]
+msmqd.dll = 1,.
+msmqrt.dll = 1,.
+SrmpIsapi.dll = 1,.
+msmqadm.exe = 1,.
+visadm.exe = 1,.
+
+[SourceDisksNames.arm]
+1="Microsoft Message Queue"
+
+[DestinationDirs]
+SystemFiles = 0,%InstallDir%
+
+[SystemFiles]
+msmqd.dll,,0xc0000000
+msmqrt.dll,,0xc0000000
+SrmpIsapi.dll,,0xc0000000
+msmqadm.exe,,0xc0000000
+visadm.exe,,0xc0000000
+
+[SystemReg]
+; MSMQ service
+HKLM,Services\MSMQD,Context,0x00010001,0
+HKLM,Services\MSMQD,Dll,0x00000000,"MSMQD.dll"
+HKLM,Services\MSMQD,Order,0x00010001,9
+HKLM,Services\MSMQD,Prefix,0x00000000,"MMQ"
+HKLM,Services\MSMQD,Index,0x00010001,1
+HKLM,Services\MSMQD,Keep,0x00010001,1
+HKLM,Services\MSMQD,FriendlyName,0x00000000,"Microsoft Message Queueing"
+HKLM,COMM\HTTPD\VROOTS\/Msmq,,0x00000000,"\windows\srmpIsapi.dll"

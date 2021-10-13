@@ -1,0 +1,53 @@
+xwifi11b test cases
+
+
+tux -o -d xwifi-autotest -c "-ssid NO-ENCRYPTION(DHCP)::-auth:open: -test ip:100.100.x.x -static ip:100.100.0.2"
+
+-ssid option
+   "NO-ENCRYPTION(DHCP)" the first word is SSID name.
+   When test starts, the test code will install several SSIDs.
+
+-auth:open
+   authentication = open,shared,wpapsk,wpanone,wpa
+
+-wep:1:0x1234567890
+   WEP encryption key
+   1=key index [1-4]
+   0x1234567890 = key value.
+   40-bit=10-digit-hexa or 5-char value
+   104-bit = 26-digit-hexa or 13-char value
+
+-test ip:100.100.x.x
+   test checks IP address when connected. it should have 100.100.something.
+   -test ip:10.10.x.x
+   when connected to DHCP network, it will get 10.10.x.x address
+   -test ip:autoip
+   auto ip = 169.254.x.x.
+
+-static ip:100.100.0.2
+   optional
+   if -static option is given, the xwifi card will given a static IP address.
+   so, it will get a static ip address whenever it is connected.
+   if -static is not given, the xwifi assumes it gets an ip address from a DHCP server.
+   xwifi emulates some wireless networks having a DHCP server,
+   so it thinks it has DHCP server and will get DHCP assigned IP address when connected.
+   if DHCP server is not responding [for example if WEP key is incorrect],
+   xwifi will get an auto ip.
+
+
+examples
+
+tux -o -d xwifi-autotest -c "-ssid NO-ENCRYPTION(DHCP)::-auth:open: -test ip:100.100.x.x -static ip:100.100.0.2" 
+tux -o -d xwifi-autotest -c "-ssid WEP40-OPEN(DHCP)::-auth:open:-wep:1/0x1234567890 -test ip:100.100.x.x -static ip:100.100.0.2" 
+tux -o -d xwifi-autotest -c "-ssid WEP104-OPEN(DHCP)::-auth:open:-wep:1/0x12345678901234567890123456 -test ip:100.100.x.x -static ip:100.100.0.2" 
+
+
+
+creating command arguments
+
+copy data from xwifi-autotest-cases.xls to Book1.xls
+open tux-merge.doc [MS WORD]
+do mail-merge with Book1.xls
+it will generate 100-pages of output.
+select entire text then copy to clipboard.
+paste to a text file, then use 1 line command for each test condition.

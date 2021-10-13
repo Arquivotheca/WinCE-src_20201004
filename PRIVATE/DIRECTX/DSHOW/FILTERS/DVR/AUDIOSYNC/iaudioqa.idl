@@ -1,0 +1,110 @@
+//
+// Copyright (c) Microsoft Corporation.  All rights reserved.
+//
+//
+// Use of this source code is subject to the terms of the Microsoft shared
+// source or premium shared source license agreement under which you licensed
+// this source code. If you did not accept the terms of the license agreement,
+// you are not authorized to use this source code. For the terms of the license,
+// please see the license agreement between you and Microsoft or, if applicable,
+// see the SOURCE.RTF on your install media or the root of your tools installation.
+// THE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES.
+//
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(5E245E51-3443-40f0-9F59-2E9C21B074E3)
+]
+library AudioSyncLib
+{
+	// ################# Enums and Structs ################# 
+
+	typedef enum AUDIO_QA_EVENT_FLAG		/* Keep aligned with TestLibrary AUDIO_QA_EVENT_FLAG */
+	{
+		AUDIO_QA_EVENT_GRAPH_BUILT = 0x1,
+		AUDIO_QA_EVENT_PAUSED = 0x2,
+		AUDIO_QA_EVENT_STOPPED = 0x4,
+		AUDIO_QA_EVENT_RATE_CHANGED = 0x8,
+		AUDIO_QA_EVENT_MUTED = 0x10,
+		AUDIO_QA_EVENT_PAUSE_RECOVERY = 0x20,
+		AUDIO_QA_EVENT_FLUSHED = 0x40
+	} AUDIO_QA_EVENT_FLAG;
+
+	typedef enum AUDIO_QA_QUALITY_SUMMARY
+	{
+		AUDIO_QA_QUALITY_UNKNOWN = 0,
+		AUDIO_QA_QUALITY_GOOD = 1,
+		AUDIO_QA_QUALITY_EARLY = 2,
+		AUDIO_QA_QUALITY_LATE = 3,
+		AUDIO_QA_QUALITY_UNSTABLE = 4,
+		AUDIO_QA_QUALITY_VERY_EARLY = 5,
+		AUDIO_QA_QUALITY_VERY_LATE = 6,
+		AUDIO_QA_QUALITY_VERY_UNSTABLE = 7,
+		AUDIO_QA_QUALITY_WEDGED = 8
+	} AUDIO_QA_QUALITY_SUMMARY;
+
+	typedef struct AudioQAStats
+	{
+		AUDIO_QA_QUALITY_SUMMARY eQualitySummary;
+		BOOL fInternalMute;
+		BOOL fExternalMute;
+		BOOL fPaused;
+		BOOL fStopped;
+		BOOL fFlushing;
+		UINT32 uMillisecNormalPlay;		/* graph running at 1.0 with no external muting */
+		UINT32 uSamplesRendered;
+		UINT32 uSamplesDropped;
+		UINT32 uSamplesNotPlayable;		/* not playable due to upstream mute or rate != 1.0 */
+		UINT32 uSamplesMutedDuringTransition;
+		UINT32 uSamplesMutedOtherTimes;
+		UINT32 uPossibleAudioPops;
+		INT32 iMillisecMinimumLeadLag;
+		INT32 iMillisecMaximumLeadLag;
+		INT32 iMillisecAverageLeadLag;
+		UINT32 uMillisecSinceLastSample;
+		UINT32 uEventFlags;				/* bitwise OR of 0+ AUDIO_QA_EVENT_FLAG values */
+	} AUDIO_QA_STATS;
+
+	typedef enum AUDIO_QA_EVENT_TYPE
+	{
+		AUDIO_QA_EVENT_ABNORMAL_MUTE,
+		AUDIO_QA_EVENT_DROPPED_SAMPLE,
+		AUDIO_QA_EVENT_QUALITY_CHANGE,
+		AUDIO_QA_EVENT_AUDIO_POP
+	} AUDIO_QA_EVENT_TYPE;
+
+	typedef void (*PFN_AUDIO_QUALITY_CALLBACK)(AUDIO_QA_EVENT_TYPE eAudioQAEventType, AUDIO_QA_STATS *pAudioQAStats);
+
+	// ################# Interfaces ################# 
+
+	[
+		object,
+		uuid(C5B1A87A-086F-4aaa-93DC-2648A554E2F7),
+		pointer_default(unique)
+	]
+	interface IAudioQA : IUnknown
+	{
+		// GetAudioStats() returns one descriptor containing the statistics
+		// for the last full sampling interval plus the statistics accumulated
+		// in the partial interval since. It then resets the statistics so
+		// that the next call to GetAudioStats() will only report new data.
+		HRESULT GetAudioStats([out] AUDIO_QA_STATS *pAudioQAStats);
+
+		// SetAudioSampleInterval() specifies the interval at which the record
+		// of audio quality statistics is wiped clean and started afresh. The 
+		// interval is measured in system ticks. By default, the interval is
+		// 0 (no statistics kept).  If set to 0xffffffff, the statistics will
+		// only be cleared when GetAudioStats() is called.
+		HRESULT SetAudioSampleInterval([in] DWORD dwSystemTicksAccumulateData);
+
+		// GetAudioSampleInterval() reports the interval at which the record
+		// of audio quality statistics is wiped clean and started afresh.
+		HRESULT GetAudioSampleInterval([out] DWORD *pdwSystemTicksAccumulateData);
+
+		// SetAudioQualityCallback() sets the callback routine to be invoked
+		// when something interesting happens with regard to the audio quality.
+		HRESULT SetAudioQualityCallback([in] PFN_AUDIO_QUALITY_CALLBACK pfnAudioQualityCallback);
+	};
+
+};
